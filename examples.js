@@ -6,7 +6,7 @@ $.fn.updateAttr = function (attrName, oldVal, newVal) {
         var $this = $(this);
 
         var attr = $this.attr(attrName);
-        if (attr.indexOf('/examples/')){
+        if (attr.indexOf('/examples/') === 0){
             attr = attr.replace('/examples/', '/');
             $this.attr(attrName, attr);
         }
