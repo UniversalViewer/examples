@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wellcome Player: IIIF Image Example</title>
+</head>
+<body>
+
+    <h2>MS Books</h2>
+
+    <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_00000000020A/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
+
+    <br/><br/>
+
+    <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_000000000060/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
+
+    <h2>Europeana</h2>
+
+    <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_100002273023.0x000002/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
+
+    <br/><br/>
+
+    <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_100022551578.0x000002/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
+
+    <h2>Google books</h2>
+
+    <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_100022570722.0x000001/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
+
+    <br/><br/>
+
+    <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_100022601600.0x000001/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
+
+
+    <script type="text/javascript">
+
+        if (document.location.href.indexOf('localhost')){
+            // debug version
+            document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
+        } else {
+            // built version
+            document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
+        }
+
+    </script>
+
+</body>
+</html>
