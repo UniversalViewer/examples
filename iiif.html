@@ -23,17 +23,6 @@
 
     <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://manifests.ydc2.yale.edu/manifest/BeineckeMS10.json" style="width:640px; height:480px; background-color: #000"></div>
 
-    <script type="text/javascript">
-
-        if (document.location.href.indexOf('localhost') != -1){
-            // debug version
-            document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
-        } else {
-            // built version
-            document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
-        }
-
-    </script>
-
+    <script type="text/javascript" src="examples.js"></script>
 </body>
 </html>

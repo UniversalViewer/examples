@@ -29,18 +29,7 @@
 
     <div class="wellcomePlayer" data-config="/examples/iiif-config.js" data-uri="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/metadata/ark:/81055/vdc_100022601600.0x000001/manifest.json" style="width:640px; height:480px; background-color: #000"></div>
 
-
-    <script type="text/javascript">
-
-        if (document.location.href.indexOf('localhost')){
-            // debug version
-            document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
-        } else {
-            // built version
-            document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
-        }
-
-    </script>
+    <script type="text/javascript" src="examples.js"></script>
 
 </body>
 </html>
