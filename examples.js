@@ -34,7 +34,7 @@ if (uri.indexOf('localhost') != -1){
     document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
 } else {
     // built version
-    $('.wellcomeplayer').updateAttr('data-config', '/examples/', '/');
+    $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
 
     document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
 }
