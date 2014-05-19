@@ -13,19 +13,6 @@ $.fn.updateAttr = function (attrName, oldVal, newVal) {
     });
 };
 
-/*
-function setAttr(elements, attr, oldVal, newVal){
-    $.each($('.wellcomePlayer'), function(index, el) {
-        //$(value).attr('data-config', '/examples-config.js');
-        var config = $(el).attr('data-config');
-        if (config.indexOf('/examples/')){
-            config = config.replace('/examples/', '/');
-            $(el).attr('data-config', config);
-        }
-    });
-}
-*/
-
 var uri = document.location.href;
 
 if (uri.indexOf('localhost') != -1){
@@ -35,6 +22,7 @@ if (uri.indexOf('localhost') != -1){
 } else {
     // built version
     $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
+    $('.wellcomePlayer').updateAttr('data-uri', '/examples/', '/');
 
     document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
 }
