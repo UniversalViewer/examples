@@ -2674,9 +2674,9 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             for (var i = 0; i < this.sequence.assets.length; i++) {
                 var canvas = this.sequence.assets[i];
                 for (var j = 0; j < canvas.structures.length; j++) {
-                    var section = canvas.structures[j];
+                    var structure = canvas.structures[j];
 
-                    if (section.path == path) {
+                    if (structure.path == path) {
                         return i;
                     }
                 }
@@ -2835,6 +2835,11 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             }
 
             return thumbs;
+        };
+
+        BaseProvider.prototype.getDomain = function () {
+            var parts = utils.Utils.getUrlParts(this.dataUri);
+            return parts.host;
         };
         return BaseProvider;
     })();
@@ -3547,6 +3552,10 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                 return;
 
             var structure = this.provider.getStructureByCanvasIndex(index);
+
+            if (!structure)
+                return;
+
             this.selectPath(structure.path);
         };
 
@@ -5035,10 +5044,16 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
-            return null;
+            var canvas = this.getCanvasByIndex(index);
+            return this.getCanvasStructure(canvas);
         };
 
         BaseProvider.prototype.getCanvasStructure = function (canvas) {
+            if (canvas.structures) {
+                return canvas.structures.last();
+            }
+
+            return null;
         };
 
         BaseProvider.prototype.getCurrentCanvas = function () {
@@ -5123,19 +5138,74 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         BaseProvider.prototype.parseManifest = function () {
         };
 
-        BaseProvider.prototype.parseStructure = function () {
+        BaseProvider.prototype.getRootStructure = function () {
+            return this.rootStructure;
         };
 
-        BaseProvider.prototype.getRootStructure = function () {
-            return null;
+        BaseProvider.prototype.parseStructure = function () {
+            this.rootStructure = {
+                path: "",
+                structures: []
+            };
+
+            if (!this.manifest.structures)
+                return;
+
+            for (var i = 0; i < this.manifest.structures.length; i++) {
+                var structure = this.manifest.structures[i];
+                this.rootStructure.structures.push(structure);
+                structure.path = "/" + i;
+
+                for (var j = 0; j < structure.canvases.length; j++) {
+                    var canvas = this.getCanvasById(structure.canvases[j]);
+
+                    if (!canvas) {
+                        structure.canvases[j] = null;
+                        continue;
+                    }
+
+                    if (!canvas.structures)
+                        canvas.structures = [];
+                    canvas.structures.push(structure);
+
+                    structure.canvases[j] = canvas;
+                }
+            }
         };
 
         BaseProvider.prototype.getStructureIndex = function (path) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+
+                if (!canvas.structures)
+                    continue;
+
+                for (var j = 0; j < canvas.structures.length; j++) {
+                    var structure = canvas.structures[j];
+
+                    if (structure.path == path) {
+                        return i;
+                    }
+                }
+            }
+
+            return null;
+        };
+
+        BaseProvider.prototype.getCanvasById = function (id) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var c = this.sequence.canvases[i];
+
+                if (c['@id'] === id) {
+                    return c;
+                }
+            }
+
             return null;
         };
 
         BaseProvider.prototype.getStructureByIndex = function (structure, index) {
-            return null;
+            return structure.structures[index];
         };
 
         BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
@@ -5147,7 +5217,32 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getTree = function () {
-            return null;
+            this.treeRoot = new TreeNode('root');
+            this.treeRoot.label = "root";
+            this.treeRoot.type = "manifest";
+            this.treeRoot.ref = this.getRootStructure();
+            this.getRootStructure().treeNode = node;
+            this.treeRoot.path = this.treeRoot.ref.path;
+
+            for (var i = 0; i < this.getRootStructure().structures.length; i++) {
+                var structure = this.getRootStructure().structures[i];
+
+                var node = new TreeNode();
+                this.treeRoot.nodes.push(node);
+
+                node.label = structure.label;
+                node.type = "structure";
+                node.ref = structure;
+                structure.treeNode = node;
+                node.path = node.ref.path;
+            }
+
+            return this.treeRoot;
+        };
+
+        BaseProvider.prototype.getDomain = function () {
+            var parts = utils.Utils.getUrlParts(this.dataUri);
+            return parts.host;
         };
         return BaseProvider;
     })();
