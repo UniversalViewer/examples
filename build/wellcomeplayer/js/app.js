@@ -2841,6 +2841,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             var parts = utils.Utils.getUrlParts(this.dataUri);
             return parts.host;
         };
+
+        BaseProvider.prototype.getMetaData = function (callback) {
+            callback(null);
+        };
         return BaseProvider;
     })();
     exports.BaseProvider = BaseProvider;
@@ -3912,9 +3916,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
             switch (type) {
                 case 'archive', 'boundmanuscript', 'artwork', 'application-pdf':
-                    return true;
-                default:
                     return false;
+                default:
+                    return true;
             }
         };
 
@@ -4353,6 +4357,11 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
             this.setConfig('moreInfoRightPanel');
 
             _super.prototype.create.call(this);
+
+            this.moreInfoItemTemplate = $('<div class="item">\
+                                           <div class="header"></div>\
+                                           <div class="text"></div>\
+                                       </div>');
         };
 
         MoreInfoRightPanel.prototype.toggleComplete = function () {
@@ -4364,13 +4373,44 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
         };
 
         MoreInfoRightPanel.prototype.getInfo = function () {
+            var _this = this;
             this.$main.addClass('loading');
 
-            this.displayInfo();
+            this.provider.getMetaData(function (data) {
+                _this.displayInfo(data);
+            });
         };
 
-        MoreInfoRightPanel.prototype.displayInfo = function () {
-            this.$main.append(this.content.holdingText);
+        MoreInfoRightPanel.prototype.displayInfo = function (data) {
+            var _this = this;
+            this.$main.removeClass('loading');
+
+            if (!data) {
+                this.$main.append(this.content.holdingText);
+                return;
+            }
+
+            _.each(data, function (item) {
+                _this.$main.append(_this.buildItem(item, 130));
+            });
+        };
+
+        MoreInfoRightPanel.prototype.buildItem = function (item, trimChars) {
+            var $elem = this.moreInfoItemTemplate.clone();
+            var $header = $elem.find('.header');
+            var $text = $elem.find('.text');
+
+            item = _.values(item);
+
+            var name = item[0];
+            var value = item[1];
+
+            value = value.replace('\n', '<br>');
+
+            $header.text(name);
+            $text.text(value);
+
+            return $elem;
         };
 
         MoreInfoRightPanel.prototype.resize = function () {
@@ -5243,6 +5283,10 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         BaseProvider.prototype.getDomain = function () {
             var parts = utils.Utils.getUrlParts(this.dataUri);
             return parts.host;
+        };
+
+        BaseProvider.prototype.getMetaData = function (callback) {
+            callback(this.manifest.metadata);
         };
         return BaseProvider;
     })();
