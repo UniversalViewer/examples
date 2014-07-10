@@ -162,13 +162,13 @@
 }
 /*#endregion */
 /*#region tree */
-#app .leftPanel .treeView {
+#app .leftPanel .views .treeView {
   overflow: auto;
   margin: 0 10px 0 10px;
   color: #fff;
   font-weight: normal;
 }
-#app .leftPanel .treeView .toggle {
+#app .leftPanel .views .treeView .toggle {
   cursor: pointer;
   margin-right: 5px;
   display: inline-block;
@@ -176,29 +176,29 @@
   width: 10px;
   background-image: url('../img/coreplayer-treeviewleftpanel-module/plus.png');
 }
-#app .leftPanel .treeView .spacer {
+#app .leftPanel .views .treeView .spacer {
   margin-right: 5px;
   display: inline-block;
   height: 10px;
   width: 10px;
 }
-#app .leftPanel .treeView .toggle.expanded {
+#app .leftPanel .views .treeView .toggle.expanded {
   background-image: url('../img/coreplayer-treeviewleftpanel-module/minus.png');
 }
-#app .leftPanel .treeView ul.tree,
+#app .leftPanel .views .treeView ul.tree,
 ul.tree ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-#app .leftPanel .treeView ul.tree ul {
+#app .leftPanel .views .treeView ul.tree ul {
   margin-left: 15px;
 }
-#app .leftPanel .treeView ul.tree li {
+#app .leftPanel .views .treeView ul.tree li {
   margin: 0;
   padding: 2px 0 2px 0;
 }
-#app .leftPanel .treeView ul a.selected {
+#app .leftPanel .views .treeView ul a.selected {
   color: #FFB81D;
 }
 /*#endregion */
@@ -269,6 +269,7 @@ ul.tree ul {
 #app .rightPanel .main {
   padding: 0 10px 20px 10px;
   overflow: auto;
+  color: #fff;
 }
 #app .rightPanel .main.loading {
   background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAAAAAP///zw8PLy8vP///5ycnHx8fGxsbCH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==');
@@ -2429,6 +2430,9 @@ input.action {
 #app .overlay .middle .content p {
   margin: 0;
   padding: 10px 0 10px 0;
+}
+#app .overlay .middle .content p p {
+  padding-top: 0;
 }
 #app .overlay .bottom {
   height: 11px;

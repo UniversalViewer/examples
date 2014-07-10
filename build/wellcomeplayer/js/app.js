@@ -2392,13 +2392,17 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
 
 define('modules/coreplayer-shared-module/treeNode',["require", "exports"], function(require, exports) {
     var TreeNode = (function () {
-        function TreeNode(label, type, ref, path) {
+        function TreeNode(label, data) {
             this.label = label;
-            this.type = type;
-            this.ref = ref;
-            this.path = path;
+            this.data = data;
             this.nodes = [];
+            if (!data)
+                this.data = {};
         }
+        TreeNode.prototype.addNode = function (node) {
+            this.nodes.push(node);
+            node.parentNode = this;
+        };
         return TreeNode;
     })();
 
@@ -2431,12 +2435,13 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
         params[params["zoom"] = 2] = "zoom";
+        params[params["rotation"] = 3] = "rotation";
     })(exports.params || (exports.params = {}));
     var params = exports.params;
 
     var BaseProvider = (function () {
         function BaseProvider(config, manifest) {
-            this.paramMap = ['asi', 'ai', 'z'];
+            this.paramMap = ['asi', 'ai', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
                 timestampUris: false,
@@ -2734,22 +2739,23 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
         BaseProvider.prototype.getTree = function () {
             this.treeRoot = new TreeNode('root');
-
             var rootStructure = this.manifest.rootStructure;
 
             if (rootStructure) {
                 this.parseTreeStructure(this.treeRoot, rootStructure);
             }
 
-            if (!this.sectionsRootNode)
+            if (!this.sectionsRootNode) {
                 this.sectionsRootNode = this.treeRoot;
+                this.sectionsRootNode.data = this.sequence.rootSection;
+            }
 
             if (this.sequence.rootSection.sections) {
                 for (var i = 0; i < this.sequence.rootSection.sections.length; i++) {
                     var section = this.sequence.rootSection.sections[i];
 
                     var childNode = new TreeNode();
-                    this.sectionsRootNode.nodes.push(childNode);
+                    this.sectionsRootNode.addNode(childNode);
 
                     this.parseTreeSection(childNode, section);
                 }
@@ -2760,10 +2766,9 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
         BaseProvider.prototype.parseTreeStructure = function (node, structure) {
             node.label = structure.name || "root";
-            node.type = "manifest";
-            node.ref = structure;
-            structure.treeNode = node;
-            node.path = node.ref.path;
+            node.data = structure;
+            node.data.type = "manifest";
+            node.data.treeNode = node;
 
             if (this.sequence.structure == structure) {
                 this.sectionsRootNode = node;
@@ -2776,7 +2781,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
                     var childStructure = structure.structures[i];
 
                     var childNode = new TreeNode();
-                    node.nodes.push(childNode);
+                    node.addNode(childNode);
 
                     this.parseTreeStructure(childNode, childStructure);
                 }
@@ -2785,17 +2790,16 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
         BaseProvider.prototype.parseTreeSection = function (node, section) {
             node.label = section.sectionType;
-            node.type = "structure";
-            node.ref = section;
-            section.treeNode = node;
-            node.path = node.ref.path;
+            node.data = section;
+            node.data.type = "structure";
+            node.data.treeNode = node;
 
             if (section.sections) {
                 for (var i = 0; i < section.sections.length; i++) {
                     var childSection = section.sections[i];
 
                     var childNode = new TreeNode();
-                    node.nodes.push(childNode);
+                    node.addNode(childNode);
 
                     this.parseTreeSection(childNode, childSection);
                 }
@@ -2803,7 +2807,6 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
         };
 
         BaseProvider.prototype.getThumbs = function () {
-            var that = this;
             var thumbs = new Array();
 
             for (var i = 0; i < this.getTotalCanvases(); i++) {
@@ -3457,9 +3460,8 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/baseView", "../coreplayer-shared-module/treeNode"], function(require, exports, __baseExtension__, __baseView__, __TreeNode__) {
+define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../coreplayer-shared-module/baseView", "../coreplayer-shared-module/treeNode"], function(require, exports, __baseView__, __TreeNode__) {
     
-    var baseExtension = __baseExtension__;
     
     var baseView = __baseView__;
     var TreeNode = __TreeNode__;
@@ -3467,20 +3469,10 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
-            _super.call(this, $element, true, false);
+            _super.call(this, $element, true, true);
         }
         TreeView.prototype.create = function () {
-            var _this = this;
             _super.prototype.create.call(this);
-
-            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this.selectIndex(canvasIndex);
-            });
-
-            this.rootNode = this.provider.getTree();
-
-            if (!this.rootNode)
-                return;
 
             this.$tree = $('<ul class="tree"></ul>');
             this.$element.append(this.$tree);
@@ -3531,83 +3523,75 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                             self.toggle();
                         }).on("click", "a", function (e) {
                             e.preventDefault();
-
-                            if (self.data.type == 'manifest') {
-                                $.publish(TreeView.VIEW_MANIFEST, [self.data.ref]);
-                            } else {
-                                $.publish(TreeView.VIEW_STRUCTURE, [self.data.ref]);
-                            }
+                            $.publish(TreeView.NODE_SELECTED, [self.data.data]);
                         });
                     },
                     template: $.templates.treeTemplate
                 }
             });
-
-            this.$tree.link($.templates.pageTemplate, this.rootNode);
-
-            this.resize();
         };
 
-        TreeView.prototype.selectIndex = function (index) {
-            if (index == -1)
-                return;
-
+        TreeView.prototype.dataBind = function () {
             if (!this.rootNode)
                 return;
 
-            var structure = this.provider.getStructureByCanvasIndex(index);
-
-            if (!structure)
-                return;
-
-            this.selectPath(structure.path);
+            this.$tree.link($.templates.pageTemplate, this.rootNode);
+            this.resize();
         };
 
         TreeView.prototype.selectPath = function (path) {
-            var pathArr = path.split("/");
+            if (!this.rootNode)
+                return;
 
+            var pathArr = path.split("/");
             if (pathArr.length >= 1)
                 pathArr.shift();
+            var node = this.getNodeByPath(this.rootNode, pathArr);
 
-            if (this.selectedStructure)
-                $.observable(this.selectedStructure.treeNode).setProperty("selected", false);
+            this.selectNode(node);
+        };
 
-            this.selectedStructure = this.getStructure(this.provider.getRootStructure(), pathArr);
+        TreeView.prototype.selectNode = function (node) {
+            if (!this.rootNode)
+                return;
 
-            $.observable(this.selectedStructure.treeNode).setProperty("selected", true);
+            if (this.selectedNode)
+                $.observable(this.selectedNode).setProperty("selected", false);
+
+            this.selectedNode = node;
+            $.observable(this.selectedNode).setProperty("selected", true);
+
+            this.expandParents(this.selectedNode);
+        };
+
+        TreeView.prototype.expandParents = function (node) {
+            if (!node.parentNode)
+                return;
+
+            $.observable(node.parentNode).setProperty("expanded", true);
+            this.expandParents(node.parentNode);
+        };
+
+        TreeView.prototype.getNodeByPath = function (parentNode, path) {
+            if (path.length == 0)
+                return parentNode;
+            var index = path.shift();
+            var node = parentNode.nodes[index];
+            return this.getNodeByPath(node, path);
         };
 
         TreeView.prototype.show = function () {
-            var _this = this;
             this.$element.show();
-
-            setTimeout(function () {
-                _this.selectIndex(_this.provider.canvasIndex);
-            }, 1);
         };
 
         TreeView.prototype.hide = function () {
             this.$element.hide();
         };
 
-        TreeView.prototype.getStructure = function (parentStructure, path) {
-            if (path.length == 0)
-                return parentStructure;
-
-            parentStructure.expanded = true;
-
-            var index = path.shift();
-
-            var structure = this.provider.getStructureByIndex(parentStructure, index);
-
-            return this.getStructure(structure, path);
-        };
-
         TreeView.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
-        TreeView.VIEW_STRUCTURE = 'treeView.onViewStructure';
-        TreeView.VIEW_MANIFEST = 'treeView.onViewManifest';
+        TreeView.NODE_SELECTED = 'treeView.onNodeSelected';
         return TreeView;
     })(baseView.BaseView);
     exports.TreeView = TreeView;
@@ -3633,7 +3617,6 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
             _super.call(this, $element, true, true);
-            this.isPDF = false;
         }
         ThumbsView.prototype.create = function () {
             var _this = this;
@@ -3647,11 +3630,6 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
 
             $.subscribe(extension.Extension.MODE_CHANGED, function (e, mode) {
                 _this.setLabel();
-            });
-
-            $.subscribe(extension.Extension.RELOAD, function () {
-                _this.thumbs = _this.provider.getThumbs();
-                _this.createThumbs();
             });
 
             this.$thumbs = utils.Utils.createDiv('thumbs');
@@ -3678,13 +3656,12 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                 _this.scrollStop();
             }, 1000);
 
-            if (this.provider.getSequenceType() === "application-pdf") {
-                this.isPDF = true;
-            }
-
             this.resize();
+        };
 
-            this.thumbs = this.provider.getThumbs();
+        ThumbsView.prototype.dataBind = function () {
+            if (!this.thumbs)
+                return;
             this.createThumbs();
         };
 
@@ -3779,8 +3756,12 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$element.hide();
         };
 
+        ThumbsView.prototype.isPDF = function () {
+            return (this.provider.getSequenceType() === "application-pdf");
+        };
+
         ThumbsView.prototype.setLabel = function () {
-            if (this.isPDF) {
+            if (this.isPDF()) {
                 $(this.$thumbs).find('span.index').hide();
                 $(this.$thumbs).find('span.label').hide();
             } else {
@@ -3833,11 +3814,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView"], function(require, exports, __baseLeft__, __utils__, __tree__, __thumbs__) {
+define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseExtension"], function(require, exports, __baseLeft__, __utils__, __tree__, __thumbs__, __extension__, __baseExtension__) {
     var baseLeft = __baseLeft__;
     var utils = __utils__;
     var tree = __tree__;
     var thumbs = __thumbs__;
+    
+    var extension = __extension__;
+    var baseExtension = __baseExtension__;
 
     var TreeViewLeftPanel = (function (_super) {
         __extends(TreeViewLeftPanel, _super);
@@ -3849,6 +3833,14 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.setConfig('treeViewLeftPanel');
 
             _super.prototype.create.call(this);
+
+            $.subscribe(extension.Extension.RELOAD, function () {
+                _this.dataBindThumbsView();
+            });
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.selectTreeNodeFromCanvasIndex(canvasIndex);
+            });
 
             this.$tabs = utils.Utils.createDiv('tabs');
             this.$main.append(this.$tabs);
@@ -3862,11 +3854,17 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.$tabsContent = utils.Utils.createDiv('tabsContent');
             this.$main.append(this.$tabsContent);
 
+            this.$options = $('<div class="options"></div>');
+            this.$tabsContent.append(this.$options);
+
+            this.$views = $('<div class="views"></div>');
+            this.$tabsContent.append(this.$views);
+
             this.$treeView = utils.Utils.createDiv('treeView');
-            this.$tabsContent.append(this.$treeView);
+            this.$views.append(this.$treeView);
 
             this.$thumbsView = utils.Utils.createDiv('thumbsView');
-            this.$tabsContent.append(this.$thumbsView);
+            this.$views.append(this.$thumbsView);
 
             this.$treeButton.on('click', function (e) {
                 e.preventDefault();
@@ -3887,10 +3885,22 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
             this.treeView = new tree.TreeView(this.$treeView);
+            this.dataBindTreeView();
+        };
+
+        TreeViewLeftPanel.prototype.dataBindTreeView = function () {
+            this.treeView.rootNode = this.provider.getTree();
+            this.treeView.dataBind();
         };
 
         TreeViewLeftPanel.prototype.createThumbsView = function () {
             this.thumbsView = new thumbs.ThumbsView(this.$thumbsView);
+            this.dataBindThumbsView();
+        };
+
+        TreeViewLeftPanel.prototype.dataBindThumbsView = function () {
+            this.thumbsView.thumbs = this.provider.getThumbs();
+            this.thumbsView.dataBind();
         };
 
         TreeViewLeftPanel.prototype.toggleComplete = function () {
@@ -3904,6 +3914,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
                     this.$tabs.hide();
 
                 if (thumbsEnabled && this.defaultToThumbsView()) {
+                    this.$tabs.hide();
                     this.openThumbsView();
                 } else if (treeEnabled) {
                     this.openTreeView();
@@ -3912,17 +3923,29 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         };
 
         TreeViewLeftPanel.prototype.defaultToThumbsView = function () {
-            var type = this.provider.getManifestType();
+            var manifestType = this.provider.getManifestType();
 
-            switch (type) {
-                case 'archive', 'boundmanuscript', 'artwork', 'application-pdf':
-                    return false;
-                default:
+            switch (manifestType) {
+                case 'archive':
+                    return true;
+                case 'boundmanuscript':
+                    return true;
+                case 'artwork':
                     return true;
             }
+
+            var sequenceType = this.provider.getSequenceType();
+
+            switch (sequenceType) {
+                case 'application-pdf':
+                    return true;
+            }
+
+            return false;
         };
 
         TreeViewLeftPanel.prototype.openTreeView = function () {
+            var _this = this;
             if (!this.treeView) {
                 this.createTreeView();
             }
@@ -3931,8 +3954,17 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.$thumbsButton.removeClass('on');
 
             this.treeView.show();
+
+            setTimeout(function () {
+                var structure = _this.provider.getStructureByCanvasIndex(_this.provider.canvasIndex);
+                if (_this.treeView && structure.treeNode)
+                    _this.treeView.selectNode(structure.treeNode);
+            }, 1);
+
             if (this.thumbsView)
                 this.thumbsView.hide();
+
+            this.treeView.resize();
         };
 
         TreeViewLeftPanel.prototype.openThumbsView = function () {
@@ -3946,12 +3978,28 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             if (this.treeView)
                 this.treeView.hide();
             this.thumbsView.show();
+
+            this.thumbsView.resize();
+        };
+
+        TreeViewLeftPanel.prototype.selectTreeNodeFromCanvasIndex = function (index) {
+            if (index == -1)
+                return;
+
+            var structure = this.provider.getStructureByCanvasIndex(index);
+
+            if (!structure)
+                return;
+
+            if (this.treeView && structure.treeNode)
+                this.treeView.selectNode(structure.treeNode);
         };
 
         TreeViewLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
 
             this.$tabsContent.actualHeight(this.$main.height() - this.$tabs.outerHeight());
+            this.$views.actualHeight(this.$tabsContent.height() - this.$options.outerHeight());
         };
         TreeViewLeftPanel.OPEN_TREE_VIEW = 'leftPanel.onOpenTreeView';
         TreeViewLeftPanel.OPEN_THUMBS_VIEW = 'leftPanel.onOpenThumbsView';
@@ -4175,6 +4223,12 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             }
 
             if (!this.currentBounds) {
+                var initialRotation = this.extension.getParam(baseProvider.params.rotation);
+
+                if (initialRotation) {
+                    this.viewer.viewport.setRotation(parseInt(initialRotation));
+                }
+
                 var initialBounds = this.extension.getParam(baseProvider.params.zoom);
 
                 if (initialBounds) {
@@ -4770,7 +4824,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
         function Extension(provider) {
             _super.call(this, provider);
         }
-        Extension.prototype.create = function () {
+        Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
             _super.prototype.create.call(this);
 
@@ -4810,12 +4864,8 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(index);
             });
 
-            $.subscribe(treeView.TreeView.VIEW_MANIFEST, function (e, manifest) {
-                _this.viewManifest(manifest);
-            });
-
-            $.subscribe(treeView.TreeView.VIEW_STRUCTURE, function (e, structure) {
-                _this.viewStructure(structure.path);
+            $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
+                _this.treeNodeSelected(data);
             });
 
             $.subscribe(thumbsView.ThumbsView.THUMB_SELECTED, function (e, index) {
@@ -4842,7 +4892,8 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
             });
 
-            require(_.values(dependencies), function () {
+            var deps = overrideDependencies || dependencies;
+            require(_.values(deps), function () {
                 that.createModules();
 
                 that.setParams();
@@ -4957,6 +5008,17 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 this.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
             }
         };
+
+        Extension.prototype.treeNodeSelected = function (data) {
+            if (!data.type)
+                return;
+
+            if (data.type == 'manifest') {
+                this.viewManifest(data);
+            } else {
+                this.viewStructure(data.path);
+            }
+        };
         Extension.MODE_CHANGED = 'onModeChanged';
 
         Extension.PAGE_MODE = "pageMode";
@@ -4976,12 +5038,13 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
         params[params["zoom"] = 2] = "zoom";
+        params[params["rotation"] = 3] = "rotation";
     })(exports.params || (exports.params = {}));
     var params = exports.params;
 
     var BaseProvider = (function () {
         function BaseProvider(config, manifest) {
-            this.paramMap = ['si', 'ci', 'z'];
+            this.paramMap = ['si', 'ci', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
                 timestampUris: false,
@@ -5257,24 +5320,24 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getTree = function () {
+            var rootStructure = this.getRootStructure();
+
             this.treeRoot = new TreeNode('root');
             this.treeRoot.label = "root";
-            this.treeRoot.type = "manifest";
-            this.treeRoot.ref = this.getRootStructure();
-            this.getRootStructure().treeNode = node;
-            this.treeRoot.path = this.treeRoot.ref.path;
+            this.treeRoot.data = rootStructure;
+            this.treeRoot.data.type = "manifest";
+            rootStructure.treeNode = this.treeRoot;
 
-            for (var i = 0; i < this.getRootStructure().structures.length; i++) {
-                var structure = this.getRootStructure().structures[i];
+            for (var i = 0; i < rootStructure.structures.length; i++) {
+                var structure = rootStructure.structures[i];
 
                 var node = new TreeNode();
-                this.treeRoot.nodes.push(node);
+                this.treeRoot.addNode(node);
 
                 node.label = structure.label;
-                node.type = "structure";
-                node.ref = structure;
+                node.data = structure;
+                node.data.type = "structure";
                 structure.treeNode = node;
-                node.path = node.ref.path;
             }
 
             return this.treeRoot;
@@ -5670,8 +5733,8 @@ define('extensions/coreplayer-mediaelement-extension/extension',["require", "exp
                 $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
             });
 
-            $.subscribe(treeView.TreeView.VIEW_MANIFEST, function (e, manifest) {
-                _this.viewManifest(manifest);
+            $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
+                _this.viewManifest(data);
             });
 
             $.subscribe(footer.FooterPanel.EMBED, function (e) {

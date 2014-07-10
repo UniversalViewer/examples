@@ -83,7 +83,7 @@
             "options": {
                 "forgotPasswordUri": "https://catalogue.wellcomelibrary.org/pinreset~S8",
                 "registerUri": "https://catalogue.wellcomelibrary.org/selfreg",
-                "termsUri": "/terms.html",
+                "termsUri": "/about-this-site/terms-and-conditions/ #contGroup .fluid-column",
                 "acceptTermsUri": "/service/login/guestlogin"
             },
             "content": {
@@ -95,23 +95,26 @@
                 "register": "Join the Library",
                 "login": "Log in",
                 "loginWith": "Log in with:",
+                "signInWithLibraryAccount": "Sign in with Library account",
                 "signInWithTwitter": "Sign in with Twitter",
                 "signInWithFacebook": "Sign in with Facebook",
                 "signInWithGoogle": "Sign in with Google",
                 "signInWithOpenID": "Sign in with OpenID",
-                "requiresRegistrationPermissionsMessage": "You do not have permission to see restricted items.",
+                "requiresRegistrationPermissionsMessage": "Log in to:<ul><li>save digitised items to your account</li><li>make notes about your saved items</li></ul>",
                 "restrictedFilesPermissionsMessage": "You do not have permission to see restricted items.",
-                "clinicalImagesPermissionsMessage": "Online access to clinical content is restricted to healthcare professionals. Please contact Wellcome Images (images@wellcome.ac.uk) for further information",
+                "clinicalImagesPermissionsMessage": "Online access to clinical content is restricted to healthcare professionals. Please contact Wellcome Images (images@wellcome.ac.uk) for further information.<br/><br/>If you are a healthcare professional with login credentials, please log in.",
                 "closedPermissionsMessage": "You do not have permission to see closed content.",
                 "inadequatePermissionsMessage": "You do not have the correct permissions to view this item. Please continue to the next item or enter new credentials.",
-                "loginExpiredMessage": "Your session has expired due to inactivity, please log in again.",
-                "defaultMessage": "Archival material less than 100 years old requires registration and log in to view.",
-                "viewTerms": "Full terms and conditions",
+                "loginExpiredMessage": "Your session has expired. Please log in again.",
+                "defaultMessage": "Log in to:<ul><li>save digitised items to your account</li><li>make notes about your saved items</li></ul>",
+                "viewTerms": "Read full terms and conditions",
                 "acceptTerms": "Accept Terms and Open",
                 "twitter": "Twitter",
                 "facebook": "Facebook",
                 "google": "Google",
-                "openid": "OpenID"
+                "openid": "OpenID",
+                "loginAsGuestTitle": "Archival material less than 100 years old",
+                "loginAsGuestText": "This digitised archival material is free to access. By accepting our terms and conditions, you agree to the following:<br/><br/>By viewing this and any subsequent archive material under 100 years old, I agree that I will use personal data on living persons for research purposes only. I will not use personal data to support decisions about the person who is the subject of the data, or in a way that causes substantial damage or distress to them."
             }
         },
         "downloadDialogue": {
