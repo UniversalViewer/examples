@@ -420,6 +420,22 @@ input.action {
 #app .button.purple:hover {
   background-color: #005870;
 }
+#app .btn-group .button {
+  border-radius: 4px;
+}
+#app .btn-group > .button:first-child:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#app .btn-group > .button:not(:first-child):not(:last-child) {
+  border-radius: 0;
+  border-left: none;
+}
+#app .btn-group > .button:last-child:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
 /*#region Shell*/
 #app {
   background-color: #000;

@@ -727,6 +727,10 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
 
                 if (isHomeDomain && !isReload) {
                     that.sequenceIndex = parseInt(utils.Utils.getHashParameter(sequenceParam, parent.document));
+
+                    if (!that.sequenceIndex) {
+                        that.sequenceIndex = parseInt(parent.document.location.hash.replace('#', '').split('/')[0]);
+                    }
                 }
 
                 if (!that.sequenceIndex) {
@@ -821,7 +825,19 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.createExtension = function (extension, config) {
             var provider = new extension.provider(config, this.manifest);
 
-            new extension.type(provider);
+            var that = this;
+
+            if (config.options && config.options.preloadMoreInfo === true) {
+                var uri = provider.getMoreInfoUri();
+
+                $.getJSON(uri, function (data) {
+                    provider.moreInfo = data;
+
+                    new extension.type(provider);
+                });
+            } else {
+                new extension.type(provider);
+            }
         };
         return BootStrapper;
     })();
@@ -2453,6 +2469,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
 
             this.dataUri = utils.Utils.getQuerystringParameter('du');
+            this.embedDomain = utils.Utils.getQuerystringParameter('ed');
             this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
             this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
             this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
@@ -2462,6 +2479,13 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
             if (this.isHomeDomain && !this.isReload) {
                 this.sequenceIndex = parseInt(utils.Utils.getHashParameter(this.paramMap[params.sequenceIndex], parent.document));
+
+                if (!this.sequenceIndex) {
+                    var hash = parent.document.location.hash;
+                    if (hash.startsWith('#/'))
+                        hash = hash.replace('#/', '#');
+                    this.sequenceIndex = parseInt(hash.replace('#', '').split('/')[0]);
+                }
             }
 
             if (!this.sequenceIndex) {
@@ -2843,6 +2867,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
         BaseProvider.prototype.getDomain = function () {
             var parts = utils.Utils.getUrlParts(this.dataUri);
             return parts.host;
+        };
+
+        BaseProvider.prototype.getEmbedDomain = function () {
+            return this.embedDomain;
         };
 
         BaseProvider.prototype.getMetaData = function (callback) {
@@ -5028,391 +5056,1135 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
     exports.Extension = Extension;
 });
 
-define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, __utils__, __TreeNode__, __Thumb__) {
-    var utils = __utils__;
+define('extensions/wellcomeplayer-seadragon-extension/journalSortType',["require", "exports"], function(require, exports) {
+    (function (JournalSortType) {
+        JournalSortType[JournalSortType["date"] = 0] = "date";
+        JournalSortType[JournalSortType["volume"] = 1] = "volume";
+    })(exports.JournalSortType || (exports.JournalSortType = {}));
+    var JournalSortType = exports.JournalSortType;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../coreplayer-treeviewleftpanel-module/treeView", "../../extensions/wellcomeplayer-seadragon-extension/journalSortType"], function(require, exports, __basePanel__, __tree__, __journalSortType__) {
+    var basePanel = __basePanel__;
     
-    var TreeNode = __TreeNode__;
-    var Thumb = __Thumb__;
+    var tree = __tree__;
+    var journalSortType = __journalSortType__;
 
-    (function (params) {
-        params[params["sequenceIndex"] = 0] = "sequenceIndex";
-        params[params["canvasIndex"] = 1] = "canvasIndex";
-        params[params["zoom"] = 2] = "zoom";
-        params[params["rotation"] = 3] = "rotation";
-    })(exports.params || (exports.params = {}));
-    var params = exports.params;
-
-    var BaseProvider = (function () {
-        function BaseProvider(config, manifest) {
-            this.paramMap = ['si', 'ci', 'z', 'r'];
-            this.options = {
-                thumbsUriTemplate: "{0}{1}",
-                timestampUris: false,
-                mediaUriTemplate: "{0}{1}"
-            };
-            this.config = config;
-            this.manifest = manifest;
-
-            this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
-
-            this.dataUri = utils.Utils.getQuerystringParameter('du');
-            this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
-            this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
-            this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
-            this.isReload = utils.Utils.getQuerystringParameter('rl') === "true";
-            this.domain = utils.Utils.getQuerystringParameter('d');
-            this.isLightbox = utils.Utils.getQuerystringParameter('lb') === "true";
-
-            if (this.isHomeDomain && !this.isReload) {
-                this.sequenceIndex = parseInt(utils.Utils.getHashParameter(this.paramMap[params.sequenceIndex], parent.document));
-            }
-
-            if (!this.sequenceIndex) {
-                this.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(this.paramMap[params.sequenceIndex])) || 0;
-            }
-
-            this.load();
+    var TreeViewLeftPanel = (function (_super) {
+        __extends(TreeViewLeftPanel, _super);
+        function TreeViewLeftPanel($element) {
+            _super.call(this, $element);
         }
-        BaseProvider.prototype.load = function () {
-            this.sequence = this.manifest.sequences[this.sequenceIndex];
+        TreeViewLeftPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('treeViewLeftPanel');
 
-            for (var i = 0; i < this.manifest.sequences.length; i++) {
-                if (!this.manifest.sequences[i].canvases) {
-                    this.manifest.sequences[i] = {};
-                }
-            }
+            _super.prototype.create.call(this);
 
-            this.parseManifest();
+            this.$treeViewOptions = $('<div class="treeView"></div>');
+            this.$options.append(this.$treeViewOptions);
 
-            this.parseStructure();
+            this.$sortByLabel = $('<span class="sort">Sort By:</span>');
+            this.$treeViewOptions.append(this.$sortByLabel);
+
+            this.$buttonGroup = $('<div class="btn-group"></div>');
+            this.$treeViewOptions.append(this.$buttonGroup);
+
+            this.$sortByDateButton = $('<button class="button">' + this.content.date + '</button>');
+            this.$buttonGroup.append(this.$sortByDateButton);
+
+            this.$sortByVolumeButton = $('<button class="button">' + this.content.volume + '</button>');
+            this.$buttonGroup.append(this.$sortByVolumeButton);
+
+            this.$sortByDateButton.on('click', function () {
+                _this.treeView.rootNode = _this.provider.getJournalTree(journalSortType.JournalSortType.date);
+                _this.treeView.dataBind();
+                _this.selectCurrentTreeNode();
+            });
+
+            this.$sortByVolumeButton.on('click', function () {
+                _this.treeView.rootNode = _this.provider.getJournalTree(journalSortType.JournalSortType.volume);
+                _this.treeView.dataBind();
+                _this.selectCurrentTreeNode();
+            });
+
+            this.$treeViewOptions.hide();
         };
 
-        BaseProvider.prototype.reload = function (callback) {
-            var _this = this;
-            var manifestUri = this.dataUri;
+        TreeViewLeftPanel.prototype.createTreeView = function () {
+            this.treeView = new tree.TreeView(this.$treeView);
 
-            if (this.options.dataBaseUri) {
-                manifestUri = this.options.dataBaseUri + this.dataUri;
+            this.updateTreeView();
+            this.updateTreeViewOptions();
+        };
+
+        TreeViewLeftPanel.prototype.updateTreeView = function () {
+            if (this.isPeriodical()) {
+                this.treeView.rootNode = this.provider.getJournalTree(journalSortType.JournalSortType.date);
+            } else {
+                this.treeView.rootNode = this.provider.getTree();
             }
 
-            manifestUri = this.addTimestamp(manifestUri);
+            this.treeView.dataBind();
+        };
 
-            window.manifestCallback = function (data) {
-                _this.manifest = data;
+        TreeViewLeftPanel.prototype.isPeriodical = function () {
+            var manifestType = this.provider.getManifestType();
+            return manifestType.toLowerCase() === "periodicalissue";
+        };
 
-                _this.load();
+        TreeViewLeftPanel.prototype.updateTreeViewOptions = function () {
+            if (this.isPeriodical()) {
+                this.$treeViewOptions.show();
+            } else {
+                this.$treeViewOptions.hide();
+            }
+        };
 
-                callback();
-            };
+        TreeViewLeftPanel.prototype.openTreeView = function () {
+            var that = this;
 
-            $.ajax({
-                url: manifestUri,
-                type: 'GET',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                jsonpCallback: 'manifestCallback'
+            this.updateTreeViewOptions();
+
+            setTimeout(function () {
+                that.selectCurrentTreeNode();
+            }, 1);
+
+            _super.prototype.resize.call(this);
+            _super.prototype.openTreeView.call(this);
+        };
+
+        TreeViewLeftPanel.prototype.openThumbsView = function () {
+            this.$treeViewOptions.hide();
+            _super.prototype.resize.call(this);
+            _super.prototype.openThumbsView.call(this);
+        };
+
+        TreeViewLeftPanel.prototype.selectCurrentTreeNode = function () {
+            var structure = this.provider.sequence.structure;
+            if (this.treeView && structure.treeNode)
+                this.treeView.selectNode(structure.treeNode);
+        };
+
+        TreeViewLeftPanel.prototype.selectTreeNodeFromCanvasIndex = function (index) {
+            if (index == -1)
+                return;
+
+            if (this.isPeriodical()) {
+                this.selectCurrentTreeNode();
+            } else {
+                _super.prototype.selectTreeNodeFromCanvasIndex.call(this, index);
+            }
+        };
+        return TreeViewLeftPanel;
+    })(basePanel.TreeViewLeftPanel);
+    exports.TreeViewLeftPanel = TreeViewLeftPanel;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-dialogues-module/conditionsDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, __dialogue__) {
+    
+    
+    
+    
+    var dialogue = __dialogue__;
+
+    var ConditionsDialogue = (function (_super) {
+        __extends(ConditionsDialogue, _super);
+        function ConditionsDialogue($element) {
+            _super.call(this, $element);
+        }
+        ConditionsDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('conditionsDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(ConditionsDialogue.SHOW_CONDITIONS_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+
+            $.subscribe(ConditionsDialogue.HIDE_CONDITIONS_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+
+            this.$scroll = $('<div class="scroll"></div>');
+            this.$content.append(this.$scroll);
+
+            this.$message = $('<p></p>');
+            this.$scroll.append(this.$message);
+
+            this.$title.text(this.content.title);
+
+            var licenseCode = this.provider.getRootStructure().extensions.mods.dzLicenseCode;
+
+            var licenseText = this.content[licenseCode] || this.content["A"];
+
+            this.$message.html(licenseText);
+
+            this.$message.find('a').prop('target', '_blank');
+
+            this.$element.hide();
+        };
+
+        ConditionsDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        ConditionsDialogue.SHOW_CONDITIONS_DIALOGUE = 'onShowConditionsDialogue';
+        ConditionsDialogue.HIDE_CONDITIONS_DIALOGUE = 'onHideConditionsDialogue';
+        return ConditionsDialogue;
+    })(dialogue.Dialogue);
+    exports.ConditionsDialogue = ConditionsDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-moreinforightpanel-module/moreInfoRightPanel',["require", "exports", "../coreplayer-shared-module/rightPanel", "../wellcomeplayer-dialogues-module/conditionsDialogue"], function(require, exports, __baseRight__, __conditions__) {
+    
+    var baseRight = __baseRight__;
+    
+    var conditions = __conditions__;
+    
+
+    var MoreInfoRightPanel = (function (_super) {
+        __extends(MoreInfoRightPanel, _super);
+        function MoreInfoRightPanel($element) {
+            _super.call(this, $element);
+        }
+        MoreInfoRightPanel.prototype.create = function () {
+            this.setConfig('moreInfoRightPanel');
+
+            _super.prototype.create.call(this);
+
+            this.moreInfoItemTemplate = $('<div class="item">\
+                                           <div class="header"></div>\
+                                           <div class="text"></div>\
+                                       </div>');
+        };
+
+        MoreInfoRightPanel.prototype.toggleComplete = function () {
+            _super.prototype.toggleComplete.call(this);
+
+            if (this.isUnopened) {
+                this.getInfo();
+            }
+        };
+
+        MoreInfoRightPanel.prototype.getInfo = function () {
+            var _this = this;
+            this.$main.addClass('loading');
+
+            if ((this.provider).moreInfo) {
+                this.displayInfo();
+            } else {
+                var uri = (this.provider).getMoreInfoUri();
+
+                $.getJSON(uri, function (data) {
+                    (_this.provider).moreInfo = data;
+
+                    _this.displayInfo();
+                });
+            }
+        };
+
+        MoreInfoRightPanel.prototype.displayInfo = function () {
+            var _this = this;
+            this.$main.removeClass('loading');
+
+            this.$main.empty();
+
+            var data = (this.provider).moreInfo;
+
+            $.each(data, function (key, value) {
+                if (value && !value.startsWith('http:')) {
+                    switch (key.toLowerCase()) {
+                        case "bibdoctype":
+                            break;
+                        case "marc759a":
+                            break;
+                        case "marc905a":
+                            break;
+                        case "institution":
+                            break;
+                        case "repositorylogo":
+                            break;
+                        default:
+                            _this.$main.append(_this.buildItem({
+                                "label": key,
+                                "value": value
+                            }, 130));
+                            break;
+                    }
+                }
+            });
+
+            var logoUri = data["RepositoryLogo"];
+
+            if (logoUri) {
+                this.$main.append('<img src="' + logoUri + '" />');
+            }
+
+            var catalogueRecordKey = "View full catalogue record";
+            var url = data[catalogueRecordKey];
+
+            if (url) {
+                var $catalogueLink = $('<a href="' + url + '" target="_blank" class="action catalogue">' + catalogueRecordKey + '</a>');
+                this.$main.append($catalogueLink);
+            }
+
+            var $conditionsLink = $('<a href="#" class="action conditions">' + this.content.conditions + '</a>');
+            this.$main.append($conditionsLink);
+
+            $conditionsLink.on('click', function (e) {
+                e.preventDefault();
+                $.publish(conditions.ConditionsDialogue.SHOW_CONDITIONS_DIALOGUE);
             });
         };
 
-        BaseProvider.prototype.getManifestType = function () {
-            return 'monograph';
+        MoreInfoRightPanel.prototype.buildItem = function (item, trimChars) {
+            var $elem = this.moreInfoItemTemplate.clone();
+            var $header = $elem.find('.header');
+            var $text = $elem.find('.text');
+
+            item = _.values(item);
+
+            var name = item[0];
+            var value = item[1];
+
+            value = value.replace('\n', '<br>');
+
+            $header.text(name);
+            $text.text(value);
+
+            $text.toggleExpandText(trimChars);
+
+            return $elem;
         };
 
-        BaseProvider.prototype.getSequenceType = function () {
-            return 'seadragon-iiif';
+        MoreInfoRightPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
         };
+        return MoreInfoRightPanel;
+    })(baseRight.RightPanel);
+    exports.MoreInfoRightPanel = MoreInfoRightPanel;
+});
 
-        BaseProvider.prototype.getTitle = function () {
-            return this.manifest.label;
-        };
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-extendedfooterpanel-module/footerPanel',["require", "exports", "../coreplayer-shared-module/footerPanel"], function(require, exports, __baseFooter__) {
+    var baseFooter = __baseFooter__;
+    
+    
+    
+    
 
-        BaseProvider.prototype.getSeeAlso = function () {
-            return this.manifest.seeAlso;
-        };
+    var FooterPanel = (function (_super) {
+        __extends(FooterPanel, _super);
+        function FooterPanel($element) {
+            _super.call(this, $element);
+        }
+        FooterPanel.prototype.create = function () {
+            this.setConfig('extendedFooterPanel');
 
-        BaseProvider.prototype.getCanvasOrderLabel = function (canvas) {
-            return null;
-        };
+            _super.prototype.create.call(this);
 
-        BaseProvider.prototype.getLastCanvasOrderLabel = function () {
-            return '-';
-        };
+            this.$saveButton = $('<a class="imageButton save"  title="' + this.content.save + '"></a>');
+            this.$options.prepend(this.$saveButton);
 
-        BaseProvider.prototype.isSeeAlsoEnabled = function () {
-            return this.config.options.seeAlsoEnabled !== false;
-        };
+            this.$downloadButton = $('<a class="imageButton download" title="' + this.content.download + '"></a>');
+            this.$options.prepend(this.$downloadButton);
 
-        BaseProvider.prototype.getCanvasByIndex = function (index) {
-            return this.sequence.canvases[index];
-        };
+            this.$downloadButton.on('click', function (e) {
+                e.preventDefault();
 
-        BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
-            var canvas = this.getCanvasByIndex(index);
-            return this.getCanvasStructure(canvas);
-        };
+                $.publish(FooterPanel.DOWNLOAD);
+            });
 
-        BaseProvider.prototype.getCanvasStructure = function (canvas) {
-            if (canvas.structures) {
-                return canvas.structures.last();
+            this.$saveButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.SAVE);
+            });
+
+            this.$embedButton.hide();
+
+            if (this.provider.manifest.extensions && this.provider.manifest.extensions.isAllOpen) {
+                this.$embedButton.show();
             }
 
-            return null;
-        };
+            this.$saveButton.hide();
 
-        BaseProvider.prototype.getCurrentCanvas = function () {
-            return this.sequence.canvases[this.canvasIndex];
-        };
-
-        BaseProvider.prototype.getTotalCanvases = function () {
-            return this.sequence.canvases.length;
-        };
-
-        BaseProvider.prototype.isMultiCanvas = function () {
-            return this.sequence.canvases.length > 1;
-        };
-
-        BaseProvider.prototype.isMultiSequence = function () {
-            return this.manifest.sequences.length > 1;
-        };
-
-        BaseProvider.prototype.getMediaUri = function (mediaUri) {
-            var baseUri = this.options.mediaBaseUri || "";
-            var template = this.options.mediaUriTemplate;
-            var uri = String.prototype.format(template, baseUri, mediaUri);
-
-            return uri;
-        };
-
-        BaseProvider.prototype.setMediaUri = function (canvas) {
-        };
-
-        BaseProvider.prototype.getThumbUri = function (canvas, thumbsBaseUri, thumbsUriTemplate) {
-            var baseUri = thumbsBaseUri ? thumbsBaseUri : this.options.thumbsBaseUri || this.options.dataBaseUri || "";
-            var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
-
-            return null;
-        };
-
-        BaseProvider.prototype.addTimestamp = function (uri) {
-            return uri + "?t=" + utils.Utils.getTimeStamp();
-        };
-
-        BaseProvider.prototype.isDeepLinkingEnabled = function () {
-            return (this.isHomeDomain && this.isOnlyInstance);
-        };
-
-        BaseProvider.prototype.getThumbs = function () {
-            var thumbs = new Array();
-
-            for (var i = 0; i < this.getTotalCanvases(); i++) {
-                var canvas = this.sequence.canvases[i];
-
-                var heightRatio = canvas.height / canvas.width;
-
-                var width = 90;
-                var height = 150;
-
-                if (heightRatio) {
-                    height = Math.floor(width * heightRatio);
-                }
-
-                var uri;
-
-                if (canvas.resources) {
-                    uri = canvas.resources[0].resource.service['@id'];
-                } else if (canvas.images) {
-                    uri = canvas.images[0].resource.service['@id'];
-                }
-
-                var tile = 'full/' + width + ',' + height + '/0/native.jpg';
-
-                if (uri.endsWith('/')) {
-                    uri += tile;
-                } else {
-                    uri += '/' + tile;
-                }
-
-                thumbs.push(new Thumb(i, uri, canvas.label, height, true));
+            if ((this.extension).isSaveToLightboxEnabled()) {
+                this.$saveButton.show();
             }
 
-            return thumbs;
+            this.$downloadButton.hide();
+
+            if ((this.extension).isDownloadEnabled()) {
+                this.$downloadButton.show();
+            }
         };
 
-        BaseProvider.prototype.parseManifest = function () {
+        FooterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        FooterPanel.DOWNLOAD = 'footer.onDownload';
+        FooterPanel.SAVE = 'footer.onSave';
+        return FooterPanel;
+    })(baseFooter.FooterPanel);
+    exports.FooterPanel = FooterPanel;
+});
+
+define('modules/wellcomeplayer-searchfooterpanel-module/autocomplete',["require", "exports"], function(require, exports) {
+    var AutoComplete = (function () {
+        function AutoComplete($element, autoCompletePath, onSelect) {
+            var _this = this;
+            this.$element = $element;
+            this.autoCompletePath = autoCompletePath;
+            this.onSelect = onSelect;
+            this.delay = 300;
+            this.$searchResultsList = $('<ul></ul>');
+            this.$element.parent().prepend(this.$searchResultsList);
+
+            this.$searchResultTemplate = $('<li><a href="#"></a></li>');
+
+            var typewatch = (function () {
+                var timer = 0;
+                return function (callback, ms) {
+                    clearTimeout(timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
+
+            var that = this;
+
+            this.$element.on("keydown", function (event) {
+                if (!that.isValidKey(event.keyCode)) {
+                    event.preventDefault();
+                    return false;
+                }
+
+                return true;
+            });
+
+            this.$element.on("keyup", function (event) {
+                event.preventDefault();
+
+                if (!that.getSelectedListItem().length && event.keyCode == 13) {
+                    that.onSelect(that.getTerms());
+                    return;
+                }
+
+                if (that.$searchResultsList.is(':visible') && that.results.length) {
+                    if (event.keyCode == 13) {
+                        that.searchForItem(that.getSelectedListItem());
+                    } else if (event.keyCode == 40) {
+                        that.setSelectedResultIndex(1);
+                        return;
+                    } else if (event.keyCode == 38) {
+                        that.setSelectedResultIndex(-1);
+                        return;
+                    }
+                }
+
+                typewatch(function () {
+                    if (!that.isValidKey(event.keyCode)) {
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    var val = that.getTerms();
+
+                    if (val && val.length > 2 && val.indexOf(' ') == -1) {
+                        that.search(val);
+                    } else {
+                        that.clearResults();
+                        that.hideResults();
+                    }
+
+                    return true;
+                }, that.delay);
+            });
+
+            $(document).on('mouseup', function (e) {
+                if (_this.$searchResultsList.parent().has(e.target).length === 0) {
+                    _this.clearResults();
+                    _this.hideResults();
+                }
+            });
+
+            this.hideResults();
+        }
+        AutoComplete.prototype.getTerms = function () {
+            return this.$element.val().fulltrim();
         };
 
-        BaseProvider.prototype.getRootStructure = function () {
-            return this.rootStructure;
+        AutoComplete.prototype.setSelectedResultIndex = function (direction) {
+            var nextIndex;
+
+            if (direction == 1) {
+                nextIndex = this.selectedResultIndex + 1;
+            } else {
+                nextIndex = this.selectedResultIndex - 1;
+            }
+
+            var $items = this.$searchResultsList.find('li');
+
+            if (nextIndex < 0) {
+                nextIndex = $items.length - 1;
+            } else if (nextIndex > $items.length - 1) {
+                nextIndex = 0;
+            }
+
+            this.selectedResultIndex = nextIndex;
+
+            $items.removeClass('selected');
+
+            var selectedItem = $items.eq(this.selectedResultIndex);
+
+            selectedItem.addClass('selected');
+
+            var top = selectedItem.outerHeight(true) * this.selectedResultIndex;
+
+            this.$searchResultsList.scrollTop(top);
         };
 
-        BaseProvider.prototype.parseStructure = function () {
-            this.rootStructure = {
-                path: "",
-                structures: []
-            };
+        AutoComplete.prototype.isValidKey = function (keyCode) {
+            if (keyCode == 38 || keyCode == 40)
+                return false;
 
-            if (!this.manifest.structures)
+            if (keyCode != 8 && keyCode != 32) {
+                var regex = new RegExp("^[\\w()!£$%^&*()-+=@'#~?<>|/\\\\]+$");
+
+                var key = String.fromCharCode(keyCode);
+
+                if (!regex.test(key)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        AutoComplete.prototype.search = function (term) {
+            this.results = [];
+
+            this.clearResults();
+            this.showResults();
+            this.$searchResultsList.append('<li class="loading"></li>');
+
+            this.updateListPosition();
+
+            var that = this;
+
+            $.getJSON(this.autoCompletePath + '?term=' + term, function (results) {
+                that.listResults(results);
+            });
+        };
+
+        AutoComplete.prototype.clearResults = function () {
+            this.$searchResultsList.empty();
+        };
+
+        AutoComplete.prototype.hideResults = function () {
+            this.$searchResultsList.hide();
+        };
+
+        AutoComplete.prototype.showResults = function () {
+            this.selectedResultIndex = -1;
+            this.$searchResultsList.show();
+        };
+
+        AutoComplete.prototype.updateListPosition = function () {
+            this.$searchResultsList.css({
+                'top': this.$searchResultsList.outerHeight(true) * -1
+            });
+        };
+
+        AutoComplete.prototype.listResults = function (results) {
+            this.results = results;
+
+            this.clearResults();
+
+            if (!this.results.length) {
+                this.hideResults();
+                return;
+            }
+
+            for (var i = 0; i < this.results.length; i++) {
+                var result = this.results[i];
+
+                var $resultItem = this.$searchResultTemplate.clone();
+
+                var $a = $resultItem.find('a');
+
+                $a.text(result);
+
+                this.$searchResultsList.append($resultItem);
+            }
+
+            this.updateListPosition();
+
+            var that = this;
+
+            this.$searchResultsList.find('li').on('click', function (e) {
+                e.preventDefault();
+
+                that.searchForItem($(this));
+            });
+        };
+
+        AutoComplete.prototype.searchForItem = function ($item) {
+            var term = $item.find('a').text();
+
+            this.onSelect(term);
+
+            this.clearResults();
+            this.hideResults();
+        };
+
+        AutoComplete.prototype.getSelectedListItem = function () {
+            return this.$searchResultsList.find('li.selected');
+        };
+        return AutoComplete;
+    })();
+
+    
+    return AutoComplete;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-searchfooterpanel-module/footerPanel',["require", "exports", "../../extensions/coreplayer-seadragon-extension/extension", "../../extensions/wellcomeplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseExtension", "../wellcomeplayer-extendedfooterpanel-module/footerPanel", "../../utils", "./autocomplete"], function(require, exports, __coreExtension__, __extension__, __baseExtension__, __footer__, __utils__, __AutoComplete__) {
+    var coreExtension = __coreExtension__;
+    var extension = __extension__;
+    var baseExtension = __baseExtension__;
+    var footer = __footer__;
+    var utils = __utils__;
+    
+    var AutoComplete = __AutoComplete__;
+    
+    
+
+    var FooterPanel = (function (_super) {
+        __extends(FooterPanel, _super);
+        function FooterPanel($element) {
+            _super.call(this, $element);
+            this.placemarkerTouched = false;
+        }
+        FooterPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('searchFooterPanel');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.canvasIndexChanged();
+            });
+
+            $.subscribe(coreExtension.Extension.MODE_CHANGED, function (e, mode) {
+                _this.modeChanged();
+            });
+
+            $.subscribe(extension.Extension.SEARCH_RESULTS, function (e, terms, results) {
+                _this.displaySearchResults(terms, results);
+            });
+
+            $.subscribe(extension.Extension.CREATED, function (e) {
+                _this.checkForSearchParams();
+            });
+
+            this.$searchContainer = $('<div class="search"></div>');
+            this.$element.prepend(this.$searchContainer);
+
+            this.$searchOptions = $('<div class="searchOptions"></div>');
+            this.$searchContainer.append(this.$searchOptions);
+
+            this.$searchLabel = $('<span class="label">' + this.content.searchWithin + '</span>');
+            this.$searchOptions.append(this.$searchLabel);
+
+            this.$searchTextContainer = $('<div class="searchTextContainer"></div>');
+            this.$searchOptions.append(this.$searchTextContainer);
+
+            this.$searchText = $('<input class="searchText" type="text" maxlength="100" value="' + this.content.enterKeyword + '"></input>');
+            this.$searchTextContainer.append(this.$searchText);
+
+            this.$searchButton = $('<a class="imageButton searchButton"></a>');
+            this.$searchTextContainer.append(this.$searchButton);
+
+            this.$searchPagerContainer = $('<div class="searchPager"></div>');
+            this.$element.prepend(this.$searchPagerContainer);
+
+            this.$searchPagerControls = $('<div class="controls"></div>');
+            this.$searchPagerContainer.prepend(this.$searchPagerControls);
+
+            this.$previousResultButton = $('<a class="imageButton previousResult"></a>');
+            this.$searchPagerControls.append(this.$previousResultButton);
+
+            this.$searchResultsInfo = $('<div class="searchResultsInfo"><span class="number">x</span> <span class="foundFor"></span> \'<span class="terms">y</span>\'</div>');
+            this.$searchPagerControls.append(this.$searchResultsInfo);
+
+            this.$clearSearchResultsButton = $('<a class="clearSearch">Clear Search</a>');
+            this.$searchResultsInfo.append(this.$clearSearchResultsButton);
+
+            this.$nextResultButton = $('<a class="imageButton nextResult"></a>');
+            this.$searchPagerControls.append(this.$nextResultButton);
+
+            this.$searchResultsContainer = $('<div class="searchResults"></div>');
+            this.$element.prepend(this.$searchResultsContainer);
+
+            this.$line = $('<div class="line"></div>');
+            this.$searchResultsContainer.append(this.$line);
+
+            this.$pagePositionMarker = $('<div class="positionPlacemarker"></div>');
+            this.$searchResultsContainer.append(this.$pagePositionMarker);
+
+            this.$pagePositionLabel = $('<div class="label"></div>');
+            this.$searchResultsContainer.append(this.$pagePositionLabel);
+
+            this.$placemarkerDetails = $('<div class="placeMarkerDetails"></div>');
+            this.$searchResultsContainer.append(this.$placemarkerDetails);
+
+            this.$placemarkerDetailsTop = $('<h1></h1>');
+            this.$placemarkerDetails.append(this.$placemarkerDetailsTop);
+
+            this.$placemarkerDetailsBottom = $('<p></p>');
+            this.$placemarkerDetails.append(this.$placemarkerDetailsBottom);
+
+            this.$searchPagerContainer.hide();
+            this.$placemarkerDetails.hide();
+
+            var that = this;
+
+            this.$searchButton.on('click', function (e) {
+                e.preventDefault();
+
+                _this.search(_this.$searchText.val());
+            });
+
+            this.$searchText.on('focus', function () {
+                if (_this.$searchText.val() == _this.content.enterKeyword)
+                    _this.$searchText.val('');
+            });
+
+            this.$placemarkerDetails.on('mouseleave', function () {
+                $(this).hide();
+
+                var placemarkers = that.getSearchResultPlacemarkers();
+                placemarkers.removeClass('hover');
+            });
+
+            this.$placemarkerDetails.on('click', function (e) {
+                $.publish(FooterPanel.VIEW_PAGE, [_this.currentPlacemarkerIndex]);
+            });
+
+            this.$previousResultButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.PREV_SEARCH_RESULT);
+            });
+
+            this.$nextResultButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.NEXT_SEARCH_RESULT);
+            });
+
+            this.$clearSearchResultsButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.CLEAR_SEARCH);
+                _this.clearSearchResults();
+            });
+
+            this.$searchText.on('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    _this.$searchText.blur();
+                }
+            });
+
+            if (this.provider.config.options.searchWithinEnabled === false || !this.provider.sequence.supportsSearch) {
+                this.$searchContainer.hide();
+                this.$searchPagerContainer.hide();
+                this.$searchResultsContainer.hide();
+
+                this.$element.addClass('min');
+            }
+
+            new AutoComplete(this.$searchText, (this.provider).getAutoCompleteUri(), function (terms) {
+                _this.search(terms);
+            });
+        };
+
+        FooterPanel.prototype.checkForSearchParams = function () {
+            if (this.provider.isDeepLinkingEnabled()) {
+                var terms = utils.Utils.getHashParameter('h', parent.document) || utils.Utils.getHashParameter('q', parent.document);
+
+                if (terms) {
+                    this.terms = terms.replace(/\+/g, " ").replace(/"/g, "");
+
+                    this.$searchText.blur();
+                    $.publish(FooterPanel.SEARCH, [this.terms]);
+                }
+            }
+        };
+
+        FooterPanel.prototype.search = function (terms) {
+            this.terms = terms;
+
+            if (this.terms == '' || this.terms == this.content.enterKeyword) {
+                this.extension.showDialogue(this.config.modules.genericDialogue.content.emptyValue, function () {
+                    this.$searchText.focus();
+                });
+
+                return;
+            }
+            ;
+
+            this.$searchText.blur();
+
+            $.publish(FooterPanel.SEARCH, [this.terms]);
+        };
+
+        FooterPanel.prototype.getSearchResultPlacemarkers = function () {
+            return this.$searchResultsContainer.find('.searchResultPlacemarker');
+        };
+
+        FooterPanel.prototype.positionSearchResultPlacemarkers = function () {
+            var results = (this.extension).searchResults;
+
+            if (!results)
                 return;
 
-            for (var i = 0; i < this.manifest.structures.length; i++) {
-                var structure = this.manifest.structures[i];
-                this.rootStructure.structures.push(structure);
-                structure.path = "/" + i;
+            var placemarkers = this.getSearchResultPlacemarkers();
+            placemarkers.remove();
 
-                for (var j = 0; j < structure.canvases.length; j++) {
-                    var canvas = this.getCanvasById(structure.canvases[j]);
+            var pageWidth = this.getPageLineRatio();
+            var lineTop = this.$line.position().top;
+            var lineLeft = this.$line.position().left;
 
-                    if (!canvas) {
-                        structure.canvases[j] = null;
-                        continue;
-                    }
+            var that = this;
 
-                    if (!canvas.structures)
-                        canvas.structures = [];
-                    canvas.structures.push(structure);
+            for (var i = 0; i < results.length; i++) {
+                var page = results[i];
 
-                    structure.canvases[j] = canvas;
+                var distance = page.index * pageWidth;
+
+                var $placemarker = $('<div class="searchResultPlacemarker" data-index="' + page.index + '"></div>');
+
+                $placemarker[0].ontouchstart = function (e) {
+                    that.onPlacemarkerTouchStart.call(this, that);
+                };
+                $placemarker.click(function (e) {
+                    that.onPlacemarkerClick.call(this, that);
+                });
+                $placemarker.mouseenter(function (e) {
+                    that.onPlacemarkerMouseEnter.call(this, that);
+                });
+                $placemarker.mouseleave(function (e) {
+                    that.onPlacemarkerMouseLeave.call(this, e, that);
+                });
+
+                this.$searchResultsContainer.append($placemarker);
+
+                var top = lineTop - $placemarker.height();
+                var left = lineLeft + distance - ($placemarker.width() / 2);
+
+                $placemarker.css({
+                    top: top,
+                    left: left
+                });
+            }
+        };
+
+        FooterPanel.prototype.onPlacemarkerTouchStart = function (that) {
+            that.placemarkerTouched = true;
+
+            var $placemarker = $(this);
+            var index = parseInt($placemarker.attr('data-index'));
+
+            $.publish(FooterPanel.VIEW_PAGE, [index]);
+        };
+
+        FooterPanel.prototype.onPlacemarkerClick = function (that) {
+            if (that.placemarkerTouched)
+                return;
+
+            that.placemarkerTouched = false;
+
+            var $placemarker = $(this);
+            var index = parseInt($placemarker.attr('data-index'));
+
+            $.publish(FooterPanel.VIEW_PAGE, [index]);
+        };
+
+        FooterPanel.prototype.onPlacemarkerMouseEnter = function (that) {
+            if (that.placemarkerTouched)
+                return;
+
+            var $placemarker = $(this);
+
+            $placemarker.addClass('hover');
+
+            var canvasIndex = parseInt($placemarker.attr('data-index'));
+
+            var placemarkers = that.getSearchResultPlacemarkers();
+            var elemIndex = placemarkers.index($placemarker[0]);
+
+            that.currentPlacemarkerIndex = canvasIndex;
+
+            that.$placemarkerDetails.show();
+
+            var title = "{0} {1}";
+
+            var mode = that.extension.getMode();
+
+            if (mode == coreExtension.Extension.PAGE_MODE) {
+                var asset = that.provider.getCanvasByIndex(canvasIndex);
+
+                var orderLabel = asset.orderLabel;
+
+                if (orderLabel == "") {
+                    orderLabel = "-";
                 }
-            }
-        };
 
-        BaseProvider.prototype.getStructureIndex = function (path) {
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var canvas = this.sequence.canvases[i];
-
-                if (!canvas.structures)
-                    continue;
-
-                for (var j = 0; j < canvas.structures.length; j++) {
-                    var structure = canvas.structures[j];
-
-                    if (structure.path == path) {
-                        return i;
-                    }
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getCanvasById = function (id) {
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var c = this.sequence.canvases[i];
-
-                if (c['@id'] === id) {
-                    return c;
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getStructureByIndex = function (structure, index) {
-            return structure.structures[index];
-        };
-
-        BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
-            return null;
-        };
-
-        BaseProvider.prototype.getManifestSeeAlsoUri = function (manifest) {
-            return null;
-        };
-
-        BaseProvider.prototype.getTree = function () {
-            var rootStructure = this.getRootStructure();
-
-            this.treeRoot = new TreeNode('root');
-            this.treeRoot.label = "root";
-            this.treeRoot.data = rootStructure;
-            this.treeRoot.data.type = "manifest";
-            rootStructure.treeNode = this.treeRoot;
-
-            for (var i = 0; i < rootStructure.structures.length; i++) {
-                var structure = rootStructure.structures[i];
-
-                var node = new TreeNode();
-                this.treeRoot.addNode(node);
-
-                node.label = structure.label;
-                node.data = structure;
-                node.data.type = "structure";
-                structure.treeNode = node;
-            }
-
-            return this.treeRoot;
-        };
-
-        BaseProvider.prototype.getDomain = function () {
-            var parts = utils.Utils.getUrlParts(this.dataUri);
-            return parts.host;
-        };
-
-        BaseProvider.prototype.getMetaData = function (callback) {
-            callback(this.manifest.metadata);
-        };
-        return BaseProvider;
-    })();
-    exports.BaseProvider = BaseProvider;
-});
-
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exports", "../../modules/coreplayer-shared-module/baseIIIFProvider"], function(require, exports, __baseProvider__) {
-    var baseProvider = __baseProvider__;
-    
-    
-
-    var Provider = (function (_super) {
-        __extends(Provider, _super);
-        function Provider(config, manifest) {
-            _super.call(this, config, manifest);
-
-            this.config.options = $.extend(true, this.options, {
-                imageUriTemplate: "{0}{1}"
-            }, config.options);
-        }
-        Provider.prototype.getImageUri = function (canvas, imageBaseUri, imageUriTemplate) {
-            var baseUri = imageBaseUri ? imageBaseUri : this.options.imageBaseUri || this.options.dataBaseUri || "";
-            var template = imageUriTemplate ? imageUriTemplate : this.options.imageUriTemplate;
-
-            var iiifUri;
-
-            if (canvas.resources) {
-                iiifUri = canvas.resources[0].resource.service['@id'];
-            } else if (canvas.images) {
-                iiifUri = canvas.images[0].resource.service['@id'];
-            }
-
-            if (iiifUri.endsWith('/')) {
-                iiifUri += 'info.json';
+                title = String.prototype.format(title, that.content.pageCaps, orderLabel);
             } else {
-                iiifUri += '/info.json';
+                title = String.prototype.format(title, that.content.imageCaps, canvasIndex + 1);
             }
 
-            var uri = String.prototype.format(template, baseUri, iiifUri);
+            that.$placemarkerDetailsTop.html(title);
 
-            return uri;
+            var result = (that.extension).searchResults[elemIndex];
+
+            var terms = utils.Utils.ellipsis(that.terms, 20);
+
+            var instancesFoundText;
+
+            if (result.rects.length == 1) {
+                instancesFoundText = that.content.instanceFound;
+                instancesFoundText = String.prototype.format(instancesFoundText, terms);
+            } else {
+                instancesFoundText = that.content.instancesFound;
+                instancesFoundText = String.prototype.format(instancesFoundText, result.rects.length, terms);
+            }
+
+            that.$placemarkerDetailsBottom.html(instancesFoundText);
+
+            var pos = $placemarker.position();
+
+            var top = pos.top - that.$placemarkerDetails.height();
+            var left = pos.left;
+
+            if (left < that.$placemarkerDetails.width() / 2) {
+                left = 0 - ($placemarker.width() / 2);
+            } else if (left > that.$line.width() - (that.$placemarkerDetails.width() / 2)) {
+                left = that.$line.width() - that.$placemarkerDetails.width() + ($placemarker.width() / 2);
+            } else {
+                left -= (that.$placemarkerDetails.width() / 2);
+            }
+
+            that.$placemarkerDetails.css({
+                top: top,
+                left: left
+            });
         };
 
-        Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, embedTemplate) {
-            var esu = this.options.embedScriptUri || this.embedScriptUri;
+        FooterPanel.prototype.onPlacemarkerMouseLeave = function (e, that) {
+            var $placemarker = $(this);
 
-            var template = this.options.embedTemplate || embedTemplate;
+            var newElement = e.toElement || e.relatedTarget;
 
-            var configUri = this.config.uri || '';
+            var isChild = $(newElement).closest(that.$placemarkerDetails).length;
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, canvasIndex, zoom, configUri, width, height, esu);
-
-            return script;
+            if (newElement != that.$placemarkerDetails.get(0) && isChild == 0) {
+                that.$placemarkerDetails.hide();
+                $placemarker.removeClass('hover');
+            }
         };
-        return Provider;
-    })(baseProvider.BaseProvider);
-    exports.Provider = Provider;
+
+        FooterPanel.prototype.setPageMarkerPosition = function () {
+            if (this.provider.canvasIndex == null)
+                return;
+
+            var pageLineRatio = this.getPageLineRatio();
+            var lineTop = this.$line.position().top;
+            var lineLeft = this.$line.position().left;
+
+            var position = this.provider.canvasIndex * pageLineRatio;
+            var top = lineTop;
+            var left = lineLeft + position;
+
+            this.$pagePositionMarker.css({
+                top: top,
+                left: left
+            });
+
+            var lineWidth = this.$line.width();
+
+            if (left + this.$pagePositionLabel.outerWidth(true) > lineWidth) {
+                left -= this.$pagePositionLabel.outerWidth(true);
+                this.$pagePositionLabel.removeClass('right');
+                this.$pagePositionLabel.addClass('left');
+            } else {
+                this.$pagePositionLabel.removeClass('left');
+                this.$pagePositionLabel.addClass('right');
+            }
+
+            this.$pagePositionLabel.css({
+                top: top,
+                left: left
+            });
+        };
+
+        FooterPanel.prototype.clearSearchResults = function () {
+            (this.extension).searchResults = null;
+
+            var placemarkers = this.getSearchResultPlacemarkers();
+            placemarkers.remove();
+
+            this.$searchText.val(this.content.enterKeyword);
+
+            this.$searchContainer.show();
+            this.$searchPagerContainer.hide();
+
+            this.$searchText.focus();
+        };
+
+        FooterPanel.prototype.getPageLineRatio = function () {
+            var lineWidth = this.$line.width();
+
+            if (this.provider.getTotalCanvases() == 1)
+                return 0;
+
+            return lineWidth / (this.provider.getTotalCanvases() - 1);
+        };
+
+        FooterPanel.prototype.canvasIndexChanged = function () {
+            this.setPageMarkerPosition();
+            this.setPlacemarkerLabel();
+
+            if ((this.extension).hasPermissionToViewCurrentItem()) {
+                this.$downloadButton.show();
+            } else {
+                this.$downloadButton.hide();
+            }
+        };
+
+        FooterPanel.prototype.modeChanged = function () {
+            this.setPlacemarkerLabel();
+        };
+
+        FooterPanel.prototype.setPlacemarkerLabel = function () {
+            var mode = (this.extension).getMode();
+
+            var label = this.content.displaying;
+            var index = this.provider.canvasIndex;
+
+            if (mode == coreExtension.Extension.PAGE_MODE) {
+                var asset = this.provider.getCanvasByIndex(index);
+
+                var orderLabel = asset.orderLabel;
+
+                if (orderLabel == "") {
+                    orderLabel = "-";
+                }
+
+                var lastCanvasOrderLabel = this.provider.getLastCanvasOrderLabel();
+                this.$pagePositionLabel.html(String.prototype.format(label, this.content.page, orderLabel, lastCanvasOrderLabel));
+            } else {
+                this.$pagePositionLabel.html(String.prototype.format(label, this.content.image, index + 1, this.provider.getTotalCanvases()));
+            }
+        };
+
+        FooterPanel.prototype.displaySearchResults = function (terms, results) {
+            if (!results)
+                return;
+
+            this.positionSearchResultPlacemarkers();
+
+            this.$searchContainer.hide();
+
+            this.$searchPagerControls.css({
+                'left': 0
+            });
+
+            var $number = this.$searchPagerContainer.find('.number');
+            $number.text(results.length);
+
+            var foundFor = this.$searchResultsInfo.find('.foundFor');
+
+            if (results.length == 1) {
+                foundFor.html(this.content.resultFoundFor);
+            } else {
+                foundFor.html(this.content.resultsFoundFor);
+            }
+
+            var $terms = this.$searchPagerContainer.find('.terms');
+            $terms.html(utils.Utils.ellipsis(terms, 20));
+            $terms.prop('title', terms);
+
+            this.$searchPagerContainer.show();
+
+            this.resize();
+        };
+
+        FooterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+
+            if ((this.extension).searchResults) {
+                this.positionSearchResultPlacemarkers();
+            }
+
+            this.setPageMarkerPosition();
+
+            this.$searchPagerContainer.width(this.$element.width());
+
+            var center = this.$element.width() / 2;
+
+            this.$searchPagerControls.css({
+                'left': center - (this.$searchPagerControls.width() / 2)
+            });
+
+            this.$searchOptions.css({
+                'left': center - (this.$searchOptions.outerWidth() / 2)
+            });
+        };
+        FooterPanel.PREV_SEARCH_RESULT = 'footer.onPrevSearchResult';
+        FooterPanel.NEXT_SEARCH_RESULT = 'footer.onNextSearchResult';
+        FooterPanel.CLEAR_SEARCH = 'footer.onClearSearch';
+        FooterPanel.SEARCH = 'footer.onSearch';
+        FooterPanel.VIEW_PAGE = 'footer.onViewPage';
+        return FooterPanel;
+    })(footer.FooterPanel);
+    exports.FooterPanel = FooterPanel;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5421,42 +6193,588 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/provider',["require", "exports", "../../modules/coreplayer-shared-module/baseProvider"], function(require, exports, __baseProvider__) {
-    var baseProvider = __baseProvider__;
+define('modules/wellcomeplayer-dialogues-module/loginDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, __dialogue__) {
     
     
+    
+    
+    var dialogue = __dialogue__;
+    
 
-    var Provider = (function (_super) {
-        __extends(Provider, _super);
-        function Provider(config, manifest) {
-            _super.call(this, config, manifest);
-
-            this.config.options = $.extend(true, this.options, {
-                dziUriTemplate: "{0}{1}"
-            }, config.options);
+    var LoginDialogue = (function (_super) {
+        __extends(LoginDialogue, _super);
+        function LoginDialogue($element) {
+            _super.call(this, $element);
         }
-        Provider.prototype.getImageUri = function (asset, dziBaseUri, dziUriTemplate) {
-            var baseUri = dziBaseUri ? dziBaseUri : this.options.dziBaseUri || this.options.dataBaseUri || "";
-            var template = dziUriTemplate ? dziUriTemplate : this.options.dziUriTemplate;
-            var uri = String.prototype.format(template, baseUri, asset.dziUri);
+        LoginDialogue.prototype.create = function () {
+            var _this = this;
+            var that = this;
 
-            return uri;
+            this.setConfig('loginDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(LoginDialogue.SHOW_LOGIN_DIALOGUE, function (e, params) {
+                that.open();
+                that.allowClose = params.allowClose;
+                that.allowGuestLogin = params.allowGuestLogin || false;
+
+                that.failureCallback = params.failureCallback;
+                that.inadequatePermissions = params.inadequatePermissions || false;
+                that.message = params.message;
+                that.requestedIndex = params.requestedIndex;
+                that.successCallback = params.successCallback;
+                that.title = params.title;
+
+                that.$message.hide();
+                that.$nextItemButton.hide();
+                that.$guestLogin.hide();
+                that.$libraryLogin.hide();
+
+                if (that.inadequatePermissions) {
+                    if (that.provider.getTotalCanvases() > 1) {
+                        that.$nextItemButton.show();
+                    }
+                    that.$libraryLogin.show();
+                }
+
+                if (that.allowGuestLogin) {
+                    that.$guestLogin.show();
+                    that.$message.addClass('guest');
+                } else {
+                    that.$libraryLogin.show();
+                    that.$message.removeClass('guest');
+                }
+
+                if (that.title) {
+                    that.setTitle(that.title);
+                } else {
+                    that.setTitle(that.content.title);
+                }
+
+                if (that.message) {
+                    that.showMessage(that.message);
+                } else {
+                    that.showMessage(that.content.defaultMessage);
+                }
+
+                if (that.allowClose) {
+                    that.enableClose();
+                } else {
+                    that.disableClose();
+                }
+
+                var uri = escape(parent.document.URL);
+
+                that.$acceptTermsButton.attr('href', that.options.acceptTermsUri + '?redirectUrl=' + uri);
+
+                _this.resize();
+            });
+
+            $.subscribe(LoginDialogue.HIDE_LOGIN_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1></h1>');
+            this.$content.append(this.$title);
+
+            this.$content.append('\
+            <div class="main-login">\
+                <p class="message"></p>\
+                <a class="nextItem" href="#"></a>\
+                <div class="guestLogin">\
+                    <a class="viewTerms" href="#"></a>\
+                    <a class="acceptTerms button" href="#" target="_parent"></a>\
+                </div>\
+                <div class="libraryLogin">\
+                    <a class="library" href="/handlers/auth/CasSSO.ashx"></a>\
+                    <a class="twitter" href="/handlers/auth/Twitter.ashx">Twitter</a>\
+                    <a class="facebook" href="/handlers/auth/Facebook.ashx">Facebook</a>\
+                    <a class="google" href="/handlers/auth/Google.ashx">Google</a>\
+                </div>\
+            </div>');
+
+            this.$message = this.$content.find(".message");
+
+            this.$guestLogin = this.$content.find(".guestLogin");
+            this.$libraryLogin = this.$content.find(".libraryLogin");
+
+            this.$nextItemButton = this.$content.find(".nextItem");
+            this.$nextItemButton.text(this.content.nextItem);
+
+            this.$viewTermsButton = this.$guestLogin.find(".viewTerms");
+            this.$viewTermsButton.text(this.content.viewTerms);
+
+            this.$acceptTermsButton = this.$guestLogin.find(".acceptTerms");
+            this.$acceptTermsButton.text(this.content.acceptTerms);
+
+            this.$libraryLoginButton = this.$libraryLogin.find('.library');
+            this.$libraryLoginButton.text(this.content.signInWithLibraryAccount);
+
+            this.$twitterLoginButton = this.$libraryLogin.find('a.twitter');
+            this.$twitterLoginButton.text(this.content.signInWithTwitter);
+            this.$twitterLoginButton.attr('tabindex', 7);
+
+            this.$facebookLoginButton = this.$libraryLogin.find('a.facebook');
+            this.$facebookLoginButton.text(this.content.signInWithFacebook);
+            this.$facebookLoginButton.attr('tabindex', 8);
+
+            this.$googleLoginButton = this.$libraryLogin.find('a.google');
+            this.$googleLoginButton.text(this.content.signInWithGoogle);
+            this.$googleLoginButton.attr('tabindex', 9);
+
+            this.$openIDLoginButton = this.$libraryLogin.find('a.openid');
+            this.$openIDLoginButton.text(this.content.signInWithOpenID);
+            this.$openIDLoginButton.attr('tabindex', 10);
+
+            var that = this;
+
+            this.$nextItemButton.click(function (e) {
+                e.preventDefault();
+
+                $.publish(LoginDialogue.NEXT_ITEM, [_this.requestedIndex]);
+            });
+
+            this.$viewTermsButton.click(function (e) {
+                e.preventDefault();
+
+                _this.$message.empty();
+                _this.$message.addClass('loading');
+                _this.$message.load(_this.options.termsUri, function () {
+                    _this.$message.removeClass('loading');
+                    _this.$message.find('a').prop('target', '_blank');
+                    _this.$viewTermsButton.hide();
+                });
+            });
+
+            this.$libraryLoginButton.click(function (e) {
+                e.preventDefault();
+
+                that.extension.redirect($(this).attr('href'));
+            });
+
+            this.$twitterLoginButton.click(function (e) {
+                e.preventDefault();
+
+                that.extension.redirect($(this).attr('href'));
+            });
+
+            this.$facebookLoginButton.click(function (e) {
+                e.preventDefault();
+
+                that.extension.redirect($(this).attr('href'));
+            });
+
+            this.$googleLoginButton.click(function (e) {
+                e.preventDefault();
+
+                that.extension.redirect($(this).attr('href'));
+            });
+
+            this.$openIDLoginButton.click(function (e) {
+                e.preventDefault();
+
+                that.extension.redirect($(this).attr('href'));
+            });
+
+            this.$element.hide();
         };
 
-        Provider.prototype.getEmbedScript = function (assetIndex, zoom, width, height, embedTemplate) {
-            var esu = this.options.embedScriptUri || this.embedScriptUri;
-
-            var template = this.options.embedTemplate || embedTemplate;
-
-            var configUri = this.config.uri || '';
-
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, assetIndex, zoom, configUri, width, height, esu);
-
-            return script;
+        LoginDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
         };
-        return Provider;
-    })(baseProvider.BaseProvider);
-    exports.Provider = Provider;
+
+        LoginDialogue.prototype.setTitle = function (title) {
+            this.$title.html(title);
+        };
+
+        LoginDialogue.prototype.showMessage = function (message) {
+            this.$message.html(message);
+            this.$message.show();
+        };
+        LoginDialogue.SHOW_LOGIN_DIALOGUE = 'onShowLoginDialogue';
+        LoginDialogue.HIDE_LOGIN_DIALOGUE = 'onHideLoginDialogue';
+        LoginDialogue.NEXT_ITEM = 'onNextItem';
+        LoginDialogue.LOGIN = 'onLogin';
+        return LoginDialogue;
+    })(dialogue.Dialogue);
+    exports.LoginDialogue = LoginDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-dialogues-module/restrictedFileDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, __dialogue__) {
+    
+    
+    
+    
+    var dialogue = __dialogue__;
+
+    var RestrictedFileDialogue = (function (_super) {
+        __extends(RestrictedFileDialogue, _super);
+        function RestrictedFileDialogue($element) {
+            _super.call(this, $element);
+        }
+        RestrictedFileDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('restrictedFileDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(RestrictedFileDialogue.SHOW_RESTRICTED_FILE_DIALOGUE, function (e, params) {
+                _this.open();
+                _this.requestedIndex = params.requestedIndex;
+                _this.allowClose = params.allowClose;
+
+                _this.$nextItemButton.hide();
+
+                if (_this.provider.sequence.assets.length > 1) {
+                    _this.$nextItemButton.show();
+                }
+
+                if (_this.allowClose) {
+                    _this.enableClose();
+                } else {
+                    _this.disableClose();
+                }
+            });
+
+            $.subscribe(RestrictedFileDialogue.HIDE_RESTRICTED_FILE_DIALOGUE, function () {
+                _this.close();
+            });
+
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+
+            this.$content.append('\
+            <div>\
+                <p class="message"></p>\
+                <a class="nextItem" href="#"></a>\
+                <a class="join" target="_blank"></a>\
+            </div>');
+
+            this.$message = this.$content.find(".message");
+            this.$message.html(this.content.message);
+
+            this.$nextItemButton = this.$content.find(".nextItem");
+            this.$nextItemButton.text(this.content.nextItem);
+
+            this.$joinButton = this.$content.find('a.join');
+            this.$joinButton.text(this.content.joinLibrary);
+            this.$joinButton.prop("href", this.options.joinLibraryUri);
+
+            this.$nextItemButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(RestrictedFileDialogue.NEXT_ITEM, [_this.requestedIndex]);
+
+                _this.close();
+            });
+
+            this.$element.hide();
+        };
+        RestrictedFileDialogue.SHOW_RESTRICTED_FILE_DIALOGUE = 'onShowRestrictedFileDialogue';
+        RestrictedFileDialogue.HIDE_RESTRICTED_FILE_DIALOGUE = 'onHideRestrictedFileDialogue';
+        RestrictedFileDialogue.NEXT_ITEM = 'onNextItem';
+        return RestrictedFileDialogue;
+    })(dialogue.Dialogue);
+    exports.RestrictedFileDialogue = RestrictedFileDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-dialogues-module/downloadDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, __dialogue__) {
+    
+    
+    
+    
+    var dialogue = __dialogue__;
+    
+
+    var DownloadDialogue = (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            _super.call(this, $element);
+            this.isOpened = false;
+        }
+        DownloadDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('downloadDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE, function (e, params) {
+                _this.open();
+                _this.opened();
+            });
+
+            $.subscribe(DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+
+            this.$downloadOptions = $('<ol class="options"></ol>');
+            this.$content.append(this.$downloadOptions);
+
+            this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions"></input><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
+            this.$downloadOptions.append(this.$currentViewAsJpgButton);
+            this.$currentViewAsJpgButton.hide();
+
+            this.$wholeImageHighResAsJpgButton = $('<li><input id="wholeImageHighResAsJpg" type="radio" name="downloadOptions"></input><label for="wholeImageHighResAsJpg">' + this.content.wholeImageHighResAsJpg + '</label></li>');
+            this.$downloadOptions.append(this.$wholeImageHighResAsJpgButton);
+            this.$wholeImageHighResAsJpgButton.hide();
+
+            this.$wholeImageLowResAsJpgButton = $('<li><input id="wholeImageLowResAsJpg" type="radio" name="downloadOptions"></input><label for="wholeImageLowResAsJpg">' + this.content.wholeImageLowResAsJpg + '</label></li>');
+            this.$downloadOptions.append(this.$wholeImageLowResAsJpgButton);
+            this.$wholeImageLowResAsJpgButton.hide();
+
+            this.$entireDocumentAsPdfButton = $('<li><input id="entireDocumentAsPdf" type="radio" name="downloadOptions"></input><label for="entireDocumentAsPdf">' + this.content.entireDocumentAsPdf + '</label></li>');
+            this.$downloadOptions.append(this.$entireDocumentAsPdfButton);
+            this.$entireDocumentAsPdfButton.hide();
+
+            this.$buttonsContainer = $('<div class="buttons"></div>');
+            this.$content.append(this.$buttonsContainer);
+
+            this.$previewButton = $('<a class="button" href="#">' + this.content.preview + '</a>');
+            this.$buttonsContainer.append(this.$previewButton);
+
+            this.$downloadButton = $('<a class="button" href="#">' + this.content.download + '</a>');
+            this.$buttonsContainer.append(this.$downloadButton);
+
+            var that = this;
+
+            this.$previewButton.on('click', function () {
+                var selectedOption = _this.getSelectedOption();
+
+                var id = selectedOption.attr('id');
+                var asset = _this.provider.getCurrentCanvas();
+
+                switch (id) {
+                    case 'currentViewAsJpg':
+                        window.open((that.extension).getCropUri(false));
+                        $.publish(DownloadDialogue.PREVIEW, ['currentViewAsJpg']);
+                        break;
+                    case 'wholeImageHighResAsJpg':
+                        window.open((that.provider).getImage(asset, true));
+                        $.publish(DownloadDialogue.PREVIEW, ['wholeImageHighResAsJpg']);
+                        break;
+                    case 'wholeImageLowResAsJpg':
+                        window.open((that.provider).getImage(asset, false));
+                        $.publish(DownloadDialogue.PREVIEW, ['wholeImageLowResAsJpg']);
+                        break;
+                    case 'entireDocumentAsPdf':
+                        window.open((that.provider).getPDF());
+                        $.publish(DownloadDialogue.PREVIEW, ['entireDocumentAsPdf']);
+                        break;
+                }
+
+                _this.close();
+            });
+
+            this.$downloadButton.on('click', function () {
+                var selectedOption = that.getSelectedOption();
+
+                var id = selectedOption.attr('id');
+                var asset = _this.provider.getCurrentCanvas();
+
+                switch (id) {
+                    case 'currentViewAsJpg':
+                        var viewer = (that.extension).getViewer();
+                        window.open((that.provider).getCrop(asset, viewer, true));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['currentViewAsJpg']);
+                        break;
+                    case 'wholeImageHighResAsJpg':
+                        window.open((that.provider).getImage(asset, true, true));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageHighResAsJpg']);
+                        break;
+                    case 'wholeImageLowResAsJpg':
+                        window.open((that.provider).getImage(asset, false, true));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageLowResAsJpg']);
+                        break;
+                    case 'entireDocumentAsPdf':
+                        window.open((that.provider).getPDF(true));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['entireDocumentAsPdf']);
+                        break;
+                }
+
+                _this.close();
+            });
+
+            this.$element.hide();
+        };
+
+        DownloadDialogue.prototype.opened = function () {
+            if (this.isOpened)
+                return;
+
+            this.isOpened = true;
+
+            if (this.isDownloadOptionAvailable("currentViewAsJpg")) {
+                this.$currentViewAsJpgButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("wholeImageHighResAsJpg")) {
+                this.$wholeImageHighResAsJpgButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("wholeImageLowResAsJpg")) {
+                this.$wholeImageLowResAsJpgButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("entireDocumentAsPdf")) {
+                this.$entireDocumentAsPdfButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("entireFileAsOriginal")) {
+                var asset = this.provider.getCurrentCanvas();
+
+                var fileExtension = this.getFileExtension(asset.fileUri);
+
+                if (fileExtension !== 'jp2') {
+                    if (!asset.sources) {
+                        this.addEntireFileDownloadOption(asset.fileUri);
+                    } else {
+                        for (var i = 0; i < asset.sources.length; i++) {
+                            this.addEntireFileDownloadOption(asset.sources[i].src);
+                        }
+                    }
+
+                    this.$downloadButton.hide();
+                    this.$previewButton.hide();
+                }
+            }
+
+            this.$downloadOptions.find('input:first').prop("checked", true);
+
+            this.resize();
+        };
+
+        DownloadDialogue.prototype.addEntireFileDownloadOption = function (fileUri) {
+            this.$downloadOptions.append('<li><a href="' + fileUri + '" target="_blank" download>' + String.prototype.format(this.content.entireFileAsOriginal, this.getFileExtension(fileUri)) + '</li>');
+        };
+
+        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
+            return fileUri.split('.').pop();
+        };
+
+        DownloadDialogue.prototype.getSelectedOption = function () {
+            return this.$downloadOptions.find("input:checked");
+        };
+
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            return this.provider.sequence.extensions.permittedOperations.contains(option);
+        };
+
+        DownloadDialogue.prototype.resize = function () {
+            this.$element.css({
+                'top': this.extension.height() - this.$element.outerHeight(true)
+            });
+        };
+        DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE = 'onShowDownloadDialogue';
+        DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE = 'onHideDownloadDialogue';
+        DownloadDialogue.DOWNLOAD = 'onDownload';
+        DownloadDialogue.PREVIEW = 'onPreview';
+        return DownloadDialogue;
+    })(dialogue.Dialogue);
+    exports.DownloadDialogue = DownloadDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/wellcomeplayer-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../coreplayer-seadragoncenterpanel-module/seadragonCenterPanel"], function(require, exports, __baseCenter__) {
+    
+    
+    
+    var baseCenter = __baseCenter__;
+    
+
+    var SeadragonCenterPanel = (function (_super) {
+        __extends(SeadragonCenterPanel, _super);
+        function SeadragonCenterPanel($element) {
+            _super.call(this, $element);
+        }
+        SeadragonCenterPanel.prototype.create = function () {
+            this.setConfig('seadragonCenterPanel');
+
+            _super.prototype.create.call(this);
+        };
+
+        SeadragonCenterPanel.prototype.viewerOpen = function () {
+            _super.prototype.viewerOpen.call(this);
+
+            if ((this.extension).searchResults) {
+                this.overlaySearchResults();
+            }
+        };
+
+        SeadragonCenterPanel.prototype.overlaySearchResults = function () {
+            var page = null;
+            var searchResults = (this.extension).searchResults;
+
+            for (var i = 0; i < searchResults.length; i++) {
+                if (searchResults[i].index == this.provider.canvasIndex) {
+                    page = searchResults[i];
+                    break;
+                }
+            }
+
+            if (!page)
+                return;
+
+            var sourceWidth = this.viewer.source.dimensions.x;
+            var rects = this.getSearchOverlayRects(page.rects, sourceWidth);
+
+            for (var i = 0; i < rects.length; i++) {
+                var rect = rects[i];
+
+                var div = document.createElement("div");
+                div.className = "searchOverlay";
+
+                this.viewer.drawer.addOverlay(div, rect);
+            }
+        };
+
+        SeadragonCenterPanel.prototype.getSearchOverlayRects = function (rects, sourceWidth) {
+            var newRects = [];
+
+            for (var i = 0; i < rects.length; i++) {
+                var rect = rects[i];
+
+                var x = rect.x;
+                var y = rect.y;
+                var w = rect.w;
+                var h = rect.h;
+
+                var factor = 1 / sourceWidth;
+                var xp = factor * x;
+                var yp = factor * y;
+                var wp = factor * w;
+                var hp = factor * h;
+
+                var rect = new OpenSeadragon.Rect(xp, yp, wp, hp);
+
+                newRects.push(rect);
+            }
+
+            return newRects;
+        };
+        return SeadragonCenterPanel;
+    })(baseCenter.SeadragonCenterPanel);
+    exports.SeadragonCenterPanel = SeadragonCenterPanel;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5810,6 +7128,2248 @@ define('extensions/coreplayer-mediaelement-extension/extension',["require", "exp
     exports.Extension = Extension;
 });
 
+define('modules/wellcomeplayer-shared-module/behaviours',["require", "exports", "../wellcomeplayer-dialogues-module/restrictedFileDialogue", "../wellcomeplayer-dialogues-module/loginDialogue", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/footerPanel", "../wellcomeplayer-extendedfooterpanel-module/footerPanel", "../coreplayer-dialogues-module/helpDialogue", "../wellcomeplayer-dialogues-module/conditionsDialogue", "../coreplayer-shared-module/leftPanel", "../coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../coreplayer-shared-module/rightPanel", "../../extensions/coreplayer-mediaelement-extension/extension", "../wellcomeplayer-dialogues-module/downloadDialogue"], function(require, exports, __restrictedFile__, __login__, __baseExtension__, __baseFooter__, __footer__, __help__, __conditions__, __baseLeft__, __left__, __baseRight__, __coreMediaElementExtension__, __download__) {
+    
+    
+    
+    
+    var restrictedFile = __restrictedFile__;
+    var login = __login__;
+    var baseExtension = __baseExtension__;
+    var baseFooter = __baseFooter__;
+    var footer = __footer__;
+    var help = __help__;
+    var conditions = __conditions__;
+    var baseLeft = __baseLeft__;
+    var left = __left__;
+    var baseRight = __baseRight__;
+    var coreMediaElementExtension = __coreMediaElementExtension__;
+    var download = __download__;
+
+    var Behaviours = (function () {
+        function Behaviours(extension) {
+            var _this = this;
+            this.extension = extension;
+            $.subscribe(baseExtension.BaseExtension.CREATED, function () {
+                _this.trackEvent('Items', 'Viewed', '');
+
+                if (!_this.extension.provider.isHomeDomain) {
+                    _this.trackVariable(2, 'Embedded', _this.extension.provider.domain, 2);
+                }
+
+                _this.extension.$loginDialogue.find('.close').on('click', function () {
+                    _this.trackEvent('Player Interactions', 'Log in', 'Closed');
+                });
+
+                _this.extension.$embedDialogue.find('.close').on('click', function () {
+                    _this.trackEvent('Player Interactions', 'Embed', 'Closed');
+                });
+
+                _this.extension.$downloadDialogue.find('.close').on('click', function () {
+                    _this.trackEvent('Player Interactions', 'Download', 'Closed');
+                });
+
+                _this.extension.$helpDialogue.find('.close').on('click', function () {
+                    _this.trackEvent('Player Interactions', 'Help', 'Closed');
+                });
+
+                _this.extension.$conditionsDialogue.find('.close').on('click', function () {
+                    _this.trackEvent('Player Interactions', 'Conditions', 'Closed');
+                });
+
+                if (_this.extension.$restrictedFileDialogue) {
+                    _this.extension.$restrictedFileDialogue.find('.close').on('click', function () {
+                        _this.trackEvent('Player Interactions', 'Restricted File', 'Closed');
+                    });
+                }
+
+                var seeAlso = _this.extension.provider.getSeeAlso();
+
+                if (seeAlso && _this.extension.provider.isSeeAlsoEnabled()) {
+                    $.publish(baseExtension.BaseExtension.SHOW_MESSAGE, [seeAlso.markup]);
+                }
+            });
+
+            $.subscribe(login.LoginDialogue.SHOW_LOGIN_DIALOGUE, function () {
+                _this.trackEvent('Player Interactions', 'Log in', 'Opened');
+            });
+
+            $.subscribe(help.HelpDialogue.SHOW_HELP_DIALOGUE, function () {
+                _this.trackEvent('Player Interactions', 'Help', 'Opened', '');
+            });
+
+            $.subscribe(conditions.ConditionsDialogue.SHOW_CONDITIONS_DIALOGUE, function () {
+                _this.trackEvent('Player Interactions', 'Conditions', 'Opened', '');
+            });
+
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function () {
+                _this.trackEvent('Player Interactions', 'Download', 'Opened', '');
+            });
+
+            $.subscribe(download.DownloadDialogue.PREVIEW, function (e, type) {
+                switch (type) {
+                    case "currentViewAsJpg":
+                        _this.trackEvent('Files', 'Previewed - Current View');
+                        break;
+                    case "wholeImageHighResAsJpg":
+                        _this.trackEvent('Files', 'Previewed - Whole Image High Res');
+                        break;
+                    case "wholeImageLowResAsJpg":
+                        _this.trackEvent('Files', 'Previewed - Whole Image Low Res');
+                        break;
+                    case "entireDocumentAsPdf":
+                        _this.trackEvent('Files', 'Previewed - Entire Document As PDF');
+                        break;
+                }
+            });
+
+            $.subscribe(download.DownloadDialogue.DOWNLOAD, function (e, type) {
+                switch (type) {
+                    case "currentViewAsJpg":
+                        _this.trackEvent('Files', 'Downloaded - Current View');
+                        break;
+                    case "wholeImageHighResAsJpg":
+                        _this.trackEvent('Files', 'Downloaded - Whole Image High Res');
+                        break;
+                    case "wholeImageLowResAsJpg":
+                        _this.trackEvent('Files', 'Downloaded - Whole Image Low Res');
+                        break;
+                    case "entireDocumentAsPdf":
+                        _this.trackEvent('Files', 'Downloaded - Entire Document As PDF');
+                        break;
+                }
+            });
+
+            $.subscribe(footer.FooterPanel.SAVE, function () {
+                _this.trackEvent('Player Interactions', 'Save to Lightbox', 'Opened', '');
+            });
+
+            $.subscribe(baseFooter.FooterPanel.EMBED, function () {
+                _this.trackEvent('Player Interactions', 'Embed', 'Opened', '');
+            });
+
+            $.subscribe(baseExtension.BaseExtension.TOGGLE_FULLSCREEN, function () {
+                if (_this.extension.isFullScreen) {
+                    _this.trackEvent('Player Interactions', 'Full Screen', 'Exit');
+                } else {
+                    _this.trackEvent('Player Interactions', 'Full Screen', 'Enter');
+                }
+            });
+
+            $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function () {
+                _this.trackEvent('Player Interactions', 'Left Panel', 'Opened');
+            });
+
+            $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function () {
+                _this.trackEvent('Player Interactions', 'Left Panel', 'Closed');
+            });
+
+            $.subscribe(left.TreeViewLeftPanel.OPEN_TREE_VIEW, function () {
+                _this.trackEvent('Player Interactions', 'Tree', 'Opened');
+            });
+
+            $.subscribe(left.TreeViewLeftPanel.OPEN_THUMBS_VIEW, function () {
+                _this.trackEvent('Player Interactions', 'Thumbs', 'Opened');
+            });
+
+            $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function () {
+                _this.trackEvent('Player Interactions', 'Right Panel', 'Opened');
+            });
+
+            $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function () {
+                _this.trackEvent('Player Interactions', 'Right Panel', 'Closed');
+            });
+
+            $.subscribe(restrictedFile.RestrictedFileDialogue.SHOW_RESTRICTED_FILE_DIALOGUE, function () {
+                _this.trackEvent('Player Interactions', 'Restricted File', 'Opened');
+            });
+
+            $.subscribe(coreMediaElementExtension.Extension.MEDIA_PLAYED, function () {
+                _this.trackEvent('Player Interactions', 'Play');
+            });
+
+            $.subscribe(coreMediaElementExtension.Extension.MEDIA_PAUSED, function () {
+                _this.trackEvent('Player Interactions', 'Pause');
+            });
+
+            $.subscribe(coreMediaElementExtension.Extension.MEDIA_ENDED, function () {
+                _this.trackEvent('Player Interactions', 'Ended');
+            });
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function () {
+                var seeAlso = _this.extension.provider.getCurrentCanvas().seeAlso;
+
+                if (seeAlso && _this.extension.provider.isSeeAlsoEnabled()) {
+                    $.publish(baseExtension.BaseExtension.SHOW_MESSAGE, [seeAlso.markup]);
+                } else {
+                    $.publish(baseExtension.BaseExtension.HIDE_MESSAGE);
+                }
+            });
+        }
+        Behaviours.prototype.isGuest = function () {
+            var dispName = $.cookie("wlauthdisp").b64_to_utf8();
+            var userTypeIndex = dispName.indexOf("|~|");
+
+            if (dispName.substr(userTypeIndex + 3, 1) == 'G') {
+                return true;
+            }
+
+            return false;
+        };
+
+        Behaviours.prototype.isSaveToLightboxEnabled = function () {
+            if (this.extension.provider.config.options.saveToLightboxEnabled === false)
+                return false;
+            if (!this.extension.provider.isHomeDomain)
+                return false;
+            if (!this.extension.provider.isOnlyInstance)
+                return false;
+
+            return true;
+        };
+
+        Behaviours.prototype.isDownloadEnabled = function () {
+            switch (this.extension.provider.type) {
+                case "book":
+                    if (this.extension.provider.config.options.bookDownloadEnabled === false) {
+                        return false;
+                    }
+                    break;
+                case "video":
+                    if (this.extension.provider.config.options.videoDownloadEnabled === false) {
+                        return false;
+                    }
+                    break;
+                case "audio":
+                    if (this.extension.provider.config.options.audioDownloadEnabled === false) {
+                        return false;
+                    }
+                    break;
+            }
+
+            if (!this.extension.provider.sequence.extensions.permittedOperations.length) {
+                return false;
+            }
+
+            return true;
+        };
+
+        Behaviours.prototype.trackEvent = function (category, action, label, value) {
+            this.updateSlidingExpiration();
+
+            if (!label) {
+                label = this.getGenericTrackingLabel();
+            } else {
+                label += ', ' + this.getGenericTrackingLabel();
+            }
+
+            if (!value) {
+                window.trackEvent(category, action, label);
+            } else {
+                window.trackEvent(category, action, label, parseInt(value));
+            }
+        };
+
+        Behaviours.prototype.trackVariable = function (slot, name, value, scope) {
+            window.trackVariable(slot, name, value, scope);
+        };
+
+        Behaviours.prototype.getGenericTrackingLabel = function () {
+            var moreInfo = (this.extension.provider).moreInfo;
+
+            var format = 'n/a';
+            var institution = 'n/a';
+            var identifier = this.extension.provider.sequence.packageIdentifier;
+            var digicode = 'n/a';
+            var collectioncode = 'n/a';
+
+            if (moreInfo) {
+                if (moreInfo.bibDocType)
+                    format = moreInfo.bibDocType;
+                if (moreInfo.Institution)
+                    institution = moreInfo.Institution;
+                if (moreInfo.marc759a)
+                    digicode = moreInfo.marc759a;
+                if (moreInfo.marc905a)
+                    collectioncode = moreInfo.marc905a;
+            }
+
+            return 'Format: ' + format + ', Institution: ' + institution + ', Identifier: ' + identifier + ', Digicode: ' + digicode + ', Collection code: ' + collectioncode + ', Uri: ' + this.extension.provider.getEmbedDomain();
+        };
+
+        Behaviours.prototype.updateSlidingExpiration = function () {
+            if (this.extension.provider.manifest.extensions.isAllOpen)
+                return;
+
+            if (!this.isLoggedIn())
+                return;
+
+            var that = this;
+
+            $.ajax({
+                url: '/service/ttl',
+                type: 'GET',
+                success: function (time) {
+                    time = parseInt(time);
+
+                    if (time == -1)
+                        return;
+
+                    var ms = time * 1000;
+
+                    if (that.sessionTimer) {
+                        clearTimeout(that.sessionTimer);
+                    }
+
+                    that.sessionTimer = setTimeout(function () {
+                        that.extension.closeActiveDialogue();
+                        that.extension.showDialogue(that.extension.provider.config.modules.genericDialogue.content.sessionExpired, function () {
+                            that.sessionExpired();
+                        }, that.extension.provider.config.modules.genericDialogue.content.refresh, false);
+                    }, ms);
+                }
+            });
+        };
+
+        Behaviours.prototype.sessionExpired = function () {
+            this.extension.triggerSocket("onSessionExpired", null);
+        };
+
+        Behaviours.prototype.allowCloseLogin = function () {
+            return this.extension.provider.getTotalCanvases() != 1;
+        };
+
+        Behaviours.prototype.getInadequatePermissionsMessage = function (canvasIndex) {
+            var section = this.extension.provider.getStructureByCanvasIndex(canvasIndex);
+
+            switch (section.extensions.accessCondition.toLowerCase()) {
+                case 'requires registration':
+                    return this.extension.provider.config.modules.loginDialogue.content.requiresRegistrationPermissionsMessage;
+                case 'clinical images':
+                    return this.extension.provider.config.modules.loginDialogue.content.clinicalImagesPermissionsMessage;
+                case 'restricted files':
+                    return this.extension.provider.config.modules.loginDialogue.content.restrictedFilesPermissionsMessage;
+                case 'closed':
+                    return this.extension.provider.config.modules.loginDialogue.content.closedPermissionsMessage;
+            }
+
+            return this.extension.provider.config.modules.loginDialogue.inadequatePermissionsMessage;
+        };
+
+        Behaviours.prototype.showRestrictedFileDialogue = function (params) {
+            $.publish(restrictedFile.RestrictedFileDialogue.SHOW_RESTRICTED_FILE_DIALOGUE, [params]);
+        };
+
+        Behaviours.prototype.isAuthorised = function (canvasIndex) {
+            var section = this.extension.provider.getStructureByCanvasIndex(canvasIndex);
+
+            if (section.extensions.authStatus.toLowerCase() == "allowed") {
+                return true;
+            }
+
+            return false;
+        };
+
+        Behaviours.prototype.hasPermissionToViewCurrentItem = function () {
+            return this.isAuthorised(this.extension.provider.canvasIndex);
+        };
+
+        Behaviours.prototype.isLoggedIn = function () {
+            return document.cookie.indexOf("wlauth") >= 0;
+        };
+
+        Behaviours.prototype.showLoginDialogue = function (params) {
+            setTimeout(function () {
+                $.publish(login.LoginDialogue.SHOW_LOGIN_DIALOGUE, [params]);
+            }, 1);
+        };
+
+        Behaviours.prototype.nextAvailableIndex = function (direction, requestedIndex) {
+            for (var i = requestedIndex; i < this.extension.provider.sequence.assets.length && i >= 0; i += direction) {
+                if (i == requestedIndex)
+                    continue;
+                if (this.isAuthorised(i)) {
+                    return i;
+                }
+            }
+
+            return null;
+        };
+
+        Behaviours.prototype.viewNextAvailableIndex = function (requestedIndex, callback) {
+            var nextAvailableIndex;
+
+            if (requestedIndex < this.extension.provider.canvasIndex) {
+                nextAvailableIndex = this.nextAvailableIndex(-1, requestedIndex);
+            } else {
+                nextAvailableIndex = this.nextAvailableIndex(1, requestedIndex);
+            }
+
+            if (nextAvailableIndex) {
+                callback(nextAvailableIndex);
+            } else {
+                this.extension.showDialogue(this.extension.provider.config.modules.genericDialogue.content.noRemainingVisibleItems);
+            }
+        };
+
+        Behaviours.prototype.login = function (params) {
+            var _this = this;
+            var ajaxOptions = {
+                url: this.extension.provider.getLoginUri(params.username, params.password),
+                type: "GET",
+                dataType: "json",
+                xhrFields: { withCredentials: true },
+                success: function (result) {
+                    $.publish(login.LoginDialogue.HIDE_LOGIN_DIALOGUE);
+
+                    if (result.Message.toLowerCase() == "success") {
+                        _this.extension.triggerSocket(login.LoginDialogue.LOGIN, result.DisplayNameBase64);
+
+                        _this.trackVariable(1, 'Logged in', 'true', 2);
+
+                        params.successCallback(true);
+                    } else {
+                        params.failureCallback(result.Message, true);
+                    }
+                },
+                error: function (result) {
+                    $.publish(login.LoginDialogue.HIDE_LOGIN_DIALOGUE);
+
+                    params.failureCallback(_this.extension.provider.config.modules.genericDialogue.content.error, true);
+                }
+            };
+
+            $.ajax(ajaxOptions);
+        };
+
+        Behaviours.prototype.authorise = function (canvasIndex, successCallback, failureCallback) {
+            var section = this.extension.provider.getStructureByCanvasIndex(canvasIndex);
+
+            switch (section.extensions.authStatus.toLowerCase()) {
+                case 'allowed':
+                    successCallback(false);
+                    break;
+                case 'denied':
+                    if (this.isLoggedIn()) {
+                        if (section.extensions.accessCondition.toLowerCase() === "restricted files") {
+                            this.showRestrictedFileDialogue({
+                                requestedIndex: canvasIndex,
+                                allowClose: this.allowCloseLogin()
+                            });
+                        } else {
+                            this.showLoginDialogue({
+                                successCallback: successCallback,
+                                failureCallback: failureCallback,
+                                inadequatePermissions: true,
+                                requestedIndex: canvasIndex,
+                                allowClose: this.allowCloseLogin(),
+                                message: this.getInadequatePermissionsMessage(canvasIndex)
+                            });
+                        }
+                    } else {
+                        if (section.extensions.accessCondition.toLowerCase() === "requires registration") {
+                            this.showLoginDialogue({
+                                successCallback: successCallback,
+                                failureCallback: failureCallback,
+                                requestedIndex: canvasIndex,
+                                allowClose: false,
+                                allowGuestLogin: true,
+                                title: this.extension.provider.config.modules.loginDialogue.content.loginAsGuestTitle,
+                                message: this.extension.provider.config.modules.loginDialogue.content.loginAsGuestText
+                            });
+                        } else if (section.extensions.accessCondition.toLowerCase() === "restricted files") {
+                            this.showRestrictedFileDialogue({
+                                requestedIndex: canvasIndex,
+                                allowClose: this.allowCloseLogin()
+                            });
+                        } else {
+                            this.showLoginDialogue({
+                                successCallback: successCallback,
+                                failureCallback: failureCallback,
+                                requestedIndex: canvasIndex,
+                                allowClose: this.allowCloseLogin(),
+                                allowGuestLogin: false,
+                                message: this.getInadequatePermissionsMessage(canvasIndex)
+                            });
+                        }
+                    }
+                    break;
+                case 'expired':
+                    if (this.isGuest()) {
+                        this.showLoginDialogue({
+                            successCallback: successCallback,
+                            failureCallback: failureCallback,
+                            requestedIndex: canvasIndex,
+                            allowClose: false,
+                            allowGuestLogin: true,
+                            title: this.extension.provider.config.modules.loginDialogue.content.loginAsGuestTitle,
+                            message: this.extension.provider.config.modules.loginDialogue.content.loginAsGuestText
+                        });
+                    } else {
+                        this.showLoginDialogue({
+                            successCallback: successCallback,
+                            failureCallback: failureCallback,
+                            message: this.extension.provider.config.modules.loginDialogue.content.loginExpiredMessage,
+                            requestedIndex: canvasIndex,
+                            allowClose: this.allowCloseLogin()
+                        });
+                    }
+                    break;
+                case 'notacceptedtermsyet':
+                    this.extension.showDialogue(this.extension.provider.config.modules.genericDialogue.content.notAcceptedTermsYetMessage);
+                    break;
+            }
+        };
+
+        Behaviours.prototype.prefetchAsset = function (canvasIndex, successCallback) {
+            var _this = this;
+            var asset = this.extension.provider.getCanvasByIndex(canvasIndex);
+
+            var prefetchUri = this.extension.provider.getPrefetchUri(asset);
+
+            $.getJSON(prefetchUri, function (result) {
+                if (result.Success) {
+                    successCallback(asset.fileUri);
+                } else {
+                    _this.extension.showDialogue(result.Message);
+                    return;
+                }
+            });
+        };
+
+        Behaviours.prototype.viewIndex = function (canvasIndex, successCallback) {
+            var _this = this;
+            this.authorise(canvasIndex, function (reload) {
+                if (reload) {
+                    _this.extension.provider.reload(function () {
+                        $.publish(baseExtension.BaseExtension.RELOAD);
+                        _this.viewIndex(canvasIndex, successCallback);
+                    });
+                } else {
+                    _this.extension.provider.canvasIndex = canvasIndex;
+                    $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, [canvasIndex]);
+
+                    _this.trackEvent('Pages', 'Viewed', 'Index: ' + String(canvasIndex));
+
+                    if (successCallback) {
+                        successCallback(canvasIndex);
+                    }
+                }
+            }, function (message, retry) {
+                _this.extension.showDialogue(message, function () {
+                    if (retry) {
+                        _this.viewIndex(canvasIndex, successCallback);
+                    }
+                });
+            });
+        };
+        return Behaviours;
+    })();
+
+    
+    return Behaviours;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/wellcomeplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../coreplayer-seadragon-extension/extension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/wellcomeplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/wellcomeplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/wellcomeplayer-searchfooterpanel-module/footerPanel", "../../modules/wellcomeplayer-dialogues-module/loginDialogue", "../../modules/wellcomeplayer-dialogues-module/restrictedFileDialogue", "../../modules/wellcomeplayer-dialogues-module/conditionsDialogue", "../../modules/wellcomeplayer-dialogues-module/downloadDialogue", "../../modules/wellcomeplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../modules/wellcomeplayer-shared-module/behaviours"], function(require, exports, __baseExtension__, __coreExtension__, __utils__, __baseProvider__, __shell__, __header__, __left__, __right__, __footer__, __login__, __restrictedFile__, __conditions__, __download__, __center__, __embed__, __help__, __sharedBehaviours__) {
+    var baseExtension = __baseExtension__;
+    var coreExtension = __coreExtension__;
+    var utils = __utils__;
+    var baseProvider = __baseProvider__;
+    
+    var shell = __shell__;
+    var header = __header__;
+    var left = __left__;
+    var right = __right__;
+    var footer = __footer__;
+    var login = __login__;
+    var restrictedFile = __restrictedFile__;
+    var conditions = __conditions__;
+    var download = __download__;
+    var center = __center__;
+    var embed = __embed__;
+    var help = __help__;
+    
+    var sharedBehaviours = __sharedBehaviours__;
+    
+    
+    
+    
+    
+
+    var Extension = (function (_super) {
+        __extends(Extension, _super);
+        function Extension(provider) {
+            this.behaviours = new sharedBehaviours(this);
+
+            _super.call(this, provider);
+        }
+        Extension.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+
+            $(window).bind('unload', function () {
+                $.publish(baseExtension.BaseExtension.WINDOW_UNLOAD);
+            });
+
+            $.subscribe(footer.FooterPanel.VIEW_PAGE, function (e, index) {
+                _this.viewPage(index);
+            });
+
+            $.subscribe(footer.FooterPanel.SEARCH, function (e, terms) {
+                _this.triggerSocket(footer.FooterPanel.SEARCH, terms);
+                _this.search(terms);
+            });
+
+            $.subscribe(footer.FooterPanel.NEXT_SEARCH_RESULT, function () {
+                _this.nextSearchResult();
+            });
+
+            $.subscribe(footer.FooterPanel.PREV_SEARCH_RESULT, function () {
+                _this.prevSearchResult();
+            });
+
+            $.subscribe(footer.FooterPanel.SAVE, function (e) {
+                if (_this.isFullScreen) {
+                    $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
+                }
+                _this.save();
+            });
+
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                $.publish(download.DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE);
+            });
+
+            $.subscribe(login.LoginDialogue.LOGIN, function (e, params) {
+                _this.login(params);
+            });
+
+            $.subscribe(restrictedFile.RestrictedFileDialogue.NEXT_ITEM, function (e, requestedIndex) {
+                _this.viewNextAvailableIndex(requestedIndex, function (nextAvailableIndex) {
+                    _this.viewPage(nextAvailableIndex);
+                });
+            });
+
+            $.subscribe(Extension.CANVAS_INDEX_CHANGED, function (e, index) {
+                _this.triggerSocket(Extension.CANVAS_INDEX_CHANGED, index);
+            });
+        };
+
+        Extension.prototype.createModules = function () {
+            this.headerPanel = new header.PagingHeaderPanel(shell.Shell.$headerPanel);
+
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
+            }
+
+            this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
+            this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
+            this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
+
+            this.$conditionsDialogue = utils.Utils.createDiv('overlay conditions');
+            shell.Shell.$overlays.append(this.$conditionsDialogue);
+            this.conditionsDialogue = new conditions.ConditionsDialogue(this.$conditionsDialogue);
+
+            this.$loginDialogue = utils.Utils.createDiv('overlay login');
+            shell.Shell.$overlays.append(this.$loginDialogue);
+            this.loginDialogue = new login.LoginDialogue(this.$loginDialogue);
+
+            this.$restrictedFileDialogue = utils.Utils.createDiv('overlay restrictedFile');
+            shell.Shell.$overlays.append(this.$restrictedFileDialogue);
+            this.restrictedFileDialogue = new restrictedFile.RestrictedFileDialogue(this.$restrictedFileDialogue);
+
+            this.$embedDialogue = utils.Utils.createDiv('overlay embed');
+            shell.Shell.$overlays.append(this.$embedDialogue);
+            this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$downloadDialogue = utils.Utils.createDiv('overlay download');
+            shell.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new download.DownloadDialogue(this.$downloadDialogue);
+
+            this.$helpDialogue = utils.Utils.createDiv('overlay help');
+            shell.Shell.$overlays.append(this.$helpDialogue);
+            this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
+
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel.init();
+            }
+        };
+
+        Extension.prototype.search = function (terms) {
+            var searchUri = (this.provider).getSearchUri(terms);
+
+            var that = this;
+
+            $.getJSON(searchUri, function (results) {
+                if (results.length) {
+                    that.searchResults = results;
+
+                    $.publish(Extension.SEARCH_RESULTS, [terms, results]);
+
+                    that.viewPage(that.provider.canvasIndex);
+                } else {
+                    that.showDialogue(that.provider.config.modules.genericDialogue.content.noMatches, function () {
+                        $.publish(Extension.SEARCH_RESULTS_EMPTY);
+                    });
+                }
+            });
+        };
+
+        Extension.prototype.clearSearch = function () {
+            this.searchResults = null;
+
+            this.viewPage(this.provider.canvasIndex);
+        };
+
+        Extension.prototype.prevSearchResult = function () {
+            for (var i = this.searchResults.length - 1; i >= 0; i--) {
+                var result = this.searchResults[i];
+
+                if (result.index < this.provider.canvasIndex) {
+                    this.viewPage(result.index);
+                    break;
+                }
+            }
+        };
+
+        Extension.prototype.nextSearchResult = function () {
+            for (var i = 0; i < this.searchResults.length; i++) {
+                var result = this.searchResults[i];
+
+                if (result.index > this.provider.canvasIndex) {
+                    this.viewPage(result.index);
+                    break;
+                }
+            }
+        };
+
+        Extension.prototype.viewPage = function (canvasIndex) {
+            var _this = this;
+            this.viewIndex(canvasIndex, function () {
+                _this.prefetchAsset(canvasIndex, function () {
+                    var asset = _this.provider.sequence.assets[canvasIndex];
+
+                    var dziUri = (_this.provider).getImageUri(asset);
+
+                    $.publish(Extension.OPEN_MEDIA, [dziUri]);
+
+                    _this.setParam(baseProvider.params.canvasIndex, canvasIndex);
+
+                    _this.updateSlidingExpiration();
+                });
+            });
+        };
+
+        Extension.prototype.save = function () {
+            var _this = this;
+            if (!this.isLoggedIn()) {
+                this.showLoginDialogue({
+                    successCallback: function () {
+                        _this.save();
+                    },
+                    failureCallback: function (message) {
+                        _this.showDialogue(message, function () {
+                            _this.save();
+                        });
+                    },
+                    allowClose: true,
+                    message: this.provider.config.modules.genericDialogue.content.loginToSave
+                });
+            } else if (this.isGuest()) {
+                this.showLoginDialogue({
+                    successCallback: function () {
+                        _this.save();
+                    },
+                    failureCallback: function (message) {
+                        _this.showDialogue(message, function () {
+                            _this.save();
+                        });
+                    },
+                    allowClose: true,
+                    allowSocialLogin: true
+                });
+            } else {
+                var path = (this.provider).getSaveUri();
+                var thumbnail = this.getCropUri(true);
+                var title = this.provider.getTitle();
+                var asset = this.provider.getCurrentCanvas();
+                var label = asset.orderLabel;
+
+                var info = (this.provider).getSaveInfo(path, thumbnail, title, this.provider.canvasIndex, label);
+                this.triggerSocket(Extension.SAVE, info);
+            }
+        };
+
+        Extension.prototype.getViewer = function () {
+            return this.centerPanel.viewer;
+        };
+
+        Extension.prototype.getCropUri = function (relative) {
+            var page = this.provider.getCurrentCanvas();
+            var viewer = this.getViewer();
+            return (this.provider).getCrop(page, viewer, false, relative);
+        };
+
+        Extension.prototype.setParams = function () {
+            if (!this.provider.isHomeDomain)
+                return;
+
+            var hash = parent.document.location.hash;
+
+            if (hash != '' && !hash.contains('?')) {
+                if (hash.startsWith('#/'))
+                    hash = hash.replace('#/', '#');
+                var params = hash.replace('#', '').split('/');
+
+                parent.document.location.hash = '';
+
+                if (params[0]) {
+                    this.setParam(baseProvider.params.sequenceIndex, this.provider.sequenceIndex);
+                }
+
+                if (params[1]) {
+                    this.setParam(baseProvider.params.canvasIndex, params[1]);
+                }
+
+                if (params[2]) {
+                    if (params[2].indexOf('=') != -1) {
+                        var a = params[2].split('=');
+
+                        utils.Utils.setHashParameter(a[0], a[1], parent.document);
+                    } else {
+                        this.setParam(baseProvider.params.zoom, params[2]);
+                    }
+                }
+
+                if (params[3]) {
+                    var s = params[3];
+
+                    var a = s.split('=');
+
+                    utils.Utils.setHashParameter(a[0], a[1], parent.document);
+                }
+            } else {
+                this.setParam(baseProvider.params.sequenceIndex, this.provider.sequenceIndex);
+            }
+        };
+
+        Extension.prototype.viewIndex = function (canvasIndex, successCallback) {
+            this.behaviours.viewIndex(canvasIndex, successCallback);
+        };
+
+        Extension.prototype.prefetchAsset = function (canvasIndex, successCallback) {
+            this.behaviours.prefetchAsset(canvasIndex, successCallback);
+        };
+
+        Extension.prototype.authorise = function (canvasIndex, successCallback, failureCallback) {
+            this.behaviours.authorise(canvasIndex, successCallback, failureCallback);
+        };
+
+        Extension.prototype.login = function (params) {
+            this.behaviours.login(params);
+        };
+
+        Extension.prototype.viewNextAvailableIndex = function (requestedIndex, callback) {
+            this.behaviours.viewNextAvailableIndex(requestedIndex, callback);
+        };
+
+        Extension.prototype.nextAvailableIndex = function (direction, requestedIndex) {
+            return this.behaviours.nextAvailableIndex(direction, requestedIndex);
+        };
+
+        Extension.prototype.showLoginDialogue = function (params) {
+            this.behaviours.showLoginDialogue(params);
+        };
+
+        Extension.prototype.isLoggedIn = function () {
+            return this.behaviours.isLoggedIn();
+        };
+
+        Extension.prototype.isGuest = function () {
+            return this.behaviours.isGuest();
+        };
+
+        Extension.prototype.hasPermissionToViewCurrentItem = function () {
+            return this.behaviours.hasPermissionToViewCurrentItem();
+        };
+
+        Extension.prototype.isAuthorised = function (canvasIndex) {
+            return this.behaviours.isAuthorised(canvasIndex);
+        };
+
+        Extension.prototype.showRestrictedFileDialogue = function (params) {
+            this.behaviours.showRestrictedFileDialogue(params);
+        };
+
+        Extension.prototype.getInadequatePermissionsMessage = function (canvasIndex) {
+            return this.behaviours.getInadequatePermissionsMessage(canvasIndex);
+        };
+
+        Extension.prototype.allowCloseLogin = function () {
+            return this.behaviours.allowCloseLogin();
+        };
+
+        Extension.prototype.updateSlidingExpiration = function () {
+            this.behaviours.updateSlidingExpiration();
+        };
+
+        Extension.prototype.trackEvent = function (category, action, label, value) {
+            this.behaviours.trackEvent(category, action, label, value);
+        };
+
+        Extension.prototype.trackVariable = function (slot, name, value, scope) {
+            this.behaviours.trackVariable(slot, name, value, scope);
+        };
+
+        Extension.prototype.isSaveToLightboxEnabled = function () {
+            return this.behaviours.isSaveToLightboxEnabled();
+        };
+
+        Extension.prototype.isDownloadEnabled = function () {
+            return this.behaviours.isDownloadEnabled();
+        };
+        Extension.SEARCH_RESULTS = 'onSearchResults';
+        Extension.SEARCH_RESULTS_EMPTY = 'onSearchResults';
+        Extension.SAVE = 'onSave';
+        return Extension;
+    })(coreExtension.Extension);
+    exports.Extension = Extension;
+});
+
+define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, __utils__, __TreeNode__, __Thumb__) {
+    var utils = __utils__;
+    
+    var TreeNode = __TreeNode__;
+    var Thumb = __Thumb__;
+
+    (function (params) {
+        params[params["sequenceIndex"] = 0] = "sequenceIndex";
+        params[params["canvasIndex"] = 1] = "canvasIndex";
+        params[params["zoom"] = 2] = "zoom";
+        params[params["rotation"] = 3] = "rotation";
+    })(exports.params || (exports.params = {}));
+    var params = exports.params;
+
+    var BaseProvider = (function () {
+        function BaseProvider(config, manifest) {
+            this.paramMap = ['si', 'ci', 'z', 'r'];
+            this.options = {
+                thumbsUriTemplate: "{0}{1}",
+                timestampUris: false,
+                mediaUriTemplate: "{0}{1}"
+            };
+            this.config = config;
+            this.manifest = manifest;
+
+            this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
+
+            this.dataUri = utils.Utils.getQuerystringParameter('du');
+            this.embedDomain = utils.Utils.getQuerystringParameter('ed');
+            this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
+            this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
+            this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
+            this.isReload = utils.Utils.getQuerystringParameter('rl') === "true";
+            this.domain = utils.Utils.getQuerystringParameter('d');
+            this.isLightbox = utils.Utils.getQuerystringParameter('lb') === "true";
+
+            if (this.isHomeDomain && !this.isReload) {
+                this.sequenceIndex = parseInt(utils.Utils.getHashParameter(this.paramMap[params.sequenceIndex], parent.document));
+            }
+
+            if (!this.sequenceIndex) {
+                this.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(this.paramMap[params.sequenceIndex])) || 0;
+            }
+
+            this.load();
+        }
+        BaseProvider.prototype.load = function () {
+            this.sequence = this.manifest.sequences[this.sequenceIndex];
+
+            for (var i = 0; i < this.manifest.sequences.length; i++) {
+                if (!this.manifest.sequences[i].canvases) {
+                    this.manifest.sequences[i] = {};
+                }
+            }
+
+            this.parseManifest();
+
+            this.parseStructure();
+        };
+
+        BaseProvider.prototype.reload = function (callback) {
+            var _this = this;
+            var manifestUri = this.dataUri;
+
+            if (this.options.dataBaseUri) {
+                manifestUri = this.options.dataBaseUri + this.dataUri;
+            }
+
+            manifestUri = this.addTimestamp(manifestUri);
+
+            window.manifestCallback = function (data) {
+                _this.manifest = data;
+
+                _this.load();
+
+                callback();
+            };
+
+            $.ajax({
+                url: manifestUri,
+                type: 'GET',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'manifestCallback'
+            });
+        };
+
+        BaseProvider.prototype.getManifestType = function () {
+            return 'monograph';
+        };
+
+        BaseProvider.prototype.getSequenceType = function () {
+            return 'seadragon-iiif';
+        };
+
+        BaseProvider.prototype.getTitle = function () {
+            return this.manifest.label;
+        };
+
+        BaseProvider.prototype.getSeeAlso = function () {
+            return this.manifest.seeAlso;
+        };
+
+        BaseProvider.prototype.getCanvasOrderLabel = function (canvas) {
+            return null;
+        };
+
+        BaseProvider.prototype.getLastCanvasOrderLabel = function () {
+            return '-';
+        };
+
+        BaseProvider.prototype.isSeeAlsoEnabled = function () {
+            return this.config.options.seeAlsoEnabled !== false;
+        };
+
+        BaseProvider.prototype.getCanvasByIndex = function (index) {
+            return this.sequence.canvases[index];
+        };
+
+        BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
+            var canvas = this.getCanvasByIndex(index);
+            return this.getCanvasStructure(canvas);
+        };
+
+        BaseProvider.prototype.getCanvasStructure = function (canvas) {
+            if (canvas.structures) {
+                return canvas.structures.last();
+            }
+
+            return null;
+        };
+
+        BaseProvider.prototype.getCurrentCanvas = function () {
+            return this.sequence.canvases[this.canvasIndex];
+        };
+
+        BaseProvider.prototype.getTotalCanvases = function () {
+            return this.sequence.canvases.length;
+        };
+
+        BaseProvider.prototype.isMultiCanvas = function () {
+            return this.sequence.canvases.length > 1;
+        };
+
+        BaseProvider.prototype.isMultiSequence = function () {
+            return this.manifest.sequences.length > 1;
+        };
+
+        BaseProvider.prototype.getMediaUri = function (mediaUri) {
+            var baseUri = this.options.mediaBaseUri || "";
+            var template = this.options.mediaUriTemplate;
+            var uri = String.prototype.format(template, baseUri, mediaUri);
+
+            return uri;
+        };
+
+        BaseProvider.prototype.setMediaUri = function (canvas) {
+        };
+
+        BaseProvider.prototype.getThumbUri = function (canvas, thumbsBaseUri, thumbsUriTemplate) {
+            var baseUri = thumbsBaseUri ? thumbsBaseUri : this.options.thumbsBaseUri || this.options.dataBaseUri || "";
+            var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
+
+            return null;
+        };
+
+        BaseProvider.prototype.addTimestamp = function (uri) {
+            return uri + "?t=" + utils.Utils.getTimeStamp();
+        };
+
+        BaseProvider.prototype.isDeepLinkingEnabled = function () {
+            return (this.isHomeDomain && this.isOnlyInstance);
+        };
+
+        BaseProvider.prototype.getThumbs = function () {
+            var thumbs = new Array();
+
+            for (var i = 0; i < this.getTotalCanvases(); i++) {
+                var canvas = this.sequence.canvases[i];
+
+                var heightRatio = canvas.height / canvas.width;
+
+                var width = 90;
+                var height = 150;
+
+                if (heightRatio) {
+                    height = Math.floor(width * heightRatio);
+                }
+
+                var uri;
+
+                if (canvas.resources) {
+                    uri = canvas.resources[0].resource.service['@id'];
+                } else if (canvas.images) {
+                    uri = canvas.images[0].resource.service['@id'];
+                }
+
+                var tile = 'full/' + width + ',' + height + '/0/native.jpg';
+
+                if (uri.endsWith('/')) {
+                    uri += tile;
+                } else {
+                    uri += '/' + tile;
+                }
+
+                thumbs.push(new Thumb(i, uri, canvas.label, height, true));
+            }
+
+            return thumbs;
+        };
+
+        BaseProvider.prototype.parseManifest = function () {
+        };
+
+        BaseProvider.prototype.getRootStructure = function () {
+            return this.rootStructure;
+        };
+
+        BaseProvider.prototype.parseStructure = function () {
+            this.rootStructure = {
+                path: "",
+                structures: []
+            };
+
+            if (!this.manifest.structures)
+                return;
+
+            for (var i = 0; i < this.manifest.structures.length; i++) {
+                var structure = this.manifest.structures[i];
+                this.rootStructure.structures.push(structure);
+                structure.path = "/" + i;
+
+                for (var j = 0; j < structure.canvases.length; j++) {
+                    var canvas = this.getCanvasById(structure.canvases[j]);
+
+                    if (!canvas) {
+                        structure.canvases[j] = null;
+                        continue;
+                    }
+
+                    if (!canvas.structures)
+                        canvas.structures = [];
+                    canvas.structures.push(structure);
+
+                    structure.canvases[j] = canvas;
+                }
+            }
+        };
+
+        BaseProvider.prototype.getStructureIndex = function (path) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+
+                if (!canvas.structures)
+                    continue;
+
+                for (var j = 0; j < canvas.structures.length; j++) {
+                    var structure = canvas.structures[j];
+
+                    if (structure.path == path) {
+                        return i;
+                    }
+                }
+            }
+
+            return null;
+        };
+
+        BaseProvider.prototype.getCanvasById = function (id) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var c = this.sequence.canvases[i];
+
+                if (c['@id'] === id) {
+                    return c;
+                }
+            }
+
+            return null;
+        };
+
+        BaseProvider.prototype.getStructureByIndex = function (structure, index) {
+            return structure.structures[index];
+        };
+
+        BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
+            return null;
+        };
+
+        BaseProvider.prototype.getManifestSeeAlsoUri = function (manifest) {
+            return null;
+        };
+
+        BaseProvider.prototype.getTree = function () {
+            var rootStructure = this.getRootStructure();
+
+            this.treeRoot = new TreeNode('root');
+            this.treeRoot.label = "root";
+            this.treeRoot.data = rootStructure;
+            this.treeRoot.data.type = "manifest";
+            rootStructure.treeNode = this.treeRoot;
+
+            for (var i = 0; i < rootStructure.structures.length; i++) {
+                var structure = rootStructure.structures[i];
+
+                var node = new TreeNode();
+                this.treeRoot.addNode(node);
+
+                node.label = structure.label;
+                node.data = structure;
+                node.data.type = "structure";
+                structure.treeNode = node;
+            }
+
+            return this.treeRoot;
+        };
+
+        BaseProvider.prototype.getDomain = function () {
+            var parts = utils.Utils.getUrlParts(this.dataUri);
+            return parts.host;
+        };
+
+        BaseProvider.prototype.getEmbedDomain = function () {
+            return this.embedDomain;
+        };
+
+        BaseProvider.prototype.getMetaData = function (callback) {
+            callback(this.manifest.metadata);
+        };
+        return BaseProvider;
+    })();
+    exports.BaseProvider = BaseProvider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exports", "../../modules/coreplayer-shared-module/baseIIIFProvider"], function(require, exports, __baseProvider__) {
+    var baseProvider = __baseProvider__;
+    
+    
+
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(config, manifest) {
+            _super.call(this, config, manifest);
+
+            this.config.options = $.extend(true, this.options, {
+                imageUriTemplate: "{0}{1}"
+            }, config.options);
+        }
+        Provider.prototype.getImageUri = function (canvas, imageBaseUri, imageUriTemplate) {
+            var baseUri = imageBaseUri ? imageBaseUri : this.options.imageBaseUri || this.options.dataBaseUri || "";
+            var template = imageUriTemplate ? imageUriTemplate : this.options.imageUriTemplate;
+
+            var iiifUri;
+
+            if (canvas.resources) {
+                iiifUri = canvas.resources[0].resource.service['@id'];
+            } else if (canvas.images) {
+                iiifUri = canvas.images[0].resource.service['@id'];
+            }
+
+            if (iiifUri.endsWith('/')) {
+                iiifUri += 'info.json';
+            } else {
+                iiifUri += '/info.json';
+            }
+
+            var uri = String.prototype.format(template, baseUri, iiifUri);
+
+            return uri;
+        };
+
+        Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, embedTemplate) {
+            var esu = this.options.embedScriptUri || this.embedScriptUri;
+
+            var template = this.options.embedTemplate || embedTemplate;
+
+            var configUri = this.config.uri || '';
+
+            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, canvasIndex, zoom, configUri, width, height, esu);
+
+            return script;
+        };
+        return Provider;
+    })(baseProvider.BaseProvider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/wellcomeplayer-seadragon-extension/iiifProvider',["require", "exports", "../coreplayer-seadragon-extension/iiifProvider", "../../utils", "../../modules/coreplayer-shared-module/treeNode"], function(require, exports, __coreProvider__, __utils__, __TreeNode__) {
+    var coreProvider = __coreProvider__;
+    var utils = __utils__;
+    
+    var TreeNode = __TreeNode__;
+    
+
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(config, manifest) {
+            _super.call(this, config, manifest);
+
+            $.extend(true, this.config.options, {
+                moreInfoUriTemplate: '{0}{1}',
+                autoCompleteUriTemplate: '{0}{1}',
+                searchUriTemplate: '{0}/service/search/{1}/{2}?t={3}',
+                prefetchUriTemplate: '{0}/fc/{1}/{2}?callback=?',
+                assetsUriTemplate: '{0}{1}',
+                loginUriTemplate: '{0}/service/login?username={1}&password={2}&setCookies=true&t={3}',
+                cropImageUriTemplate: '{0}/crop/{1}/{2}/{3}/jp2?left={4}&top={5}&width={6}&height={7}&scaleWidth={8}&scaleHeight={9}&origWidth={10}&origHeight={11}&RGN={12}',
+                actualImageUriTemplate: '{0}/actual/{1}/{2}/{3}/jp2',
+                confineImageUriTemplate: '{0}/confine/{1}/{2}/{3}/jp2?boundingWidth={4}&boundingHeight={5}&origWidth={6}&origHeight={7}',
+                pdfUriTemplate: '{0}/pdf/{1}/{2}/{3}_{2}.pdf',
+                isSecureLogin: false,
+                embedScriptUri: 'http://wellcomelibrary.org/spas/player/build/wellcomeplayer/js/embed.js'
+            });
+        }
+        Provider.prototype.getMoreInfoUri = function () {
+            var baseUri = this.options.dataBaseUri || "";
+            var uri = baseUri + this.manifest.bibliographicInformation;
+
+            if (this.options.timestampUris)
+                uri = this.addTimestamp(uri);
+
+            return uri;
+        };
+
+        Provider.prototype.getSearchUri = function (terms) {
+            var baseUri = this.config.options.searchBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.searchUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, terms);
+        };
+
+        Provider.prototype.getAutoCompleteUri = function () {
+            var baseUri = this.config.options.autoCompleteBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.autoCompleteUriTemplate, baseUri, this.sequence.autoCompletePath);
+        };
+
+        Provider.prototype.getPrefetchUri = function (asset) {
+            var baseUri = this.config.options.prefetchBaseUri || this.config.options.dataBaseUri || "";
+            var fileExtension = asset.fileUri.substr(asset.fileUri.indexOf('.') + 1);
+            return String.prototype.format(this.config.options.prefetchUriTemplate, baseUri, asset.identifier, fileExtension);
+        };
+
+        Provider.prototype.getAssetUri = function (asset) {
+            var baseUri = this.config.options.assetsBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.assetsUriTemplate, baseUri, asset.fileUri);
+        };
+
+        Provider.prototype.getLoginUri = function (username, password) {
+            var baseUri = this.config.options.loginBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.loginUriTemplate, baseUri, username, password, utils.Utils.getTimeStamp());
+            if (this.config.options.isSecureLogin)
+                uri = uri.replace("http:", "https:");
+            return uri;
+        };
+
+        Provider.prototype.getCrop = function (asset, viewer, download, relativeUri) {
+            if (typeof download === "undefined") { download = false; }
+            if (typeof relativeUri === "undefined") { relativeUri = false; }
+            var bounds = viewer.viewport.getBounds(true);
+            var size = viewer.viewport.getContainerSize();
+            var zoom = viewer.viewport.getZoom(true);
+
+            var top = bounds.y;
+            var left = bounds.x;
+            var height = bounds.height;
+            var width = bounds.width;
+
+            top = 1 / (asset.height / parseInt(String(asset.width * top)));
+            height = 1 / (asset.height / parseInt(String(asset.width * height)));
+
+            var viewportWidthPx = size.x;
+            var viewportHeightPx = size.y;
+
+            var imageWidthPx = parseInt(String(viewportWidthPx * zoom));
+            var ratio = asset.width / imageWidthPx;
+            var imageHeightPx = parseInt(String(asset.height / ratio));
+
+            var viewportLeftPx = parseInt(String(left * imageWidthPx));
+            var viewportTopPx = parseInt(String(top * imageHeightPx));
+
+            var rect1Left = 0;
+            var rect1Right = imageWidthPx;
+            var rect1Top = 0;
+            var rect1Bottom = imageHeightPx;
+
+            var rect2Left = viewportLeftPx;
+            var rect2Right = viewportLeftPx + viewportWidthPx;
+            var rect2Top = viewportTopPx;
+            var rect2Bottom = viewportTopPx + viewportHeightPx;
+
+            var cropWidth = Math.max(0, Math.min(rect1Right, rect2Right) - Math.max(rect1Left, rect2Left));
+            var cropHeight = Math.max(0, Math.min(rect1Bottom, rect2Bottom) - Math.max(rect1Top, rect2Top));
+
+            var ratio2 = asset.width / imageWidthPx;
+
+            var widthPx = parseInt(String(cropWidth * ratio2));
+            var heightPx = parseInt(String(cropHeight * ratio2));
+
+            var topPx = parseInt(String(asset.height * top));
+            var leftPx = parseInt(String(asset.width * left));
+
+            if (topPx < 0)
+                topPx = 0;
+            if (leftPx < 0)
+                leftPx = 0;
+
+            var rgn = left + "," + top + "," + width + "," + height;
+
+            var baseUri = this.config.options.cropBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.cropImageUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, asset.identifier, leftPx, topPx, widthPx, heightPx, cropWidth, cropHeight, asset.width, asset.height, rgn);
+
+            if (download) {
+                uri += "&download=true";
+            }
+
+            if (relativeUri) {
+                uri = utils.Utils.convertToRelativeUrl(uri);
+            }
+
+            return uri;
+        };
+
+        Provider.prototype.getImage = function (asset, highRes, download) {
+            if (typeof download === "undefined") { download = false; }
+            var uri;
+
+            if (highRes) {
+                uri = this.getActualImageUri(asset);
+                if (download)
+                    uri += "?download=true";
+            } else {
+                uri = this.getConfinedImageUri(asset, 1000, 1000);
+                if (download)
+                    uri += "&download=true";
+            }
+
+            return uri;
+        };
+
+        Provider.prototype.getPDF = function (download) {
+            if (typeof download === "undefined") { download = false; }
+            var baseUri = this.config.options.pdfBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.pdfUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, this.manifest.identifier);
+
+            if (download) {
+                uri += "?download=true";
+            }
+
+            return uri;
+        };
+
+        Provider.prototype.getActualImageUri = function (asset) {
+            var baseUri = this.config.options.actualImageBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.actualImageUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, asset.identifier);
+        };
+
+        Provider.prototype.getConfinedImageUri = function (asset, width, height) {
+            var baseUri = this.config.options.confineImageBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.confineImageUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, asset.identifier, width, height, asset.width, asset.height);
+        };
+
+        Provider.prototype.getSaveUri = function () {
+            var absUri = parent.document.URL;
+            var parts = utils.Utils.getUrlParts(absUri);
+            var relUri = parts.pathname + parent.document.location.hash;
+
+            if (!relUri.startsWith("/")) {
+                relUri = "/" + relUri;
+            }
+
+            return relUri;
+        };
+
+        Provider.prototype.getSaveInfo = function (path, thumbnail, title, index, label) {
+            return {
+                "CaptureType": "i",
+                "Path": path,
+                "Thumbnail": thumbnail,
+                "Title": title,
+                "ImageIndex": index,
+                "PageNumber": label
+            };
+        };
+
+        Provider.prototype.getJournalTree = function (sortType) {
+            return new TreeNode();
+        };
+        return Provider;
+    })(coreProvider.Provider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/coreplayer-seadragon-extension/provider',["require", "exports", "../../modules/coreplayer-shared-module/baseProvider"], function(require, exports, __baseProvider__) {
+    var baseProvider = __baseProvider__;
+    
+    
+
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(config, manifest) {
+            _super.call(this, config, manifest);
+
+            this.config.options = $.extend(true, this.options, {
+                dziUriTemplate: "{0}{1}"
+            }, config.options);
+        }
+        Provider.prototype.getImageUri = function (asset, dziBaseUri, dziUriTemplate) {
+            var baseUri = dziBaseUri ? dziBaseUri : this.options.dziBaseUri || this.options.dataBaseUri || "";
+            var template = dziUriTemplate ? dziUriTemplate : this.options.dziUriTemplate;
+            var uri = String.prototype.format(template, baseUri, asset.dziUri);
+
+            return uri;
+        };
+
+        Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, embedTemplate) {
+            var esu = this.options.embedScriptUri || this.embedScriptUri;
+
+            var template = this.options.embedTemplate || embedTemplate;
+
+            var configUri = this.config.uri || '';
+
+            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, canvasIndex, zoom, configUri, width, height, esu);
+
+            return script;
+        };
+        return Provider;
+    })(baseProvider.BaseProvider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/wellcomeplayer-seadragon-extension/provider',["require", "exports", "../coreplayer-seadragon-extension/provider", "../../utils", "../../modules/coreplayer-shared-module/treeNode", "./journalSortType"], function(require, exports, __coreProvider__, __utils__, __TreeNode__, __journalSortType__) {
+    var coreProvider = __coreProvider__;
+    var utils = __utils__;
+    
+    var TreeNode = __TreeNode__;
+    var journalSortType = __journalSortType__;
+
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(config, manifest) {
+            _super.call(this, config, manifest);
+
+            $.extend(true, this.config.options, {
+                moreInfoUriTemplate: '{0}{1}',
+                autoCompleteUriTemplate: '{0}{1}',
+                searchUriTemplate: '{0}/service/search/{1}/{2}?t={3}',
+                prefetchUriTemplate: '{0}/fc/{1}/{2}?callback=?',
+                assetsUriTemplate: '{0}{1}',
+                loginUriTemplate: '{0}/service/login?username={1}&password={2}&setCookies=true&t={3}',
+                cropImageUriTemplate: '{0}/crop/{1}/{2}/{3}/jp2?left={4}&top={5}&width={6}&height={7}&scaleWidth={8}&scaleHeight={9}&origWidth={10}&origHeight={11}&RGN={12}',
+                actualImageUriTemplate: '{0}/actual/{1}/{2}/{3}/jp2',
+                confineImageUriTemplate: '{0}/confine/{1}/{2}/{3}/jp2?boundingWidth={4}&boundingHeight={5}&origWidth={6}&origHeight={7}',
+                pdfUriTemplate: '{0}/pdf/{1}/{2}/{3}_{2}.pdf',
+                isSecureLogin: false,
+                embedScriptUri: 'http://wellcomelibrary.org/spas/player/build/wellcomeplayer/js/embed.js'
+            });
+        }
+        Provider.prototype.getMoreInfoUri = function () {
+            var baseUri = this.options.dataBaseUri || "";
+            var uri = baseUri + this.manifest.bibliographicInformation;
+
+            if (this.options.timestampUris)
+                uri = this.addTimestamp(uri);
+
+            return uri;
+        };
+
+        Provider.prototype.getSearchUri = function (terms) {
+            var baseUri = this.config.options.searchBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.searchUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, terms);
+        };
+
+        Provider.prototype.getAutoCompleteUri = function () {
+            var baseUri = this.config.options.autoCompleteBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.autoCompleteUriTemplate, baseUri, this.sequence.autoCompletePath);
+        };
+
+        Provider.prototype.getPrefetchUri = function (asset) {
+            var baseUri = this.config.options.prefetchBaseUri || this.config.options.dataBaseUri || "";
+            var fileExtension = asset.fileUri.substr(asset.fileUri.indexOf('.') + 1);
+            return String.prototype.format(this.config.options.prefetchUriTemplate, baseUri, asset.identifier, fileExtension);
+        };
+
+        Provider.prototype.getAssetUri = function (asset) {
+            var baseUri = this.config.options.assetsBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.assetsUriTemplate, baseUri, asset.fileUri);
+        };
+
+        Provider.prototype.getLoginUri = function (username, password) {
+            var baseUri = this.config.options.loginBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.loginUriTemplate, baseUri, username, password, utils.Utils.getTimeStamp());
+            if (this.config.options.isSecureLogin)
+                uri = uri.replace("http:", "https:");
+            return uri;
+        };
+
+        Provider.prototype.getCrop = function (asset, viewer, download, relativeUri) {
+            if (typeof download === "undefined") { download = false; }
+            if (typeof relativeUri === "undefined") { relativeUri = false; }
+            var bounds = viewer.viewport.getBounds(true);
+            var size = viewer.viewport.getContainerSize();
+            var zoom = viewer.viewport.getZoom(true);
+
+            var top = bounds.y;
+            var left = bounds.x;
+            var height = bounds.height;
+            var width = bounds.width;
+
+            top = 1 / (asset.height / parseInt(String(asset.width * top)));
+            height = 1 / (asset.height / parseInt(String(asset.width * height)));
+
+            var viewportWidthPx = size.x;
+            var viewportHeightPx = size.y;
+
+            var imageWidthPx = parseInt(String(viewportWidthPx * zoom));
+            var ratio = asset.width / imageWidthPx;
+            var imageHeightPx = parseInt(String(asset.height / ratio));
+
+            var viewportLeftPx = parseInt(String(left * imageWidthPx));
+            var viewportTopPx = parseInt(String(top * imageHeightPx));
+
+            var rect1Left = 0;
+            var rect1Right = imageWidthPx;
+            var rect1Top = 0;
+            var rect1Bottom = imageHeightPx;
+
+            var rect2Left = viewportLeftPx;
+            var rect2Right = viewportLeftPx + viewportWidthPx;
+            var rect2Top = viewportTopPx;
+            var rect2Bottom = viewportTopPx + viewportHeightPx;
+
+            var cropWidth = Math.max(0, Math.min(rect1Right, rect2Right) - Math.max(rect1Left, rect2Left));
+            var cropHeight = Math.max(0, Math.min(rect1Bottom, rect2Bottom) - Math.max(rect1Top, rect2Top));
+
+            var ratio2 = asset.width / imageWidthPx;
+
+            var widthPx = parseInt(String(cropWidth * ratio2));
+            var heightPx = parseInt(String(cropHeight * ratio2));
+
+            var topPx = parseInt(String(asset.height * top));
+            var leftPx = parseInt(String(asset.width * left));
+
+            if (topPx < 0)
+                topPx = 0;
+            if (leftPx < 0)
+                leftPx = 0;
+
+            var rgn = left + "," + top + "," + width + "," + height;
+
+            var baseUri = this.config.options.cropBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.cropImageUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, asset.identifier, leftPx, topPx, widthPx, heightPx, cropWidth, cropHeight, asset.width, asset.height, rgn);
+
+            if (download) {
+                uri += "&download=true";
+            }
+
+            if (relativeUri) {
+                uri = utils.Utils.convertToRelativeUrl(uri);
+            }
+
+            return uri;
+        };
+
+        Provider.prototype.getImage = function (asset, highRes, download) {
+            if (typeof download === "undefined") { download = false; }
+            var uri;
+
+            if (highRes) {
+                uri = this.getActualImageUri(asset);
+                if (download)
+                    uri += "?download=true";
+            } else {
+                uri = this.getConfinedImageUri(asset, 1000, 1000);
+                if (download)
+                    uri += "&download=true";
+            }
+
+            return uri;
+        };
+
+        Provider.prototype.getPDF = function (download) {
+            if (typeof download === "undefined") { download = false; }
+            var baseUri = this.config.options.pdfBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.pdfUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, this.manifest.identifier);
+
+            if (download) {
+                uri += "?download=true";
+            }
+
+            return uri;
+        };
+
+        Provider.prototype.getActualImageUri = function (asset) {
+            var baseUri = this.config.options.actualImageBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.actualImageUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, asset.identifier);
+        };
+
+        Provider.prototype.getConfinedImageUri = function (asset, width, height) {
+            var baseUri = this.config.options.confineImageBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.confineImageUriTemplate, baseUri, this.manifest.identifier, this.sequenceIndex, asset.identifier, width, height, asset.width, asset.height);
+        };
+
+        Provider.prototype.getSaveUri = function () {
+            var absUri = parent.document.URL;
+            var parts = utils.Utils.getUrlParts(absUri);
+            var relUri = parts.pathname + parent.document.location.hash;
+
+            if (!relUri.startsWith("/")) {
+                relUri = "/" + relUri;
+            }
+
+            return relUri;
+        };
+
+        Provider.prototype.getSaveInfo = function (path, thumbnail, title, index, label) {
+            return {
+                "CaptureType": "i",
+                "Path": path,
+                "Thumbnail": thumbnail,
+                "Title": title,
+                "ImageIndex": index,
+                "PageNumber": label
+            };
+        };
+
+        Provider.prototype.getJournalTree = function (sortType) {
+            var treeRoot = new TreeNode('root');
+
+            var rootStructure = this.manifest.rootStructure;
+
+            if (!rootStructure || rootStructure.structures.length == 0)
+                return null;
+
+            if (sortType == journalSortType.JournalSortType.date) {
+                this.getJournalTreeNodesByDate(treeRoot, rootStructure.structures);
+            } else if (sortType == journalSortType.JournalSortType.volume) {
+                this.getJournalTreeNodesByVolume(treeRoot, rootStructure.structures);
+            }
+
+            return treeRoot;
+        };
+
+        Provider.prototype.getJournalTreeNodesByDate = function (node, structures) {
+            this.createDecadeNodes(node, structures);
+            this.createYearNodes(node, structures);
+            this.createMonthNodes(node, structures);
+            this.createDateIssueNodes(node, structures);
+        };
+
+        Provider.prototype.createDecadeNodes = function (node, structures) {
+            var decadeNode;
+            var lastDecade;
+
+            for (var i = 0; i < structures.length; i++) {
+                var structure = structures[i];
+                var year = this.getStructureYear(structure);
+                var decade = Number(year.toString().substr(2, 1));
+                var endYear = Number(year.toString().substr(0, 3) + "9");
+
+                if (decade != lastDecade) {
+                    decadeNode = new TreeNode();
+                    decadeNode.label = year + " - " + endYear;
+                    decadeNode.data.startYear = year;
+                    decadeNode.data.endYear = endYear;
+                    node.addNode(decadeNode);
+                    lastDecade = decade;
+                }
+            }
+        };
+
+        Provider.prototype.getDecadeNode = function (node, year) {
+            for (var i = 0; i < node.nodes.length; i++) {
+                var n = node.nodes[i];
+                if (year >= n.data.startYear && year <= n.data.endYear)
+                    return n;
+            }
+
+            return null;
+        };
+
+        Provider.prototype.createYearNodes = function (node, structures) {
+            var yearNode;
+            var lastYear;
+
+            for (var i = 0; i < structures.length; i++) {
+                var structure = structures[i];
+                var year = this.getStructureYear(structure);
+
+                if (year != lastYear) {
+                    yearNode = new TreeNode();
+                    yearNode.label = year.toString();
+                    yearNode.data.year = year;
+
+                    var decadeNode = this.getDecadeNode(node, year);
+
+                    decadeNode.addNode(yearNode);
+                    lastYear = year;
+                }
+            }
+        };
+
+        Provider.prototype.getYearNode = function (node, year) {
+            for (var i = 0; i < node.nodes.length; i++) {
+                var n = node.nodes[i];
+                if (year == n.data.year)
+                    return n;
+            }
+
+            return null;
+        };
+
+        Provider.prototype.createMonthNodes = function (node, structures) {
+            var monthNode;
+            var lastMonth;
+
+            for (var i = 0; i < structures.length; i++) {
+                var structure = structures[i];
+                var year = this.getStructureYear(structure);
+                var month = this.getStructureMonth(structure);
+
+                if (month != lastMonth) {
+                    monthNode = new TreeNode();
+                    monthNode.label = this.getStructureDisplayMonth(structure);
+                    monthNode.data.year = year;
+                    monthNode.data.month = month;
+
+                    var decadeNode = this.getDecadeNode(node, year);
+                    var yearNode = this.getYearNode(decadeNode, year);
+
+                    yearNode.addNode(monthNode);
+                    lastMonth = month;
+                }
+            }
+        };
+
+        Provider.prototype.getMonthNode = function (node, month) {
+            for (var i = 0; i < node.nodes.length; i++) {
+                var n = node.nodes[i];
+                if (month == n.data.month)
+                    return n;
+            }
+
+            return null;
+        };
+
+        Provider.prototype.createDateIssueNodes = function (node, structures) {
+            for (var i = 0; i < structures.length; i++) {
+                var structure = structures[i];
+                var year = this.getStructureYear(structure);
+                var month = this.getStructureMonth(structure);
+
+                var issueNode = new TreeNode();
+                issueNode.label = this.getStructureDisplayDate(structure);
+                issueNode.data = structure;
+                issueNode.data.type = "manifest";
+                issueNode.data.year = year;
+                issueNode.data.month = month;
+
+                structure.treeNode = issueNode;
+
+                var decadeNode = this.getDecadeNode(node, year);
+                var yearNode = this.getYearNode(decadeNode, year);
+                var monthNode = this.getMonthNode(yearNode, month);
+
+                monthNode.addNode(issueNode);
+            }
+        };
+
+        Provider.prototype.getStructureYear = function (structure) {
+            return Number(structure.seeAlso.data.year);
+        };
+
+        Provider.prototype.getStructureMonth = function (structure) {
+            return Number(structure.seeAlso.data.month + 1);
+        };
+
+        Provider.prototype.getStructureDisplayMonth = function (structure) {
+            var res = structure.seeAlso.data.displayDate.match(/Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:emeber)?|Dec(?:ember)?/gi);
+
+            return res[0];
+        };
+
+        Provider.prototype.getStructureDisplayDate = function (structure) {
+            return structure.seeAlso.data.displayDate.replace('. ', ' ');
+        };
+
+        Provider.prototype.getJournalTreeNodesByVolume = function (tree, structures) {
+            this.createVolumeNodes(tree, structures);
+            this.createVolumeIssueNodes(tree, structures);
+        };
+
+        Provider.prototype.createVolumeNodes = function (node, structures) {
+            var volumeNode;
+            var lastVolume;
+
+            for (var i = 0; i < structures.length; i++) {
+                var structure = structures[i];
+                var volume = this.getStructureVolume(structure);
+
+                if (volume != lastVolume) {
+                    volumeNode = new TreeNode();
+                    volumeNode.label = this.getStructureVolumeLabel(structure);
+                    volumeNode.data.volume = volume;
+                    node.addNode(volumeNode);
+                    lastVolume = volume;
+                }
+            }
+        };
+
+        Provider.prototype.createVolumeIssueNodes = function (node, structures) {
+            for (var i = 0; i < structures.length; i++) {
+                var structure = structures[i];
+                var volume = this.getStructureVolume(structure);
+
+                var issueNode = new TreeNode();
+                issueNode.label = this.getStructureDisplayDate(structure);
+                issueNode.data = structure;
+                issueNode.data.type = "manifest";
+
+                structure.treeNode = issueNode;
+
+                var volumeNode = this.getVolumeNode(node, volume);
+
+                volumeNode.addNode(issueNode);
+            }
+        };
+
+        Provider.prototype.getVolumeNode = function (node, volume) {
+            for (var i = 0; i < node.nodes.length; i++) {
+                var n = node.nodes[i];
+                if (volume == n.data.volume)
+                    return n;
+            }
+
+            return null;
+        };
+
+        Provider.prototype.getStructureVolume = function (structure) {
+            return Number(structure.seeAlso.data.volume);
+        };
+
+        Provider.prototype.getStructureVolumeLabel = function (structure) {
+            var r = structure.seeAlso.data.volumeLabel.match(/(.*\b) (\d{1,4}), (\d{1,4})/);
+            return String.prototype.format("{0} {1} ({2})", r[1], r[2], r[3]);
+        };
+        return Provider;
+    })(coreProvider.Provider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/wellcomeplayer-mediaelement-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../coreplayer-mediaelement-extension/extension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/wellcomeplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/wellcomeplayer-extendedfooterpanel-module/footerPanel", "../../modules/wellcomeplayer-dialogues-module/loginDialogue", "../../modules/wellcomeplayer-dialogues-module/conditionsDialogue", "../../modules/wellcomeplayer-dialogues-module/downloadDialogue", "../../modules/coreplayer-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../extensions/coreplayer-mediaelement-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../modules/wellcomeplayer-shared-module/behaviours"], function(require, exports, __baseExtension__, __coreExtension__, __utils__, __baseProvider__, __shell__, __header__, __left__, __right__, __footer__, __login__, __conditions__, __download__, __center__, __embed__, __help__, __sharedBehaviours__) {
+    var baseExtension = __baseExtension__;
+    var coreExtension = __coreExtension__;
+    var utils = __utils__;
+    var baseProvider = __baseProvider__;
+    
+    var shell = __shell__;
+    var header = __header__;
+    var left = __left__;
+    var right = __right__;
+    var footer = __footer__;
+    var login = __login__;
+    var conditions = __conditions__;
+    var download = __download__;
+    var center = __center__;
+    var embed = __embed__;
+    var help = __help__;
+    
+    var sharedBehaviours = __sharedBehaviours__;
+    
+    
+    
+    
+
+    var Extension = (function (_super) {
+        __extends(Extension, _super);
+        function Extension(provider) {
+            this.behaviours = new sharedBehaviours(this);
+
+            _super.call(this, provider);
+        }
+        Extension.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+
+            $(window).bind('unload', function () {
+                $.publish(baseExtension.BaseExtension.WINDOW_UNLOAD);
+            });
+
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                $.publish(download.DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE);
+            });
+
+            $.subscribe(footer.FooterPanel.SAVE, function (e) {
+                if (_this.isFullScreen) {
+                    $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
+                }
+                _this.save();
+            });
+
+            $.subscribe(login.LoginDialogue.LOGIN, function (e, params) {
+                _this.login(params);
+            });
+        };
+
+        Extension.prototype.createModules = function () {
+            this.headerPanel = new header.HeaderPanel(shell.Shell.$headerPanel);
+
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
+            }
+
+            this.centerPanel = new center.MediaElementCenterPanel(shell.Shell.$centerPanel);
+            this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
+            this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
+
+            this.$conditionsDialogue = utils.Utils.createDiv('overlay conditions');
+            shell.Shell.$overlays.append(this.$conditionsDialogue);
+            this.conditionsDialogue = new conditions.ConditionsDialogue(this.$conditionsDialogue);
+
+            this.$loginDialogue = utils.Utils.createDiv('overlay login');
+            shell.Shell.$overlays.append(this.$loginDialogue);
+            this.loginDialogue = new login.LoginDialogue(this.$loginDialogue);
+
+            this.$embedDialogue = utils.Utils.createDiv('overlay embed');
+            shell.Shell.$overlays.append(this.$embedDialogue);
+            this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$downloadDialogue = utils.Utils.createDiv('overlay download');
+            shell.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new download.DownloadDialogue(this.$downloadDialogue);
+
+            this.$helpDialogue = utils.Utils.createDiv('overlay help');
+            shell.Shell.$overlays.append(this.$helpDialogue);
+            this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
+        };
+
+        Extension.prototype.viewMedia = function () {
+            var _this = this;
+            var canvasIndex = 0;
+
+            this.viewIndex(canvasIndex, function () {
+                var canvas = _this.provider.sequence.assets[canvasIndex];
+
+                if (!canvas.sources) {
+                    _this.prefetchAsset(canvasIndex, function () {
+                        _this.provider.setMediaUri(canvas);
+                        $.publish(Extension.OPEN_MEDIA, [canvas]);
+                        _this.setParam(baseProvider.params.canvasIndex, canvasIndex);
+                        _this.updateSlidingExpiration();
+                    });
+                } else {
+                    _this.provider.setMediaUri(canvas);
+                    $.publish(Extension.OPEN_MEDIA, [canvas]);
+                    _this.setParam(baseProvider.params.canvasIndex, canvasIndex);
+                    _this.updateSlidingExpiration();
+                }
+            });
+        };
+
+        Extension.prototype.save = function () {
+            var _this = this;
+            if (!this.isLoggedIn()) {
+                this.showLoginDialogue({
+                    successCallback: function () {
+                        _this.save();
+                    },
+                    failureCallback: function (message) {
+                        _this.showDialogue(message, function () {
+                            _this.save();
+                        });
+                    },
+                    allowClose: true,
+                    message: this.provider.config.modules.genericDialogue.content.loginToSave
+                });
+            } else if (this.isGuest()) {
+                this.showLoginDialogue({
+                    successCallback: function () {
+                        _this.save();
+                    },
+                    failureCallback: function (message) {
+                        _this.showDialogue(message, function () {
+                            _this.save();
+                        });
+                    },
+                    allowClose: true,
+                    allowSocialLogin: true
+                });
+            } else {
+                var path = (this.provider).getSaveUri();
+                var thumbnail = (this.provider).getThumbUri();
+                var title = this.provider.getTitle();
+
+                var info = (this.provider).getSaveInfo(path, thumbnail, title);
+                this.triggerSocket(Extension.SAVE, info);
+            }
+        };
+
+        Extension.prototype.setParams = function () {
+            if (!this.provider.isHomeDomain)
+                return;
+
+            var hash = parent.document.location.hash;
+
+            if (hash != '' && !hash.contains('?')) {
+                var params = hash.replace('#', '').split('/');
+
+                parent.document.location.hash = '';
+
+                if (params[0]) {
+                    this.setParam(baseProvider.params.sequenceIndex, this.provider.sequenceIndex);
+                }
+
+                if (params[1]) {
+                    this.setParam(baseProvider.params.canvasIndex, params[1]);
+                }
+            } else {
+                this.setParam(baseProvider.params.sequenceIndex, this.provider.sequenceIndex);
+            }
+        };
+
+        Extension.prototype.viewIndex = function (canvasIndex, successCallback) {
+            this.behaviours.viewIndex(canvasIndex, successCallback);
+        };
+
+        Extension.prototype.prefetchAsset = function (canvasIndex, successCallback) {
+            this.behaviours.prefetchAsset(canvasIndex, successCallback);
+        };
+
+        Extension.prototype.authorise = function (canvasIndex, successCallback, failureCallback) {
+            this.behaviours.authorise(canvasIndex, successCallback, failureCallback);
+        };
+
+        Extension.prototype.login = function (params) {
+            this.behaviours.login(params);
+        };
+
+        Extension.prototype.viewNextAvailableIndex = function (requestedIndex, callback) {
+            this.behaviours.viewNextAvailableIndex(requestedIndex, callback);
+        };
+
+        Extension.prototype.nextAvailableIndex = function (direction, requestedIndex) {
+            return this.behaviours.nextAvailableIndex(direction, requestedIndex);
+        };
+
+        Extension.prototype.showLoginDialogue = function (params) {
+            this.behaviours.showLoginDialogue(params);
+        };
+
+        Extension.prototype.isLoggedIn = function () {
+            return this.behaviours.isLoggedIn();
+        };
+
+        Extension.prototype.isGuest = function () {
+            return this.behaviours.isGuest();
+        };
+
+        Extension.prototype.hasPermissionToViewCurrentItem = function () {
+            return this.behaviours.hasPermissionToViewCurrentItem();
+        };
+
+        Extension.prototype.isAuthorised = function (canvasIndex) {
+            return this.behaviours.isAuthorised(canvasIndex);
+        };
+
+        Extension.prototype.showRestrictedFileDialogue = function (params) {
+            this.behaviours.showRestrictedFileDialogue(params);
+        };
+
+        Extension.prototype.getInadequatePermissionsMessage = function (canvasIndex) {
+            return this.behaviours.getInadequatePermissionsMessage(canvasIndex);
+        };
+
+        Extension.prototype.allowCloseLogin = function () {
+            return this.behaviours.allowCloseLogin();
+        };
+
+        Extension.prototype.updateSlidingExpiration = function () {
+            this.behaviours.updateSlidingExpiration();
+        };
+
+        Extension.prototype.trackEvent = function (category, action, label, value) {
+            this.behaviours.trackEvent(category, action, label, value);
+        };
+
+        Extension.prototype.trackVariable = function (slot, name, value, scope) {
+            this.behaviours.trackVariable(slot, name, value, scope);
+        };
+
+        Extension.prototype.isSaveToLightboxEnabled = function () {
+            return this.behaviours.isSaveToLightboxEnabled();
+        };
+
+        Extension.prototype.isDownloadEnabled = function () {
+            return this.behaviours.isDownloadEnabled();
+        };
+        Extension.SAVE = 'onSave';
+        return Extension;
+    })(coreExtension.Extension);
+    exports.Extension = Extension;
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5849,6 +9409,90 @@ define('extensions/coreplayer-mediaelement-extension/provider',["require", "expo
         };
         return Provider;
     })(baseProvider.BaseProvider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/wellcomeplayer-mediaelement-extension/provider',["require", "exports", "../coreplayer-mediaelement-extension/provider", "../../utils"], function(require, exports, __coreProvider__, __utils__) {
+    var coreProvider = __coreProvider__;
+    var utils = __utils__;
+    
+
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(config, manifest) {
+            _super.call(this, config, manifest);
+
+            $.extend(true, this.config.options, {
+                moreInfoUriTemplate: '{0}{1}',
+                prefetchUriTemplate: '{0}/fc/{1}/{2}?callback=?',
+                assetsUriTemplate: '{0}{1}',
+                loginUriTemplate: '{0}/service/login?username={1}&password={2}&setCookies=true&t={3}',
+                pdfUriTemplate: '{0}/pdf/{1}/{2}/{3}_{2}.pdf',
+                isSecureLogin: false,
+                embedScriptUri: 'http://wellcomelibrary.org/spas/player/build/wellcomeplayer/js/embed.js'
+            });
+        }
+        Provider.prototype.getMoreInfoUri = function () {
+            var baseUri = this.options.dataBaseUri || "";
+            var uri = baseUri + this.manifest.bibliographicInformation;
+
+            if (this.options.timestampUris)
+                uri = this.addTimestamp(uri);
+
+            return uri;
+        };
+
+        Provider.prototype.getPrefetchUri = function (asset) {
+            var baseUri = this.config.options.prefetchBaseUri || this.config.options.dataBaseUri || "";
+            var fileExtension = asset.fileUri.substr(asset.fileUri.indexOf('.') + 1);
+            return String.prototype.format(this.config.options.prefetchUriTemplate, baseUri, asset.identifier, fileExtension);
+        };
+
+        Provider.prototype.getAssetUri = function (asset) {
+            var baseUri = this.config.options.assetsBaseUri || this.config.options.dataBaseUri || "";
+            return String.prototype.format(this.config.options.assetsUriTemplate, baseUri, asset.fileUri);
+        };
+
+        Provider.prototype.getLoginUri = function (username, password) {
+            var baseUri = this.config.options.loginBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.loginUriTemplate, baseUri, username, password, utils.Utils.getTimeStamp());
+            if (this.config.options.isSecureLogin)
+                uri = uri.replace("http:", "https:");
+            return uri;
+        };
+
+        Provider.prototype.getThumbUri = function () {
+            return this.sequence.extensions.posterImage;
+        };
+
+        Provider.prototype.getSaveUri = function () {
+            var absUri = parent.document.URL;
+            var parts = utils.Utils.getUrlParts(absUri);
+            var relUri = parts.pathname + parent.document.location.hash;
+
+            if (!relUri.startsWith("/")) {
+                relUri = "/" + relUri;
+            }
+
+            return relUri;
+        };
+
+        Provider.prototype.getSaveInfo = function (path, thumbnail, title) {
+            return {
+                "CaptureType": "v",
+                "Path": path,
+                "Thumbnail": thumbnail,
+                "Title": title
+            };
+        };
+        return Provider;
+    })(coreProvider.Provider);
     exports.Provider = Provider;
 });
 
@@ -6091,6 +9735,264 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+define('extensions/wellcomeplayer-pdf-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../coreplayer-pdf-extension/extension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/wellcomeplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/wellcomeplayer-extendedfooterpanel-module/footerPanel", "../../modules/wellcomeplayer-dialogues-module/loginDialogue", "../../modules/wellcomeplayer-dialogues-module/conditionsDialogue", "../../modules/wellcomeplayer-dialogues-module/downloadDialogue", "../../modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel", "../../extensions/coreplayer-pdf-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../modules/wellcomeplayer-shared-module/behaviours"], function(require, exports, __baseExtension__, __coreExtension__, __utils__, __baseProvider__, __shell__, __header__, __left__, __right__, __footer__, __login__, __conditions__, __download__, __center__, __embed__, __help__, __sharedBehaviours__) {
+    var baseExtension = __baseExtension__;
+    var coreExtension = __coreExtension__;
+    var utils = __utils__;
+    var baseProvider = __baseProvider__;
+    
+    var shell = __shell__;
+    var header = __header__;
+    var left = __left__;
+    var right = __right__;
+    var footer = __footer__;
+    var login = __login__;
+    var conditions = __conditions__;
+    var download = __download__;
+    var center = __center__;
+    var embed = __embed__;
+    var help = __help__;
+    
+    var sharedBehaviours = __sharedBehaviours__;
+    
+    
+    
+    
+
+    var Extension = (function (_super) {
+        __extends(Extension, _super);
+        function Extension(provider) {
+            this.behaviours = new sharedBehaviours(this);
+
+            _super.call(this, provider);
+        }
+        Extension.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+
+            $(window).bind('unload', function () {
+                $.publish(baseExtension.BaseExtension.WINDOW_UNLOAD);
+            });
+
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                $.publish(download.DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE);
+            });
+
+            $.subscribe(footer.FooterPanel.SAVE, function (e) {
+                if (_this.isFullScreen) {
+                    $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
+                }
+                _this.save();
+            });
+
+            $.subscribe(login.LoginDialogue.LOGIN, function (e, params) {
+                _this.login(params);
+            });
+        };
+
+        Extension.prototype.createModules = function () {
+            this.headerPanel = new header.HeaderPanel(shell.Shell.$headerPanel);
+
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
+            }
+
+            this.centerPanel = new center.PDFCenterPanel(shell.Shell.$centerPanel);
+            this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
+            this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
+
+            this.$conditionsDialogue = utils.Utils.createDiv('overlay conditions');
+            shell.Shell.$overlays.append(this.$conditionsDialogue);
+            this.conditionsDialogue = new conditions.ConditionsDialogue(this.$conditionsDialogue);
+
+            this.$loginDialogue = utils.Utils.createDiv('overlay login');
+            shell.Shell.$overlays.append(this.$loginDialogue);
+            this.loginDialogue = new login.LoginDialogue(this.$loginDialogue);
+
+            this.$embedDialogue = utils.Utils.createDiv('overlay embed');
+            shell.Shell.$overlays.append(this.$embedDialogue);
+            this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$downloadDialogue = utils.Utils.createDiv('overlay download');
+            shell.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new download.DownloadDialogue(this.$downloadDialogue);
+
+            this.$helpDialogue = utils.Utils.createDiv('overlay help');
+            shell.Shell.$overlays.append(this.$helpDialogue);
+            this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
+        };
+
+        Extension.prototype.viewMedia = function () {
+            var _this = this;
+            var canvasIndex = 0;
+
+            this.viewIndex(canvasIndex, function () {
+                var canvas = _this.provider.sequence.assets[canvasIndex];
+
+                if (!canvas.sources) {
+                    _this.prefetchAsset(canvasIndex, function () {
+                        _this.provider.setMediaUri(canvas);
+                        $.publish(Extension.OPEN_MEDIA, [canvas]);
+                        _this.setParam(baseProvider.params.canvasIndex, canvasIndex);
+                        _this.updateSlidingExpiration();
+                    });
+                } else {
+                    _this.provider.setMediaUri(canvas);
+                    $.publish(Extension.OPEN_MEDIA, [canvas]);
+                    _this.setParam(baseProvider.params.canvasIndex, canvasIndex);
+                    _this.updateSlidingExpiration();
+                }
+            });
+        };
+
+        Extension.prototype.save = function () {
+            var _this = this;
+            if (!this.isLoggedIn()) {
+                this.showLoginDialogue({
+                    successCallback: function () {
+                        _this.save();
+                    },
+                    failureCallback: function (message) {
+                        _this.showDialogue(message, function () {
+                            _this.save();
+                        });
+                    },
+                    allowClose: true,
+                    message: this.provider.config.modules.genericDialogue.content.loginToSave
+                });
+            } else if (this.isGuest()) {
+                this.showLoginDialogue({
+                    successCallback: function () {
+                        _this.save();
+                    },
+                    failureCallback: function (message) {
+                        _this.showDialogue(message, function () {
+                            _this.save();
+                        });
+                    },
+                    allowClose: true,
+                    allowSocialLogin: true
+                });
+            } else {
+                var path = (this.provider).getSaveUri();
+                var thumbnail = (this.provider).getThumbUri(this.provider.getCanvasByIndex(0));
+                var title = this.provider.getTitle();
+
+                var info = (this.provider).getSaveInfo(path, thumbnail, title);
+                this.triggerSocket(Extension.SAVE, info);
+            }
+        };
+
+        Extension.prototype.setParams = function () {
+            if (!this.provider.isHomeDomain)
+                return;
+
+            var hash = parent.document.location.hash;
+
+            if (hash != '' && !hash.contains('?')) {
+                var params = hash.replace('#', '').split('/');
+
+                parent.document.location.hash = '';
+
+                if (params[0]) {
+                    this.setParam(baseProvider.params.sequenceIndex, this.provider.sequenceIndex);
+                }
+
+                if (params[1]) {
+                    this.setParam(baseProvider.params.canvasIndex, params[1]);
+                }
+            } else {
+                this.setParam(baseProvider.params.sequenceIndex, this.provider.sequenceIndex);
+            }
+        };
+
+        Extension.prototype.viewIndex = function (canvasIndex, successCallback) {
+            this.behaviours.viewIndex(canvasIndex, successCallback);
+        };
+
+        Extension.prototype.prefetchAsset = function (canvasIndex, successCallback) {
+            this.behaviours.prefetchAsset(canvasIndex, successCallback);
+        };
+
+        Extension.prototype.authorise = function (canvasIndex, successCallback, failureCallback) {
+            this.behaviours.authorise(canvasIndex, successCallback, failureCallback);
+        };
+
+        Extension.prototype.login = function (params) {
+            this.behaviours.login(params);
+        };
+
+        Extension.prototype.viewNextAvailableIndex = function (requestedIndex, callback) {
+            this.behaviours.viewNextAvailableIndex(requestedIndex, callback);
+        };
+
+        Extension.prototype.nextAvailableIndex = function (direction, requestedIndex) {
+            return this.behaviours.nextAvailableIndex(direction, requestedIndex);
+        };
+
+        Extension.prototype.showLoginDialogue = function (params) {
+            this.behaviours.showLoginDialogue(params);
+        };
+
+        Extension.prototype.isLoggedIn = function () {
+            return this.behaviours.isLoggedIn();
+        };
+
+        Extension.prototype.isGuest = function () {
+            return this.behaviours.isGuest();
+        };
+
+        Extension.prototype.hasPermissionToViewCurrentItem = function () {
+            return this.behaviours.hasPermissionToViewCurrentItem();
+        };
+
+        Extension.prototype.isAuthorised = function (canvasIndex) {
+            return this.behaviours.isAuthorised(canvasIndex);
+        };
+
+        Extension.prototype.showRestrictedFileDialogue = function (params) {
+            this.behaviours.showRestrictedFileDialogue(params);
+        };
+
+        Extension.prototype.getInadequatePermissionsMessage = function (canvasIndex) {
+            return this.behaviours.getInadequatePermissionsMessage(canvasIndex);
+        };
+
+        Extension.prototype.allowCloseLogin = function () {
+            return this.behaviours.allowCloseLogin();
+        };
+
+        Extension.prototype.updateSlidingExpiration = function () {
+            this.behaviours.updateSlidingExpiration();
+        };
+
+        Extension.prototype.trackEvent = function (category, action, label, value) {
+            this.behaviours.trackEvent(category, action, label, value);
+        };
+
+        Extension.prototype.trackVariable = function (slot, name, value, scope) {
+            this.behaviours.trackVariable(slot, name, value, scope);
+        };
+
+        Extension.prototype.isSaveToLightboxEnabled = function () {
+            return this.behaviours.isSaveToLightboxEnabled();
+        };
+
+        Extension.prototype.isDownloadEnabled = function () {
+            return this.behaviours.isDownloadEnabled();
+        };
+        Extension.SAVE = 'onSave';
+        return Extension;
+    })(coreExtension.Extension);
+    exports.Extension = Extension;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 define('extensions/coreplayer-pdf-extension/provider',["require", "exports", "../../modules/coreplayer-shared-module/baseProvider"], function(require, exports, __baseProvider__) {
     var baseProvider = __baseProvider__;
     
@@ -6121,6 +10023,85 @@ define('extensions/coreplayer-pdf-extension/provider',["require", "exports", "..
         };
         return Provider;
     })(baseProvider.BaseProvider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/wellcomeplayer-pdf-extension/provider',["require", "exports", "../coreplayer-pdf-extension/provider", "../../utils"], function(require, exports, __coreProvider__, __utils__) {
+    var coreProvider = __coreProvider__;
+    var utils = __utils__;
+    
+
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(config, manifest) {
+            _super.call(this, config, manifest);
+
+            $.extend(true, this.config.options, {
+                moreInfoUriTemplate: '{0}{1}',
+                prefetchUriTemplate: '{0}/fc/{1}/{2}?callback=?',
+                assetsUriTemplate: '{0}{1}',
+                loginUriTemplate: '{0}/service/login?username={1}&password={2}&setCookies=true&t={3}',
+                pdfUriTemplate: '{0}/pdf/{1}/{2}/{3}_{2}.pdf',
+                isSecureLogin: false,
+                embedScriptUri: 'http://wellcomelibrary.org/spas/player/build/wellcomeplayer/js/embed.js'
+            });
+        }
+        Provider.prototype.getMoreInfoUri = function () {
+            var baseUri = this.options.dataBaseUri || "";
+            var uri = baseUri + this.manifest.bibliographicInformation;
+
+            if (this.options.timestampUris)
+                uri = this.addTimestamp(uri);
+
+            return uri;
+        };
+
+        Provider.prototype.getPrefetchUri = function (asset) {
+            var baseUri = this.config.options.prefetchBaseUri || this.config.options.dataBaseUri || "";
+            var fileExtension = asset.fileUri.substr(asset.fileUri.indexOf('.') + 1);
+            return String.prototype.format(this.config.options.prefetchUriTemplate, baseUri, asset.identifier, fileExtension);
+        };
+
+        Provider.prototype.getLoginUri = function (username, password) {
+            var baseUri = this.config.options.loginBaseUri || this.config.options.dataBaseUri || "";
+            var uri = String.prototype.format(this.config.options.loginUriTemplate, baseUri, username, password, utils.Utils.getTimeStamp());
+            if (this.config.options.isSecureLogin)
+                uri = uri.replace("http:", "https:");
+            return uri;
+        };
+
+        Provider.prototype.getThumbUri = function (canvas) {
+            return canvas.thumbnailPath;
+        };
+
+        Provider.prototype.getSaveUri = function () {
+            var absUri = parent.document.URL;
+            var parts = utils.Utils.getUrlParts(absUri);
+            var relUri = parts.pathname + parent.document.location.hash;
+
+            if (!relUri.startsWith("/")) {
+                relUri = "/" + relUri;
+            }
+
+            return relUri;
+        };
+
+        Provider.prototype.getSaveInfo = function (path, thumbnail, title) {
+            return {
+                "CaptureType": "v",
+                "Path": path,
+                "Thumbnail": thumbnail,
+                "Title": title
+            };
+        };
+        return Provider;
+    })(coreProvider.Provider);
     exports.Provider = Provider;
 });
 
@@ -6167,13 +10148,13 @@ require([
     'yepnopecss',
     'bootstrapper',
     'l10n',
-    'extensions/coreplayer-seadragon-extension/extension',
-    'extensions/coreplayer-seadragon-extension/iiifProvider',
-    'extensions/coreplayer-seadragon-extension/provider',
-    'extensions/coreplayer-mediaelement-extension/extension',
-    'extensions/coreplayer-mediaelement-extension/provider',
-    'extensions/coreplayer-pdf-extension/extension',
-    'extensions/coreplayer-pdf-extension/provider'
+    'extensions/wellcomeplayer-seadragon-extension/extension',
+    'extensions/wellcomeplayer-seadragon-extension/iiifProvider',
+    'extensions/wellcomeplayer-seadragon-extension/provider',
+    'extensions/wellcomeplayer-mediaelement-extension/extension',
+    'extensions/wellcomeplayer-mediaelement-extension/provider',
+    'extensions/wellcomeplayer-pdf-extension/extension',
+    'extensions/wellcomeplayer-pdf-extension/provider'
 ], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
 
@@ -6182,43 +10163,43 @@ require([
     extensions['seadragon/dzi'] = {
         type: seadragonExtension.Extension,
         provider: seadragonProvider.Provider,
-        config:"js/coreplayer-seadragon-extension-config.js",
-        css:"css/coreplayer-seadragon-extension.css"
+        config:"js/wellcomeplayer-seadragon-extension-config.js",
+        css:"css/wellcomeplayer-seadragon-extension.css"
     };
 
     extensions['seadragon/iiif'] = {
         type: seadragonExtension.Extension,
         provider: seadragonIIIFProvider.Provider,
-        config:"js/coreplayer-seadragon-extension-config.js",
-        css:"css/coreplayer-seadragon-extension.css"
+        config:"js/wellcomeplayer-seadragon-extension-config.js",
+        css:"css/wellcomeplayer-seadragon-extension.css"
     };
 
     extensions['video/mp4'] = {
         type: mediaelementExtension.Extension,
         provider: mediaelementProvider.Provider,
-        config:"js/coreplayer-mediaelement-extension-config.js",
-        css:"css/coreplayer-mediaelement-extension.css"
+        config:"js/wellcomeplayer-mediaelement-extension-config.js",
+        css:"css/wellcomeplayer-mediaelement-extension.css"
     };
 
     extensions['video/multiple-sources'] = {
         type: mediaelementExtension.Extension,
         provider: mediaelementProvider.Provider,
-        config:"js/coreplayer-mediaelement-extension-config.js",
-        css:"css/coreplayer-mediaelement-extension.css"
+        config:"js/wellcomeplayer-mediaelement-extension-config.js",
+        css:"css/wellcomeplayer-mediaelement-extension.css"
     };
 
     extensions['audio/mp3'] = {
         type: mediaelementExtension.Extension,
         provider: mediaelementProvider.Provider,
-        config:"js/coreplayer-mediaelement-extension-config.js",
-        css:"css/coreplayer-mediaelement-extension.css"
+        config:"js/wellcomeplayer-mediaelement-extension-config.js",
+        css:"css/wellcomeplayer-mediaelement-extension.css"
     };
 
     extensions['application/pdf'] = {
         type: pdfExtension.Extension,
         provider: pdfProvider.Provider,
-        config:"js/coreplayer-pdf-extension-config.js",
-        css:"css/coreplayer-pdf-extension.css"
+        config:"js/wellcomeplayer-pdf-extension-config.js",
+        css:"css/wellcomeplayer-pdf-extension.css"
     };
 
     new bootstrapper(extensions);

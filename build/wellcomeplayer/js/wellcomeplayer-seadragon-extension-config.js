@@ -70,7 +70,9 @@
             },
             "content": {
                 "index": "Index",
-                "thumbnails": "Thumbnails"
+                "thumbnails": "Thumbnails",
+                "date": "date",
+                "volume": "volume"
             }
         },
         "seadragonCenterPanel": {

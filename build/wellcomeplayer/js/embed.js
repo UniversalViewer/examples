@@ -180,6 +180,11 @@ docReady(function() {
             document.cookie = name + "=" + value + expires + "; path=/";
         }
 
+        // replace legacy url (wellcome branch only)
+        if (scriptUri.indexOf('/plugins/wellcome/embed.js') !== -1){
+            absScriptUri = scriptUri = 'http://wellcomelibrary.org/spas/player/build/wellcomeplayer/js/embed.js';
+        }
+
         // get the part preceding 'js/embed.js'
         var baseUri = (/(.*)js\/embed.js/).exec(scriptUri)[1];
         appUri = baseUri + 'app.html';
@@ -224,11 +229,18 @@ docReady(function() {
             dataBaseUri = $app.attr('data-baseuri');
             if (dataBaseUri) dataBaseUri = encodeURIComponent(dataBaseUri);
             dataUri = $app.attr('data-uri');
-            dataUri = encodeURIComponent(dataUri);
             sequenceIndex = $app.attr('data-sequenceindex') || $app.attr('data-assetsequenceindex');
             canvasIndex = $app.attr('data-canvasindex') || $app.attr('data-assetindex');
             zoom = $app.attr('data-zoom');
             config = $app.attr('data-config');
+
+            // legacy params (wellcome branch only)
+            if (!dataUri) dataUri = 'http://wellcomelibrary.org/package/' + $app.attr('data-id');
+            if (!sequenceIndex) sequenceIndex = $app.attr('data-manifestation');
+            if (!canvasIndex) canvasIndex = $app.attr('data-index');
+            if (!config) config = '/service/playerconfig';
+
+            dataUri = encodeURIComponent(dataUri);
 
             isFullScreen = false;
             height = $app.height();
@@ -342,6 +354,7 @@ docReady(function() {
                     "&oi=" + isOnlyInstance +
                     "&du=" + dataUri +
                     "&esu=" + absScriptUri +
+                    "&ed=" + document.domain +
                     "&d=" + domain +
                     "&lb=" + isLightbox;
 
