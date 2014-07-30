@@ -1,5 +1,6 @@
 {
     "options": {
+        "theme": "coreplayer-default-theme",
         "sectionMappings": {
             "CoverFrontOutside": "Front Cover",
             "CoverBackOutside": "Back Cover",

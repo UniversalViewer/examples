@@ -1,5 +1,7 @@
 {
-    "options": {},
+    "options": {
+        "theme": "coreplayer-default-theme"
+    },
     "modules": {
         "genericDialogue": {
             "content": {

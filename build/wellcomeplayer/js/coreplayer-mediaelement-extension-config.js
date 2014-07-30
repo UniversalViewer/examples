@@ -1,5 +1,6 @@
 {
     "options": {
+        "theme": "coreplayer-default-theme",
         "leftPanelEnabled": true
     },
     "modules": {
