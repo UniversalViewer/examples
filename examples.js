@@ -13,7 +13,7 @@ $.fn.updateAttr = function (attrName, oldVal, newVal) {
     });
 };
 
-var testBuild = 1;
+var testBuild = 0;
 var uri = document.location.href;
 
 if (testBuild){
