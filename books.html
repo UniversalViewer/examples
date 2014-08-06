@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<div class="wellcomePlayer" data-config="/examples/examples-config.js" data-canvasindex="1" data-uri="http://wellcomelibrary.org/package/b18035978" style="width:640px; height:480px; background-color: #000"></div>
+<div class="wellcomePlayer" data-no-load="false" data-config="/examples/examples-config.js" data-canvasindex="1" data-uri="http://wellcomelibrary.org/package/b18035978" style="width:640px; height:480px; background-color: #000"></div>
 
 <select id="books">
     <option value="b18035978">The Biocrats</option>
@@ -21,7 +21,7 @@
         $('#books').on('change', function(){
             var bnumber = $('#books option:selected').val();
             $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + bnumber);
-            initPlayers();
+            initPlayers($('.wellcomePlayer'));
         });
     });
 </script>
