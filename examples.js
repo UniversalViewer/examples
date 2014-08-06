@@ -29,3 +29,8 @@ if (testBuild){
         document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
     }
 }
+
+// test overrideFullScreen option
+$(document).bind("toggleFullScreen", function (event, isFullScreen) {
+    console.log('full screen: ' + isFullScreen);
+});
