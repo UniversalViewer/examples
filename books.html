@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wellcome Player: Examples</title>
+</head>
+<body>
+
+<div class="wellcomePlayer" data-config="/examples/examples-config.js" data-canvasindex="1" data-uri="http://wellcomelibrary.org/package/b18035978" style="width:640px; height:480px; background-color: #000"></div>
+
+<select id="books">
+    <option value="b18035978">The Biocrats</option>
+    <option value="b18035723">Wunder der Vererbung</option>
+    <option value="b16136330">DNA</option>
+</select>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="examples.js"></script>
+
+<script>
+    $(function(){
+        $('#books').on('change', function(){
+            var bnumber = $('#books option:selected').val();
+            $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + bnumber);
+            initPlayers();
+        });
+    });
+</script>
+
+</body>
+</html>
