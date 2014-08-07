@@ -4,6 +4,13 @@
         "dziBaseUri": "http://wellcomelibrary.org",
         "thumbsBaseUri": "http://wellcomelibrary.org",
         "mediaBaseUri": "http://wellcomelibrary.org",
-        "overrideFullScreen": false
+        "prefetchBaseUri": "http://wellcomelibrary.org",
+        "searchBaseUri": "http://wellcomelibrary.org",
+        "autoCompleteBaseUri": "http://wellcomelibrary.org",
+        "moreInfoBaseUri": "http://wellcomelibrary.org",
+        "loginBaseUri": "http://wellcomelibrary.org",
+        "cropBaseUri": "http://wellcomelibrary.org",
+        "overrideFullScreen": false,
+        "preloadMoreInfo": false
     }
 }
