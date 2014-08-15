@@ -11,6 +11,8 @@
         "loginBaseUri": "http://wellcomelibrary.org",
         "cropBaseUri": "http://wellcomelibrary.org",
         "overrideFullScreen": false,
-        "preloadMoreInfo": false
+        "preloadMoreInfo": false,
+        "embedEnabled": true,
+        "downloadEnabled": true
     }
 }

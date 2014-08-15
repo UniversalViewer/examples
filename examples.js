@@ -29,3 +29,21 @@ if (testBuild){
         document.write('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
     }
 }
+
+$(function(){
+    $('#options').on('change', function(){
+        var bnumber = $('#books option:selected').val();
+        $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + bnumber);
+        initPlayers($('.wellcomePlayer'));
+    });
+
+    // test overrideFullScreen option
+    $(document).bind("onToggleFullScreen", function (event, isFullScreen) {
+        console.log('full screen: ' + isFullScreen);
+    });
+
+    // test currentViewUri event
+    $(document).bind("onCurrentViewUri", function (event, uri) {
+        console.log(uri);
+    });
+});
