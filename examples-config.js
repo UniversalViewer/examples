@@ -13,6 +13,7 @@
         "overrideFullScreen": false,
         "preloadMoreInfo": false,
         "embedEnabled": true,
-        "downloadEnabled": true
+        "downloadEnabled": true,
+        "saveToLightboxEnabled": true
     }
 }
