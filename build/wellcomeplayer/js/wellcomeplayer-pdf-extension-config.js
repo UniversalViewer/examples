@@ -1,36 +1,16 @@
 {
     "options": {
         "theme": "coreplayer-default-theme",
-        "leftPanelEnabled": true,
-        "rightPanelEnabled": true,
-        "overrideFullScreen": false,
-        "sectionMappings": {
-            "CoverFrontOutside": "Front Cover",
-            "CoverBackOutside": "Back Cover",
-            "TitlePage": "Title Page",
-            "TableOfContents": "Table of Contents",
-            "PartOfWork": "Part of Work"
-        },
-        "preloadMoreInfo": true
+        "preloadMoreInfo": false
     },
     "modules": {
         "genericDialogue": {
             "content": {
-                "emptyValue": "please enter a value",
-                "pageNotFound": "This item does not contain a page with the number you entered. Try switching the numbering mode to 'image'",
                 "ok": "OK",
-                "refresh": "Refresh",
-                "invalidNumber": "Please enter a valid number",
-                "downloadDisabledMessage": "The site is experiencing a high volume of traffic. The download feature has been temporarily disabled. Please try again later.",
-                "downloadNotAvailableMessage": "The download option is not available for this item.",
-                "downloadLoggedOutMessage": "Please log in to download this item.",
-                "noMatches": "No matches were found",
-                "emptySearch": "Please enter search terms.",
-                "noRemainingVisibleItems": "Sorry, there are no remaining visible items.",
-                "invalidItemIndex": "Invalid item index.",
-                "notAcceptedTermsYetMessage": "To proceed, please accept the <a href='/account/terms/' target='_top'>terms and conditions</a>.",
-                "error": "Error",
-                "sessionExpired": "Your session has expired, please refresh to log in again"
+                "emptyValue": "please enter a value",
+                "pageNotFound": "page not found",
+                "sessionExpired": "Your session has expired, please refresh to log in again",
+                "refresh": "Refresh"
             }
         },
         "helpDialogue": {
@@ -41,59 +21,40 @@
         },
         "embedDialogue": {
             "options": {
-                "embedTemplate": "<div class=\"wellcomePlayer\" data-uri=\"{0}\" data-sequenceindex=\"{1}\" data-assetindex=\"{2}\" data-zoom=\"{3}\" data-rotation\"{4}\" data-config=\"{5}\" style=\"width:{6}px; height:{7}px; background-color: #000\"></div>\n<script type=\"text/javascript\" id=\"embedWellcomePlayer\" src=\"{8}\"></script><script type=\"text/javascript\">/* wordpress fix */</script>"
+                "embedTemplate": "<div class=\"wellcomePlayer\" data-uri=\"{0}\" data-sequenceindex=\"{1}\" data-config=\"{2}\" style=\"width:{3}px; height:{4}px; background-color: #000\"></div>\n<script type=\"text/javascript\" id=\"embedWellcomePlayer\" src=\"{5}\"></script><script type=\"text/javascript\">/* wordpress fix */</script>"
             },
             "content": {
                 "title": "Embed",
                 "instructions": "To embed this item in your own website, copy and paste the code below:"
             }
         },
-        "pagingHeaderPanel": {
+        "headerPanel": {
             "content": {
                 "help": "Help",
-                "image": "Image",
-                "page": "Page",
-                "first": "First",
-                "previous": "Previous",
-                "next": "Next",
-                "last": "Last",
-                "go": "Go",
-                "of": "of {0}",
-                "emptyValue": "Please enter a value",
                 "close": "Close"
             }
         },
         "treeViewLeftPanel": {
             "options": {
-                "thumbsLoadRange": 15,
-                "thumbsImageFadeInDuration": 300,
                 "panelCollapsedWidth": 30,
                 "panelExpandedWidth": 255,
-                "panelOpen": true,
+                "panelOpen": false,
                 "panelAnimationDuration": 250,
-                "thumbsExtraHeight": 6
-            },
-            "content": {
-                "index": "Index",
-                "thumbnails": "Thumbnails",
-                "date": "date",
-                "volume": "volume"
+                "thumbsEnabled": true,
+                "treeEnabled": false
             }
         },
-        "seadragonCenterPanel": {
-            "content": {
-                "previous": "Previous",
-                "next": "Next",
-                "zoomIn": "Zoom In",
-                "zoomOut": "Zoom Out"
-            }
+        "pdfCenterPanel": {
+            "options": {
+                "titleEnabled": false
+            },
+            "content": {}
         },
         "moreInfoRightPanel": {
             "options": {
                 "panelCollapsedWidth": 30,
                 "panelExpandedWidth": 255,
-                "panelAnimationDuration": 250,
-                "panelOpen": false
+                "panelAnimationDuration": 250
             },
             "content": {
                 "holdingText": "Your module goes here!",
@@ -113,34 +74,10 @@
             }
         },
         "footerPanel": {
-            "options": {
-                "embedEnabled": true,
-                "minimiseButtons": false
-            },
             "content": {
                 "fullScreen": "Full Screen",
                 "exitFullScreen": "Exit Full Screen",
                 "embed": "Embed"
-            }
-        },
-        "searchFooterPanel": {
-            "content": {
-                "fullScreen": "Full Screen",
-                "exitFullScreen": "Exit Full Screen",
-                "save": "Save to Bookmarks",
-                "download": "Download",
-                "embed": "Embed",
-                "instanceFound": "1 instance of '{0}' found",
-                "instancesFound": "{0} instances of '{1}' found",
-                "resultFoundFor": "result found for",
-                "resultsFoundFor": "results found for",
-                "displaying": "Displaying {0} {1} of {2}",
-                "page": "page",
-                "image": "image",
-                "searchWithin": "Search within this item:",
-                "enterKeyword": "Enter Keyword",
-                "pageCaps": "Page",
-                "imageCaps": "Image"
             }
         },
         "loginDialogue": {
@@ -181,17 +118,6 @@
                 "loginAsGuestText": "This digitised archival material is free to access. By accepting our terms and conditions, you agree to the following:<br/><br/>By viewing this and any subsequent archive material under 100 years old, I agree that I will use personal data on living persons for research purposes only. I will not use personal data to support decisions about the person who is the subject of the data, or in a way that causes substantial damage or distress to them."
             }
         },
-        "restrictedFileDialogue": {
-            "options": {
-                "joinLibraryUri": "/using-the-library/joining-the-library/"
-            },
-            "content": {
-                "title": "Restricted Material",
-                "message": "Restricted archives, books and images can only be viewed in the Wellcome Library. This item cannot be viewed online.",
-                "nextItem": "Next Visible Item",
-                "joinLibrary": "Join the library"
-            }
-        },
         "downloadDialogue": {
             "content": {
                 "title": "Download",
@@ -203,7 +129,13 @@
                 "preview": "Preview",
                 "download": "Download"
             }
+        },
+        "extendedFooterPanel": {
+            "content": {
+                "save": "Save to Bookmarks",
+                "download": "Download"
+            }
         }
     },
-    "extends": "src/extensions/coreplayer-seadragon-extension/extension.config"
+    "extends": "src/extensions/coreplayer-pdf-extension/extension.config"
 }

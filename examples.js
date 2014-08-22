@@ -35,7 +35,7 @@ $(function(){
     // when the embed script has loaded - yep, couldn't get it to work any other way...
     setTimeout(function(){
         // if an options dropdown is included on the page, get the first item and set the data-uri to it.
-        if (('#options').length > 0){
+        if ($('#options').length > 0){
             setSelectedOption();
         }
     }, 1000);

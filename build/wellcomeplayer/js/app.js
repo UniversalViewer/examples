@@ -165,35 +165,55 @@
 
     };
 
+    $.fn.horizontalMargins = function () {
+        var $self = $(this);
+        return parseInt($self.css('marginLeft')) + parseInt($self.css('marginRight'));
+    };
+
+    $.fn.verticalMargins = function () {
+        var $self = $(this);
+        return parseInt($self.css('marginTop')) + parseInt($self.css('marginBottom'));
+    };
+
+    $.fn.horizontalPadding = function () {
+        var $self = $(this);
+        return parseInt($self.css('paddingLeft')) + parseInt($self.css('paddingRight'));
+    };
+
+    $.fn.verticalPadding = function () {
+        var $self = $(this);
+        return parseInt($self.css('paddingTop')) + parseInt($self.css('paddingBottom'));
+    };
+
     // useful if stretching to fit a parent element's inner height.
     // borders/margins/padding are included in final height, so no overspill.
-    $.fn.actualHeight = function (height) {
-
-        return this.each(function () {
-
-            var $self = $(this);
-
-            $self.height(height);
-
-            height -= $self.outerHeight(true) - $self.height();
-
-            $self.height(height);
-        });
-    };
-
-    $.fn.actualWidth = function (width) {
-
-        return this.each(function () {
-
-            var $self = $(this);
-
-            $self.width(width);
-
-            width -= $self.outerWidth(true) - $self.width();
-
-            $self.width(width);
-        });
-    };
+//    $.fn.actualHeight = function (height) {
+//
+//        return this.each(function () {
+//
+//            var $self = $(this);
+//
+//            $self.height(height);
+//
+//            height -= $self.outerHeight(true) - $self.height();
+//
+//            $self.height(height);
+//        });
+//    };
+//
+//    $.fn.actualWidth = function (width) {
+//
+//        return this.each(function () {
+//
+//            var $self = $(this);
+//
+//            $self.width(width);
+//
+//            width -= $self.outerWidth(true) - $self.width();
+//
+//            $self.width(width);
+//        });
+//    };
 
 })(jQuery);
 
@@ -1859,11 +1879,11 @@ define('modules/coreplayer-shared-module/panel',["require", "exports"], function
             var $parent = this.$element.parent();
 
             if (this.fitToParentWidth) {
-                this.$element.actualWidth($parent.width());
+                this.$element.width($parent.width());
             }
 
             if (this.fitToParentHeight) {
-                this.$element.actualHeight($parent.height());
+                this.$element.height($parent.height());
             }
         };
         return Panel;
@@ -2056,7 +2076,7 @@ define('modules/coreplayer-shared-module/genericDialogue',["require", "exports",
             this.$message = $('<p></p>');
             this.$content.append(this.$message);
 
-            this.$acceptButton = $('<a href="#" class="button accept"></a>');
+            this.$acceptButton = $('<a href="#" class="btn btn-primary accept"></a>');
             this.$content.append(this.$acceptButton);
             this.$acceptButton.text(this.content.ok);
 
@@ -2116,7 +2136,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseExtension", "../../utils", "./baseView", "./genericDialogue"], function(require, exports, baseExtension, utils, baseView, genericDialogue) {
+define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseExtension", "./baseView", "./genericDialogue"], function(require, exports, baseExtension, baseView, genericDialogue) {
     var Shell = (function (_super) {
         __extends(Shell, _super);
         function Shell($element) {
@@ -2134,28 +2154,28 @@ define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseEx
                 Shell.$overlays.hide();
             });
 
-            Shell.$headerPanel = utils.Utils.createDiv('headerPanel');
+            Shell.$headerPanel = $('<div class="headerPanel"></div>');
             this.$element.append(Shell.$headerPanel);
 
-            Shell.$mainPanel = utils.Utils.createDiv('mainPanel');
+            Shell.$mainPanel = $('<div class="mainPanel"></div>');
             this.$element.append(Shell.$mainPanel);
 
-            Shell.$centerPanel = utils.Utils.createDiv('centerPanel');
+            Shell.$centerPanel = $('<div class="centerPanel"></div>');
             Shell.$mainPanel.append(Shell.$centerPanel);
 
-            Shell.$leftPanel = utils.Utils.createDiv('leftPanel');
+            Shell.$leftPanel = $('<div class="leftPanel"></div>');
             Shell.$mainPanel.append(Shell.$leftPanel);
 
-            Shell.$rightPanel = utils.Utils.createDiv('rightPanel');
+            Shell.$rightPanel = $('<div class="rightPanel"></div>');
             Shell.$mainPanel.append(Shell.$rightPanel);
 
-            Shell.$footerPanel = utils.Utils.createDiv('footerPanel');
+            Shell.$footerPanel = $('<div class="footerPanel"></div>');
             Shell.$element.append(Shell.$footerPanel);
 
-            Shell.$overlays = utils.Utils.createDiv('overlays');
+            Shell.$overlays = $('<div class="overlays"></div>');
             this.$element.append(Shell.$overlays);
 
-            Shell.$genericDialogue = utils.Utils.createDiv('overlay genericDialogue');
+            Shell.$genericDialogue = $('<div class="overlay genericDialogue"></div>');
             Shell.$overlays.append(Shell.$genericDialogue);
 
             Shell.$overlays.on('click', function (e) {
@@ -2174,8 +2194,9 @@ define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseEx
             Shell.$overlays.width(this.extension.width());
             Shell.$overlays.height(this.extension.height());
 
-            var mainHeight = this.$element.height() - Shell.$headerPanel.height() - Shell.$footerPanel.height();
-            Shell.$mainPanel.actualHeight(mainHeight);
+            var mainHeight = this.$element.height() - parseInt(Shell.$mainPanel.css('marginTop')) - Shell.$headerPanel.height() - Shell.$footerPanel.height();
+
+            Shell.$mainPanel.height(mainHeight);
         };
         Shell.SHOW_OVERLAY = 'onShowOverlay';
         Shell.HIDE_OVERLAY = 'onHideOverlay';
@@ -2234,7 +2255,11 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
                 if (!_this.isOverlayActive()) {
                     $('#top').focus();
                     _this.isFullScreen = !_this.isFullScreen;
-                    _this.triggerSocket(BaseExtension.TOGGLE_FULLSCREEN, _this.isFullScreen);
+
+                    _this.triggerSocket(BaseExtension.TOGGLE_FULLSCREEN, {
+                        isFullScreen: _this.isFullScreen,
+                        overrideFullScreen: _this.provider.config.options.overrideFullScreen
+                    });
                 }
             });
 
@@ -2788,7 +2813,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
                 var height = 150;
 
                 if (heightRatio) {
-                    height = 90 * heightRatio;
+                    Math.floor(height = 90 * heightRatio);
                 }
 
                 var visible = true;
@@ -2962,7 +2987,8 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
 
             if (this.$messageBox.is(':visible')) {
                 var $text = this.$messageBox.find('.text');
-                $text.actualWidth(this.$element.width() - this.$messageBox.find('.close').outerWidth(true));
+
+                $text.width(this.$element.width() - this.$messageBox.find('.close').outerWidth(true));
                 $text.ellipsisFill(this.message);
             }
         };
@@ -3000,10 +3026,10 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             this.$prevOptions = $('<div class="prevOptions"></div>');
             this.$centerOptions.append(this.$prevOptions);
 
-            this.$firstButton = $('<a class="imageButton first"></a>');
+            this.$firstButton = $('<a class="imageBtn first"></a>');
             this.$prevOptions.append(this.$firstButton);
 
-            this.$prevButton = $('<a class="imageButton prev"></a>');
+            this.$prevButton = $('<a class="imageBtn prev"></a>');
             this.$prevOptions.append(this.$prevButton);
 
             this.$modeOptions = $('<div class="mode"></div>');
@@ -3028,16 +3054,16 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             this.$total = $('<span class="total"></span>');
             this.$search.append(this.$total);
 
-            this.$searchButton = $('<a class="imageButton go"></a>');
+            this.$searchButton = $('<a class="imageBtn go"></a>');
             this.$search.append(this.$searchButton);
 
             this.$nextOptions = $('<div class="nextOptions"></div>');
             this.$centerOptions.append(this.$nextOptions);
 
-            this.$nextButton = $('<a class="imageButton next"></a>');
+            this.$nextButton = $('<a class="imageBtn next"></a>');
             this.$nextOptions.append(this.$nextButton);
 
-            this.$lastButton = $('<a class="imageButton last"></a>');
+            this.$lastButton = $('<a class="imageBtn last"></a>');
             this.$nextOptions.append(this.$lastButton);
 
             if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
@@ -3338,7 +3364,7 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
         BaseExpandPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
 
-            this.$main.actualHeight(this.$element.parent().height() - this.$top.outerHeight(true));
+            this.$main.height(this.$element.parent().height() - this.$top.outerHeight(true));
         };
         return BaseExpandPanel;
     })(baseView.BaseView);
@@ -3564,7 +3590,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
 
             $.templates({
                 thumbsTemplate: '<div class="thumb" data-src="{{>url}}" data-visible="{{>visible}}">\
-                                <div class="wrap" style="height:{{>height}}px"></div>\
+                                <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
                             </div>\
@@ -3573,9 +3599,14 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                             {{/if}}'
             });
 
+            var extraHeight = this.options.thumbsExtraHeight;
+
             $.views.helpers({
                 isEven: function (num) {
                     return (num % 2 == 0) ? true : false;
+                },
+                extraHeight: function () {
+                    return extraHeight;
                 }
             });
 
@@ -3719,7 +3750,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$selectedThumb.addClass('selected');
 
             if (this.lastThumbClickedIndex != index) {
-                var scrollTop = this.$element.scrollTop() + this.$selectedThumb.position().top;
+                var scrollTop = this.$element.scrollTop() + this.$selectedThumb.position().top - (this.$selectedThumb.height() / 2);
                 this.$element.scrollTop(scrollTop);
             }
 
@@ -3917,8 +3948,8 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         TreeViewLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
 
-            this.$tabsContent.actualHeight(this.$main.height() - this.$tabs.outerHeight());
-            this.$views.actualHeight(this.$tabsContent.height() - this.$options.outerHeight());
+            this.$tabsContent.height(this.$main.height() - (this.$tabs.is(':visible') ? this.$tabs.height() : 0) - this.$tabsContent.verticalPadding());
+            this.$views.height(this.$tabsContent.height() - this.$options.height());
         };
         TreeViewLeftPanel.OPEN_TREE_VIEW = 'leftPanel.onOpenTreeView';
         TreeViewLeftPanel.OPEN_THUMBS_VIEW = 'leftPanel.onOpenThumbsView';
@@ -4011,6 +4042,9 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 id: "viewer",
                 showNavigationControl: true,
                 showNavigator: true,
+                showRotationControl: true,
+                showHomeControl: false,
+                showFullPageControl: false,
                 defaultZoomLevel: this.options.defaultZoomLevel || 0,
                 navigatorPosition: 'BOTTOM_RIGHT',
                 prefixUrl: prefixUrl,
@@ -4027,25 +4061,13 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                         HOVER: 'zoom_out.png',
                         DOWN: 'zoom_out.png'
                     },
-                    home: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
+                    rotateright: {
+                        REST: 'rotate_right.png',
+                        GROUP: 'rotate_right.png',
+                        HOVER: 'rotate_right.png',
+                        DOWN: 'rotate_right.png'
                     },
-                    fullpage: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    previous: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    next: {
+                    rotateleft: {
                         REST: 'pixel.gif',
                         GROUP: 'pixel.gif',
                         HOVER: 'pixel.gif',
@@ -4109,6 +4131,10 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 _this.currentBounds = _this.getBounds();
 
                 $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, [viewer]);
+            });
+
+            $('div[title="Rotate right"]').on('click', function () {
+                $.publish(SeadragonCenterPanel.SEADRAGON_ROTATION, [_this.viewer.viewport.getRotation()]);
             });
 
             this.title = this.extension.provider.getTitle();
@@ -4235,11 +4261,12 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 this.$nextButton.css('top', (this.$content.height() - this.$nextButton.height()) / 2);
             }
         };
-        SeadragonCenterPanel.SEADRAGON_OPEN = 'center.open';
-        SeadragonCenterPanel.SEADRAGON_RESIZE = 'center.resize';
-        SeadragonCenterPanel.SEADRAGON_ANIMATION_START = 'center.animationstart';
-        SeadragonCenterPanel.SEADRAGON_ANIMATION = 'center.animation';
-        SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH = 'center.animationfinish';
+        SeadragonCenterPanel.SEADRAGON_OPEN = 'center.onOpen';
+        SeadragonCenterPanel.SEADRAGON_RESIZE = 'center.onResize';
+        SeadragonCenterPanel.SEADRAGON_ANIMATION_START = 'center.onAnimationStart';
+        SeadragonCenterPanel.SEADRAGON_ANIMATION = 'center.onAnimation';
+        SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH = 'center.onAnimationfinish';
+        SeadragonCenterPanel.SEADRAGON_ROTATION = 'center.onRotation';
         SeadragonCenterPanel.PREV = 'center.onPrev';
         SeadragonCenterPanel.NEXT = 'center.onNext';
         return SeadragonCenterPanel;
@@ -4263,6 +4290,14 @@ define('modules/coreplayer-shared-module/rightPanel',["require", "exports", "./b
             _super.prototype.create.call(this);
 
             this.$element.width(this.options.panelCollapsedWidth);
+        };
+
+        RightPanel.prototype.init = function () {
+            _super.prototype.init.call(this);
+
+            if (this.options.panelOpen && this.provider.isHomeDomain) {
+                this.toggle();
+            }
         };
 
         RightPanel.prototype.getTargetWidth = function () {
@@ -4387,7 +4422,7 @@ define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "..
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
-            _super.call(this, $element, true, false);
+            _super.call(this, $element);
         }
         FooterPanel.prototype.create = function () {
             var _this = this;
@@ -4399,13 +4434,13 @@ define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "..
                 _this.toggleFullScreen();
             });
 
-            this.$options = utils.Utils.createDiv('options');
+            this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
 
-            this.$embedButton = $('<a href="#" class="imageButton embed" title="' + this.content.embed + '"></a>');
+            this.$embedButton = $('<a href="#" class="imageBtn embed" title="' + this.content.embed + '"></a>');
             this.$options.append(this.$embedButton);
 
-            this.$fullScreenBtn = $('<a href="#" class="imageButton fullScreen" title="' + this.content.fullScreen + '"></a>');
+            this.$fullScreenBtn = $('<a href="#" class="imageBtn fullScreen" title="' + this.content.fullScreen + '"></a>');
             this.$options.append(this.$fullScreenBtn);
 
             this.$embedButton.on('click', function (e) {
@@ -4419,11 +4454,15 @@ define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "..
                 $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
             });
 
+            if (!utils.Utils.getBool(this.options.embedEnabled, true)) {
+                this.$embedButton.hide();
+            }
+
             if (this.provider.isLightbox) {
                 this.$fullScreenBtn.addClass('lightbox');
             }
 
-            if (this.options.minimiseButtons === true) {
+            if (utils.Utils.getBool(this.options.minimiseButtons, false)) {
                 this.$options.addClass('minimiseButtons');
             }
         };
@@ -4440,10 +4479,6 @@ define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "..
 
         FooterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
-            this.$element.css({
-                'top': this.extension.height() - this.$element.height()
-            });
         };
         FooterPanel.EMBED = 'footer.onEmbed';
         return FooterPanel;
@@ -4653,8 +4688,9 @@ define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "ex
 
         EmbedDialogue.prototype.formatCode = function () {
             var zoom = this.extension.getViewerBounds();
+            var rotation = this.extension.getViewerRotation();
 
-            this.code = this.provider.getEmbedScript(this.provider.canvasIndex, zoom, this.currentWidth, this.currentHeight, this.options.embedTemplate);
+            this.code = this.provider.getEmbedScript(this.provider.canvasIndex, zoom, this.currentWidth, this.currentHeight, rotation, this.options.embedTemplate);
 
             this.$code.val(this.code);
         };
@@ -4691,6 +4727,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
         __extends(Extension, _super);
         function Extension(provider) {
             _super.call(this, provider);
+            this.currentRotation = 0;
         }
         Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
@@ -4744,6 +4781,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
             });
 
+            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
+                _this.currentRotation = rotation;
+                _this.setParam(3 /* rotation */, rotation);
+            });
+
             $.subscribe(center.SeadragonCenterPanel.PREV, function (e) {
                 if (_this.provider.canvasIndex != 0) {
                     _this.viewPage(Number(_this.provider.canvasIndex) - 1);
@@ -4788,7 +4830,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             }
 
             this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
-            this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
+
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
+            }
+
             this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
 
             this.$helpDialogue = utils.Utils.createDiv('overlay help');
@@ -4802,6 +4848,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
+
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel.init();
+            }
         };
 
         Extension.prototype.setParams = function () {
@@ -4813,6 +4863,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
         Extension.prototype.isLeftPanelEnabled = function () {
             return utils.Utils.getBool(this.provider.config.options.leftPanelEnabled, true) && this.provider.isMultiCanvas();
+        };
+
+        Extension.prototype.isRightPanelEnabled = function () {
+            return utils.Utils.getBool(this.provider.config.options.rightPanelEnabled, true);
         };
 
         Extension.prototype.viewPage = function (canvasIndex) {
@@ -4854,6 +4908,13 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 return this.centerPanel.serialiseBounds(bounds);
 
             return "";
+        };
+
+        Extension.prototype.getViewerRotation = function () {
+            if (!this.centerPanel)
+                return;
+
+            return this.currentRotation;
         };
 
         Extension.prototype.viewStructure = function (path) {
@@ -5258,14 +5319,14 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
             return uri;
         };
 
-        Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, embedTemplate) {
+        Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, rotation, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
 
             var template = this.options.embedTemplate || embedTemplate;
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, canvasIndex, zoom, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, canvasIndex, zoom, rotation, configUri, width, height, esu);
 
             return script;
         };
@@ -5298,14 +5359,14 @@ define('extensions/coreplayer-seadragon-extension/provider',["require", "exports
             return uri;
         };
 
-        Provider.prototype.getEmbedScript = function (assetIndex, zoom, width, height, embedTemplate) {
+        Provider.prototype.getEmbedScript = function (assetIndex, zoom, width, height, rotation, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
 
             var template = this.options.embedTemplate || embedTemplate;
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, assetIndex, zoom, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, assetIndex, zoom, rotation, configUri, width, height, esu);
 
             return script;
         };
