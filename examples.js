@@ -34,20 +34,44 @@ $(function(){
 
     // when the embed script has loaded - yep, couldn't get it to work any other way...
     setTimeout(function(){
-        // if an options dropdown is included on the page, get the first item and set the data-uri to it.
-        if ($('#options').length > 0){
+        if ($('#options option').length){
             setSelectedOption();
         }
     }, 1000);
 
     $('#options').on('change', function(){
-        setSelectedOption();
+        var packageId = $('#options option:selected').val();
+        var url = document.URL;
+        url = url.substr(0, Math.min(url.indexOf('?'), url.indexOf('#')));
+        window.location.href = url + "?packageId=" + packageId;
     });
 
     function setSelectedOption(){
-        var bnumber = $('#options option:selected').val();
-        $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + bnumber);
+
+        var packageId;
+
+        // if a packageId has been passed as a hash parameter, use that.
+        // otherwise pick the first item in the drop down.
+
+        packageId = getQuerystringParameter("packageId");
+
+        if (packageId){
+            $("#options").val(packageId);
+        } else {
+            packageId = $('#options option')[0].value;
+        }
+
+        $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + packageId);
+
         initPlayers($('.wellcomePlayer'));
+    }
+
+    function getQuerystringParameter(key) {
+        var doc = window.document;
+        key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
+        var match = regex.exec(window.location.search);
+        return(match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : null);
     }
 
     // test overrideFullScreen option
