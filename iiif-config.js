@@ -1,5 +1,6 @@
 {
     "options": {
-        "IIIF": true
+        "IIIF": true,
+        "theme": "coreplayer-default-theme"
     }
 }

@@ -32,7 +32,6 @@ $(function(){
         }
     }
 
-    // when the embed script has loaded - yep, couldn't get it to work any other way...
     setTimeout(function(){
         if ($('#options option').length){
             setSelectedOption();
@@ -40,28 +39,48 @@ $(function(){
     }, 1000);
 
     $('#options').on('change', function(){
-        var packageId = $('#options option:selected').val();
         var url = document.URL;
         url = url.substr(0, Math.min(url.indexOf('?'), url.indexOf('#')));
-        window.location.href = url + "?packageId=" + packageId;
+        var item = $('#options option:selected').val();
+
+        if ($('#options').hasClass('manifest')){
+            window.location.href = url + "?manifest=" + item;
+        } else {
+            window.location.href = url + "?packageId=" + item;
+        }
+
     });
 
     function setSelectedOption(){
 
-        var packageId;
+        var item;
 
-        // if a packageId has been passed as a hash parameter, use that.
-        // otherwise pick the first item in the drop down.
+        if ($('#options').hasClass('manifest')){
 
-        packageId = getQuerystringParameter("packageId");
+            item = getQuerystringParameter("manifest");
 
-        if (packageId){
-            $("#options").val(packageId);
+            if (item){
+                $("#options").val(item);
+            } else {
+                item = $('#options option')[0].value;
+            }
+
+            $('.wellcomePlayer').attr('data-uri', item);
+
         } else {
-            packageId = $('#options option')[0].value;
-        }
+            // if a packageId has been passed as a hash parameter, use that.
+            // otherwise pick the first item in the drop down.
 
-        $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + packageId);
+            item = getQuerystringParameter("packageId");
+
+            if (item){
+                $("#options").val(item);
+            } else {
+                item = $('#options option')[0].value;
+            }
+
+            $('.wellcomePlayer').attr('data-uri', 'http://wellcomelibrary.org/package/' + item);
+        }
 
         initPlayers($('.wellcomePlayer'));
     }
