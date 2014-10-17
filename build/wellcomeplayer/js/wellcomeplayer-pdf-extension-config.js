@@ -41,7 +41,8 @@
                 "panelOpen": false,
                 "panelAnimationDuration": 250,
                 "thumbsEnabled": true,
-                "treeEnabled": false
+                "treeEnabled": false,
+                "thumbsExtraHeight": 6
             }
         },
         "pdfCenterPanel": {
@@ -134,6 +135,11 @@
             "content": {
                 "save": "Save to Bookmarks",
                 "download": "Download"
+            }
+        },
+        "conditionsDialogue": {
+            "content": {
+                "title": "Conditions of use"
             }
         }
     },

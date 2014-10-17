@@ -203,6 +203,11 @@
                 "preview": "Preview",
                 "download": "Download"
             }
+        },
+        "conditionsDialogue": {
+            "content": {
+                "title": "Conditions of use"
+            }
         }
     },
     "extends": "src/extensions/coreplayer-seadragon-extension/extension.config"

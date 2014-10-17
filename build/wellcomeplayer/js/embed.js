@@ -350,6 +350,7 @@ docReady(function() {
                     "&oi=" + isOnlyInstance +
                     "&du=" + dataUri +
                     "&esu=" + absScriptUri +
+                    "&ed=" + document.domain +
                     "&d=" + domain +
                     "&lb=" + isLightbox;
 
@@ -378,6 +379,9 @@ docReady(function() {
                         message = $.parseJSON(message);
 
                         switch (message.eventName) {
+                            case "onToggleFullScreen":
+                                toggleFullScreen(message.eventObject);
+                                break;
                             case "onToggleFullScreen":
                                 toggleFullScreen(message.eventObject);
                                 break;
