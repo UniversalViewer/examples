@@ -26,7 +26,6 @@ $(function(){
         } else {
             // built version
             $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
-            $('.wellcomePlayer').updateAttr('data-uri', '/examples/', '/');
 
             $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
         }
