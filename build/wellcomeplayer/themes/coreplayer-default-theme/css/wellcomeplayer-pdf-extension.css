@@ -2014,6 +2014,9 @@ canvas {
 #app .rightPanel .main .text a.toggle:hover {
   color: #ffc850;
 }
+#app .overlay.download .middle .content .options li label {
+  width: 190px;
+}
 #app .overlay.login {
   width: 468px;
 }

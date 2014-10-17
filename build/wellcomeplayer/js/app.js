@@ -15,6 +15,12 @@
 
 (function ($) {
 
+    $.fn.targetBlank = function () {
+        return this.each(function () {
+            $(this).find('a').prop('target', '_blank');
+        });
+    }
+
     $.fn.swapClass = function (removeClass, addClass) {
         return this.each(function () {
             $(this).removeClass(removeClass).addClass(addClass);
@@ -2230,6 +2236,8 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
                 }
             });
 
+            this.triggerSocket(BaseExtension.LOAD);
+
             this.$element.removeClass();
             if (!this.provider.isHomeDomain)
                 this.$element.addClass('embedded');
@@ -2341,6 +2349,8 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
         };
 
         BaseExtension.prototype.showDialogue = function (message, acceptCallback, buttonText, allowClose) {
+            this.closeActiveDialogue();
+
             $.publish(genericDialogue.GenericDialogue.SHOW_GENERIC_DIALOGUE, [{
                     message: message,
                     acceptCallback: acceptCallback,
@@ -2369,6 +2379,7 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
                 this.triggerSocket(BaseExtension.SEQUENCE_INDEX_CHANGED, manifest.assetSequence);
             }
         };
+        BaseExtension.LOAD = 'onLoad';
         BaseExtension.RESIZE = 'onResize';
         BaseExtension.TOGGLE_FULLSCREEN = 'onToggleFullScreen';
         BaseExtension.CANVAS_INDEX_CHANGED = 'onAssetIndexChanged';
@@ -2447,6 +2458,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
 
             this.dataUri = utils.Utils.getQuerystringParameter('du');
+            this.embedDomain = utils.Utils.getQuerystringParameter('ed');
             this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
             this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
             this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
@@ -2638,8 +2650,9 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
         };
 
         BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
+            if (index == -1)
+                return null;
             var canvas = this.getCanvasByIndex(index);
-
             return this.getCanvasStructure(canvas);
         };
 
@@ -2839,8 +2852,41 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return parts.host;
         };
 
+        BaseProvider.prototype.getEmbedDomain = function () {
+            return this.embedDomain;
+        };
+
         BaseProvider.prototype.getMetaData = function (callback) {
             callback(null);
+        };
+
+        BaseProvider.prototype.defaultToThumbsView = function () {
+            var manifestType = this.getManifestType();
+
+            switch (manifestType) {
+                case 'monograph':
+                    if (!this.isMultiSequence())
+                        return true;
+                    break;
+                case 'archive':
+                    return true;
+                    break;
+                case 'boundmanuscript':
+                    return true;
+                    break;
+                case 'artwork':
+                    return true;
+            }
+
+            var sequenceType = this.getSequenceType();
+
+            switch (sequenceType) {
+                case 'application-pdf':
+                    return true;
+                    break;
+            }
+
+            return false;
         };
         return BaseProvider;
     })();
@@ -2885,7 +2931,7 @@ define('modules/coreplayer-dialogues-module/helpDialogue',["require", "exports",
             this.$title.text(this.content.title);
             this.$message.html(this.content.text);
 
-            this.$message.find('a').prop('target', '_blank');
+            this.$message.targetBlank();
 
             this.$element.hide();
         };
@@ -3863,35 +3909,12 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
                 if (!treeEnabled || !thumbsEnabled)
                     this.$tabs.hide();
 
-                if (thumbsEnabled && this.defaultToThumbsView()) {
-                    this.$tabs.hide();
+                if (thumbsEnabled && this.provider.defaultToThumbsView()) {
                     this.openThumbsView();
                 } else if (treeEnabled) {
                     this.openTreeView();
                 }
             }
-        };
-
-        TreeViewLeftPanel.prototype.defaultToThumbsView = function () {
-            var manifestType = this.provider.getManifestType();
-
-            switch (manifestType) {
-                case 'archive':
-                    return true;
-                case 'boundmanuscript':
-                    return true;
-                case 'artwork':
-                    return true;
-            }
-
-            var sequenceType = this.provider.getSequenceType();
-
-            switch (sequenceType) {
-                case 'application-pdf':
-                    return true;
-            }
-
-            return false;
         };
 
         TreeViewLeftPanel.prototype.openTreeView = function () {
@@ -3907,7 +3930,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
             setTimeout(function () {
                 var structure = _this.provider.getStructureByCanvasIndex(_this.provider.canvasIndex);
-                if (_this.treeView && structure.treeNode)
+                if (_this.treeView && structure && structure.treeNode)
                     _this.treeView.selectNode(structure.treeNode);
             }, 1);
 
@@ -4106,6 +4129,10 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
 
                     $.publish(SeadragonCenterPanel.NEXT);
                 });
+
+                $('.paging.btn.next').on('pointerdown', function () {
+                    console.log('hover');
+                });
             }
             ;
 
@@ -4138,6 +4165,16 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             });
 
             this.title = this.extension.provider.getTitle();
+
+            var browser = window.BrowserDetect.browser;
+
+            if (browser == 'Firefox') {
+                if (this.provider.isMultiCanvas()) {
+                    this.$prevButton.hide();
+                    this.$nextButton.hide();
+                }
+                $('div[title="Rotate right"]').hide();
+            }
         };
 
         SeadragonCenterPanel.prototype.viewerOpen = function () {
@@ -4353,6 +4390,9 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
                                            <div class="header"></div>\
                                            <div class="text"></div>\
                                        </div>');
+
+            this.$items = $('<div class="items"></div>');
+            this.$main.append(this.$items);
         };
 
         MoreInfoRightPanel.prototype.toggleComplete = function () {
@@ -4382,7 +4422,7 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
             }
 
             _.each(data, function (item) {
-                _this.$main.append(_this.buildItem(item, 130));
+                _this.$items.append(_this.buildItem(item, 130));
             });
         };
 
@@ -4980,6 +5020,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
 
             this.dataUri = utils.Utils.getQuerystringParameter('du');
+            this.embedDomain = utils.Utils.getQuerystringParameter('ed');
             this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
             this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
             this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
@@ -5071,6 +5112,8 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
+            if (index == -1)
+                return null;
             var canvas = this.getCanvasByIndex(index);
             return this.getCanvasStructure(canvas);
         };
@@ -5272,8 +5315,41 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return parts.host;
         };
 
+        BaseProvider.prototype.getEmbedDomain = function () {
+            return this.embedDomain;
+        };
+
         BaseProvider.prototype.getMetaData = function (callback) {
             callback(this.manifest.metadata);
+        };
+
+        BaseProvider.prototype.defaultToThumbsView = function () {
+            var manifestType = this.getManifestType();
+
+            switch (manifestType) {
+                case 'monograph':
+                    if (!this.isMultiSequence())
+                        return true;
+                    break;
+                case 'archive':
+                    return true;
+                    break;
+                case 'boundmanuscript':
+                    return true;
+                    break;
+                case 'artwork':
+                    return true;
+            }
+
+            var sequenceType = this.getSequenceType();
+
+            switch (sequenceType) {
+                case 'application-pdf':
+                    return true;
+                    break;
+            }
+
+            return false;
         };
         return BaseProvider;
     })();
@@ -5304,11 +5380,13 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
 
             if (canvas.resources) {
                 iiifUri = canvas.resources[0].resource.service['@id'];
-            } else if (canvas.images) {
+            } else if (canvas.images && canvas.images[0].resource.service) {
                 iiifUri = canvas.images[0].resource.service['@id'];
             }
 
-            if (iiifUri.endsWith('/')) {
+            if (!iiifUri) {
+                console.warn('no service endpoint available');
+            } else if (iiifUri.endsWith('/')) {
                 iiifUri += 'info.json';
             } else {
                 iiifUri += '/info.json';
@@ -5763,7 +5841,12 @@ define('modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel',["require", "ex
             var browser = window.BrowserDetect.browser;
             var version = window.BrowserDetect.version;
 
-            if (browser == 'Chrome' || browser == 'Firefox' && version > 20 || browser == 'Opera') {
+            if (browser == 'Explorer' && version < 10) {
+                var myPDF = new PDFObject({
+                    url: canvas.mediaUri,
+                    id: "PDF"
+                }).embed('content');
+            } else {
                 var viewerPath;
 
                 if (window.DEBUG) {
@@ -5785,11 +5868,6 @@ define('modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel',["require", "ex
 
                     _this.resize();
                 });
-            } else {
-                var myPDF = new PDFObject({
-                    url: canvas.mediaUri,
-                    id: "PDF"
-                }).embed('content');
             }
         };
 
@@ -5862,6 +5940,7 @@ define('extensions/coreplayer-pdf-extension/extension',["require", "exports", ".
             _super.call(this, provider);
         }
         Extension.prototype.create = function () {
+            var _this = this;
             _super.prototype.create.call(this);
 
             var that = this;
@@ -5874,6 +5953,18 @@ define('extensions/coreplayer-pdf-extension/extension',["require", "exports", ".
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
             });
 
+            $.subscribe(shell.Shell.SHOW_OVERLAY, function (e, params) {
+                if (_this.IsOldIE()) {
+                    _this.centerPanel.$element.hide();
+                }
+            });
+
+            $.subscribe(shell.Shell.HIDE_OVERLAY, function (e, params) {
+                if (_this.IsOldIE()) {
+                    _this.centerPanel.$element.show();
+                }
+            });
+
             require(_.values(dependencies), function () {
                 that.createModules();
 
@@ -5883,6 +5974,15 @@ define('extensions/coreplayer-pdf-extension/extension',["require", "exports", ".
 
                 $.publish(Extension.CREATED);
             });
+        };
+
+        Extension.prototype.IsOldIE = function () {
+            var browser = window.BrowserDetect.browser;
+            var version = window.BrowserDetect.version;
+
+            if (browser == 'Explorer' && version <= 9)
+                return true;
+            return false;
         };
 
         Extension.prototype.createModules = function () {

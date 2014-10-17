@@ -135,6 +135,11 @@
                 "download": "Download",
                 "embed": "Embed"
             }
+        },
+        "conditionsDialogue": {
+            "content": {
+                "title": "Conditions of use"
+            }
         }
     },
     "extends": "src/extensions/coreplayer-mediaelement-extension/extension.config"
