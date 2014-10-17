@@ -26,14 +26,13 @@ $(function(){
         } else {
             // built version
             $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
-            $('.wellcomePlayer').updateAttr('data-uri', '/examples/', '/');
 
             $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
         }
     }
 
     setTimeout(function(){
-        if ($('#options option').length){
+        if ($('#options option').length || $('#options optgroup').length){
             setSelectedOption();
         }
     }, 1000);
