@@ -26,7 +26,7 @@ $(function(){
         } else {
             // built version
             $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
-            
+
             if ($('.wellcomePlayer').attr('data-uri')){
                 $('.wellcomePlayer').updateAttr('data-uri', '/examples/', '/');
             }
