@@ -15,7 +15,7 @@ $(function(){
         });
     };
 
-    var testBuild = 0;
+    var testBuild = getQuerystringParameter("build");
     var uri = document.location.href;
     var isLocalhost = uri.indexOf('localhost') != -1;
 
