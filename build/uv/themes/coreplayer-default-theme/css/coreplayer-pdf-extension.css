@@ -28,8 +28,8 @@
   margin: 0 10px 0 0;
 }
 #app .overlay.embed .middle .size.selected {
-  border: 1px solid #ffb81d;
-  background: #ffe8b6;
+  border: 1px solid #869f33;
+  background: #cadb90;
 }
 #app .overlay.embed .middle .size.selected p {
   font-weight: bold;
@@ -138,11 +138,11 @@
 }
 #app .leftPanel .tabs {
   height: 25px;
-  border-bottom: 1px solid #525252;
+  border-bottom: 1px solid #373737;
 }
 #app .leftPanel .tabs .tab {
-  color: #ffb81d;
-  background-color: #1c191a;
+  color: #869f33;
+  background-color: #1f1f1f;
   height: 24px;
   display: inline-block;
   text-align: center;
@@ -156,8 +156,8 @@
   margin: 0 0 0 10px;
 }
 #app .leftPanel .tabs .tab.on {
-  border: 1px solid #525252;
-  border-bottom: 1px solid #1c191a;
+  border: 1px solid #373737;
+  border-bottom: 1px solid #1f1f1f;
   color: #ffffff;
   margin-bottom: -1px;
 }
@@ -200,7 +200,7 @@
   padding: 2px 0 2px 0;
 }
 #app .leftPanel .views .treeView ul a.selected {
-  color: #ffb81d;
+  color: #869f33;
 }
 #app .leftPanel .views .thumbsView {
   overflow: auto;
@@ -211,7 +211,7 @@
   cursor: pointer;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap {
-  border: 1px solid #525252;
+  border: 1px solid #373737;
   padding: 2px;
   max-height: 180px;
   overflow: hidden;
@@ -230,7 +230,7 @@
   margin: 0 auto;
 }
 #app .leftPanel .views .thumbsView .thumb.selected .wrap {
-  border: 1px solid #ffb81d;
+  border: 1px solid #869f33;
 }
 #app .leftPanel .views .thumbsView .thumb span {
   font-size: 11px;
@@ -287,11 +287,11 @@
   margin: 5px 10px 0 0;
 }
 #app .rightPanel .main .text a.toggle {
-  color: #ffb81d;
+  color: #869f33;
   font-weight: normal;
 }
 #app .rightPanel .main .text a.toggle:hover {
-  color: #ffc850;
+  color: #a5c342;
 }
 /* Copyright 2012 Mozilla Foundation
  *
@@ -2028,7 +2028,7 @@ canvas {
   background: #555555;
 }
 ::-webkit-scrollbar-thumb {
-  background: #0080a3;
+  background: #a5c342;
 }
 html,
 body {
@@ -2062,12 +2062,12 @@ textarea {
   background-image: none;
 }
 a {
-  color: #005870;
+  color: #869f33;
   text-decoration: none;
 }
 a:hover,
 a:focus {
-  color: #0080a3;
+  color: #a5c342;
   text-decoration: underline;
 }
 a:focus {
@@ -2202,8 +2202,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #ffffff;
-  background-color: #005870;
-  border-color: #005870;
+  background-color: #869f33;
+  border-color: #869f33;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2211,8 +2211,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #ffffff;
-  background-color: #003847;
-  border-color: #002833;
+  background-color: #6c8029;
+  border-color: #5f7124;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2234,8 +2234,8 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #005870;
-  border-color: #005870;
+  background-color: #869f33;
+  border-color: #869f33;
 }
 .btn-warning {
   color: #ffffff;
@@ -2386,7 +2386,7 @@ fieldset[disabled] .btn-info.active {
   border-color: #5bc0de;
 }
 .btn-link {
-  color: #005870;
+  color: #869f33;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -2407,7 +2407,7 @@ fieldset[disabled] .btn-link {
 }
 .btn-link:hover,
 .btn-link:focus {
-  color: #0080a3;
+  color: #a5c342;
   text-decoration: underline;
   background-color: transparent;
 }
@@ -2977,7 +2977,7 @@ input[type="button"].btn-block {
 }
 #app .headerPanel {
   position: relative;
-  background-color: #d1d5da;
+  background-color: #dfdfdf;
   height: 40px;
 }
 #app .mainPanel {
@@ -2989,16 +2989,16 @@ input[type="button"].btn-block {
 }
 #app .leftPanel {
   position: absolute;
-  background: #1c191a;
-  border: 1px solid #525252;
+  background: #1f1f1f;
+  border: 1px solid #373737;
 }
 #app .centerPanel {
   position: absolute;
 }
 #app .rightPanel {
   position: absolute;
-  background: #1c191a;
-  border: 1px solid #525252;
+  background: #1f1f1f;
+  border: 1px solid #373737;
 }
 #app .footerPanel {
   position: relative;
