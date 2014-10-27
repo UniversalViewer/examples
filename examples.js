@@ -17,11 +17,12 @@ $(function(){
 
     var testBuild = 0;
     var uri = document.location.href;
+    var isLocalhost = uri.indexOf('localhost') != -1;
 
     if (testBuild){
         $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/wellcomeplayer/js/embed.js"><\/script>');
     } else {
-        if (uri.indexOf('localhost') != -1){
+        if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
         } else {
             // built version
@@ -46,8 +47,10 @@ $(function(){
         url = url.substr(0, Math.min(url.indexOf('?'), url.indexOf('#')));
         var item = $('#options option:selected').val();
 
-        if ($('#options').hasClass('manifest')){
+        if ($('#options').hasClass('manifest')) {
             window.location.href = url + "?manifest=" + item;
+        } else if ($('#options').hasClass('language')){
+            window.location.href = url + "?language=" + item;
         } else {
             window.location.href = url + "?packageId=" + item;
         }
@@ -58,9 +61,20 @@ $(function(){
 
         var item;
 
-        if ($('#options').hasClass('manifest')){
+        if ($('#options').hasClass('manifest')) {
 
             item = getQuerystringParameter("manifest");
+
+            if (item) {
+                $("#options").val(item);
+            } else {
+                item = $('#options option')[0].value;
+            }
+
+            $('.wellcomePlayer').attr('data-uri', item);
+        } else if ($('#options').hasClass('language')){
+
+            item = getQuerystringParameter("language");
 
             if (item){
                 $("#options").val(item);
@@ -68,8 +82,11 @@ $(function(){
                 item = $('#options option')[0].value;
             }
 
-            $('.wellcomePlayer').attr('data-uri', item);
-
+            if (isLocalhost){
+                $('.wellcomePlayer').attr('data-config', '/examples/' + item + '-config.js');
+            } else {
+                $('.wellcomePlayer').attr('data-config', '/' + item + '-config.js');
+            }
         } else {
             // if a packageId has been passed as a hash parameter, use that.
             // otherwise pick the first item in the drop down.
