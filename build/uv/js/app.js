@@ -5191,7 +5191,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
                     uri = canvas.images[0].resource.service['@id'];
                 }
 
-                var tile = 'full/' + width + ',' + height + '/0/native.jpg';
+                var tile = 'full/' + width + ',' + height + '/0/default.jpg';
 
                 if (uri.endsWith('/')) {
                     uri += tile;
