@@ -2604,6 +2604,16 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return uri;
         };
 
+        BaseProvider.prototype.getTwoUpIndices = function () {
+            if (this.isFirstCanvas() || this.isLastCanvas()) {
+                return [this.canvasIndex];
+            } else if (this.canvasIndex % 2) {
+                return [this.canvasIndex, this.canvasIndex + 1];
+            } else {
+                return [this.canvasIndex - 1, this.canvasIndex];
+            }
+        };
+
         BaseProvider.prototype.parseManifest = function () {
             this.parseManifestation(this.manifest.rootStructure, this.manifest.assetSequences, '');
         };
@@ -3651,17 +3661,17 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                                 <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
-                            </div>\
-                            {{if ~isEven(#index + 1)}} \
-                                <div class="separator"></div> \
-                            {{/if}}'
+                             </div>\
+                             {{if ~isOdd(#index + 1)}} \
+                                 <div class="separator"></div> \
+                             {{/if}}'
             });
 
             var extraHeight = this.options.thumbsExtraHeight;
 
             $.views.helpers({
-                isEven: function (num) {
-                    return (num % 2 == 0) ? true : false;
+                isOdd: function (num) {
+                    return (num % 2 == 0) ? false : true;
                 },
                 extraHeight: function () {
                     return extraHeight;
@@ -3792,6 +3802,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
         };
 
         ThumbsView.prototype.selectIndex = function (index) {
+            var _this = this;
             if (index == -1)
                 return;
 
@@ -3800,12 +3811,19 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
 
             index = parseInt(index);
 
-            if (this.$selectedThumb) {
-                this.$selectedThumb.removeClass('selected');
-            }
+            this.$thumbs.find('.thumb').removeClass('selected');
 
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
-            this.$selectedThumb.addClass('selected');
+
+            if (this.provider.isPaged()) {
+                var indices = this.provider.getTwoUpIndices(index);
+
+                _.each(indices, function (index) {
+                    $(_this.$thumbs.find('.thumb')[index]).addClass('selected');
+                });
+            } else {
+                this.$selectedThumb.addClass('selected');
+            }
 
             if (this.lastThumbClickedIndex != index) {
                 var scrollTop = this.$element.scrollTop() + this.$selectedThumb.position().top - (this.$selectedThumb.height() / 2);
@@ -4364,14 +4382,13 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
             _super.call(this, $element);
         }
         SeadragonCollectionCenterPanel.prototype.create = function () {
+            var _this = this;
             this.setConfig('seadragonCenterPanel');
 
             _super.prototype.create.call(this);
 
-            var that = this;
-
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                that.viewer.open(that.getTileSources());
+                _this.viewer.open(_this.getTileSources());
             });
         };
 
@@ -4437,13 +4454,11 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
             } else if (this.provider.isLastCanvas()) {
                 return [this.getLeftTileSource(this.provider.getTotalCanvases() - 1)];
             } else {
-                var isEven = this.provider.canvasIndex % 2;
+                var indices = this.provider.getTwoUpIndices();
+                indices[0] = this.getLeftTileSource(indices[0]);
+                indices[1] = this.getRightTileSource(indices[1]);
 
-                if (isEven) {
-                    return [this.getLeftTileSource(this.provider.canvasIndex), this.getRightTileSource(this.provider.canvasIndex + 1)];
-                } else {
-                    return [this.getLeftTileSource(this.provider.canvasIndex - 1), this.getRightTileSource(this.provider.canvasIndex)];
-                }
+                return indices;
             }
         };
 
@@ -4463,7 +4478,7 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
 
             return {
                 tileSource: uri,
-                x: 0.57,
+                x: 0.56,
                 y: 0,
                 height: 1
             };
@@ -5341,6 +5356,16 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
 
             return null;
+        };
+
+        BaseProvider.prototype.getTwoUpIndices = function () {
+            if (this.isFirstCanvas() || this.isLastCanvas()) {
+                return [this.canvasIndex];
+            } else if (this.canvasIndex % 2) {
+                return [this.canvasIndex, this.canvasIndex + 1];
+            } else {
+                return [this.canvasIndex - 1, this.canvasIndex];
+            }
         };
 
         BaseProvider.prototype.addTimestamp = function (uri) {
