@@ -305,6 +305,12 @@
 #app .centerPanel div[title="Rotate right"] {
   cursor: pointer !important;
 }
+#app .centerPanel div[title="Previous page"] {
+  display: none !important;
+}
+#app .centerPanel div[title="Next page"] {
+  display: none !important;
+}
 /*
 #app .centerPanel .zoomControls{
     position: absolute;

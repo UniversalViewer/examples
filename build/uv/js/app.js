@@ -2541,6 +2541,14 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return this.sequence.seeAlso;
         };
 
+        BaseProvider.prototype.isFirstCanvas = function () {
+            return this.canvasIndex == 0;
+        };
+
+        BaseProvider.prototype.isLastCanvas = function () {
+            return this.canvasIndex == this.getTotalCanvases() - 1;
+        };
+
         BaseProvider.prototype.isSeeAlsoEnabled = function () {
             return this.config.options.seeAlsoEnabled !== false;
         };
@@ -2563,6 +2571,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
         BaseProvider.prototype.isMultiSequence = function () {
             return this.manifest.assetSequences.length > 1;
+        };
+
+        BaseProvider.prototype.isPaged = function () {
+            return false;
         };
 
         BaseProvider.prototype.getMediaUri = function (mediaUri) {
@@ -4036,7 +4048,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../coreplayer-shared-module/baseProvider", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/centerPanel", "../../utils"], function(require, exports, baseProvider, extension, baseCenter, utils) {
+define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "exports", "./baseProvider", "./centerPanel", "../../utils"], function(require, exports, baseProvider, baseCenter, utils) {
     var SeadragonCenterPanel = (function (_super) {
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
@@ -4046,58 +4058,12 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         }
         SeadragonCenterPanel.prototype.create = function () {
             var _this = this;
-            this.setConfig('seadragonCenterPanel');
-
             _super.prototype.create.call(this);
-
-            $.subscribe(extension.Extension.OPEN_MEDIA, function (e, uri) {
-                _this.viewer.openDzi(uri);
-            });
 
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.append(this.$viewer);
 
-            OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
-
-            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
-
-            this.viewer = OpenSeadragon({
-                id: "viewer",
-                showNavigationControl: true,
-                showNavigator: true,
-                showRotationControl: true,
-                showHomeControl: false,
-                showFullPageControl: false,
-                defaultZoomLevel: this.options.defaultZoomLevel || 0,
-                navigatorPosition: 'BOTTOM_RIGHT',
-                prefixUrl: prefixUrl,
-                navImages: {
-                    zoomIn: {
-                        REST: 'zoom_in.png',
-                        GROUP: 'zoom_in.png',
-                        HOVER: 'zoom_in.png',
-                        DOWN: 'zoom_in.png'
-                    },
-                    zoomOut: {
-                        REST: 'zoom_out.png',
-                        GROUP: 'zoom_out.png',
-                        HOVER: 'zoom_out.png',
-                        DOWN: 'zoom_out.png'
-                    },
-                    rotateright: {
-                        REST: 'rotate_right.png',
-                        GROUP: 'rotate_right.png',
-                        HOVER: 'rotate_right.png',
-                        DOWN: 'rotate_right.png'
-                    },
-                    rotateleft: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    }
-                }
-            });
+            this.createSeadragonViewer();
 
             if (this.provider.isMultiCanvas()) {
                 this.$prevButton = $('<div class="paging btn prev"></div>');
@@ -4175,6 +4141,9 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 }
                 $('div[title="Rotate right"]').hide();
             }
+        };
+
+        SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
         };
 
         SeadragonCenterPanel.prototype.viewerOpen = function () {
@@ -4309,6 +4278,204 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         return SeadragonCenterPanel;
     })(baseCenter.CenterPanel);
     exports.SeadragonCenterPanel = SeadragonCenterPanel;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/seadragonCenterPanel"], function(require, exports, baseExtension, baseCenter) {
+    var SeadragonCenterPanel = (function (_super) {
+        __extends(SeadragonCenterPanel, _super);
+        function SeadragonCenterPanel($element) {
+            _super.call(this, $element);
+        }
+        SeadragonCenterPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('seadragonCenterPanel');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
+                _this.viewer.openDzi(uri);
+            });
+        };
+
+        SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
+            OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
+
+            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncollectioncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncollectioncenterpanel-module/';
+
+            this.viewer = OpenSeadragon({
+                id: "viewer",
+                showNavigationControl: true,
+                showNavigator: true,
+                showRotationControl: true,
+                showHomeControl: false,
+                showFullPageControl: false,
+                defaultZoomLevel: this.options.defaultZoomLevel || 0,
+                navigatorPosition: 'BOTTOM_RIGHT',
+                prefixUrl: prefixUrl,
+                navImages: {
+                    zoomIn: {
+                        REST: 'zoom_in.png',
+                        GROUP: 'zoom_in.png',
+                        HOVER: 'zoom_in.png',
+                        DOWN: 'zoom_in.png'
+                    },
+                    zoomOut: {
+                        REST: 'zoom_out.png',
+                        GROUP: 'zoom_out.png',
+                        HOVER: 'zoom_out.png',
+                        DOWN: 'zoom_out.png'
+                    },
+                    rotateright: {
+                        REST: 'rotate_right.png',
+                        GROUP: 'rotate_right.png',
+                        HOVER: 'rotate_right.png',
+                        DOWN: 'rotate_right.png'
+                    },
+                    rotateleft: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    }
+                }
+            });
+        };
+        return SeadragonCenterPanel;
+    })(baseCenter.SeadragonCenterPanel);
+    exports.SeadragonCenterPanel = SeadragonCenterPanel;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollectionCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/seadragonCenterPanel"], function(require, exports, baseExtension, baseCenter) {
+    var SeadragonCollectionCenterPanel = (function (_super) {
+        __extends(SeadragonCollectionCenterPanel, _super);
+        function SeadragonCollectionCenterPanel($element) {
+            _super.call(this, $element);
+        }
+        SeadragonCollectionCenterPanel.prototype.create = function () {
+            this.setConfig('seadragonCenterPanel');
+
+            _super.prototype.create.call(this);
+
+            var that = this;
+
+            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
+                that.viewer.open(that.getTileSources());
+            });
+        };
+
+        SeadragonCollectionCenterPanel.prototype.createSeadragonViewer = function () {
+            OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
+
+            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncollectioncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncollectioncenterpanel-module/';
+
+            this.viewer = OpenSeadragon({
+                id: "viewer",
+                showNavigationControl: true,
+                showNavigator: true,
+                showRotationControl: true,
+                showHomeControl: false,
+                showFullPageControl: false,
+                defaultZoomLevel: this.options.defaultZoomLevel || 0,
+                navigatorPosition: 'BOTTOM_RIGHT',
+                prefixUrl: prefixUrl,
+                navImages: {
+                    zoomIn: {
+                        REST: 'zoom_in.png',
+                        GROUP: 'zoom_in.png',
+                        HOVER: 'zoom_in.png',
+                        DOWN: 'zoom_in.png'
+                    },
+                    zoomOut: {
+                        REST: 'zoom_out.png',
+                        GROUP: 'zoom_out.png',
+                        HOVER: 'zoom_out.png',
+                        DOWN: 'zoom_out.png'
+                    },
+                    rotateright: {
+                        REST: 'rotate_right.png',
+                        GROUP: 'rotate_right.png',
+                        HOVER: 'rotate_right.png',
+                        DOWN: 'rotate_right.png'
+                    },
+                    rotateleft: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    },
+                    next: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    },
+                    previous: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    }
+                }
+            });
+        };
+
+        SeadragonCollectionCenterPanel.prototype.getTileSources = function () {
+            if (this.provider.isFirstCanvas()) {
+                return [this.getRightTileSource(0)];
+            } else if (this.provider.isLastCanvas()) {
+                return [this.getLeftTileSource(this.provider.getTotalCanvases() - 1)];
+            } else {
+                var isEven = this.provider.canvasIndex % 2;
+
+                if (isEven) {
+                    return [this.getLeftTileSource(this.provider.canvasIndex), this.getRightTileSource(this.provider.canvasIndex + 1)];
+                } else {
+                    return [this.getLeftTileSource(this.provider.canvasIndex - 1), this.getRightTileSource(this.provider.canvasIndex)];
+                }
+            }
+        };
+
+        SeadragonCollectionCenterPanel.prototype.getLeftTileSource = function (canvasIndex) {
+            var uri = this.getCanvasImageUri(canvasIndex);
+
+            return {
+                tileSource: uri,
+                x: 0,
+                y: 0,
+                height: 1
+            };
+        };
+
+        SeadragonCollectionCenterPanel.prototype.getRightTileSource = function (canvasIndex) {
+            var uri = this.getCanvasImageUri(canvasIndex);
+
+            return {
+                tileSource: uri,
+                x: 0.57,
+                y: 0,
+                height: 1
+            };
+        };
+
+        SeadragonCollectionCenterPanel.prototype.getCanvasImageUri = function (canvasIndex) {
+            var canvas = this.provider.getCanvasByIndex(canvasIndex);
+            return this.provider.getImageUri(canvas);
+        };
+        return SeadragonCollectionCenterPanel;
+    })(baseCenter.SeadragonCenterPanel);
+    exports.SeadragonCollectionCenterPanel = SeadragonCollectionCenterPanel;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4705,18 +4872,18 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel"], function(require, exports, embed, center) {
+define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue", "../../modules/coreplayer-shared-module/seadragonCenterPanel"], function(require, exports, embed, baseCenter) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
             var _this = this;
             _super.call(this, $element);
 
-            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_OPEN, function (viewer) {
+            $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_OPEN, function (viewer) {
                 _this.formatCode();
             });
 
-            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (viewer) {
+            $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (viewer) {
                 _this.formatCode();
             });
         }
@@ -4762,7 +4929,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, center, right, footer, help, embed, dependencies) {
+define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollectionCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, baseCenter, center, centerCol, right, footer, help, embed, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -4817,22 +4984,22 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(index);
             });
 
-            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
+            $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
                 _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
             });
 
-            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
+            $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
                 _this.currentRotation = rotation;
                 _this.setParam(3 /* rotation */, rotation);
             });
 
-            $.subscribe(center.SeadragonCenterPanel.PREV, function (e) {
+            $.subscribe(baseCenter.SeadragonCenterPanel.PREV, function (e) {
                 if (_this.provider.canvasIndex != 0) {
                     _this.viewPage(Number(_this.provider.canvasIndex) - 1);
                 }
             });
 
-            $.subscribe(center.SeadragonCenterPanel.NEXT, function (e) {
+            $.subscribe(baseCenter.SeadragonCenterPanel.NEXT, function (e) {
                 if (_this.provider.canvasIndex != _this.provider.getTotalCanvases() - 1) {
                     _this.viewPage(Number(_this.provider.canvasIndex) + 1);
                 }
@@ -4869,7 +5036,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
             }
 
-            this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
+            if (this.provider.isPaged()) {
+                this.centerPanel = new centerCol.SeadragonCollectionCenterPanel(shell.Shell.$centerPanel);
+            } else {
+                this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
+            }
 
             if (this.isRightPanelEnabled()) {
                 this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
@@ -5103,6 +5274,14 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return '-';
         };
 
+        BaseProvider.prototype.isFirstCanvas = function () {
+            return this.canvasIndex == 0;
+        };
+
+        BaseProvider.prototype.isLastCanvas = function () {
+            return this.canvasIndex == this.getTotalCanvases() - 1;
+        };
+
         BaseProvider.prototype.isSeeAlsoEnabled = function () {
             return this.config.options.seeAlsoEnabled !== false;
         };
@@ -5140,6 +5319,10 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
         BaseProvider.prototype.isMultiSequence = function () {
             return this.manifest.sequences.length > 1;
+        };
+
+        BaseProvider.prototype.isPaged = function () {
+            return this.sequence.viewingHint && this.sequence.viewingHint == "paged";
         };
 
         BaseProvider.prototype.getMediaUri = function (mediaUri) {
