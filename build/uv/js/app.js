@@ -5097,13 +5097,30 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
         Extension.prototype.viewPage = function (canvasIndex) {
             var _this = this;
+            if (this.provider.isPaged()) {
+                var indices = this.provider.getTwoUpIndices();
+                if (indices.contains(canvasIndex)) {
+                    if (canvasIndex < this.provider.canvasIndex) {
+                        canvasIndex = indices[0] - 1;
+                    } else {
+                        canvasIndex = indices[1] + 1;
+                    }
+
+                    this.viewCanvas(canvasIndex, function () {
+                        var canvas = _this.provider.getCanvasByIndex(canvasIndex);
+                        var uri = _this.provider.getImageUri(canvas);
+                        $.publish(Extension.OPEN_MEDIA, [uri]);
+                        _this.setParam(1 /* canvasIndex */, canvasIndex);
+                    });
+
+                    return;
+                }
+            }
+
             this.viewCanvas(canvasIndex, function () {
                 var canvas = _this.provider.getCanvasByIndex(canvasIndex);
-
                 var uri = _this.provider.getImageUri(canvas);
-
                 $.publish(Extension.OPEN_MEDIA, [uri]);
-
                 _this.setParam(1 /* canvasIndex */, canvasIndex);
             });
         };
