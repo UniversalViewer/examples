@@ -40,7 +40,7 @@ $(function(){
         if ($('#options option').length || $('#options optgroup').length){
             setSelectedOption();
         }
-    }, 1000);
+    }, 2000);
 
     $('#options').on('change', function(){
         var url = document.URL;
