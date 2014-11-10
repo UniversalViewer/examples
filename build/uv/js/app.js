@@ -4166,8 +4166,6 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
 
         SeadragonCenterPanel.prototype.viewerOpen = function () {
             if (this.provider.isMultiCanvas()) {
-                $('.navigator').addClass('extraMargin');
-
                 if (this.provider.canvasIndex != 0) {
                     this.enablePrevButton();
                 } else {
@@ -4317,7 +4315,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             _super.prototype.create.call(this);
 
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                _this.viewer.openDzi(uri);
+                _this.viewer.open(uri);
             });
         };
 
@@ -4334,7 +4332,6 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 showHomeControl: false,
                 showFullPageControl: false,
                 defaultZoomLevel: this.options.defaultZoomLevel || 0,
-                navigatorPosition: 'BOTTOM_RIGHT',
                 prefixUrl: prefixUrl,
                 navImages: {
                     zoomIn: {
@@ -4388,7 +4385,21 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
             _super.prototype.create.call(this);
 
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                _this.viewer.open(_this.getTileSources());
+                var tileSources = _this.getTileSources();
+
+                var that = _this;
+
+                if (tileSources.length > 1) {
+                    that.viewer.addHandler('open', function openHandler() {
+                        that.viewer.removeHandler('open', openHandler);
+
+                        tileSources[1].x = that.viewer.world.getItemAt(0)._worldX + that.viewer.world.getItemAt(0)._worldWidth + 0.01;
+
+                        that.viewer.addTiledImage(tileSources[1]);
+                    });
+                }
+
+                _this.viewer.open(tileSources[0]);
             });
         };
 
@@ -4405,7 +4416,6 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                 showHomeControl: false,
                 showFullPageControl: false,
                 defaultZoomLevel: this.options.defaultZoomLevel || 0,
-                navigatorPosition: 'BOTTOM_RIGHT',
                 prefixUrl: prefixUrl,
                 navImages: {
                     zoomIn: {
@@ -4466,10 +4476,7 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
             var uri = this.getCanvasImageUri(canvasIndex);
 
             return {
-                tileSource: uri,
-                x: 0,
-                y: 0,
-                height: 1
+                tileSource: uri
             };
         };
 
@@ -4477,10 +4484,7 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
             var uri = this.getCanvasImageUri(canvasIndex);
 
             return {
-                tileSource: uri,
-                x: 0.56,
-                y: 0,
-                height: 1
+                tileSource: uri
             };
         };
 
