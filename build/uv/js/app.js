@@ -2604,7 +2604,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return uri;
         };
 
-        BaseProvider.prototype.getTwoUpIndices = function () {
+        BaseProvider.prototype.getPagedIndices = function () {
             if (this.isFirstCanvas() || this.isLastCanvas()) {
                 return [this.canvasIndex];
             } else if (this.canvasIndex % 2) {
@@ -3816,7 +3816,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
 
             if (this.provider.isPaged()) {
-                var indices = this.provider.getTwoUpIndices(index);
+                var indices = this.provider.getPagedIndices(index);
 
                 _.each(indices, function (index) {
                     $(_this.$thumbs.find('.thumb')[index]).addClass('selected');
@@ -4166,6 +4166,8 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
 
         SeadragonCenterPanel.prototype.viewerOpen = function () {
             if (this.provider.isMultiCanvas()) {
+                $('.navigator').addClass('extraMargin');
+
                 if (this.provider.canvasIndex != 0) {
                     this.enablePrevButton();
                 } else {
@@ -4332,6 +4334,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 showHomeControl: false,
                 showFullPageControl: false,
                 defaultZoomLevel: this.options.defaultZoomLevel || 0,
+                navigatorPosition: 'BOTTOM_RIGHT',
                 prefixUrl: prefixUrl,
                 navImages: {
                     zoomIn: {
@@ -4385,7 +4388,7 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
             _super.prototype.create.call(this);
 
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                var tileSources = _this.getTileSources();
+                var tileSources = _this.provider.getTileSources();
 
                 var that = _this;
 
@@ -4393,7 +4396,7 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                     that.viewer.addHandler('open', function openHandler() {
                         that.viewer.removeHandler('open', openHandler);
 
-                        tileSources[1].x = that.viewer.world.getItemAt(0)._worldX + that.viewer.world.getItemAt(0)._worldWidth + 0.01;
+                        tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width;
 
                         that.viewer.addTiledImage(tileSources[1]);
                     });
@@ -4416,6 +4419,7 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                 showHomeControl: false,
                 showFullPageControl: false,
                 defaultZoomLevel: this.options.defaultZoomLevel || 0,
+                navigatorPosition: 'BOTTOM_RIGHT',
                 prefixUrl: prefixUrl,
                 navImages: {
                     zoomIn: {
@@ -4456,41 +4460,6 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                     }
                 }
             });
-        };
-
-        SeadragonCollectionCenterPanel.prototype.getTileSources = function () {
-            if (this.provider.isFirstCanvas()) {
-                return [this.getRightTileSource(0)];
-            } else if (this.provider.isLastCanvas()) {
-                return [this.getLeftTileSource(this.provider.getTotalCanvases() - 1)];
-            } else {
-                var indices = this.provider.getTwoUpIndices();
-                indices[0] = this.getLeftTileSource(indices[0]);
-                indices[1] = this.getRightTileSource(indices[1]);
-
-                return indices;
-            }
-        };
-
-        SeadragonCollectionCenterPanel.prototype.getLeftTileSource = function (canvasIndex) {
-            var uri = this.getCanvasImageUri(canvasIndex);
-
-            return {
-                tileSource: uri
-            };
-        };
-
-        SeadragonCollectionCenterPanel.prototype.getRightTileSource = function (canvasIndex) {
-            var uri = this.getCanvasImageUri(canvasIndex);
-
-            return {
-                tileSource: uri
-            };
-        };
-
-        SeadragonCollectionCenterPanel.prototype.getCanvasImageUri = function (canvasIndex) {
-            var canvas = this.provider.getCanvasByIndex(canvasIndex);
-            return this.provider.getImageUri(canvas);
         };
         return SeadragonCollectionCenterPanel;
     })(baseCenter.SeadragonCenterPanel);
@@ -5102,7 +5071,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
         Extension.prototype.viewPage = function (canvasIndex) {
             var _this = this;
             if (this.provider.isPaged()) {
-                var indices = this.provider.getTwoUpIndices();
+                var indices = this.provider.getPagedIndices();
                 if (indices.contains(canvasIndex)) {
                     if (canvasIndex < this.provider.canvasIndex) {
                         canvasIndex = indices[0] - 1;
@@ -5379,7 +5348,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return null;
         };
 
-        BaseProvider.prototype.getTwoUpIndices = function () {
+        BaseProvider.prototype.getPagedIndices = function () {
             if (this.isFirstCanvas() || this.isLastCanvas()) {
                 return [this.canvasIndex];
             } else if (this.canvasIndex % 2) {
@@ -5637,6 +5606,31 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
 
             return script;
         };
+
+        Provider.prototype.getTileSources = function () {
+            var _this = this;
+            if (!this.isPaged()) {
+                return [this.getImageUri(this.getCurrentCanvas())];
+            } else {
+                if (this.isFirstCanvas() || this.isLastCanvas()) {
+                    return [{
+                            tileSource: this.getImageUri(this.getCurrentCanvas())
+                        }];
+                } else {
+                    var indices = this.getPagedIndices();
+
+                    var tileSources = [];
+
+                    _.each(indices, function (index) {
+                        tileSources.push({
+                            tileSource: _this.getImageUri(_this.getCanvasByIndex(index))
+                        });
+                    });
+
+                    return tileSources;
+                }
+            }
+        };
         return Provider;
     })(baseProvider.BaseProvider);
     exports.Provider = Provider;
@@ -5676,6 +5670,10 @@ define('extensions/coreplayer-seadragon-extension/provider',["require", "exports
             var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, assetIndex, zoom, rotation, configUri, width, height, esu);
 
             return script;
+        };
+
+        Provider.prototype.getTileSources = function () {
+            return null;
         };
         return Provider;
     })(baseProvider.BaseProvider);
