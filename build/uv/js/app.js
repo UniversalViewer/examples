@@ -2541,12 +2541,16 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return this.sequence.seeAlso;
         };
 
-        BaseProvider.prototype.isFirstCanvas = function () {
-            return this.canvasIndex == 0;
+        BaseProvider.prototype.isFirstCanvas = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            return canvasIndex == 0;
         };
 
-        BaseProvider.prototype.isLastCanvas = function () {
-            return this.canvasIndex == this.getTotalCanvases() - 1;
+        BaseProvider.prototype.isLastCanvas = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            return canvasIndex == this.getTotalCanvases() - 1;
         };
 
         BaseProvider.prototype.isSeeAlsoEnabled = function () {
@@ -2604,14 +2608,61 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return uri;
         };
 
-        BaseProvider.prototype.getPagedIndices = function () {
+        BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+
             if (this.isFirstCanvas() || this.isLastCanvas()) {
-                return [this.canvasIndex];
-            } else if (this.canvasIndex % 2) {
-                return [this.canvasIndex, this.canvasIndex + 1];
+                return [canvasIndex];
+            } else if (canvasIndex % 2) {
+                return [canvasIndex, canvasIndex + 1];
             } else {
-                return [this.canvasIndex - 1, this.canvasIndex];
+                return [canvasIndex - 1, canvasIndex];
             }
+        };
+
+        BaseProvider.prototype.getFirstPageIndex = function () {
+            return 0;
+        };
+
+        BaseProvider.prototype.getLastPageIndex = function () {
+            return this.getTotalCanvases() - 1;
+        };
+
+        BaseProvider.prototype.getPrevPageIndex = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+
+            var index;
+
+            if (this.isPaged()) {
+                var indices = this.getPagedIndices(canvasIndex);
+                index = indices[0] - 1;
+            } else {
+                index = canvasIndex - 1;
+            }
+
+            return index;
+        };
+
+        BaseProvider.prototype.getNextPageIndex = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+
+            var index;
+
+            if (this.isPaged()) {
+                var indices = this.getPagedIndices(canvasIndex);
+                index = indices.last() + 1;
+            } else {
+                index = canvasIndex + 1;
+            }
+
+            if (index > this.getTotalCanvases() - 1) {
+                return -1;
+            }
+
+            return index;
         };
 
         BaseProvider.prototype.parseManifest = function () {
@@ -4931,23 +4982,19 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             var that = this;
 
             $.subscribe(header.PagingHeaderPanel.FIRST, function (e) {
-                _this.viewPage(0);
+                _this.viewPage(_this.provider.getFirstPageIndex());
             });
 
             $.subscribe(header.PagingHeaderPanel.LAST, function (e) {
-                _this.viewPage(_this.provider.getTotalCanvases() - 1);
+                _this.viewPage(_this.provider.getLastPageIndex());
             });
 
             $.subscribe(header.PagingHeaderPanel.PREV, function (e) {
-                if (_this.provider.canvasIndex != 0) {
-                    _this.viewPage(Number(_this.provider.canvasIndex) - 1);
-                }
+                _this.viewPage(_this.provider.getPrevPageIndex());
             });
 
             $.subscribe(header.PagingHeaderPanel.NEXT, function (e) {
-                if (_this.provider.canvasIndex != _this.provider.getTotalCanvases() - 1) {
-                    _this.viewPage(Number(_this.provider.canvasIndex) + 1);
-                }
+                _this.viewPage(_this.provider.getNextPageIndex());
             });
 
             $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
@@ -4982,15 +5029,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             });
 
             $.subscribe(baseCenter.SeadragonCenterPanel.PREV, function (e) {
-                if (_this.provider.canvasIndex != 0) {
-                    _this.viewPage(Number(_this.provider.canvasIndex) - 1);
-                }
+                _this.viewPage(_this.provider.getPrevPageIndex());
             });
 
             $.subscribe(baseCenter.SeadragonCenterPanel.NEXT, function (e) {
-                if (_this.provider.canvasIndex != _this.provider.getTotalCanvases() - 1) {
-                    _this.viewPage(Number(_this.provider.canvasIndex) + 1);
-                }
+                _this.viewPage(_this.provider.getNextPageIndex());
             });
 
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
@@ -5070,19 +5113,14 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
         Extension.prototype.viewPage = function (canvasIndex) {
             var _this = this;
-            if (this.provider.isPaged()) {
-                var indices = this.provider.getPagedIndices();
-                if (indices.contains(canvasIndex)) {
-                    if (canvasIndex < this.provider.canvasIndex) {
-                        canvasIndex = indices[0] - 1;
-                    } else {
-                        canvasIndex = indices[1] + 1;
-                    }
+            if (canvasIndex == -1)
+                return;
 
+            if (this.provider.isPaged()) {
+                var indices = this.provider.getPagedIndices(canvasIndex);
+
+                if (indices.contains(this.provider.canvasIndex)) {
                     this.viewCanvas(canvasIndex, function () {
-                        var canvas = _this.provider.getCanvasByIndex(canvasIndex);
-                        var uri = _this.provider.getImageUri(canvas);
-                        $.publish(Extension.OPEN_MEDIA, [uri]);
                         _this.setParam(1 /* canvasIndex */, canvasIndex);
                     });
 
@@ -5279,12 +5317,16 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return '-';
         };
 
-        BaseProvider.prototype.isFirstCanvas = function () {
-            return this.canvasIndex == 0;
+        BaseProvider.prototype.isFirstCanvas = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            return canvasIndex == 0;
         };
 
-        BaseProvider.prototype.isLastCanvas = function () {
-            return this.canvasIndex == this.getTotalCanvases() - 1;
+        BaseProvider.prototype.isLastCanvas = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            return canvasIndex == this.getTotalCanvases() - 1;
         };
 
         BaseProvider.prototype.isSeeAlsoEnabled = function () {
@@ -5348,14 +5390,61 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return null;
         };
 
-        BaseProvider.prototype.getPagedIndices = function () {
-            if (this.isFirstCanvas() || this.isLastCanvas()) {
-                return [this.canvasIndex];
-            } else if (this.canvasIndex % 2) {
-                return [this.canvasIndex, this.canvasIndex + 1];
+        BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+
+            if (this.isFirstCanvas(canvasIndex) || this.isLastCanvas(canvasIndex)) {
+                return [canvasIndex];
+            } else if (canvasIndex % 2) {
+                return [canvasIndex, canvasIndex + 1];
             } else {
-                return [this.canvasIndex - 1, this.canvasIndex];
+                return [canvasIndex - 1, canvasIndex];
             }
+        };
+
+        BaseProvider.prototype.getFirstPageIndex = function () {
+            return 0;
+        };
+
+        BaseProvider.prototype.getLastPageIndex = function () {
+            return this.getTotalCanvases() - 1;
+        };
+
+        BaseProvider.prototype.getPrevPageIndex = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+
+            var index;
+
+            if (this.isPaged()) {
+                var indices = this.getPagedIndices(canvasIndex);
+                index = indices[0] - 1;
+            } else {
+                index = canvasIndex - 1;
+            }
+
+            return index;
+        };
+
+        BaseProvider.prototype.getNextPageIndex = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+
+            var index;
+
+            if (this.isPaged()) {
+                var indices = this.getPagedIndices(canvasIndex);
+                index = indices.last() + 1;
+            } else {
+                index = canvasIndex + 1;
+            }
+
+            if (index > this.getTotalCanvases() - 1) {
+                return -1;
+            }
+
+            return index;
         };
 
         BaseProvider.prototype.addTimestamp = function (uri) {
