@@ -2379,6 +2379,7 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
                 this.triggerSocket(BaseExtension.SEQUENCE_INDEX_CHANGED, manifest.assetSequence);
             }
         };
+        BaseExtension.SETTINGS_CHANGED = 'onSettingsChanged';
         BaseExtension.LOAD = 'onLoad';
         BaseExtension.RESIZE = 'onResize';
         BaseExtension.TOGGLE_FULLSCREEN = 'onToggleFullScreen';
@@ -3333,7 +3334,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                 }
 
                 index--;
-                $.publish(PagingHeaderPanel.IMAGE_SEARCH, [index.toString()]);
+                $.publish(PagingHeaderPanel.IMAGE_SEARCH, [index]);
             }
         };
 
@@ -4997,7 +4998,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
 
-            $.subscribe(header.PagingHeaderPanel.SETTINGS_CHANGED, function (e, mode) {
+            $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
                 Extension.mode = mode;
 
                 $.publish(Extension.SETTINGS_CHANGED, [mode]);
@@ -5202,8 +5203,6 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 this.viewStructure(data.path);
             }
         };
-        Extension.SETTINGS_CHANGED = 'onModeChanged';
-
         Extension.PAGE_MODE = "pageMode";
         Extension.IMAGE_MODE = "imageMode";
         return Extension;
