@@ -3138,7 +3138,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                 _this.canvasIndexChanged(canvasIndex);
             });
 
-            $.subscribe(extension.Extension.MODE_CHANGED, function (e, mode) {
+            $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
                 _this.modeChanged(mode);
             });
 
@@ -3700,7 +3700,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                 _this.selectIndex(parseInt(index));
             });
 
-            $.subscribe(extension.Extension.MODE_CHANGED, function (e, mode) {
+            $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
                 _this.setLabel();
             });
 
@@ -4997,10 +4997,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
 
-            $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
+            $.subscribe(header.PagingHeaderPanel.SETTINGS_CHANGED, function (e, mode) {
                 Extension.mode = mode;
 
-                $.publish(Extension.MODE_CHANGED, [mode]);
+                $.publish(Extension.SETTINGS_CHANGED, [mode]);
             });
 
             $.subscribe(header.PagingHeaderPanel.PAGE_SEARCH, function (e, value) {
@@ -5202,7 +5202,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 this.viewStructure(data.path);
             }
         };
-        Extension.MODE_CHANGED = 'onModeChanged';
+        Extension.SETTINGS_CHANGED = 'onModeChanged';
 
         Extension.PAGE_MODE = "pageMode";
         Extension.IMAGE_MODE = "imageMode";
