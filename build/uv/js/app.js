@@ -2666,6 +2666,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return index;
         };
 
+        BaseProvider.prototype.getStartCanvasIndex = function () {
+            return 0;
+        };
+
         BaseProvider.prototype.parseManifest = function () {
             this.parseManifestation(this.manifest.rootStructure, this.manifest.assetSequences, '');
         };
@@ -5050,10 +5054,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 var canvasIndex;
 
                 if (!that.provider.isReload) {
-                    canvasIndex = parseInt(that.getParam(1 /* canvasIndex */)) || 0;
+                    canvasIndex = parseInt(that.getParam(1 /* canvasIndex */)) || that.provider.getStartCanvasIndex();
                 }
 
-                that.viewPage(canvasIndex || 0);
+                that.viewPage(canvasIndex || that.provider.getStartCanvasIndex());
 
                 $.publish(baseExtension.BaseExtension.RESIZE);
 
@@ -5444,6 +5448,19 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             }
 
             return index;
+        };
+
+        BaseProvider.prototype.getStartCanvasIndex = function () {
+            if (this.sequence.startCanvas) {
+                for (var i = 0; i < this.sequence.canvases.length; i++) {
+                    var canvas = this.sequence.canvases[i];
+
+                    if (canvas["@id"] == this.sequence.startCanvas)
+                        return i;
+                }
+            }
+
+            return 0;
         };
 
         BaseProvider.prototype.addTimestamp = function (uri) {
