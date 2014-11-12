@@ -26,11 +26,17 @@ $(function(){
             $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
         } else {
             // built version
+
+            // remove '/examples' from paths
             $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
 
             if ($('.wellcomePlayer').attr('data-uri')){
                 $('.wellcomePlayer').updateAttr('data-uri', '/examples/', '/');
             }
+
+            $('#options option').each(function() {
+                $(this).updateAttr('value', '/examples/', '/');
+            });
 
             $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv/js/embed.js"><\/script>');
         }
