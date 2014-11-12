@@ -2663,26 +2663,23 @@ input[type="button"].btn-block {
 #app .headerPanel.showMessage {
   height: 80px;
 }
-#app .headerPanel .help {
-  margin-left: 1em;
-  padding-right: 22px;
-  padding-bottom: 2px;
-  background: url('../../../themes/coreplayer-default-theme/img/sprite.png');
-  background-repeat: no-repeat;
-  background-position: 0 -2999px;
-  margin-top: 6px;
-}
 #app .headerPanel .options {
   height: 40px;
 }
-#app .headerPanel .centerOptions {
+#app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
   width: 385px;
   position: absolute;
 }
-#app .headerPanel .rightOptions {
+#app .headerPanel .options .rightOptions {
   float: right;
   margin: 6px 0 0 0;
+}
+#app .headerPanel .options .rightOptions .settings {
+  background: url('../../../themes/coreplayer-default-theme/img/settings.png');
+  height: 30px;
+  width: 30px;
+  margin-right: 8px;
 }
 #app .headerPanel .messageBox {
   background: #ffb81d;

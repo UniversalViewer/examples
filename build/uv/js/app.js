@@ -2966,6 +2966,14 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
             return false;
         };
+
+        BaseProvider.prototype.getSettings = function () {
+            return this.config.options;
+        };
+
+        BaseProvider.prototype.updateSettings = function (settings) {
+            this.config.options = settings;
+        };
         return BaseProvider;
     })();
     exports.BaseProvider = BaseProvider;
@@ -2977,60 +2985,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-dialogues-module/helpDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, dialogue) {
-    var HelpDialogue = (function (_super) {
-        __extends(HelpDialogue, _super);
-        function HelpDialogue($element) {
-            _super.call(this, $element);
-        }
-        HelpDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('helpDialogue');
-
-            _super.prototype.create.call(this);
-
-            $.subscribe(HelpDialogue.SHOW_HELP_DIALOGUE, function (e, params) {
-                _this.open();
-            });
-
-            $.subscribe(HelpDialogue.HIDE_HELP_DIALOGUE, function (e) {
-                _this.close();
-            });
-
-            this.$title = $('<h1></h1>');
-            this.$content.append(this.$title);
-
-            this.$scroll = $('<div class="scroll"></div>');
-            this.$content.append(this.$scroll);
-
-            this.$message = $('<p></p>');
-            this.$scroll.append(this.$message);
-
-            this.$title.text(this.content.title);
-            this.$message.html(this.content.text);
-
-            this.$message.targetBlank();
-
-            this.$element.hide();
-        };
-
-        HelpDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        HelpDialogue.SHOW_HELP_DIALOGUE = 'onShowHelpDialogue';
-        HelpDialogue.HIDE_HELP_DIALOGUE = 'onHideHelpDialogue';
-        return HelpDialogue;
-    })(dialogue.Dialogue);
-    exports.HelpDialogue = HelpDialogue;
-});
-
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../coreplayer-dialogues-module/helpDialogue"], function(require, exports, baseExtension, baseView, help) {
+define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView"], function(require, exports, baseExtension, baseView) {
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -3059,8 +3014,8 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
             this.$rightOptions = $('<div class="rightOptions"></div>');
             this.$options.append(this.$rightOptions);
 
-            this.$helpButton = $('<a href="#" class="action help">' + this.content.help + '</a>');
-            this.$rightOptions.append(this.$helpButton);
+            this.$settingsButton = $('<a class="imageBtn settings"></a>');
+            this.$rightOptions.append(this.$settingsButton);
 
             this.$messageBox = $('<div class="messageBox"> \
                                 <div class="text"></div> \
@@ -3076,10 +3031,10 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
                 _this.hideMessage();
             });
 
-            this.$helpButton.click(function (e) {
+            this.$settingsButton.click(function (e) {
                 e.preventDefault();
 
-                $.publish(help.HelpDialogue.SHOW_HELP_DIALOGUE);
+                $.publish(HeaderPanel.SETTINGS);
             });
         };
 
@@ -3116,6 +3071,7 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
                 $text.ellipsisFill(this.message);
             }
         };
+        HeaderPanel.SETTINGS = 'header.onSettings';
         return HeaderPanel;
     })(baseView.BaseView);
     exports.HeaderPanel = HeaderPanel;
@@ -4743,6 +4699,59 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+define('modules/coreplayer-dialogues-module/helpDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, dialogue) {
+    var HelpDialogue = (function (_super) {
+        __extends(HelpDialogue, _super);
+        function HelpDialogue($element) {
+            _super.call(this, $element);
+        }
+        HelpDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('helpDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(HelpDialogue.SHOW_HELP_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+
+            $.subscribe(HelpDialogue.HIDE_HELP_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1></h1>');
+            this.$content.append(this.$title);
+
+            this.$scroll = $('<div class="scroll"></div>');
+            this.$content.append(this.$scroll);
+
+            this.$message = $('<p></p>');
+            this.$scroll.append(this.$message);
+
+            this.$title.text(this.content.title);
+            this.$message.html(this.content.text);
+
+            this.$message.targetBlank();
+
+            this.$element.hide();
+        };
+
+        HelpDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        HelpDialogue.SHOW_HELP_DIALOGUE = 'onShowHelpDialogue';
+        HelpDialogue.HIDE_HELP_DIALOGUE = 'onHideHelpDialogue';
+        return HelpDialogue;
+    })(dialogue.Dialogue);
+    exports.HelpDialogue = HelpDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 define('modules/coreplayer-dialogues-module/embedDialogue',["require", "exports", "../../utils", "../coreplayer-shared-module/dialogue"], function(require, exports, utils, dialogue) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
@@ -5014,6 +5023,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
             $.subscribe(header.PagingHeaderPanel.IMAGE_SEARCH, function (e, index) {
                 _this.viewPage(index);
+            });
+
+            $.subscribe(header.PagingHeaderPanel.SETTINGS, function (e) {
+                var settings = _this.provider.getSettings();
             });
 
             $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
@@ -5653,6 +5666,14 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             }
 
             return false;
+        };
+
+        BaseProvider.prototype.getSettings = function () {
+            return this.config.options;
+        };
+
+        BaseProvider.prototype.updateSettings = function (settings) {
+            this.config.options = settings;
         };
         return BaseProvider;
     })();
