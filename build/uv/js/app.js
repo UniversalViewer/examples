@@ -735,7 +735,17 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.loadManifest = function () {
             var that = this;
 
-            $.getJSON(that.manifestUri, function (manifest) {
+            var settings = {
+                url: that.manifestUri,
+                type: 'GET',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'manifestCallback'
+            };
+
+            $.ajax(settings);
+
+            window.manifestCallback = function (manifest) {
                 that.manifest = manifest;
 
                 var isHomeDomain = utils.Utils.getQuerystringParameter('hd') == "true";
@@ -768,7 +778,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                 }
 
                 that.loadSequence();
-            });
+            };
         };
 
         BootStrapper.prototype.loadSequence = function () {
