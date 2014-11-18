@@ -443,6 +443,9 @@
   display: block;
   padding: 2px 0 0 0;
 }
+#app .leftPanel .views .thumbsView .thumb.placeholder .wrap {
+  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+}
 #app .leftPanel .views .thumbsView .separator {
   height: 1px;
   clear: both;

@@ -735,47 +735,50 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.loadManifest = function () {
             var that = this;
 
-            $.ajax({
-                type: 'GET',
+            var settings = {
                 url: that.manifestUri,
-                dataType: 'json',
-                xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
-                crossDomain: true,
-                success: function (manifest) {
-                    that.manifest = manifest;
+                type: 'GET',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'manifestCallback'
+            };
 
-                    var isHomeDomain = utils.Utils.getQuerystringParameter('hd') == "true";
-                    var isReload = utils.Utils.getQuerystringParameter('rl') == "true";
-                    var sequenceParam = 'si';
+            $.ajax(settings);
 
-                    if (that.configExtension && that.configExtension.options && that.configExtension.options.IIIF) {
-                        that.IIIF = true;
-                    }
+            window.manifestCallback = function (manifest) {
+                that.manifest = manifest;
 
-                    if (!that.IIIF)
-                        sequenceParam = 'asi';
+                var isHomeDomain = utils.Utils.getQuerystringParameter('hd') == "true";
+                var isReload = utils.Utils.getQuerystringParameter('rl') == "true";
+                var sequenceParam = 'si';
 
-                    if (isHomeDomain && !isReload) {
-                        that.sequenceIndex = parseInt(utils.Utils.getHashParameter(sequenceParam, parent.document));
-                    }
-
-                    if (!that.sequenceIndex) {
-                        that.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(sequenceParam)) || 0;
-                    }
-
-                    if (!that.IIIF) {
-                        that.sequences = that.manifest.assetSequences;
-                    } else {
-                        that.sequences = that.manifest.sequences;
-                    }
-
-                    if (!that.sequences) {
-                        that.notFound();
-                    }
-
-                    that.loadSequence();
+                if (that.configExtension && that.configExtension.options && that.configExtension.options.IIIF) {
+                    that.IIIF = true;
                 }
-            });
+
+                if (!that.IIIF)
+                    sequenceParam = 'asi';
+
+                if (isHomeDomain && !isReload) {
+                    that.sequenceIndex = parseInt(utils.Utils.getHashParameter(sequenceParam, parent.document));
+                }
+
+                if (!that.sequenceIndex) {
+                    that.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(sequenceParam)) || 0;
+                }
+
+                if (!that.IIIF) {
+                    that.sequences = that.manifest.assetSequences;
+                } else {
+                    that.sequences = that.manifest.sequences;
+                }
+
+                if (!that.sequences) {
+                    that.notFound();
+                }
+
+                that.loadSequence();
+            };
         };
 
         BootStrapper.prototype.loadSequence = function () {
@@ -802,16 +805,9 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                     var baseManifestUri = that.manifestUri.substr(0, that.manifestUri.lastIndexOf('/') + 1);
                     var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
 
-                    $.ajax({
-                        type: 'GET',
-                        url: sequenceUri,
-                        dataType: 'json',
-                        xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
-                        crossDomain: true,
-                        success: function (sequenceData) {
-                            that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
-                            that.loadDependencies();
-                        }
+                    $.getJSON(sequenceUri, function (sequenceData) {
+                        that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
+                        that.loadDependencies();
                     });
                 }
             }
@@ -841,25 +837,18 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                 test: window.btoa && window.atob,
                 nope: 'js/base64.min.js',
                 complete: function () {
-                    $.ajax({
-                        type: 'GET',
-                        url: configPath,
-                        dataType: 'json',
-                        xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
-                        crossDomain: true,
-                        success: function (config) {
-                            if (that.configExtension) {
-                                config.uri = that.configExtensionUri;
+                    $.getJSON(configPath, function (config) {
+                        if (that.configExtension) {
+                            config.uri = that.configExtensionUri;
 
-                                $.extend(true, config, that.configExtension);
-                            }
-
-                            var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/css/styles.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '.css';
-
-                            yepnope.injectCss(cssPath, function () {
-                                that.createExtension(extension, config);
-                            });
+                            $.extend(true, config, that.configExtension);
                         }
+
+                        var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/css/styles.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '.css';
+
+                        yepnope.injectCss(cssPath, function () {
+                            that.createExtension(extension, config);
+                        });
                     });
                 }
             });
@@ -1886,92 +1875,6 @@ document.webL10n = (function(window, document, undefined) {
 }) (window, document);
 define("l10n", function(){});
 
-/*jslint browser: true, rhino :true, debug: true, white : false,
- laxbreak: true, bitwise: true, eqeqeq: true, nomen: false,
- onevar: false, plusplus: false, regexp: false, undef: true
- */
-
-/*global window, XDomainRequest, ActiveXObject */
-
-
-/*
- CORS-capable XHR for IE
- see https://github.com/Malvolio/ie.xhr for all details
- Michael S Lorton - 2011
- */
-var IEXMLHttpRequest = window.XDomainRequest && function() {
-        var xdr = new XDomainRequest();
-        if (!xdr) {
-            return null;
-        }
-
-
-        var request;
-
-        var changeState = function(state) {
-            if (state !== request.readyState) {
-                request.readyState = state;
-                if (request.onreadystatechange) {
-                    request.onreadystatechange();
-                }
-            }
-        };
-
-        xdr.onerror = function() {
-            request.status = 500;
-            request.statusText = 'ERROR';
-            changeState(4);
-        };
-        xdr.ontimeout = function() {
-            request.status = 408;
-            request.statusText = 'TIMEOUT';
-            changeState(4);
-        };
-        xdr.onprogress = function() {
-            changeState(3);
-        };
-        xdr.onload = function() {
-            request.status = 200;
-            request.statusText = 'OK';
-            request.responseText = xdr.responseText;
-            request.responseXML = new ActiveXObject("Microsoft.XMLDOM");
-            request.responseXML.async="false";
-            request.responseXML.loadXML(xdr.responseText);
-            changeState(4);
-        };
-
-
-        request = {
-            open : function(method, url, async, user, password) {
-                xdr.open(method, url);
-                changeState(1);
-            },
-            setRequestHeader : function() {
-                // can I do this?
-            },
-            send : function(data) {
-                xdr.send(data);
-                changeState(2);
-            },
-            abort : function() {
-                xdr.abort();
-            },
-            status : '',
-            statusText : '',
-            getResponseHeader : function() {
-            },
-            getAllResponseHeaders : function() {
-            },
-            responseText : '',
-            responseXML : '',
-            readyState  : 0,
-            onreadystatechange : null
-        };
-        return request;
-    };
-
-define("iexhr", function(){});
-
 define('modules/coreplayer-shared-module/panel',["require", "exports"], function(require, exports) {
     var Panel = (function () {
         function Panel($element, fitToParentWidth, fitToParentHeight) {
@@ -2528,22 +2431,7 @@ define('modules/coreplayer-shared-module/treeNode',["require", "exports"], funct
     return TreeNode;
 });
 
-define('modules/coreplayer-shared-module/thumb',["require", "exports"], function(require, exports) {
-    var Thumb = (function () {
-        function Thumb(index, url, label, height, visible) {
-            this.index = index;
-            this.url = url;
-            this.label = label;
-            this.height = height;
-            this.visible = visible;
-        }
-        return Thumb;
-    })();
-    
-    return Thumb;
-});
-
-define('modules/coreplayer-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
+define('modules/coreplayer-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode"], function(require, exports, utils, TreeNode) {
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -2705,15 +2593,8 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             }
         };
 
-        BaseProvider.prototype.getThumbUri = function (canvas, thumbsBaseUri, thumbsUriTemplate) {
-            var baseUri = thumbsBaseUri ? thumbsBaseUri : this.options.thumbsBaseUri || this.options.dataBaseUri || "";
-            var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
-            var uri = String.prototype.format(template, baseUri, canvas.thumbnailPath);
-
-            if (this.options.timestampUris)
-                uri = this.addTimestamp(uri);
-
-            return uri;
+        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
+            return null;
         };
 
         BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
@@ -2999,37 +2880,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
         };
 
         BaseProvider.prototype.getThumbs = function () {
-            var thumbs = new Array();
-
-            for (var i = 0; i < this.getTotalCanvases(); i++) {
-                var canvas = this.sequence.assets[i];
-
-                var uri = this.getThumbUri(canvas);
-                var structure = this.getCanvasStructure(canvas);
-
-                var heightRatio = canvas.height / canvas.width;
-                var height = 150;
-
-                if (heightRatio) {
-                    Math.floor(height = 90 * heightRatio);
-                }
-
-                var visible = true;
-
-                if (structure.extensions) {
-                    if (structure.extensions.authStatus.toLowerCase() !== "allowed") {
-                        visible = false;
-                    }
-                }
-
-                if (canvas.orderLabel.trim() === "-") {
-                    canvas.orderLabel = "";
-                }
-
-                thumbs.push(new Thumb(i, uri, canvas.orderLabel, height, visible));
-            }
-
-            return thumbs;
+            return null;
         };
 
         BaseProvider.prototype.getDomain = function () {
@@ -3776,7 +3627,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$element.append(this.$thumbs);
 
             $.templates({
-                thumbsTemplate: '<div class="thumb" data-src="{{>url}}" data-visible="{{>visible}}">\
+                thumbsTemplate: '<div class="{{:~class()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
                                 <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
@@ -3794,6 +3645,13 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                 },
                 extraHeight: function () {
                     return extraHeight;
+                },
+                class: function () {
+                    if (this.data.url) {
+                        return "thumb";
+                    }
+
+                    return "thumb placeholder";
                 }
             });
 
@@ -4521,7 +4379,11 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                     });
                 }
 
-                _this.viewer.open(tileSources[0]);
+                if (tileSources[0].tileSource) {
+                    that.viewer.open(tileSources[0]);
+                } else {
+                    that.extension.showDialogue(that.config.content.imageUnavailable);
+                }
             });
         };
 
@@ -5334,6 +5196,21 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
     exports.Extension = Extension;
 });
 
+define('modules/coreplayer-shared-module/thumb',["require", "exports"], function(require, exports) {
+    var Thumb = (function () {
+        function Thumb(index, url, label, height, visible) {
+            this.index = index;
+            this.url = url;
+            this.label = label;
+            this.height = height;
+            this.visible = visible;
+        }
+        return Thumb;
+    })();
+    
+    return Thumb;
+});
+
 define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
@@ -5506,13 +5383,6 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         BaseProvider.prototype.setMediaUri = function (canvas) {
         };
 
-        BaseProvider.prototype.getThumbUri = function (canvas, thumbsBaseUri, thumbsUriTemplate) {
-            var baseUri = thumbsBaseUri ? thumbsBaseUri : this.options.thumbsBaseUri || this.options.dataBaseUri || "";
-            var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
-
-            return null;
-        };
-
         BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
             if (typeof (canvasIndex) === 'undefined')
                 canvasIndex = this.canvasIndex;
@@ -5591,6 +5461,28 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return (this.isHomeDomain && this.isOnlyInstance);
         };
 
+        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
+            var uri;
+
+            if (canvas.resources) {
+                uri = canvas.resources[0].resource.service['@id'];
+            } else if (canvas.images && canvas.images[0].resource.service) {
+                uri = canvas.images[0].resource.service['@id'];
+            } else {
+                return "";
+            }
+
+            var tile = 'full/' + width + ',' + height + '/0/default.jpg';
+
+            if (uri.endsWith('/')) {
+                uri += tile;
+            } else {
+                uri += '/' + tile;
+            }
+
+            return uri;
+        };
+
         BaseProvider.prototype.getThumbs = function () {
             var thumbs = new Array();
 
@@ -5599,28 +5491,14 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
                 var heightRatio = canvas.height / canvas.width;
 
-                var width = 90;
-                var height = 150;
+                var width = this.config.modules["treeViewLeftPanel"].options.thumbWidth;
+                var height = this.config.modules["treeViewLeftPanel"].options.thumbHeight;
 
                 if (heightRatio) {
                     height = Math.floor(width * heightRatio);
                 }
 
-                var uri;
-
-                if (canvas.resources) {
-                    uri = canvas.resources[0].resource.service['@id'];
-                } else if (canvas.images) {
-                    uri = canvas.images[0].resource.service['@id'];
-                }
-
-                var tile = 'full/' + width + ',' + height + '/0/default.jpg';
-
-                if (uri.endsWith('/')) {
-                    uri += tile;
-                } else {
-                    uri += '/' + tile;
-                }
+                var uri = this.getThumbUri(canvas, width, height);
 
                 thumbs.push(new Thumb(i, uri, canvas.label, height, true));
             }
@@ -5813,6 +5691,8 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
                 iiifUri = canvas.resources[0].resource.service['@id'];
             } else if (canvas.images && canvas.images[0].resource.service) {
                 iiifUri = canvas.images[0].resource.service['@id'];
+            } else {
+                return null;
             }
 
             if (!iiifUri) {
@@ -6542,8 +6422,7 @@ require.config({
         'jsviews': 'js/jsviews.min',
         'yepnope': 'js/yepnope.1.5.4-min',
         'yepnopecss': 'js/yepnope.css',
-        'l10n': 'js/l10n',
-        'iexhr': 'js/ie.xhr'
+        'l10n': 'js/l10n'
     },
     shim: {
         jquery: {
@@ -6577,7 +6456,6 @@ require([
     'yepnopecss',
     'bootstrapper',
     'l10n',
-    'iexhr',
     'extensions/coreplayer-seadragon-extension/extension',
     'extensions/coreplayer-seadragon-extension/iiifProvider',
     'extensions/coreplayer-seadragon-extension/provider',
@@ -6585,7 +6463,7 @@ require([
     'extensions/coreplayer-mediaelement-extension/provider',
     'extensions/coreplayer-pdf-extension/extension',
     'extensions/coreplayer-pdf-extension/provider'
-], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, iexhr, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
+], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
 
     var extensions = {};

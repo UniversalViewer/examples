@@ -60,6 +60,8 @@
                 "panelExpandedWidth": 255,
                 "panelOpen": true,
                 "panelAnimationDuration": 250,
+                "thumbWidth": 90,
+                "thumbHeight": 150,
                 "thumbsExtraHeight": 6
             },
             "content": {
@@ -72,7 +74,8 @@
                 "previous": "Previous",
                 "next": "Next",
                 "zoomIn": "Zoom In",
-                "zoomOut": "Zoom Out"
+                "zoomOut": "Zoom Out",
+                "imageUnavailable": "Image Unavailable"
             }
         },
         "moreInfoRightPanel": {
