@@ -739,6 +739,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                 type: 'GET',
                 url: that.manifestUri,
                 dataType: 'json',
+                xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
                 crossDomain: true,
                 success: function (manifest) {
                     that.manifest = manifest;
@@ -805,6 +806,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                         type: 'GET',
                         url: sequenceUri,
                         dataType: 'json',
+                        xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
                         crossDomain: true,
                         success: function (sequenceData) {
                             that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
@@ -843,6 +845,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                         type: 'GET',
                         url: configPath,
                         dataType: 'json',
+                        xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
                         crossDomain: true,
                         success: function (config) {
                             if (that.configExtension) {
@@ -1883,13 +1886,92 @@ document.webL10n = (function(window, document, undefined) {
 }) (window, document);
 define("l10n", function(){});
 
-/*!
- * jQuery-ajaxTransport-XDomainRequest - v1.0.2 - 2014-05-02
- * https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest
- * Copyright (c) 2014 Jason Moon (@JSONMOON)
- * Licensed MIT (/blob/master/LICENSE.txt)
+/*jslint browser: true, rhino :true, debug: true, white : false,
+ laxbreak: true, bitwise: true, eqeqeq: true, nomen: false,
+ onevar: false, plusplus: false, regexp: false, undef: true
  */
-(function(a){if(typeof define==='function'&&define.amd){define('xdomainrequest',['jquery'],a)}else{a(jQuery)}}(function($){if($.support.cors||!$.ajaxTransport||!window.XDomainRequest){return}var n=/^https?:\/\//i;var o=/^get|post$/i;var p=new RegExp('^'+location.protocol,'i');$.ajaxTransport('* text html xml json',function(j,k,l){if(!j.crossDomain||!j.async||!o.test(j.type)||!n.test(j.url)||!p.test(j.url)){return}var m=null;return{send:function(f,g){var h='';var i=(k.dataType||'').toLowerCase();m=new XDomainRequest();if(/^\d+$/.test(k.timeout)){m.timeout=k.timeout}m.ontimeout=function(){g(500,'timeout')};m.onload=function(){var a='Content-Length: '+m.responseText.length+'\r\nContent-Type: '+m.contentType;var b={code:200,message:'success'};var c={text:m.responseText};try{if(i==='html'||/text\/html/i.test(m.contentType)){c.html=m.responseText}else if(i==='json'||(i!=='text'&&/\/json/i.test(m.contentType))){try{c.json=$.parseJSON(m.responseText)}catch(e){b.code=500;b.message='parseerror'}}else if(i==='xml'||(i!=='text'&&/\/xml/i.test(m.contentType))){var d=new ActiveXObject('Microsoft.XMLDOM');d.async=false;try{d.loadXML(m.responseText)}catch(e){d=undefined}if(!d||!d.documentElement||d.getElementsByTagName('parsererror').length){b.code=500;b.message='parseerror';throw'Invalid XML: '+m.responseText;}c.xml=d}}catch(parseMessage){throw parseMessage;}finally{g(b.code,b.message,c,a)}};m.onprogress=function(){};m.onerror=function(){g(500,'error',{text:m.responseText})};if(k.data){h=($.type(k.data)==='string')?k.data:$.param(k.data)}m.open(j.type,j.url);m.send(h)},abort:function(){if(m){m.abort()}}}})}));
+
+/*global window, XDomainRequest, ActiveXObject */
+
+
+/*
+ CORS-capable XHR for IE
+ see https://github.com/Malvolio/ie.xhr for all details
+ Michael S Lorton - 2011
+ */
+var IEXMLHttpRequest = window.XDomainRequest && function() {
+        var xdr = new XDomainRequest();
+        if (!xdr) {
+            return null;
+        }
+
+
+        var request;
+
+        var changeState = function(state) {
+            if (state !== request.readyState) {
+                request.readyState = state;
+                if (request.onreadystatechange) {
+                    request.onreadystatechange();
+                }
+            }
+        };
+
+        xdr.onerror = function() {
+            request.status = 500;
+            request.statusText = 'ERROR';
+            changeState(4);
+        };
+        xdr.ontimeout = function() {
+            request.status = 408;
+            request.statusText = 'TIMEOUT';
+            changeState(4);
+        };
+        xdr.onprogress = function() {
+            changeState(3);
+        };
+        xdr.onload = function() {
+            request.status = 200;
+            request.statusText = 'OK';
+            request.responseText = xdr.responseText;
+            request.responseXML = new ActiveXObject("Microsoft.XMLDOM");
+            request.responseXML.async="false";
+            request.responseXML.loadXML(xdr.responseText);
+            changeState(4);
+        };
+
+
+        request = {
+            open : function(method, url, async, user, password) {
+                xdr.open(method, url);
+                changeState(1);
+            },
+            setRequestHeader : function() {
+                // can I do this?
+            },
+            send : function(data) {
+                xdr.send(data);
+                changeState(2);
+            },
+            abort : function() {
+                xdr.abort();
+            },
+            status : '',
+            statusText : '',
+            getResponseHeader : function() {
+            },
+            getAllResponseHeaders : function() {
+            },
+            responseText : '',
+            responseXML : '',
+            readyState  : 0,
+            onreadystatechange : null
+        };
+        return request;
+    };
+
+define("iexhr", function(){});
+
 define('modules/coreplayer-shared-module/panel',["require", "exports"], function(require, exports) {
     var Panel = (function () {
         function Panel($element, fitToParentWidth, fitToParentHeight) {
@@ -6461,7 +6543,7 @@ require.config({
         'yepnope': 'js/yepnope.1.5.4-min',
         'yepnopecss': 'js/yepnope.css',
         'l10n': 'js/l10n',
-        'xdomainrequest': 'js/jquery.xdomainrequest.min'
+        'iexhr': 'js/ie.xhr'
     },
     shim: {
         jquery: {
@@ -6481,9 +6563,6 @@ require.config({
         },
         yepnopecss: {
             deps: ['yepnope']
-        },
-        xdomainrequest: {
-            deps: ['jquery']
         }
     }
 });
@@ -6498,7 +6577,7 @@ require([
     'yepnopecss',
     'bootstrapper',
     'l10n',
-    'xdomainrequest',
+    'iexhr',
     'extensions/coreplayer-seadragon-extension/extension',
     'extensions/coreplayer-seadragon-extension/iiifProvider',
     'extensions/coreplayer-seadragon-extension/provider',
@@ -6506,7 +6585,7 @@ require([
     'extensions/coreplayer-mediaelement-extension/provider',
     'extensions/coreplayer-pdf-extension/extension',
     'extensions/coreplayer-pdf-extension/provider'
-], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, xdomainrequest, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
+], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, iexhr, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
 
     var extensions = {};
