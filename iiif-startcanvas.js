@@ -1,3 +1,4 @@
+manifestCallback(
 {
     "@context": "http://iiif.io/api/presentation/2/context.json",
     "@id": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json",
@@ -1511,3 +1512,4 @@
     }
 ]
 }
+)

@@ -1,3 +1,4 @@
+manifestCallback(
 {
     "@context": "http://iiif.io/api/presentation/2/context.json",
     "@id": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json",
@@ -85,40 +86,7 @@
                 "@type": "sc:Canvas",
                 "label": "1",
                 "width": 1244,
-                "height": 2223,
-                "images": [
-                    {
-                        "@type": "oa:Annotation",
-                        "motivation": "sc:painting",
-                        "resource": {
-                            "@id": "http://v8l-webtest1.bl.uk:89/IIIFImageService/v2/ark:/81055/vdc_000000000140.0x000002/full/full/0/default.jpg",
-                            "@type": "dctypes:Image",
-                            "format": "image/jpg",
-                            "service": {
-                                "@context": "http://iiif.io/api/image/2/context.json",
-                                "@id": "http://v8l-webtest1.bl.uk:89/IIIFImageService/v2/ark:/81055/vdc_000000000140.0x000002",
-                                "height": 2223,
-                                "profile": "http://iiif.io/api/image/2/level1.json",
-                                "tiles": [
-                                    {
-                                        "width": 256,
-                                        "scaleFactors": [
-                                            1,
-                                            2,
-                                            4,
-                                            8,
-                                            16
-                                        ]
-                                    }
-                                ],
-                                "width": 1244
-                            },
-                            "height": 2223,
-                            "width": 1244
-                        },
-                        "on": "http://api.bl.uk/ark:/81055/vdc_000000000143.0x000002"
-                    }
-                ]
+                "height": 2223
             },
             {
                 "@id": "http://api.bl.uk/ark:/81055/vdc_000000000143.0x000003",
@@ -134,25 +102,6 @@
                             "@id": "http://v8l-webtest1.bl.uk:89/IIIFImageService/v2/ark:/81055/vdc_000000000140.0x000003/full/full/0/default.jpg",
                             "@type": "dctypes:Image",
                             "format": "image/jpg",
-                            "service": {
-                                "@context": "http://iiif.io/api/image/2/context.json",
-                                "@id": "http://v8l-webtest1.bl.uk:89/IIIFImageService/v2/ark:/81055/vdc_000000000140.0x000003",
-                                "height": 2223,
-                                "profile": "http://iiif.io/api/image/2/level1.json",
-                                "tiles": [
-                                    {
-                                        "width": 256,
-                                        "scaleFactors": [
-                                            1,
-                                            2,
-                                            4,
-                                            8,
-                                            16
-                                        ]
-                                    }
-                                ],
-                                "width": 1244
-                            },
                             "height": 2223,
                             "width": 1244
                         },
@@ -1510,3 +1459,4 @@
     }
 ]
 }
+)
