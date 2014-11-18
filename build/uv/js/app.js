@@ -735,50 +735,47 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.loadManifest = function () {
             var that = this;
 
-            var settings = {
-                url: that.manifestUri,
+            $.ajax({
                 type: 'GET',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                jsonpCallback: 'manifestCallback'
-            };
+                url: that.manifestUri,
+                dataType: 'json',
+                xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
+                crossDomain: true,
+                success: function (manifest) {
+                    that.manifest = manifest;
 
-            $.ajax(settings);
+                    var isHomeDomain = utils.Utils.getQuerystringParameter('hd') == "true";
+                    var isReload = utils.Utils.getQuerystringParameter('rl') == "true";
+                    var sequenceParam = 'si';
 
-            window.manifestCallback = function (manifest) {
-                that.manifest = manifest;
+                    if (that.configExtension && that.configExtension.options && that.configExtension.options.IIIF) {
+                        that.IIIF = true;
+                    }
 
-                var isHomeDomain = utils.Utils.getQuerystringParameter('hd') == "true";
-                var isReload = utils.Utils.getQuerystringParameter('rl') == "true";
-                var sequenceParam = 'si';
+                    if (!that.IIIF)
+                        sequenceParam = 'asi';
 
-                if (that.configExtension && that.configExtension.options && that.configExtension.options.IIIF) {
-                    that.IIIF = true;
+                    if (isHomeDomain && !isReload) {
+                        that.sequenceIndex = parseInt(utils.Utils.getHashParameter(sequenceParam, parent.document));
+                    }
+
+                    if (!that.sequenceIndex) {
+                        that.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(sequenceParam)) || 0;
+                    }
+
+                    if (!that.IIIF) {
+                        that.sequences = that.manifest.assetSequences;
+                    } else {
+                        that.sequences = that.manifest.sequences;
+                    }
+
+                    if (!that.sequences) {
+                        that.notFound();
+                    }
+
+                    that.loadSequence();
                 }
-
-                if (!that.IIIF)
-                    sequenceParam = 'asi';
-
-                if (isHomeDomain && !isReload) {
-                    that.sequenceIndex = parseInt(utils.Utils.getHashParameter(sequenceParam, parent.document));
-                }
-
-                if (!that.sequenceIndex) {
-                    that.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(sequenceParam)) || 0;
-                }
-
-                if (!that.IIIF) {
-                    that.sequences = that.manifest.assetSequences;
-                } else {
-                    that.sequences = that.manifest.sequences;
-                }
-
-                if (!that.sequences) {
-                    that.notFound();
-                }
-
-                that.loadSequence();
-            };
+            });
         };
 
         BootStrapper.prototype.loadSequence = function () {
@@ -805,9 +802,16 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                     var baseManifestUri = that.manifestUri.substr(0, that.manifestUri.lastIndexOf('/') + 1);
                     var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
 
-                    $.getJSON(sequenceUri, function (sequenceData) {
-                        that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
-                        that.loadDependencies();
+                    $.ajax({
+                        type: 'GET',
+                        url: sequenceUri,
+                        dataType: 'json',
+                        xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
+                        crossDomain: true,
+                        success: function (sequenceData) {
+                            that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
+                            that.loadDependencies();
+                        }
                     });
                 }
             }
@@ -837,18 +841,25 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                 test: window.btoa && window.atob,
                 nope: 'js/base64.min.js',
                 complete: function () {
-                    $.getJSON(configPath, function (config) {
-                        if (that.configExtension) {
-                            config.uri = that.configExtensionUri;
+                    $.ajax({
+                        type: 'GET',
+                        url: configPath,
+                        dataType: 'json',
+                        xhr: window.IEXMLHttpRequest || jQuery.ajaxSettings.xhr,
+                        crossDomain: true,
+                        success: function (config) {
+                            if (that.configExtension) {
+                                config.uri = that.configExtensionUri;
 
-                            $.extend(true, config, that.configExtension);
+                                $.extend(true, config, that.configExtension);
+                            }
+
+                            var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/css/styles.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '.css';
+
+                            yepnope.injectCss(cssPath, function () {
+                                that.createExtension(extension, config);
+                            });
                         }
-
-                        var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/css/styles.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '.css';
-
-                        yepnope.injectCss(cssPath, function () {
-                            that.createExtension(extension, config);
-                        });
                     });
                 }
             });
@@ -1874,6 +1885,92 @@ document.webL10n = (function(window, document, undefined) {
   };
 }) (window, document);
 define("l10n", function(){});
+
+/*jslint browser: true, rhino :true, debug: true, white : false,
+ laxbreak: true, bitwise: true, eqeqeq: true, nomen: false,
+ onevar: false, plusplus: false, regexp: false, undef: true
+ */
+
+/*global window, XDomainRequest, ActiveXObject */
+
+
+/*
+ CORS-capable XHR for IE
+ see https://github.com/Malvolio/ie.xhr for all details
+ Michael S Lorton - 2011
+ */
+var IEXMLHttpRequest = window.XDomainRequest && function() {
+        var xdr = new XDomainRequest();
+        if (!xdr) {
+            return null;
+        }
+
+
+        var request;
+
+        var changeState = function(state) {
+            if (state !== request.readyState) {
+                request.readyState = state;
+                if (request.onreadystatechange) {
+                    request.onreadystatechange();
+                }
+            }
+        };
+
+        xdr.onerror = function() {
+            request.status = 500;
+            request.statusText = 'ERROR';
+            changeState(4);
+        };
+        xdr.ontimeout = function() {
+            request.status = 408;
+            request.statusText = 'TIMEOUT';
+            changeState(4);
+        };
+        xdr.onprogress = function() {
+            changeState(3);
+        };
+        xdr.onload = function() {
+            request.status = 200;
+            request.statusText = 'OK';
+            request.responseText = xdr.responseText;
+            request.responseXML = new ActiveXObject("Microsoft.XMLDOM");
+            request.responseXML.async="false";
+            request.responseXML.loadXML(xdr.responseText);
+            changeState(4);
+        };
+
+
+        request = {
+            open : function(method, url, async, user, password) {
+                xdr.open(method, url);
+                changeState(1);
+            },
+            setRequestHeader : function() {
+                // can I do this?
+            },
+            send : function(data) {
+                xdr.send(data);
+                changeState(2);
+            },
+            abort : function() {
+                xdr.abort();
+            },
+            status : '',
+            statusText : '',
+            getResponseHeader : function() {
+            },
+            getAllResponseHeaders : function() {
+            },
+            responseText : '',
+            responseXML : '',
+            readyState  : 0,
+            onreadystatechange : null
+        };
+        return request;
+    };
+
+define("iexhr", function(){});
 
 define('modules/coreplayer-shared-module/panel',["require", "exports"], function(require, exports) {
     var Panel = (function () {
@@ -6445,7 +6542,8 @@ require.config({
         'jsviews': 'js/jsviews.min',
         'yepnope': 'js/yepnope.1.5.4-min',
         'yepnopecss': 'js/yepnope.css',
-        'l10n': 'js/l10n'
+        'l10n': 'js/l10n',
+        'iexhr': 'js/ie.xhr'
     },
     shim: {
         jquery: {
@@ -6479,6 +6577,7 @@ require([
     'yepnopecss',
     'bootstrapper',
     'l10n',
+    'iexhr',
     'extensions/coreplayer-seadragon-extension/extension',
     'extensions/coreplayer-seadragon-extension/iiifProvider',
     'extensions/coreplayer-seadragon-extension/provider',
@@ -6486,7 +6585,7 @@ require([
     'extensions/coreplayer-mediaelement-extension/provider',
     'extensions/coreplayer-pdf-extension/extension',
     'extensions/coreplayer-pdf-extension/provider'
-], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
+], function ($, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, iexhr, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
 
     var extensions = {};
