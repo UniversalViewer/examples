@@ -3627,7 +3627,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$element.append(this.$thumbs);
 
             $.templates({
-                thumbsTemplate: '<div class="{{:~class()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
+                thumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
                                 <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
@@ -3646,7 +3646,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                 extraHeight: function () {
                     return extraHeight;
                 },
-                class: function () {
+                className: function () {
                     if (this.data.url) {
                         return "thumb";
                     }
