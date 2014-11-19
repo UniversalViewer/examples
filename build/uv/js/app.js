@@ -3046,6 +3046,10 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
         __extends(PagingHeaderPanel, _super);
         function PagingHeaderPanel($element) {
             _super.call(this, $element);
+            this.firstButtonEnabled = false;
+            this.lastButtonEnabled = false;
+            this.prevButtonEnabled = false;
+            this.nextButtonEnabled = false;
         }
         PagingHeaderPanel.prototype.create = function () {
             var _this = this;
@@ -3258,6 +3262,62 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
         PagingHeaderPanel.prototype.canvasIndexChanged = function (index) {
             this.setSearchPlaceholder(index);
+
+            if (this.provider.isFirstCanvas()) {
+                this.disableFirstButton();
+                this.disablePrevButton();
+            } else {
+                this.enableFirstButton();
+                this.enablePrevButton();
+            }
+
+            if (this.provider.isLastCanvas()) {
+                this.disableLastButton();
+                this.disableNextButton();
+            } else {
+                this.enableLastButton();
+                this.enableNextButton();
+            }
+        };
+
+        PagingHeaderPanel.prototype.disableFirstButton = function () {
+            this.firstButtonEnabled = false;
+            this.$firstButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enableFirstButton = function () {
+            this.firstButtonEnabled = true;
+            this.$firstButton.removeClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.disableLastButton = function () {
+            this.lastButtonEnabled = false;
+            this.$lastButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enableLastButton = function () {
+            this.lastButtonEnabled = true;
+            this.$lastButton.removeClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.disablePrevButton = function () {
+            this.prevButtonEnabled = false;
+            this.$prevButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enablePrevButton = function () {
+            this.prevButtonEnabled = true;
+            this.$prevButton.removeClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.disableNextButton = function () {
+            this.nextButtonEnabled = false;
+            this.$nextButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enableNextButton = function () {
+            this.nextButtonEnabled = true;
+            this.$nextButton.removeClass('disabled');
         };
 
         PagingHeaderPanel.prototype.modeChanged = function (mode) {
@@ -4145,13 +4205,13 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
             if (this.provider.isMultiCanvas()) {
                 $('.navigator').addClass('extraMargin');
 
-                if (this.provider.canvasIndex != 0) {
+                if (!this.provider.isFirstCanvas()) {
                     this.enablePrevButton();
                 } else {
                     this.disablePrevButton();
                 }
 
-                if (this.provider.canvasIndex != this.provider.getTotalCanvases() - 1) {
+                if (!this.provider.isLastCanvas()) {
                     this.enableNextButton();
                 } else {
                     this.disableNextButton();
@@ -4373,9 +4433,11 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                     that.viewer.addHandler('open', function openHandler() {
                         that.viewer.removeHandler('open', openHandler);
 
-                        tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width;
+                        tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width + 0.01;
 
                         that.viewer.addTiledImage(tileSources[1]);
+
+                        that.viewer.viewport.fitBounds();
                     });
                 }
 

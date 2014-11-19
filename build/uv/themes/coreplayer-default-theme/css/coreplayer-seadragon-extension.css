@@ -202,6 +202,10 @@
   background: url('../img/coreplayer-pagingheaderpanel-module/go.png') no-repeat;
   width: 28px;
 }
+#app .headerPanel a.imageBtn.disabled {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
 #app .headerPanel .centerOptions .prevOptions {
   float: left;
   margin: 0 15px 0 0;
