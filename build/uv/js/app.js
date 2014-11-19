@@ -5698,9 +5698,9 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
             if (!iiifUri) {
                 console.warn('no service endpoint available');
             } else if (iiifUri.endsWith('/')) {
-                iiifUri += 'info.json';
+                iiifUri += 'info.js';
             } else {
-                iiifUri += '/info.json';
+                iiifUri += '/info.js';
             }
 
             var uri = String.prototype.format(template, baseUri, iiifUri);
