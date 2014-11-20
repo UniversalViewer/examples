@@ -4436,8 +4436,6 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                         tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width + 0.01;
 
                         that.viewer.addTiledImage(tileSources[1]);
-
-                        that.viewer.viewport.fitBounds();
                     });
                 }
 
@@ -4446,6 +4444,15 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                 } else {
                     that.extension.showDialogue(that.config.content.imageUnavailable);
                 }
+
+                if (tileSources.length != _this.lastTilesNum) {
+                    that.viewer.addHandler('open', function openHandler() {
+                        that.viewer.removeHandler('open', openHandler);
+                        that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, tileSources.length, that.viewer.world.getItemAt(0).normHeight));
+                    });
+                }
+
+                _this.lastTilesNum = tileSources.length;
             });
         };
 
