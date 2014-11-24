@@ -4,6 +4,7 @@
         "leftPanelEnabled": true,
         "rightPanelEnabled": true,
         "overrideFullScreen": false,
+        "pagingEnabled": true,
         "sectionMappings": {
             "CoverFrontOutside": "Front Cover",
             "CoverBackOutside": "Back Cover",
