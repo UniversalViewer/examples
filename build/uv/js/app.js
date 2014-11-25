@@ -2943,7 +2943,91 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView"], function(require, exports, baseExtension, baseView) {
+define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, dialogue) {
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            _super.call(this, $element);
+        }
+        SettingsDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('settingsDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(SettingsDialogue.SHOW_SETTINGS_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+
+            $.subscribe(SettingsDialogue.HIDE_SETTINGS_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1></h1>');
+            this.$content.append(this.$title);
+
+            this.$scroll = $('<div class="scroll"></div>');
+            this.$content.append(this.$scroll);
+
+            this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
+            this.$scroll.append(this.$pagingEnabledCheckbox);
+
+            this.$pagingEnabledTitle = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
+            this.$scroll.append(this.$pagingEnabledTitle);
+
+            this.$title.text(this.content.title);
+
+            var that = this;
+
+            this.$pagingEnabledCheckbox.change(function () {
+                var settings = that.getSettings();
+
+                if ($(this).is(":checked")) {
+                    settings.pagingEnabled = true;
+                } else {
+                    settings.pagingEnabled = false;
+                }
+
+                that.updateSettings(settings);
+            });
+
+            var settings = this.getSettings();
+
+            if (settings.pagingEnabled) {
+                this.$pagingEnabledCheckbox.attr("checked", "checked");
+            }
+
+            this.$element.hide();
+        };
+
+        SettingsDialogue.prototype.getSettings = function () {
+            return this.provider.getSettings();
+        };
+
+        SettingsDialogue.prototype.updateSettings = function (settings) {
+            this.provider.updateSettings(settings);
+
+            $.publish(SettingsDialogue.UPDATE_SETTINGS, [settings]);
+        };
+
+        SettingsDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        SettingsDialogue.SHOW_SETTINGS_DIALOGUE = 'onShowSettingsDialogue';
+        SettingsDialogue.HIDE_SETTINGS_DIALOGUE = 'onHideSettingsDialogue';
+        SettingsDialogue.UPDATE_SETTINGS = 'onUpdateSettings';
+        return SettingsDialogue;
+    })(dialogue.Dialogue);
+    exports.SettingsDialogue = SettingsDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../coreplayer-dialogues-module/settingsDialogue"], function(require, exports, baseExtension, baseView, settings) {
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -2992,7 +3076,7 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
             this.$settingsButton.click(function (e) {
                 e.preventDefault();
 
-                $.publish(HeaderPanel.SETTINGS);
+                $.publish(settings.SettingsDialogue.SHOW_SETTINGS_DIALOGUE);
             });
         };
 
@@ -3029,7 +3113,6 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
                 $text.ellipsisFill(this.message);
             }
         };
-        HeaderPanel.SETTINGS = 'header.onSettings';
         return HeaderPanel;
     })(baseView.BaseView);
     exports.HeaderPanel = HeaderPanel;
@@ -4366,7 +4449,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
             OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
 
-            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncollectioncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncollectioncenterpanel-module/';
+            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
 
             this.viewer = OpenSeadragon({
                 id: "viewer",
@@ -4958,7 +5041,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, baseCenter, center, right, footer, help, embed, dependencies) {
+define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, baseCenter, center, right, footer, help, embed, settingsDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -4989,7 +5072,6 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
             $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
                 Extension.mode = mode;
-
                 $.publish(Extension.SETTINGS_CHANGED, [mode]);
             });
 
@@ -5001,13 +5083,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(index);
             });
 
-            $.subscribe(header.PagingHeaderPanel.SETTINGS, function (e) {
-                var settings = _this.provider.getSettings();
-
-                settings.pagingEnabled = !settings.pagingEnabled;
-
-                _this.provider.updateSettings(settings);
-
+            $.subscribe(settingsDialogue.SettingsDialogue.UPDATE_SETTINGS, function (e) {
                 _this.provider.reload(function () {
                     $.publish(baseExtension.BaseExtension.RELOAD);
                     _this.viewPage(_this.provider.canvasIndex, true);
@@ -5085,6 +5161,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             this.$embedDialogue = utils.Utils.createDiv('overlay embed');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$settingsDialogue = utils.Utils.createDiv('overlay settings');
+            shell.Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new settingsDialogue.SettingsDialogue(this.$settingsDialogue);
 
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();

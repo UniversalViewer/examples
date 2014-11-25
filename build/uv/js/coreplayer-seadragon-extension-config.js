@@ -29,6 +29,12 @@
                 "text": "placeholder text"
             }
         },
+        "settingsDialogue": {
+            "content": {
+                "title": "Settings",
+                "pagingEnabled": "Paging Enabled"
+            }
+        },
         "embedDialogue": {
             "options": {
                 "embedTemplate": "<div class=\"wellcomePlayer\" data-uri=\"{0}\" data-sequenceindex=\"{1}\" data-canvasindex=\"{2}\" data-zoom=\"{3}\" data-rotation=\"{4}\" data-config=\"{5}\" style=\"width:{6}px; height:{7}px; background-color: #000\"></div>\n<script type=\"text/javascript\" id=\"embedWellcomePlayer\" src=\"{8}\"></script><script type=\"text/javascript\">/* wordpress fix */</script>"

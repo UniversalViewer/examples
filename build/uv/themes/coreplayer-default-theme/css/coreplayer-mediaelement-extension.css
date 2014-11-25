@@ -128,6 +128,16 @@
 #app .overlay.help .bottom {
   background: none;
 }
+#app .overlay.settings {
+  width: 470px;
+  height: 250px;
+}
+#app .overlay.settings .scroll {
+  height: 180px;
+}
+#app .overlay.settings .bottom {
+  background: none;
+}
 #app .leftPanel .top .title {
   background: url('../img/coreplayer-treeviewleftpanel-module/contents.png') no-repeat;
   width: 78px;
