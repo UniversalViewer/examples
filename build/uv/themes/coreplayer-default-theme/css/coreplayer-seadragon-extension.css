@@ -128,6 +128,16 @@
 #app .overlay.help .bottom {
   background: none;
 }
+#app .overlay.settings {
+  width: 470px;
+  height: 250px;
+}
+#app .overlay.settings .scroll {
+  height: 180px;
+}
+#app .overlay.settings .bottom {
+  background: none;
+}
 #app .rightPanel .top .title {
   background: url('../img/coreplayer-moreinforightpanel-module/moreinfo.png') no-repeat;
   width: 140px;
@@ -201,6 +211,10 @@
 #app .headerPanel a.imageBtn.go {
   background: url('../img/coreplayer-pagingheaderpanel-module/go.png') no-repeat;
   width: 28px;
+}
+#app .headerPanel a.imageBtn.disabled {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
 }
 #app .headerPanel .centerOptions .prevOptions {
   float: left;
@@ -420,7 +434,7 @@
   padding: 2px;
   max-height: 180px;
   overflow: hidden;
-  min-width: 96px;
+  width: 96px;
   text-align: center;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap.loading {
@@ -432,7 +446,7 @@
   background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap img {
-  margin: 0 auto;
+  display: block;
 }
 #app .leftPanel .views .thumbsView .thumb.selected .wrap {
   border: 1px solid #869f33;
@@ -443,6 +457,9 @@
   display: block;
   padding: 2px 0 0 0;
 }
+#app .leftPanel .views .thumbsView .thumb.placeholder .wrap {
+  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+}
 #app .leftPanel .views .thumbsView .separator {
   height: 1px;
   clear: both;
@@ -452,6 +469,7 @@
   border: none;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb .wrap img {
+  display: block;
   width: 90px;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb.selected .wrap {

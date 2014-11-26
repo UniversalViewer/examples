@@ -735,7 +735,17 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.loadManifest = function () {
             var that = this;
 
-            $.getJSON(that.manifestUri, function (manifest) {
+            var settings = {
+                url: that.manifestUri,
+                type: 'GET',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'manifestCallback'
+            };
+
+            $.ajax(settings);
+
+            window.manifestCallback = function (manifest) {
                 that.manifest = manifest;
 
                 var isHomeDomain = utils.Utils.getQuerystringParameter('hd') == "true";
@@ -768,7 +778,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                 }
 
                 that.loadSequence();
-            });
+            };
         };
 
         BootStrapper.prototype.loadSequence = function () {
@@ -2421,22 +2431,7 @@ define('modules/coreplayer-shared-module/treeNode',["require", "exports"], funct
     return TreeNode;
 });
 
-define('modules/coreplayer-shared-module/thumb',["require", "exports"], function(require, exports) {
-    var Thumb = (function () {
-        function Thumb(index, url, label, height, visible) {
-            this.index = index;
-            this.url = url;
-            this.label = label;
-            this.height = height;
-            this.visible = visible;
-        }
-        return Thumb;
-    })();
-    
-    return Thumb;
-});
-
-define('modules/coreplayer-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
+define('modules/coreplayer-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode"], function(require, exports, utils, TreeNode) {
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -2598,15 +2593,8 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             }
         };
 
-        BaseProvider.prototype.getThumbUri = function (canvas, thumbsBaseUri, thumbsUriTemplate) {
-            var baseUri = thumbsBaseUri ? thumbsBaseUri : this.options.thumbsBaseUri || this.options.dataBaseUri || "";
-            var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
-            var uri = String.prototype.format(template, baseUri, canvas.thumbnailPath);
-
-            if (this.options.timestampUris)
-                uri = this.addTimestamp(uri);
-
-            return uri;
+        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
+            return null;
         };
 
         BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
@@ -2892,37 +2880,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
         };
 
         BaseProvider.prototype.getThumbs = function () {
-            var thumbs = new Array();
-
-            for (var i = 0; i < this.getTotalCanvases(); i++) {
-                var canvas = this.sequence.assets[i];
-
-                var uri = this.getThumbUri(canvas);
-                var structure = this.getCanvasStructure(canvas);
-
-                var heightRatio = canvas.height / canvas.width;
-                var height = 150;
-
-                if (heightRatio) {
-                    Math.floor(height = 90 * heightRatio);
-                }
-
-                var visible = true;
-
-                if (structure.extensions) {
-                    if (structure.extensions.authStatus.toLowerCase() !== "allowed") {
-                        visible = false;
-                    }
-                }
-
-                if (canvas.orderLabel.trim() === "-") {
-                    canvas.orderLabel = "";
-                }
-
-                thumbs.push(new Thumb(i, uri, canvas.orderLabel, height, visible));
-            }
-
-            return thumbs;
+            return null;
         };
 
         BaseProvider.prototype.getDomain = function () {
@@ -2985,7 +2943,91 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView"], function(require, exports, baseExtension, baseView) {
+define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, dialogue) {
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            _super.call(this, $element);
+        }
+        SettingsDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('settingsDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(SettingsDialogue.SHOW_SETTINGS_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+
+            $.subscribe(SettingsDialogue.HIDE_SETTINGS_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1></h1>');
+            this.$content.append(this.$title);
+
+            this.$scroll = $('<div class="scroll"></div>');
+            this.$content.append(this.$scroll);
+
+            this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
+            this.$scroll.append(this.$pagingEnabledCheckbox);
+
+            this.$pagingEnabledTitle = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
+            this.$scroll.append(this.$pagingEnabledTitle);
+
+            this.$title.text(this.content.title);
+
+            var that = this;
+
+            this.$pagingEnabledCheckbox.change(function () {
+                var settings = that.getSettings();
+
+                if ($(this).is(":checked")) {
+                    settings.pagingEnabled = true;
+                } else {
+                    settings.pagingEnabled = false;
+                }
+
+                that.updateSettings(settings);
+            });
+
+            var settings = this.getSettings();
+
+            if (settings.pagingEnabled) {
+                this.$pagingEnabledCheckbox.attr("checked", "checked");
+            }
+
+            this.$element.hide();
+        };
+
+        SettingsDialogue.prototype.getSettings = function () {
+            return this.provider.getSettings();
+        };
+
+        SettingsDialogue.prototype.updateSettings = function (settings) {
+            this.provider.updateSettings(settings);
+
+            $.publish(SettingsDialogue.UPDATE_SETTINGS, [settings]);
+        };
+
+        SettingsDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        SettingsDialogue.SHOW_SETTINGS_DIALOGUE = 'onShowSettingsDialogue';
+        SettingsDialogue.HIDE_SETTINGS_DIALOGUE = 'onHideSettingsDialogue';
+        SettingsDialogue.UPDATE_SETTINGS = 'onUpdateSettings';
+        return SettingsDialogue;
+    })(dialogue.Dialogue);
+    exports.SettingsDialogue = SettingsDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../coreplayer-dialogues-module/settingsDialogue"], function(require, exports, baseExtension, baseView, settings) {
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -3034,7 +3076,7 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
             this.$settingsButton.click(function (e) {
                 e.preventDefault();
 
-                $.publish(HeaderPanel.SETTINGS);
+                $.publish(settings.SettingsDialogue.SHOW_SETTINGS_DIALOGUE);
             });
         };
 
@@ -3071,7 +3113,6 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
                 $text.ellipsisFill(this.message);
             }
         };
-        HeaderPanel.SETTINGS = 'header.onSettings';
         return HeaderPanel;
     })(baseView.BaseView);
     exports.HeaderPanel = HeaderPanel;
@@ -3088,6 +3129,10 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
         __extends(PagingHeaderPanel, _super);
         function PagingHeaderPanel($element) {
             _super.call(this, $element);
+            this.firstButtonEnabled = false;
+            this.lastButtonEnabled = false;
+            this.prevButtonEnabled = false;
+            this.nextButtonEnabled = false;
         }
         PagingHeaderPanel.prototype.create = function () {
             var _this = this;
@@ -3300,6 +3345,62 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
         PagingHeaderPanel.prototype.canvasIndexChanged = function (index) {
             this.setSearchPlaceholder(index);
+
+            if (this.provider.isFirstCanvas()) {
+                this.disableFirstButton();
+                this.disablePrevButton();
+            } else {
+                this.enableFirstButton();
+                this.enablePrevButton();
+            }
+
+            if (this.provider.isLastCanvas()) {
+                this.disableLastButton();
+                this.disableNextButton();
+            } else {
+                this.enableLastButton();
+                this.enableNextButton();
+            }
+        };
+
+        PagingHeaderPanel.prototype.disableFirstButton = function () {
+            this.firstButtonEnabled = false;
+            this.$firstButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enableFirstButton = function () {
+            this.firstButtonEnabled = true;
+            this.$firstButton.removeClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.disableLastButton = function () {
+            this.lastButtonEnabled = false;
+            this.$lastButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enableLastButton = function () {
+            this.lastButtonEnabled = true;
+            this.$lastButton.removeClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.disablePrevButton = function () {
+            this.prevButtonEnabled = false;
+            this.$prevButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enablePrevButton = function () {
+            this.prevButtonEnabled = true;
+            this.$prevButton.removeClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.disableNextButton = function () {
+            this.nextButtonEnabled = false;
+            this.$nextButton.addClass('disabled');
+        };
+
+        PagingHeaderPanel.prototype.enableNextButton = function () {
+            this.nextButtonEnabled = true;
+            this.$nextButton.removeClass('disabled');
         };
 
         PagingHeaderPanel.prototype.modeChanged = function (mode) {
@@ -3565,6 +3666,11 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                             self.toggle();
                         }).on("click", "a", function (e) {
                             e.preventDefault();
+
+                            if (self.data.nodes.length) {
+                                self.toggle();
+                            }
+
                             $.publish(TreeView.NODE_SELECTED, [self.data.data]);
                         });
                     },
@@ -3669,7 +3775,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$element.append(this.$thumbs);
 
             $.templates({
-                thumbsTemplate: '<div class="thumb" data-src="{{>url}}" data-visible="{{>visible}}">\
+                thumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
                                 <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
@@ -3687,6 +3793,13 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                 },
                 extraHeight: function () {
                     return extraHeight;
+                },
+                className: function () {
+                    if (this.data.url) {
+                        return "thumb";
+                    }
+
+                    return "thumb placeholder";
                 }
             });
 
@@ -4180,13 +4293,13 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
             if (this.provider.isMultiCanvas()) {
                 $('.navigator').addClass('extraMargin');
 
-                if (this.provider.canvasIndex != 0) {
+                if (!this.provider.isFirstCanvas()) {
                     this.enablePrevButton();
                 } else {
                     this.disablePrevButton();
                 }
 
-                if (this.provider.canvasIndex != this.provider.getTotalCanvases() - 1) {
+                if (!this.provider.isLastCanvas()) {
                     this.enableNextButton();
                 } else {
                     this.disableNextButton();
@@ -4329,99 +4442,14 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             _super.prototype.create.call(this);
 
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                _this.viewer.open(uri);
+                _this.loadTileSources();
             });
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
             OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
 
-            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncollectioncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncollectioncenterpanel-module/';
-
-            this.viewer = OpenSeadragon({
-                id: "viewer",
-                showNavigationControl: true,
-                showNavigator: true,
-                showRotationControl: true,
-                showHomeControl: false,
-                showFullPageControl: false,
-                defaultZoomLevel: this.options.defaultZoomLevel || 0,
-                navigatorPosition: 'BOTTOM_RIGHT',
-                prefixUrl: prefixUrl,
-                navImages: {
-                    zoomIn: {
-                        REST: 'zoom_in.png',
-                        GROUP: 'zoom_in.png',
-                        HOVER: 'zoom_in.png',
-                        DOWN: 'zoom_in.png'
-                    },
-                    zoomOut: {
-                        REST: 'zoom_out.png',
-                        GROUP: 'zoom_out.png',
-                        HOVER: 'zoom_out.png',
-                        DOWN: 'zoom_out.png'
-                    },
-                    rotateright: {
-                        REST: 'rotate_right.png',
-                        GROUP: 'rotate_right.png',
-                        HOVER: 'rotate_right.png',
-                        DOWN: 'rotate_right.png'
-                    },
-                    rotateleft: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    }
-                }
-            });
-        };
-        return SeadragonCenterPanel;
-    })(baseCenter.SeadragonCenterPanel);
-    exports.SeadragonCenterPanel = SeadragonCenterPanel;
-});
-
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollectionCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/seadragonCenterPanel"], function(require, exports, baseExtension, baseCenter) {
-    var SeadragonCollectionCenterPanel = (function (_super) {
-        __extends(SeadragonCollectionCenterPanel, _super);
-        function SeadragonCollectionCenterPanel($element) {
-            _super.call(this, $element);
-        }
-        SeadragonCollectionCenterPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('seadragonCenterPanel');
-
-            _super.prototype.create.call(this);
-
-            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                var tileSources = _this.provider.getTileSources();
-
-                var that = _this;
-
-                if (tileSources.length > 1) {
-                    that.viewer.addHandler('open', function openHandler() {
-                        that.viewer.removeHandler('open', openHandler);
-
-                        tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width;
-
-                        that.viewer.addTiledImage(tileSources[1]);
-                    });
-                }
-
-                _this.viewer.open(tileSources[0]);
-            });
-        };
-
-        SeadragonCollectionCenterPanel.prototype.createSeadragonViewer = function () {
-            OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
-
-            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncollectioncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncollectioncenterpanel-module/';
+            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
 
             this.viewer = OpenSeadragon({
                 id: "viewer",
@@ -4473,9 +4501,40 @@ define('modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollec
                 }
             });
         };
-        return SeadragonCollectionCenterPanel;
+
+        SeadragonCenterPanel.prototype.loadTileSources = function () {
+            var tileSources = this.provider.getTileSources();
+
+            var that = this;
+
+            if (tileSources.length > 1) {
+                that.viewer.addHandler('open', function openHandler() {
+                    that.viewer.removeHandler('open', openHandler);
+
+                    tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width + 0.01;
+
+                    that.viewer.addTiledImage(tileSources[1]);
+                });
+            }
+
+            if (tileSources[0].tileSource) {
+                that.viewer.open(tileSources[0]);
+            } else {
+                that.extension.showDialogue(that.config.content.imageUnavailable);
+            }
+
+            if (tileSources.length != that.lastTilesNum) {
+                that.viewer.addHandler('open', function openHandler() {
+                    that.viewer.removeHandler('open', openHandler);
+                    that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, tileSources.length, that.viewer.world.getItemAt(0).normHeight));
+                });
+            }
+
+            that.lastTilesNum = tileSources.length;
+        };
+        return SeadragonCenterPanel;
     })(baseCenter.SeadragonCenterPanel);
-    exports.SeadragonCollectionCenterPanel = SeadragonCollectionCenterPanel;
+    exports.SeadragonCenterPanel = SeadragonCenterPanel;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4982,7 +5041,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncollectioncenterpanel-module/seadragonCollectionCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, baseCenter, center, centerCol, right, footer, help, embed, dependencies) {
+define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, baseCenter, center, right, footer, help, embed, settingsDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -5013,7 +5072,6 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
             $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
                 Extension.mode = mode;
-
                 $.publish(Extension.SETTINGS_CHANGED, [mode]);
             });
 
@@ -5025,8 +5083,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(index);
             });
 
-            $.subscribe(header.PagingHeaderPanel.SETTINGS, function (e) {
-                var settings = _this.provider.getSettings();
+            $.subscribe(settingsDialogue.SettingsDialogue.UPDATE_SETTINGS, function (e) {
+                _this.provider.reload(function () {
+                    $.publish(baseExtension.BaseExtension.RELOAD);
+                    _this.viewPage(_this.provider.canvasIndex, true);
+                });
             });
 
             $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
@@ -5085,11 +5146,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
             }
 
-            if (this.provider.isPaged()) {
-                this.centerPanel = new centerCol.SeadragonCollectionCenterPanel(shell.Shell.$centerPanel);
-            } else {
-                this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
-            }
+            this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
 
             if (this.isRightPanelEnabled()) {
                 this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
@@ -5104,6 +5161,10 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             this.$embedDialogue = utils.Utils.createDiv('overlay embed');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$settingsDialogue = utils.Utils.createDiv('overlay settings');
+            shell.Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new settingsDialogue.SettingsDialogue(this.$settingsDialogue);
 
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
@@ -5129,12 +5190,12 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             return utils.Utils.getBool(this.provider.config.options.rightPanelEnabled, true);
         };
 
-        Extension.prototype.viewPage = function (canvasIndex) {
+        Extension.prototype.viewPage = function (canvasIndex, isReload) {
             var _this = this;
             if (canvasIndex == -1)
                 return;
 
-            if (this.provider.isPaged()) {
+            if (this.provider.isPaged() && !isReload) {
                 var indices = this.provider.getPagedIndices(canvasIndex);
 
                 if (indices.contains(this.provider.canvasIndex)) {
@@ -5225,6 +5286,21 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
         return Extension;
     })(baseExtension.BaseExtension);
     exports.Extension = Extension;
+});
+
+define('modules/coreplayer-shared-module/thumb',["require", "exports"], function(require, exports) {
+    var Thumb = (function () {
+        function Thumb(index, url, label, height, visible) {
+            this.index = index;
+            this.url = url;
+            this.label = label;
+            this.height = height;
+            this.visible = visible;
+        }
+        return Thumb;
+    })();
+    
+    return Thumb;
 });
 
 define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
@@ -5385,7 +5461,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.isPaged = function () {
-            return this.sequence.viewingHint && this.sequence.viewingHint == "paged";
+            return this.sequence.viewingHint && (this.sequence.viewingHint == "paged") && this.getSettings().pagingEnabled;
         };
 
         BaseProvider.prototype.getMediaUri = function (mediaUri) {
@@ -5397,13 +5473,6 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.setMediaUri = function (canvas) {
-        };
-
-        BaseProvider.prototype.getThumbUri = function (canvas, thumbsBaseUri, thumbsUriTemplate) {
-            var baseUri = thumbsBaseUri ? thumbsBaseUri : this.options.thumbsBaseUri || this.options.dataBaseUri || "";
-            var template = thumbsUriTemplate ? thumbsUriTemplate : this.options.thumbsUriTemplate;
-
-            return null;
         };
 
         BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
@@ -5484,6 +5553,28 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return (this.isHomeDomain && this.isOnlyInstance);
         };
 
+        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
+            var uri;
+
+            if (canvas.resources) {
+                uri = canvas.resources[0].resource.service['@id'];
+            } else if (canvas.images && canvas.images[0].resource.service) {
+                uri = canvas.images[0].resource.service['@id'];
+            } else {
+                return "";
+            }
+
+            var tile = 'full/' + width + ',' + height + '/0/default.jpg';
+
+            if (uri.endsWith('/')) {
+                uri += tile;
+            } else {
+                uri += '/' + tile;
+            }
+
+            return uri;
+        };
+
         BaseProvider.prototype.getThumbs = function () {
             var thumbs = new Array();
 
@@ -5492,28 +5583,14 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
                 var heightRatio = canvas.height / canvas.width;
 
-                var width = 90;
-                var height = 150;
+                var width = this.config.modules["treeViewLeftPanel"].options.thumbWidth;
+                var height = this.config.modules["treeViewLeftPanel"].options.thumbHeight;
 
                 if (heightRatio) {
                     height = Math.floor(width * heightRatio);
                 }
 
-                var uri;
-
-                if (canvas.resources) {
-                    uri = canvas.resources[0].resource.service['@id'];
-                } else if (canvas.images) {
-                    uri = canvas.images[0].resource.service['@id'];
-                }
-
-                var tile = 'full/' + width + ',' + height + '/0/default.jpg';
-
-                if (uri.endsWith('/')) {
-                    uri += tile;
-                } else {
-                    uri += '/' + tile;
-                }
+                var uri = this.getThumbUri(canvas, width, height);
 
                 thumbs.push(new Thumb(i, uri, canvas.label, height, true));
             }
@@ -5706,14 +5783,16 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
                 iiifUri = canvas.resources[0].resource.service['@id'];
             } else if (canvas.images && canvas.images[0].resource.service) {
                 iiifUri = canvas.images[0].resource.service['@id'];
+            } else {
+                return null;
             }
 
             if (!iiifUri) {
                 console.warn('no service endpoint available');
             } else if (iiifUri.endsWith('/')) {
-                iiifUri += 'info.json';
+                iiifUri += 'info.js';
             } else {
-                iiifUri += '/info.json';
+                iiifUri += '/info.js';
             }
 
             var uri = String.prototype.format(template, baseUri, iiifUri);
@@ -5736,7 +5815,9 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
         Provider.prototype.getTileSources = function () {
             var _this = this;
             if (!this.isPaged()) {
-                return [this.getImageUri(this.getCurrentCanvas())];
+                return [{
+                        tileSource: this.getImageUri(this.getCurrentCanvas())
+                    }];
             } else {
                 if (this.isFirstCanvas() || this.isLastCanvas()) {
                     return [{
