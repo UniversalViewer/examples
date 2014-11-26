@@ -32,7 +32,7 @@
         "settingsDialogue": {
             "content": {
                 "title": "Settings",
-                "pagingEnabled": "Paging Enabled"
+                "pagingEnabled": "Two Page View"
             }
         },
         "embedDialogue": {

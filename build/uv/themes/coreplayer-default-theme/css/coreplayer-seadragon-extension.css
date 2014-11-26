@@ -434,7 +434,7 @@
   padding: 2px;
   max-height: 180px;
   overflow: hidden;
-  min-width: 96px;
+  width: 96px;
   text-align: center;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap.loading {
@@ -446,7 +446,7 @@
   background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap img {
-  margin: 0 auto;
+  display: block;
 }
 #app .leftPanel .views .thumbsView .thumb.selected .wrap {
   border: 1px solid #869f33;
@@ -469,6 +469,7 @@
   border: none;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb .wrap img {
+  display: block;
   width: 90px;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb.selected .wrap {
