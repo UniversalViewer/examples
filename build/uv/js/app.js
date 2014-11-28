@@ -294,6 +294,25 @@
     };
 })(jQuery);
 
+(function($){
+    $.mlp = {x:0,y:0}; // Mouse Last Position
+    function documentHandler(){
+        var $current = this === document ? $(this) : $(this).contents();
+        $current.mousemove(function(e){jQuery.mlp = {x:e.pageX,y:e.pageY}});
+        $current.find("iframe").load(documentHandler);
+    }
+    $(documentHandler);
+    $.fn.ismouseover = function(overThis) {
+        var result = false;
+        this.eq(0).each(function() {
+            var $current = $(this).is("iframe") ? $(this).contents().find("body") : $(this);
+            var offset = $current.offset();
+            result =    offset.left<=$.mlp.x && offset.left + $current.outerWidth() > $.mlp.x &&
+            offset.top<=$.mlp.y && offset.top + $current.outerHeight() > $.mlp.y;
+        });
+        return result;
+    };
+})(jQuery);
 define("plugins", ["jquery"], function(){});
 
 //     Underscore.js 1.6.0
@@ -4444,21 +4463,36 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
                 _this.loadTileSources();
             });
+
+            this.$element.on('mousemove', function (e) {
+                _this.viewer.showControls();
+            });
+
+            this.$element.on('mouseout', function (e) {
+                _this.viewer.hideControls();
+            });
+
+            this.$element.on('mousemove', function (e) {
+                if (_this.$element.ismouseover()) {
+                    _this.viewer.hideControls();
+                }
+            }, this.config.options.controlsFadeAfterInactive);
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
-            OpenSeadragon.DEFAULT_SETTINGS.autoHideControls = true;
-
             var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
 
             this.viewer = OpenSeadragon({
                 id: "viewer",
+                autoHideControls: true,
                 showNavigationControl: true,
                 showNavigator: true,
                 showRotationControl: true,
                 showHomeControl: false,
                 showFullPageControl: false,
-                defaultZoomLevel: this.options.defaultZoomLevel || 0,
+                defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
+                controlsFadeDelay: this.config.options.controlsFadeDelay,
+                controlsFadeLength: this.config.options.controlsFadeLength,
                 navigatorPosition: 'BOTTOM_RIGHT',
                 prefixUrl: prefixUrl,
                 navImages: {
@@ -4511,7 +4545,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 that.viewer.addHandler('open', function openHandler() {
                     that.viewer.removeHandler('open', openHandler);
 
-                    tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width + 0.01;
+                    tileSources[1].x = that.viewer.world.getItemAt(0).getWorldBounds().x + that.viewer.world.getItemAt(0).getWorldBounds().width + that.config.options.pageGap;
 
                     that.viewer.addTiledImage(tileSources[1]);
                 });

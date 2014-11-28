@@ -216,17 +216,18 @@
   overflow: auto;
 }
 #app .leftPanel .views .thumbsView .thumb {
-  margin: 0 10px 10px 0;
+  margin: 0 7px 7px 0;
   float: left;
   cursor: pointer;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap {
-  border: 1px solid #373737;
+  border: 2px solid #373737;
   padding: 2px;
-  max-height: 180px;
+  max-height: 182px;
   overflow: hidden;
-  width: 96px;
+  width: 98px;
   text-align: center;
+  background: none;
 }
 #app .leftPanel .views .thumbsView .thumb .wrap.loading {
   background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAAAAAP///zw8PLy8vP///5ycnHx8fGxsbCH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==');
@@ -240,7 +241,7 @@
   display: block;
 }
 #app .leftPanel .views .thumbsView .thumb.selected .wrap {
-  border: 1px solid #869f33;
+  border: 2px solid #fff;
 }
 #app .leftPanel .views .thumbsView .thumb span {
   font-size: 11px;
@@ -2216,8 +2217,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #ffffff;
-  background-color: #869f33;
-  border-color: #869f33;
+  background-color: #cc0000;
+  border-color: #cc0000;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2225,8 +2226,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #ffffff;
-  background-color: #6c8029;
-  border-color: #5f7124;
+  background-color: #a30000;
+  border-color: #8f0000;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2248,8 +2249,8 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #869f33;
-  border-color: #869f33;
+  background-color: #cc0000;
+  border-color: #cc0000;
 }
 .btn-warning {
   color: #ffffff;
