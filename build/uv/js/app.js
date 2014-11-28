@@ -5436,10 +5436,20 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getCanvasOrderLabel = function (canvas) {
-            return null;
+            return canvas.label;
         };
 
         BaseProvider.prototype.getLastCanvasOrderLabel = function () {
+            for (var i = this.sequence.canvases.length - 1; i >= 0; i--) {
+                var canvas = this.sequence.canvases[i];
+
+                var regExp = /\d/;
+
+                if (regExp.test(canvas.label)) {
+                    return canvas.label;
+                }
+            }
+
             return '-';
         };
 
@@ -5706,7 +5716,34 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
-            return null;
+            var regExp = /(\d*)\D*(\d*)|(\d*)/;
+            var match = regExp.exec(label);
+
+            var labelPart1 = match[1];
+            var labelPart2 = match[2];
+
+            if (!labelPart1)
+                return -1;
+
+            var searchRegExp, regStr;
+
+            if (labelPart2) {
+                regStr = "^" + labelPart1 + "\\D*" + labelPart2 + "$";
+            } else {
+                regStr = "\\D*" + labelPart1 + "\\D*";
+            }
+
+            searchRegExp = new RegExp(regStr);
+
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+
+                if (searchRegExp.test(canvas.label)) {
+                    return i;
+                }
+            }
+
+            return -1;
         };
 
         BaseProvider.prototype.getManifestSeeAlsoUri = function (manifest) {
