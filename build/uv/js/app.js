@@ -2278,7 +2278,7 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
                 var $win = $(window);
                 $('body').height($win.height());
 
-                $.publish(BaseExtension.RESIZE);
+                _this.resize();
             };
 
             $(document).on('mousemove', function (e) {
@@ -2338,6 +2338,10 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
 
         BaseExtension.prototype.refresh = function () {
             this.triggerSocket(BaseExtension.REFRESH, null);
+        };
+
+        BaseExtension.prototype.resize = function () {
+            $.publish(BaseExtension.RESIZE);
         };
 
         BaseExtension.prototype.handleParentFrameEvent = function (message) {
@@ -3104,13 +3108,13 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
             this.$messageBox.find('.text').html(message).find('a').attr('target', '_top');
             this.$messageBox.show();
             this.$element.addClass('showMessage');
-            $.publish(baseExtension.BaseExtension.RESIZE);
+            this.extension.resize();
         };
 
         HeaderPanel.prototype.hideMessage = function () {
             this.$element.removeClass('showMessage');
             this.$messageBox.hide();
-            $.publish(baseExtension.BaseExtension.RESIZE);
+            this.extension.resize();
         };
 
         HeaderPanel.prototype.resize = function () {
@@ -3449,12 +3453,13 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports", "./baseExtension", "../../utils", "./baseView"], function(require, exports, baseExtension, utils, baseView) {
+define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports", "../../utils", "./baseView"], function(require, exports, utils, baseView) {
     var BaseExpandPanel = (function (_super) {
         __extends(BaseExpandPanel, _super);
         function BaseExpandPanel($element) {
             _super.call(this, $element, false, true);
             this.isExpanded = false;
+            this.isFullyExpanded = false;
             this.isUnopened = true;
         }
         BaseExpandPanel.prototype.create = function () {
@@ -3468,6 +3473,9 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
 
             this.$title = utils.Utils.createDiv('title');
             this.$top.append(this.$title);
+
+            this.$expandFullButton = $('<a class="expandFullButton"></a>');
+            this.$top.append(this.$expandFullButton);
 
             this.$collapseButton = utils.Utils.createDiv('collapseButton');
             this.$top.append(this.$collapseButton);
@@ -3490,6 +3498,12 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
                 _this.toggle();
             });
 
+            this.$expandFullButton.on('click', function (e) {
+                e.preventDefault();
+
+                _this.expandFull();
+            });
+
             this.$closedTitle.on('click', function (e) {
                 e.preventDefault();
 
@@ -3505,7 +3519,11 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
             this.$collapseButton.on('click', function (e) {
                 e.preventDefault();
 
-                _this.toggle();
+                if (_this.isFullyExpanded) {
+                    _this.collapseFull();
+                } else {
+                    _this.toggle();
+                }
             });
 
             this.$top.hide();
@@ -3536,6 +3554,8 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
         };
 
         BaseExpandPanel.prototype.toggled = function () {
+            this.toggleStart();
+
             this.isExpanded = !this.isExpanded;
 
             if (this.isExpanded) {
@@ -3544,9 +3564,39 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
                 this.$main.show();
             }
 
-            this.toggleComplete();
+            this.toggleFinish();
 
             this.isUnopened = false;
+        };
+
+        BaseExpandPanel.prototype.expandFull = function () {
+            var _this = this;
+            var targetWidth = this.getFullTargetWidth();
+            var targetLeft = this.getFullTargetLeft();
+
+            this.expandFullStart();
+
+            this.$element.stop().animate({
+                width: targetWidth,
+                left: targetLeft
+            }, this.options.panelAnimationDuration, function () {
+                _this.expandFullFinish();
+            });
+        };
+
+        BaseExpandPanel.prototype.collapseFull = function () {
+            var _this = this;
+            var targetWidth = this.getTargetWidth();
+            var targetLeft = this.getTargetLeft();
+
+            this.collapseFullStart();
+
+            this.$element.stop().animate({
+                width: targetWidth,
+                left: targetLeft
+            }, this.options.panelAnimationDuration, function () {
+                _this.collapseFullFinish();
+            });
         };
 
         BaseExpandPanel.prototype.getTargetWidth = function () {
@@ -3557,8 +3607,34 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
             return 0;
         };
 
-        BaseExpandPanel.prototype.toggleComplete = function () {
-            $.publish(baseExtension.BaseExtension.RESIZE);
+        BaseExpandPanel.prototype.getFullTargetWidth = function () {
+            return 0;
+        };
+
+        BaseExpandPanel.prototype.getFullTargetLeft = function () {
+            return 0;
+        };
+
+        BaseExpandPanel.prototype.toggleStart = function () {
+        };
+
+        BaseExpandPanel.prototype.toggleFinish = function () {
+        };
+
+        BaseExpandPanel.prototype.expandFullStart = function () {
+        };
+
+        BaseExpandPanel.prototype.expandFullFinish = function () {
+            this.isFullyExpanded = true;
+            this.$expandFullButton.hide();
+        };
+
+        BaseExpandPanel.prototype.collapseFullStart = function () {
+        };
+
+        BaseExpandPanel.prototype.collapseFullFinish = function () {
+            this.isFullyExpanded = false;
+            this.$expandFullButton.show();
         };
 
         BaseExpandPanel.prototype.resize = function () {
@@ -3598,11 +3674,19 @@ define('modules/coreplayer-shared-module/leftPanel',["require", "exports", "./ba
         };
 
         LeftPanel.prototype.getTargetWidth = function () {
-            return this.isExpanded ? this.options.panelCollapsedWidth : this.options.panelExpandedWidth;
+            if (this.isFullyExpanded || !this.isExpanded) {
+                return this.options.panelExpandedWidth;
+            } else {
+                return this.options.panelCollapsedWidth;
+            }
         };
 
-        LeftPanel.prototype.toggleComplete = function () {
-            _super.prototype.toggleComplete.call(this);
+        LeftPanel.prototype.getFullTargetWidth = function () {
+            return this.$element.parent().width();
+        };
+
+        LeftPanel.prototype.toggleFinish = function () {
+            _super.prototype.toggleFinish.call(this);
 
             if (this.isExpanded) {
                 $.publish(LeftPanel.OPEN_LEFT_PANEL);
@@ -3613,6 +3697,10 @@ define('modules/coreplayer-shared-module/leftPanel',["require", "exports", "./ba
 
         LeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+
+            if (this.isFullyExpanded) {
+                this.$element.width(this.$element.parent().width());
+            }
         };
         LeftPanel.OPEN_LEFT_PANEL = 'onOpenLeftPanel';
         LeftPanel.CLOSE_LEFT_PANEL = 'onCloseLeftPanel';
@@ -3627,14 +3715,19 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../coreplayer-shared-module/baseView"], function(require, exports, baseView) {
+define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../coreplayer-shared-module/baseView", "../coreplayer-shared-module/baseExtension"], function(require, exports, baseView, baseExtension) {
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
             _super.call(this, $element, true, true);
         }
         TreeView.prototype.create = function () {
+            var _this = this;
             _super.prototype.create.call(this);
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.selectTreeNodeFromCanvasIndex(canvasIndex);
+            });
 
             this.$tree = $('<ul class="tree"></ul>');
             this.$element.append(this.$tree);
@@ -3718,12 +3811,29 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
             this.selectNode(node);
         };
 
+        TreeView.prototype.selectTreeNodeFromCanvasIndex = function (index) {
+            if (index == -1)
+                return;
+
+            this.deselectCurrentNode();
+
+            var structure = this.provider.getStructureByCanvasIndex(index);
+
+            if (!structure)
+                return;
+
+            if (structure.treeNode)
+                this.selectNode(structure.treeNode);
+        };
+
+        TreeView.prototype.deselectCurrentNode = function () {
+            if (this.selectedNode)
+                $.observable(this.selectedNode).setProperty("selected", false);
+        };
+
         TreeView.prototype.selectNode = function (node) {
             if (!this.rootNode)
                 return;
-
-            if (this.selectedNode)
-                $.observable(this.selectedNode).setProperty("selected", false);
 
             this.selectedNode = node;
             $.observable(this.selectedNode).setProperty("selected", true);
@@ -3992,7 +4102,208 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseExtension"], function(require, exports, baseLeft, utils, tree, thumbs, extension, baseExtension) {
+define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "exports", "../../utils", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseView"], function(require, exports, utils, baseExtension, extension, baseView) {
+    var GalleryView = (function (_super) {
+        __extends(GalleryView, _super);
+        function GalleryView($element) {
+            _super.call(this, $element, true, true);
+        }
+        GalleryView.prototype.create = function () {
+            var _this = this;
+            this.setConfig('treeViewLeftPanel');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, index) {
+                _this.selectIndex(parseInt(index));
+            });
+
+            $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
+                _this.setLabel();
+            });
+
+            this.$thumbs = utils.Utils.createDiv('thumbs');
+            this.$element.append(this.$thumbs);
+
+            $.templates({
+                galleryThumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
+                                <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
+                                <span class="index">{{:#index + 1}}</span>\
+                                <span class="label">{{>label}}&nbsp;</span>\
+                             </div>'
+            });
+
+            var extraHeight = this.options.thumbsExtraHeight;
+
+            $.views.helpers({
+                isOdd: function (num) {
+                    return (num % 2 == 0) ? false : true;
+                },
+                extraHeight: function () {
+                    return extraHeight;
+                },
+                className: function () {
+                    if (this.data.url) {
+                        return "thumb";
+                    }
+
+                    return "thumb placeholder";
+                }
+            });
+
+            this.$element.on('scroll', function () {
+                _this.scrollStop();
+            }, 1000);
+
+            this.resize();
+        };
+
+        GalleryView.prototype.dataBind = function () {
+            if (!this.thumbs)
+                return;
+            this.createThumbs();
+        };
+
+        GalleryView.prototype.createThumbs = function () {
+            var that = this;
+
+            if (!this.thumbs)
+                return;
+
+            this.$thumbs.link($.templates.galleryThumbsTemplate, this.thumbs);
+
+            this.$thumbs.delegate(".thumb", "click", function (e) {
+                e.preventDefault();
+
+                var data = $.view(this).data;
+
+                that.lastThumbClickedIndex = data.index;
+
+                $.publish(GalleryView.THUMB_SELECTED, [data.index]);
+            });
+
+            this.selectIndex(this.provider.canvasIndex);
+
+            this.setLabel();
+
+            this.loadThumbs(0);
+        };
+
+        GalleryView.prototype.scrollStop = function () {
+            var scrollPos = 1 / ((this.$thumbs.height() - this.$element.height()) / this.$element.scrollTop());
+
+            if (scrollPos > 1)
+                scrollPos = 1;
+
+            var thumbRangeMid = Math.floor((this.thumbs.length - 1) * scrollPos);
+
+            this.loadThumbs(thumbRangeMid);
+        };
+
+        GalleryView.prototype.loadThumbs = function (index) {
+            if (!this.thumbs || !this.thumbs.length)
+                return;
+
+            index = parseInt(index);
+
+            var thumbRangeMid = index;
+            var thumbLoadRange = this.options.thumbsLoadRange;
+
+            var thumbRange = {
+                start: (thumbRangeMid > thumbLoadRange) ? thumbRangeMid - thumbLoadRange : 0,
+                end: (thumbRangeMid < (this.thumbs.length - 1) - thumbLoadRange) ? thumbRangeMid + thumbLoadRange : this.thumbs.length - 1
+            };
+
+            var fadeDuration = this.options.thumbsImageFadeInDuration;
+
+            for (var i = thumbRange.start; i <= thumbRange.end; i++) {
+                var thumbElem = $(this.$thumbs.find('.thumb')[i]);
+                var imgCont = thumbElem.find('.wrap');
+
+                if (!imgCont.hasClass('loading') && !imgCont.hasClass('loaded')) {
+                    var visible = thumbElem.attr('data-visible');
+
+                    if (visible !== "false") {
+                        imgCont.addClass('loading');
+                        var src = thumbElem.attr('data-src');
+
+                        var img = $('<img src="' + src + '" />');
+
+                        $(img).hide().load(function () {
+                            $(this).fadeIn(fadeDuration, function () {
+                                $(this).parent().swapClass('loading', 'loaded');
+                            });
+                        });
+                        imgCont.append(img);
+                    } else {
+                        imgCont.addClass('hidden');
+                    }
+                }
+            }
+        };
+
+        GalleryView.prototype.show = function () {
+            var _this = this;
+            this.$element.show();
+
+            setTimeout(function () {
+                _this.selectIndex(_this.provider.canvasIndex);
+            }, 1);
+        };
+
+        GalleryView.prototype.hide = function () {
+            this.$element.hide();
+        };
+
+        GalleryView.prototype.setLabel = function () {
+            if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
+                $(this.$thumbs).find('span.index').hide();
+                $(this.$thumbs).find('span.label').show();
+            } else {
+                $(this.$thumbs).find('span.index').show();
+                $(this.$thumbs).find('span.label').hide();
+            }
+        };
+
+        GalleryView.prototype.selectIndex = function (index) {
+            if (index == -1)
+                return;
+
+            if (!this.thumbs || !this.thumbs.length)
+                return;
+
+            index = parseInt(index);
+
+            this.$thumbs.find('.thumb').removeClass('selected');
+
+            this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
+
+            this.$selectedThumb.addClass('selected');
+
+            if (this.lastThumbClickedIndex != index) {
+                var scrollTop = this.$element.scrollTop() + this.$selectedThumb.position().top - (this.$selectedThumb.height() / 2);
+                this.$element.scrollTop(scrollTop);
+            }
+
+            this.loadThumbs(index);
+        };
+
+        GalleryView.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        GalleryView.THUMB_SELECTED = 'galleryView.onThumbSelected';
+        return GalleryView;
+    })(baseView.BaseView);
+    exports.GalleryView = GalleryView;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/coreplayer-seadragon-extension/extension"], function(require, exports, baseLeft, utils, tree, thumbs, gallery, extension) {
     var TreeViewLeftPanel = (function (_super) {
         __extends(TreeViewLeftPanel, _super);
         function TreeViewLeftPanel($element) {
@@ -4006,13 +4317,14 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
             $.subscribe(extension.Extension.RELOAD, function () {
                 _this.dataBindThumbsView();
+                _this.dataBindGalleryView();
             });
 
-            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this.selectTreeNodeFromCanvasIndex(canvasIndex);
+            $.subscribe(gallery.GalleryView.THUMB_SELECTED, function () {
+                _this.collapseFull();
             });
 
-            this.$tabs = utils.Utils.createDiv('tabs');
+            this.$tabs = $('<div class="tabs"></div>');
             this.$main.append(this.$tabs);
 
             this.$treeButton = $('<a class="tab first">' + this.content.index + '</a>');
@@ -4021,7 +4333,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.$thumbsButton = $('<a class="tab">' + this.content.thumbnails + '</a>');
             this.$tabs.append(this.$thumbsButton);
 
-            this.$tabsContent = utils.Utils.createDiv('tabsContent');
+            this.$tabsContent = $('<div class="tabsContent"></div>');
             this.$main.append(this.$tabsContent);
 
             this.$options = $('<div class="options"></div>');
@@ -4030,11 +4342,14 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.$views = $('<div class="views"></div>');
             this.$tabsContent.append(this.$views);
 
-            this.$treeView = utils.Utils.createDiv('treeView');
+            this.$treeView = $('<div class="treeView"></div>');
             this.$views.append(this.$treeView);
 
-            this.$thumbsView = utils.Utils.createDiv('thumbsView');
+            this.$thumbsView = $('<div class="thumbsView"></div>');
             this.$views.append(this.$thumbsView);
+
+            this.$galleryView = $('<div class="galleryView"></div>');
+            this.$views.append(this.$galleryView);
 
             this.$treeButton.on('click', function (e) {
                 e.preventDefault();
@@ -4073,8 +4388,18 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.thumbsView.dataBind();
         };
 
-        TreeViewLeftPanel.prototype.toggleComplete = function () {
-            _super.prototype.toggleComplete.call(this);
+        TreeViewLeftPanel.prototype.createGalleryView = function () {
+            this.galleryView = new gallery.GalleryView(this.$galleryView);
+            this.dataBindGalleryView();
+        };
+
+        TreeViewLeftPanel.prototype.dataBindGalleryView = function () {
+            this.galleryView.thumbs = this.provider.getThumbs();
+            this.galleryView.dataBind();
+        };
+
+        TreeViewLeftPanel.prototype.toggleFinish = function () {
+            _super.prototype.toggleFinish.call(this);
 
             if (this.isUnopened) {
                 var treeEnabled = utils.Utils.getBool(this.config.options.treeEnabled, true);
@@ -4089,6 +4414,40 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
                     this.openTreeView();
                 }
             }
+        };
+
+        TreeViewLeftPanel.prototype.expandFullStart = function () {
+            _super.prototype.expandFullStart.call(this);
+            $.publish(TreeViewLeftPanel.EXPAND_FULL_START);
+        };
+
+        TreeViewLeftPanel.prototype.expandFullFinish = function () {
+            _super.prototype.expandFullFinish.call(this);
+
+            if (!this.galleryView) {
+                this.createGalleryView();
+            }
+
+            this.thumbsView.hide();
+            this.galleryView.show();
+            this.galleryView.resize();
+
+            $.publish(TreeViewLeftPanel.EXPAND_FULL_FINISH);
+        };
+
+        TreeViewLeftPanel.prototype.collapseFullStart = function () {
+            _super.prototype.collapseFullStart.call(this);
+
+            this.galleryView.hide();
+            this.thumbsView.show();
+
+            $.publish(TreeViewLeftPanel.COLLAPSE_FULL_START);
+        };
+
+        TreeViewLeftPanel.prototype.collapseFullFinish = function () {
+            _super.prototype.collapseFullFinish.call(this);
+
+            $.publish(TreeViewLeftPanel.COLLAPSE_FULL_FINISH);
         };
 
         TreeViewLeftPanel.prototype.openTreeView = function () {
@@ -4110,6 +4469,8 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
             if (this.thumbsView)
                 this.thumbsView.hide();
+            if (this.galleryView)
+                this.galleryView.hide();
 
             this.treeView.resize();
         };
@@ -4124,22 +4485,14 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
             if (this.treeView)
                 this.treeView.hide();
-            this.thumbsView.show();
 
-            this.thumbsView.resize();
-        };
-
-        TreeViewLeftPanel.prototype.selectTreeNodeFromCanvasIndex = function (index) {
-            if (index == -1)
-                return;
-
-            var structure = this.provider.getStructureByCanvasIndex(index);
-
-            if (!structure)
-                return;
-
-            if (this.treeView && structure.treeNode)
-                this.treeView.selectNode(structure.treeNode);
+            if (this.isFullyExpanded) {
+                this.galleryView.show();
+                this.galleryView.resize();
+            } else {
+                this.thumbsView.show();
+                this.thumbsView.resize();
+            }
         };
 
         TreeViewLeftPanel.prototype.resize = function () {
@@ -4150,6 +4503,10 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         };
         TreeViewLeftPanel.OPEN_TREE_VIEW = 'leftPanel.onOpenTreeView';
         TreeViewLeftPanel.OPEN_THUMBS_VIEW = 'leftPanel.onOpenThumbsView';
+        TreeViewLeftPanel.EXPAND_FULL_START = 'leftPanel.onExpandFullStart';
+        TreeViewLeftPanel.EXPAND_FULL_FINISH = 'leftPanel.onExpandFullFinish';
+        TreeViewLeftPanel.COLLAPSE_FULL_START = 'leftPanel.onCollapseFullStart';
+        TreeViewLeftPanel.COLLAPSE_FULL_FINISH = 'leftPanel.onCollapseFullFinish';
         return TreeViewLeftPanel;
     })(baseLeft.LeftPanel);
     exports.TreeViewLeftPanel = TreeViewLeftPanel;
@@ -4605,8 +4962,8 @@ define('modules/coreplayer-shared-module/rightPanel',["require", "exports", "./b
             return this.isExpanded ? this.$element.parent().width() - this.options.panelCollapsedWidth : this.$element.parent().width() - this.options.panelExpandedWidth;
         };
 
-        RightPanel.prototype.toggleComplete = function () {
-            _super.prototype.toggleComplete.call(this);
+        RightPanel.prototype.toggleFinish = function () {
+            _super.prototype.toggleFinish.call(this);
 
             if (this.isExpanded) {
                 $.publish(RightPanel.OPEN_RIGHT_PANEL);
@@ -4655,8 +5012,8 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
             this.$main.append(this.$items);
         };
 
-        MoreInfoRightPanel.prototype.toggleComplete = function () {
-            _super.prototype.toggleComplete.call(this);
+        MoreInfoRightPanel.prototype.toggleFinish = function () {
+            _super.prototype.toggleFinish.call(this);
 
             if (this.isUnopened) {
                 this.getInfo();
@@ -5075,7 +5432,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, thumbsView, treeView, baseCenter, center, right, footer, help, embed, settingsDialogue, dependencies) {
+define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/galleryView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -5130,6 +5487,37 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
             $.subscribe(thumbsView.ThumbsView.THUMB_SELECTED, function (e, index) {
                 _this.viewPage(index);
+            });
+
+            $.subscribe(galleryView.GalleryView.THUMB_SELECTED, function (e, index) {
+                _this.viewPage(index);
+            });
+
+            $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(left.TreeViewLeftPanel.EXPAND_FULL_START, function (e) {
+                shell.Shell.$centerPanel.hide();
+                shell.Shell.$rightPanel.hide();
+            });
+
+            $.subscribe(left.TreeViewLeftPanel.COLLAPSE_FULL_FINISH, function (e) {
+                shell.Shell.$centerPanel.show();
+                shell.Shell.$rightPanel.show();
+                _this.resize();
             });
 
             $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
@@ -6183,7 +6571,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-mediaelement-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "./embedDialogue", "../../coreplayer-mediaelement-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, treeView, center, right, footer, help, embed, dependencies) {
+define('extensions/coreplayer-mediaelement-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "./embedDialogue", "../../coreplayer-mediaelement-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -6209,6 +6597,22 @@ define('extensions/coreplayer-mediaelement-extension/extension',["require", "exp
 
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
+            });
+
+            $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function (e) {
+                _this.resize();
             });
 
             require(_.values(dependencies), function () {
@@ -6438,7 +6842,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-pdf-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../coreplayer-pdf-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, left, center, right, footer, help, embed, thumbsView, dependencies) {
+define('extensions/coreplayer-pdf-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../coreplayer-pdf-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, center, baseRight, right, footer, help, embed, thumbsView, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -6468,6 +6872,22 @@ define('extensions/coreplayer-pdf-extension/extension',["require", "exports", ".
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.show();
                 }
+            });
+
+            $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function (e) {
+                _this.resize();
+            });
+
+            $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function (e) {
+                _this.resize();
             });
 
             require(_.values(dependencies), function () {
