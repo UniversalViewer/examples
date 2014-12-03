@@ -4118,7 +4118,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                 _this.selectIndex(parseInt(index));
             });
 
-            $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
+            $.subscribe(extension.Extension.SETTINGS_CHANGED, function () {
                 _this.setLabel();
             });
 
@@ -4294,7 +4294,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/coreplayer-seadragon-extension/extension"], function(require, exports, baseLeft, utils, tree, thumbs, gallery, extension) {
+define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseExtension"], function(require, exports, baseLeft, utils, tree, thumbs, gallery, extension, baseExtension) {
     var TreeViewLeftPanel = (function (_super) {
         __extends(TreeViewLeftPanel, _super);
         function TreeViewLeftPanel($element) {
@@ -4313,6 +4313,12 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
             $.subscribe(gallery.GalleryView.THUMB_SELECTED, function () {
                 _this.collapseFull();
+            });
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, index) {
+                if (_this.isFullyExpanded) {
+                    _this.collapseFull();
+                }
             });
 
             this.$tabs = $('<div class="tabs"></div>');
