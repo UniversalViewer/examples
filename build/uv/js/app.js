@@ -4152,7 +4152,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
             });
 
             this.$element.on('scroll', function () {
-                _this.scrollStop();
+                _this.loadThumbs();
             }, 1000);
 
             this.resize();
@@ -4186,59 +4186,48 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
             this.setLabel();
 
-            this.loadThumbs(0);
+            this.loadThumbs();
         };
 
-        GalleryView.prototype.scrollStop = function () {
-            var scrollPos = 1 / ((this.$thumbs.height() - this.$element.height()) / this.$element.scrollTop());
-
-            if (scrollPos > 1)
-                scrollPos = 1;
-
-            var thumbRangeMid = Math.floor((this.thumbs.length - 1) * scrollPos);
-
-            this.loadThumbs(thumbRangeMid);
-        };
-
-        GalleryView.prototype.loadThumbs = function (index) {
+        GalleryView.prototype.loadThumbs = function () {
             if (!this.thumbs || !this.thumbs.length)
                 return;
 
-            index = parseInt(index);
+            var thumbs = this.$thumbs.find('.thumb');
+            var scrollTop = this.$element.scrollTop();
+            var scrollHeight = this.$element.height();
 
-            var thumbRangeMid = index;
-            var thumbLoadRange = this.options.thumbsLoadRange;
+            for (var i = 0; i < thumbs.length; i++) {
+                var $thumb = $(thumbs[i]);
+                var thumbTop = $thumb.position().top;
+                var thumbBottom = thumbTop + $thumb.height();
 
-            var thumbRange = {
-                start: (thumbRangeMid > thumbLoadRange) ? thumbRangeMid - thumbLoadRange : 0,
-                end: (thumbRangeMid < (this.thumbs.length - 1) - thumbLoadRange) ? thumbRangeMid + thumbLoadRange : this.thumbs.length - 1
-            };
+                if (thumbBottom >= scrollTop && thumbTop <= scrollTop + scrollHeight) {
+                    this.loadThumb($thumb);
+                }
+            }
+        };
 
+        GalleryView.prototype.loadThumb = function ($thumb) {
             var fadeDuration = this.options.thumbsImageFadeInDuration;
 
-            for (var i = thumbRange.start; i <= thumbRange.end; i++) {
-                var thumbElem = $(this.$thumbs.find('.thumb')[i]);
-                var imgCont = thumbElem.find('.wrap');
+            var $wrap = $thumb.find('.wrap');
 
-                if (!imgCont.hasClass('loading') && !imgCont.hasClass('loaded')) {
-                    var visible = thumbElem.attr('data-visible');
+            var visible = $thumb.attr('data-visible');
 
-                    if (visible !== "false") {
-                        imgCont.addClass('loading');
-                        var src = thumbElem.attr('data-src');
+            if (visible !== "false") {
+                $wrap.addClass('loading');
+                var src = $thumb.attr('data-src');
+                var img = $('<img src="' + src + '" />');
 
-                        var img = $('<img src="' + src + '" />');
-
-                        $(img).hide().load(function () {
-                            $(this).fadeIn(fadeDuration, function () {
-                                $(this).parent().swapClass('loading', 'loaded');
-                            });
-                        });
-                        imgCont.append(img);
-                    } else {
-                        imgCont.addClass('hidden');
-                    }
-                }
+                $(img).hide().load(function () {
+                    $(this).fadeIn(fadeDuration, function () {
+                        $(this).parent().swapClass('loading', 'loaded');
+                    });
+                });
+                $wrap.append(img);
+            } else {
+                $wrap.addClass('hidden');
             }
         };
 
@@ -4285,11 +4274,13 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                 this.$element.scrollTop(scrollTop);
             }
 
-            this.loadThumbs(index);
+            this.loadThumbs();
         };
 
         GalleryView.prototype.resize = function () {
             _super.prototype.resize.call(this);
+
+            this.loadThumbs();
         };
         GalleryView.THUMB_SELECTED = 'galleryView.onThumbSelected';
         return GalleryView;

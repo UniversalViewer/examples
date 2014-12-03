@@ -474,6 +474,7 @@
 }
 #app .leftPanel .views .galleryView .thumbs {
   overflow: hidden;
+  position: relative;
 }
 #app .leftPanel .views .galleryView .thumbs .thumb {
   margin: 0 7px 7px 0;
