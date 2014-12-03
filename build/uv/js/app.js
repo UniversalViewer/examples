@@ -3720,6 +3720,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
         __extends(TreeView, _super);
         function TreeView($element) {
             _super.call(this, $element, true, true);
+            this.isOpen = false;
         }
         TreeView.prototype.create = function () {
             var _this = this;
@@ -3858,10 +3859,12 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
         };
 
         TreeView.prototype.show = function () {
+            this.isOpen = true;
             this.$element.show();
         };
 
         TreeView.prototype.hide = function () {
+            this.isOpen = false;
             this.$element.hide();
         };
 
@@ -3885,6 +3888,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
             _super.call(this, $element, true, true);
+            this.isOpen = false;
         }
         ThumbsView.prototype.create = function () {
             var _this = this;
@@ -4025,6 +4029,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
 
         ThumbsView.prototype.show = function () {
             var _this = this;
+            this.isOpen = true;
             this.$element.show();
 
             setTimeout(function () {
@@ -4033,6 +4038,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
         };
 
         ThumbsView.prototype.hide = function () {
+            this.isOpen = false;
             this.$element.hide();
         };
 
@@ -4436,7 +4442,10 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             _super.prototype.collapseFullStart.call(this);
 
             this.galleryView.hide();
-            this.thumbsView.show();
+
+            if (!this.treeView.isOpen) {
+                this.thumbsView.show();
+            }
 
             $.publish(TreeViewLeftPanel.COLLAPSE_FULL_START);
         };
