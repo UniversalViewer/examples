@@ -4113,6 +4113,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
         __extends(GalleryView, _super);
         function GalleryView($element) {
             _super.call(this, $element, true, true);
+            this.isOpen = false;
         }
         GalleryView.prototype.create = function () {
             var _this = this;
@@ -4239,6 +4240,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
         GalleryView.prototype.show = function () {
             var _this = this;
+            this.isOpen = true;
             this.$element.show();
 
             setTimeout(function () {
@@ -4247,6 +4249,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
         };
 
         GalleryView.prototype.hide = function () {
+            this.isOpen = false;
             this.$element.hide();
         };
 
@@ -4427,13 +4430,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         TreeViewLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
 
-            if (!this.galleryView) {
-                this.createGalleryView();
+            if (this.$thumbsButton.hasClass('on')) {
+                this.openThumbsView();
             }
-
-            this.thumbsView.hide();
-            this.galleryView.show();
-            this.galleryView.resize();
 
             $.publish(TreeViewLeftPanel.EXPAND_FULL_FINISH);
         };
@@ -4441,17 +4440,15 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         TreeViewLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
 
-            this.galleryView.hide();
-
-            if (!this.treeView.isOpen) {
-                this.thumbsView.show();
-            }
-
             $.publish(TreeViewLeftPanel.COLLAPSE_FULL_START);
         };
 
         TreeViewLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
+
+            if (this.$thumbsButton.hasClass('on')) {
+                this.openThumbsView();
+            }
 
             $.publish(TreeViewLeftPanel.COLLAPSE_FULL_FINISH);
         };
@@ -4486,6 +4483,10 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
                 this.createThumbsView();
             }
 
+            if (this.isFullyExpanded && !this.galleryView) {
+                this.createGalleryView();
+            }
+
             this.$treeButton.removeClass('on');
             this.$thumbsButton.addClass('on');
 
@@ -4493,9 +4494,14 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
                 this.treeView.hide();
 
             if (this.isFullyExpanded) {
-                this.galleryView.show();
-                this.galleryView.resize();
+                this.thumbsView.hide();
+                if (this.galleryView)
+                    this.galleryView.show();
+                if (this.galleryView)
+                    this.galleryView.resize();
             } else {
+                if (this.galleryView)
+                    this.galleryView.hide();
                 this.thumbsView.show();
                 this.thumbsView.resize();
             }
