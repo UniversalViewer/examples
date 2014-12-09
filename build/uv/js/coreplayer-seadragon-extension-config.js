@@ -69,6 +69,8 @@
                 "panelAnimationDuration": 250,
                 "thumbWidth": 90,
                 "thumbHeight": 150,
+                "galleryThumbWidth": 200,
+                "galleryThumbHeight": 320,
                 "thumbsExtraHeight": 8
             },
             "content": {

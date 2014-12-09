@@ -171,14 +171,16 @@
 
     };
 
-    $.fn.equaliseHeight = function () {
+    $.fn.equaliseHeight = function (reset) {
 
         var maxHeight = -1;
 
         // reset all heights to auto first so they can be re-measured.
-        this.each(function () {
-            $(this).height('auto');
-        });
+        if (reset){
+            this.each(function () {
+                $(this).height('auto');
+            });
+        }
 
         this.each(function () {
             maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
@@ -2892,7 +2894,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             }
         };
 
-        BaseProvider.prototype.getThumbs = function () {
+        BaseProvider.prototype.getThumbs = function (width, height) {
             return null;
         };
 
@@ -4119,12 +4121,25 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                 _this.setLabel();
             });
 
-            this.$thumbs = utils.Utils.createDiv('thumbs');
-            this.$element.append(this.$thumbs);
+            this.$header = $('<div class="header"></div>');
+            this.$element.append(this.$header);
+
+            this.$sizeRange = $('<input type="range" name="size" min="0" max="10">');
+            this.$header.append(this.$sizeRange);
+
+            this.$main = $('<div class="main"></div>');
+            this.$element.append(this.$main);
+
+            this.$thumbs = $('<div class="thumbs"></div>');
+            this.$main.append(this.$thumbs);
+
+            this.$sizeRange.on('change', function () {
+                _this.updateThumbs();
+            });
 
             $.templates({
-                galleryThumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
-                                <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
+                galleryThumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}" data-width="{{>width}}" data-height="{{>height}}">\
+                                <div class="wrap"></div>\
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
                              </div>'
@@ -4148,8 +4163,8 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                 }
             });
 
-            this.$element.on('scroll', function () {
-                _this.loadThumbs();
+            this.$main.on('scroll', function () {
+                _this.updateThumbs();
             }, 1000);
 
             this.resize();
@@ -4183,16 +4198,16 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
             this.setLabel();
 
-            this.loadThumbs();
+            this.updateThumbs();
         };
 
-        GalleryView.prototype.loadThumbs = function () {
+        GalleryView.prototype.updateThumbs = function () {
             if (!this.thumbs || !this.thumbs.length)
                 return;
 
             var thumbs = this.$thumbs.find('.thumb');
-            var scrollTop = this.$element.scrollTop();
-            var scrollHeight = this.$element.height();
+            var scrollTop = this.$main.scrollTop();
+            var scrollHeight = this.$main.height();
 
             for (var i = 0; i < thumbs.length; i++) {
                 var $thumb = $(thumbs[i]);
@@ -4202,15 +4217,41 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                 if (thumbBottom >= scrollTop && thumbTop <= scrollTop + scrollHeight) {
                     this.loadThumb($thumb);
                 }
+
+                this.sizeThumb($thumb);
             }
+
+            this.equaliseHeights();
+        };
+
+        GalleryView.prototype.equaliseHeights = function () {
+            this.$thumbs.find('.thumb .wrap').equaliseHeight();
+        };
+
+        GalleryView.prototype.sizeThumb = function ($thumb) {
+            var range = utils.Utils.normalise(Number(this.$sizeRange.val()), 0, 10) || 0.5;
+
+            var width = $thumb.data('width');
+            var height = $thumb.data('height');
+
+            var $wrap = $thumb.find('.wrap');
+            var $img = $wrap.find('img');
+
+            $wrap.width(width * range);
+            $wrap.height(height * range);
+            $img.width(width * range);
+            $img.height(height * range);
         };
 
         GalleryView.prototype.loadThumb = function ($thumb) {
-            var fadeDuration = this.options.thumbsImageFadeInDuration;
-
             var $wrap = $thumb.find('.wrap');
 
+            if ($wrap.hasClass('loading') || $wrap.hasClass('loaded'))
+                return;
+
             var visible = $thumb.attr('data-visible');
+
+            var fadeDuration = this.options.thumbsImageFadeInDuration;
 
             if (visible !== "false") {
                 $wrap.addClass('loading');
@@ -4273,13 +4314,15 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                 this.$element.scrollTop(scrollTop);
             }
 
-            this.loadThumbs();
+            this.updateThumbs();
         };
 
         GalleryView.prototype.resize = function () {
             _super.prototype.resize.call(this);
 
-            this.loadThumbs();
+            this.$main.height(this.$element.height() - this.$header.height());
+
+            this.updateThumbs();
         };
         GalleryView.THUMB_SELECTED = 'galleryView.onThumbSelected';
         return GalleryView;
@@ -4380,7 +4423,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         };
 
         TreeViewLeftPanel.prototype.dataBindThumbsView = function () {
-            this.thumbsView.thumbs = this.provider.getThumbs();
+            var width = this.config.options.thumbWidth;
+            var height = this.config.options.thumbHeight;
+            this.thumbsView.thumbs = this.provider.getThumbs(width, height);
             this.thumbsView.dataBind();
         };
 
@@ -4390,7 +4435,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         };
 
         TreeViewLeftPanel.prototype.dataBindGalleryView = function () {
-            this.galleryView.thumbs = this.provider.getThumbs();
+            var width = this.config.options.galleryThumbWidth;
+            var height = this.config.options.galleryThumbHeight;
+            this.galleryView.thumbs = this.provider.getThumbs(width, height);
             this.galleryView.dataBind();
         };
 
@@ -4908,8 +4955,6 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
 
             that.viewer.addHandler('open', function openHandler() {
                 that.viewer.removeHandler('open', openHandler);
-
-                console.log(tileSources.length);
 
                 if (tileSources.length > 1) {
                     tileSources[1].x = that.viewer.world.getItemAt(0).getBounds().x + that.viewer.world.getItemAt(0).getBounds().width + that.config.options.pageGap;
@@ -5712,10 +5757,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
 define('modules/coreplayer-shared-module/thumb',["require", "exports"], function(require, exports) {
     var Thumb = (function () {
-        function Thumb(index, url, label, height, visible) {
+        function Thumb(index, url, label, width, height, visible) {
             this.index = index;
             this.url = url;
             this.label = label;
+            this.width = width;
             this.height = height;
             this.visible = visible;
         }
@@ -6007,16 +6053,13 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return uri;
         };
 
-        BaseProvider.prototype.getThumbs = function () {
-            var thumbs = new Array();
+        BaseProvider.prototype.getThumbs = function (width, height) {
+            var thumbs = [];
 
             for (var i = 0; i < this.getTotalCanvases(); i++) {
                 var canvas = this.sequence.canvases[i];
 
                 var heightRatio = canvas.height / canvas.width;
-
-                var width = this.config.modules["treeViewLeftPanel"].options.thumbWidth;
-                var height = this.config.modules["treeViewLeftPanel"].options.thumbHeight;
 
                 if (heightRatio) {
                     height = Math.floor(width * heightRatio);
@@ -6024,7 +6067,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
                 var uri = this.getThumbUri(canvas, width, height);
 
-                thumbs.push(new Thumb(i, uri, canvas.label, height, true));
+                thumbs.push(new Thumb(i, uri, canvas.label, width, height, true));
             }
 
             return thumbs;

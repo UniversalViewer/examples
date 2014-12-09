@@ -469,48 +469,49 @@
   clear: both;
   border: none;
 }
-#app .leftPanel .views .galleryView {
+#app .leftPanel .views .galleryView .header {
+  height: 40px;
+}
+#app .leftPanel .views .galleryView .main {
   overflow: auto;
 }
-#app .leftPanel .views .galleryView .thumbs {
+#app .leftPanel .views .galleryView .main .thumbs {
   overflow: hidden;
   position: relative;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb {
+#app .leftPanel .views .galleryView .main .thumbs .thumb {
   margin: 0 7px 7px 0;
   float: left;
   cursor: pointer;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb .wrap {
+#app .leftPanel .views .galleryView .main .thumbs .thumb .wrap {
   border: 2px solid #373737;
   padding: 2px;
-  max-height: 182px;
   overflow: hidden;
-  width: 98px;
   text-align: center;
   background: none;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb .wrap.loading {
+#app .leftPanel .views .galleryView .main .thumbs .thumb .wrap.loading {
   background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAAAAAP///zw8PLy8vP///5ycnHx8fGxsbCH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==');
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb .wrap.hidden {
+#app .leftPanel .views .galleryView .main .thumbs .thumb .wrap.hidden {
   background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb .wrap img {
+#app .leftPanel .views .galleryView .main .thumbs .thumb .wrap img {
   display: block;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb.selected .wrap {
+#app .leftPanel .views .galleryView .main .thumbs .thumb.selected .wrap {
   border: 2px solid #fff;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb span {
+#app .leftPanel .views .galleryView .main .thumbs .thumb span {
   font-size: 11px;
   color: #fff;
   display: block;
   padding: 2px 0 0 0;
 }
-#app .leftPanel .views .galleryView .thumbs .thumb.placeholder .wrap {
+#app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
   background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb .wrap {
