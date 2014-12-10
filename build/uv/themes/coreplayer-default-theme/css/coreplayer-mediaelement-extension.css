@@ -1878,6 +1878,18 @@ input[type="button"].btn-block {
   width: 385px;
   position: absolute;
 }
+#app .headerPanel .options .centerOptions .first {
+  background: url('../../../themes/coreplayer-default-theme/img/first.png') no-repeat;
+}
+#app .headerPanel .options .centerOptions .prev {
+  background: url('../../../themes/coreplayer-default-theme/img/prev.png') no-repeat;
+}
+#app .headerPanel .options .centerOptions .next {
+  background: url('../../../themes/coreplayer-default-theme/img/next.png') no-repeat;
+}
+#app .headerPanel .options .centerOptions .last {
+  background: url('../../../themes/coreplayer-default-theme/img/last.png') no-repeat;
+}
 #app .headerPanel .options .rightOptions {
   float: right;
   margin: 6px 0 0 0;
@@ -2203,7 +2215,8 @@ input[type="button"].btn-block {
 }
 #app .headerPanel {
   position: relative;
-  background-color: #dfdfdf;
+  background-color: #1f1f1f;
+  color: #fff;
   height: 40px;
 }
 #app .mainPanel {
