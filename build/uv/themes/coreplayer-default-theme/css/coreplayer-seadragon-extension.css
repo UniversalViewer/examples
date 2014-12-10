@@ -213,8 +213,8 @@
   width: 28px;
 }
 #app .headerPanel a.imageBtn.disabled {
-  opacity: 0.5;
-  filter: alpha(opacity=50);
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
 #app .headerPanel .centerOptions .prevOptions {
   float: left;

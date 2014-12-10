@@ -4435,6 +4435,8 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         };
 
         TreeViewLeftPanel.prototype.dataBindGalleryView = function () {
+            if (!this.galleryView)
+                return;
             var width = this.config.options.galleryThumbWidth;
             var height = this.config.options.galleryThumbHeight;
             this.galleryView.thumbs = this.provider.getThumbs(width, height);
