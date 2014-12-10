@@ -48,7 +48,7 @@
             "content": {
                 "help": "Help",
                 "image": "Image",
-                "page": "Page",
+                "page": "Label",
                 "first": "First",
                 "previous": "Previous",
                 "next": "Next",
@@ -69,7 +69,9 @@
                 "panelAnimationDuration": 250,
                 "thumbWidth": 90,
                 "thumbHeight": 150,
-                "thumbsExtraHeight": 6
+                "galleryThumbWidth": 200,
+                "galleryThumbHeight": 320,
+                "thumbsExtraHeight": 8
             },
             "content": {
                 "index": "Index",
@@ -77,6 +79,13 @@
             }
         },
         "seadragonCenterPanel": {
+            "options": {
+                "pageGap": 0.01,
+                "defaultZoomLevel": 0,
+                "controlsFadeAfterInactive": 1500,
+                "controlsFadeDelay": 250,
+                "controlsFadeLength": 250
+            },
             "content": {
                 "previous": "Previous",
                 "next": "Next",
