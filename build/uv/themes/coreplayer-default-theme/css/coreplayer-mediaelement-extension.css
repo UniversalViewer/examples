@@ -263,6 +263,13 @@
 #app .leftPanel .views .galleryView .header {
   height: 40px;
 }
+#app .leftPanel .views .galleryView .header .btn {
+  width: 30px;
+  height: 30px;
+}
+#app .leftPanel .views .galleryView .header input[type="range"] {
+  height: 5px;
+}
 #app .leftPanel .views .galleryView .main {
   overflow: auto;
 }
@@ -1350,7 +1357,7 @@ hr {
 }
 .btn:hover,
 .btn:focus {
-  color: #000000;
+  color: #ffffff;
   text-decoration: none;
 }
 .btn:active,
@@ -1371,8 +1378,8 @@ fieldset[disabled] .btn {
   box-shadow: none;
 }
 .btn-default {
-  color: #000000;
-  background-color: #eeeeee;
+  color: #ffffff;
+  background-color: #555555;
   border-color: #555555;
 }
 .btn-default:hover,
@@ -1380,8 +1387,8 @@ fieldset[disabled] .btn {
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
-  color: #000000;
-  background-color: #dadada;
+  color: #ffffff;
+  background-color: #414141;
   border-color: #373737;
 }
 .btn-default:active,
@@ -1404,7 +1411,7 @@ fieldset[disabled] .btn-default:active,
 .btn-default.disabled.active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
-  background-color: #eeeeee;
+  background-color: #555555;
   border-color: #555555;
 }
 .btn-primary {
@@ -1443,6 +1450,43 @@ fieldset[disabled] .btn-primary:active,
 fieldset[disabled] .btn-primary.active {
   background-color: #cc0000;
   border-color: #cc0000;
+}
+.btn-secondary {
+  color: #ffffff;
+  background-color: #869f33;
+  border-color: #869f33;
+}
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.btn-secondary.active,
+.open .dropdown-toggle.btn-secondary {
+  color: #ffffff;
+  background-color: #6c8029;
+  border-color: #5f7124;
+}
+.btn-secondary:active,
+.btn-secondary.active,
+.open .dropdown-toggle.btn-secondary {
+  background-image: none;
+}
+.btn-secondary.disabled,
+.btn-secondary[disabled],
+fieldset[disabled] .btn-secondary,
+.btn-secondary.disabled:hover,
+.btn-secondary[disabled]:hover,
+fieldset[disabled] .btn-secondary:hover,
+.btn-secondary.disabled:focus,
+.btn-secondary[disabled]:focus,
+fieldset[disabled] .btn-secondary:focus,
+.btn-secondary.disabled:active,
+.btn-secondary[disabled]:active,
+fieldset[disabled] .btn-secondary:active,
+.btn-secondary.disabled.active,
+.btn-secondary[disabled].active,
+fieldset[disabled] .btn-secondary.active {
+  background-color: #869f33;
+  border-color: #869f33;
 }
 .btn-warning {
   color: #ffffff;
@@ -1656,7 +1700,7 @@ input[type="button"].btn-block {
   width: 100%;
 }
 .btn-default .caret {
-  border-top-color: #000000;
+  border-top-color: #ffffff;
 }
 .btn-primary .caret,
 .btn-success .caret,
@@ -1666,7 +1710,7 @@ input[type="button"].btn-block {
   border-top-color: #fff;
 }
 .dropup .btn-default .caret {
-  border-bottom-color: #000000;
+  border-bottom-color: #ffffff;
 }
 .dropup .btn-primary .caret,
 .dropup .btn-success .caret,
@@ -1877,18 +1921,6 @@ input[type="button"].btn-block {
   margin: 5px 0 0 0;
   width: 385px;
   position: absolute;
-}
-#app .headerPanel .options .centerOptions .first {
-  background: url('../../../themes/coreplayer-default-theme/img/first.png') no-repeat;
-}
-#app .headerPanel .options .centerOptions .prev {
-  background: url('../../../themes/coreplayer-default-theme/img/prev.png') no-repeat;
-}
-#app .headerPanel .options .centerOptions .next {
-  background: url('../../../themes/coreplayer-default-theme/img/next.png') no-repeat;
-}
-#app .headerPanel .options .centerOptions .last {
-  background: url('../../../themes/coreplayer-default-theme/img/last.png') no-repeat;
 }
 #app .headerPanel .options .rightOptions {
   float: right;
