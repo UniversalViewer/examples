@@ -327,6 +327,7 @@
 }
 #app.browser-Firefox .leftPanel .views .galleryView .header input[type="range"] {
   margin-top: 9px;
+  overflow: hidden;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb .wrap {
   border: none;
@@ -1732,20 +1733,19 @@ input[type=range]::-webkit-slider-thumb {
   width: 16px;
   border-radius: 50%;
   background: #555555;
-  margin-top: -4px;
+  margin-top: -5px;
 }
 input[type=range]:focus {
   outline: none;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #ccc;
+  background: #999999;
 }
 /* Firefox */
 input[type=range] {
   /* fix for FF unable to apply focus style bug  */
   /*required for proper track sizing in FF*/
   width: 300px;
-  overflow: hidden;
 }
 input[type=range]::-moz-range-track {
   width: 300px;
@@ -1784,7 +1784,7 @@ input[type=range]::-ms-fill-lower {
   background: #999999;
 }
 input[type=range]::-ms-fill-upper {
-  background: #eeeeee;
+  background: #999999;
 }
 input[type=range]::-ms-thumb {
   border: none;
@@ -1794,10 +1794,10 @@ input[type=range]::-ms-thumb {
   background: #555555;
 }
 input[type=range]:focus::-ms-fill-lower {
-  background: #888;
+  background: #999999;
 }
 input[type=range]:focus::-ms-fill-upper {
-  background: #ccc;
+  background: #eeeeee;
 }
 .btn-default .caret {
   border-top-color: #ffffff;
