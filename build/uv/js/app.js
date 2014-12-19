@@ -1,8 +1,8 @@
 
 /* Modernizr 2.8.3 (Custom Build) | MIT & BSD
- * Build: http://modernizr.com/download/#-input-inputtypes
+ * Build: http://modernizr.com/download/#-input-inputtypes-cssclasses-load
  */
-;window.Modernizr=function(a,b,c){function u(a){i.cssText=a}function v(a,b){return u(prefixes.join(a+";")+(b||""))}function w(a,b){return typeof a===b}function x(a,b){return!!~(""+a).indexOf(b)}function y(a,b,d){for(var e in a){var f=b[a[e]];if(f!==c)return d===!1?a[e]:w(f,"function")?f.bind(d||b):f}return!1}function z(){e.input=function(c){for(var d=0,e=c.length;d<e;d++)o[c[d]]=c[d]in j;return o.list&&(o.list=!!b.createElement("datalist")&&!!a.HTMLDataListElement),o}("autocomplete autofocus list placeholder max min multiple pattern required step".split(" ")),e.inputtypes=function(a){for(var d=0,e,g,h,i=a.length;d<i;d++)j.setAttribute("type",g=a[d]),e=j.type!=="text",e&&(j.value=k,j.style.cssText="position:absolute;visibility:hidden;",/^range$/.test(g)&&j.style.WebkitAppearance!==c?(f.appendChild(j),h=b.defaultView,e=h.getComputedStyle&&h.getComputedStyle(j,null).WebkitAppearance!=="textfield"&&j.offsetHeight!==0,f.removeChild(j)):/^(search|tel)$/.test(g)||(/^(url|email)$/.test(g)?e=j.checkValidity&&j.checkValidity()===!1:e=j.value!=k)),n[a[d]]=!!e;return n}("search tel url email datetime date month week time datetime-local number range color".split(" "))}var d="2.8.3",e={},f=b.documentElement,g="modernizr",h=b.createElement(g),i=h.style,j=b.createElement("input"),k=":)",l={}.toString,m={},n={},o={},p=[],q=p.slice,r,s={}.hasOwnProperty,t;!w(s,"undefined")&&!w(s.call,"undefined")?t=function(a,b){return s.call(a,b)}:t=function(a,b){return b in a&&w(a.constructor.prototype[b],"undefined")},Function.prototype.bind||(Function.prototype.bind=function(b){var c=this;if(typeof c!="function")throw new TypeError;var d=q.call(arguments,1),e=function(){if(this instanceof e){var a=function(){};a.prototype=c.prototype;var f=new a,g=c.apply(f,d.concat(q.call(arguments)));return Object(g)===g?g:f}return c.apply(b,d.concat(q.call(arguments)))};return e});for(var A in m)t(m,A)&&(r=A.toLowerCase(),e[r]=m[A](),p.push((e[r]?"":"no-")+r));return e.input||z(),e.addTest=function(a,b){if(typeof a=="object")for(var d in a)t(a,d)&&e.addTest(d,a[d]);else{a=a.toLowerCase();if(e[a]!==c)return e;b=typeof b=="function"?b():b,typeof enableClasses!="undefined"&&enableClasses&&(f.className+=" "+(b?"":"no-")+a),e[a]=b}return e},u(""),h=j=null,e._version=d,e}(this,this.document);
+;window.Modernizr=function(a,b,c){function v(a){j.cssText=a}function w(a,b){return v(prefixes.join(a+";")+(b||""))}function x(a,b){return typeof a===b}function y(a,b){return!!~(""+a).indexOf(b)}function z(a,b,d){for(var e in a){var f=b[a[e]];if(f!==c)return d===!1?a[e]:x(f,"function")?f.bind(d||b):f}return!1}function A(){e.input=function(c){for(var d=0,e=c.length;d<e;d++)p[c[d]]=c[d]in k;return p.list&&(p.list=!!b.createElement("datalist")&&!!a.HTMLDataListElement),p}("autocomplete autofocus list placeholder max min multiple pattern required step".split(" ")),e.inputtypes=function(a){for(var d=0,e,f,h,i=a.length;d<i;d++)k.setAttribute("type",f=a[d]),e=k.type!=="text",e&&(k.value=l,k.style.cssText="position:absolute;visibility:hidden;",/^range$/.test(f)&&k.style.WebkitAppearance!==c?(g.appendChild(k),h=b.defaultView,e=h.getComputedStyle&&h.getComputedStyle(k,null).WebkitAppearance!=="textfield"&&k.offsetHeight!==0,g.removeChild(k)):/^(search|tel)$/.test(f)||(/^(url|email)$/.test(f)?e=k.checkValidity&&k.checkValidity()===!1:e=k.value!=l)),o[a[d]]=!!e;return o}("search tel url email datetime date month week time datetime-local number range color".split(" "))}var d="2.8.3",e={},f=!0,g=b.documentElement,h="modernizr",i=b.createElement(h),j=i.style,k=b.createElement("input"),l=":)",m={}.toString,n={},o={},p={},q=[],r=q.slice,s,t={}.hasOwnProperty,u;!x(t,"undefined")&&!x(t.call,"undefined")?u=function(a,b){return t.call(a,b)}:u=function(a,b){return b in a&&x(a.constructor.prototype[b],"undefined")},Function.prototype.bind||(Function.prototype.bind=function(b){var c=this;if(typeof c!="function")throw new TypeError;var d=r.call(arguments,1),e=function(){if(this instanceof e){var a=function(){};a.prototype=c.prototype;var f=new a,g=c.apply(f,d.concat(r.call(arguments)));return Object(g)===g?g:f}return c.apply(b,d.concat(r.call(arguments)))};return e});for(var B in n)u(n,B)&&(s=B.toLowerCase(),e[s]=n[B](),q.push((e[s]?"":"no-")+s));return e.input||A(),e.addTest=function(a,b){if(typeof a=="object")for(var d in a)u(a,d)&&e.addTest(d,a[d]);else{a=a.toLowerCase();if(e[a]!==c)return e;b=typeof b=="function"?b():b,typeof f!="undefined"&&f&&(g.className+=" "+(b?"":"no-")+a),e[a]=b}return e},v(""),i=k=null,e._version=d,g.className=g.className.replace(/(^|\s)no-js(\s|$)/,"$1$2")+(f?" js "+q.join(" "):""),e}(this,this.document),function(a,b,c){function d(a){return"[object Function]"==o.call(a)}function e(a){return"string"==typeof a}function f(){}function g(a){return!a||"loaded"==a||"complete"==a||"uninitialized"==a}function h(){var a=p.shift();q=1,a?a.t?m(function(){("c"==a.t?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){"img"!=a&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l=b.createElement(a),o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};1===y[c]&&(r=1,y[c]=[]),"object"==a?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),"img"!=a&&(r||2===y[c]?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i("c"==b?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),1==p.length&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&"[object Opera]"==o.call(a.opera),l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return"[object Array]"==o.call(a)},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,h){var i=b(a),j=i.autoCallback;i.url.split(".").pop().split("?").shift(),i.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]),i.instead?i.instead(a,e,f,g,h):(y[i.url]?i.noexec=!0:y[i.url]=1,f.load(i.url,i.forceCSS||!i.forceJS&&"css"==i.url.split(".").pop().split("?").shift()?"c":c,i.noexec,i.attrs,i.timeout),(d(e)||d(j))&&f.load(function(){k(),e&&e(i.origUrl,h,g),j&&j(i.origUrl,h,g),y[i.url]=2})))}function h(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var i,j,l=this.yepnope.loader;if(e(a))g(a,0,l,0);else if(w(a))for(i=0;i<a.length;i++)j=a[i],e(j)?g(j,0,l,0):w(j)?B(j):Object(j)===j&&h(j,l);else Object(a)===a&&h(a,l)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,null==b.readyState&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}}(this,document),Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0))};
 define("modernizr", function(){});
 
 /*! jQuery v1.10.2 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license*/
@@ -465,10 +465,14 @@ define('utils',["require", "exports"], function(require, exports) {
         };
     }
 
-    window.BrowserDetect = {
+    window.browserDetect = {
         init: function () {
             this.browser = this.searchString(this.dataBrowser) || "Other";
             this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
+
+            if (this.browser == 'Explorer' && this.version == '7' && navigator.userAgent.match(/Trident/i)) {
+                this.version = this.searchVersionIE();
+            }
         },
         searchString: function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -486,16 +490,26 @@ define('utils',["require", "exports"], function(require, exports) {
                 return;
             return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
         },
+        searchVersionIE: function () {
+            var ua = navigator.userAgent.toString().toLowerCase(), match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ['', null, -1], ver;
+            try  {
+                ver = match[2].split('.')[0];
+            } catch (err) {
+                ver = 'unknown';
+            }
+            return ver;
+        },
         dataBrowser: [
             { string: navigator.userAgent, subString: "Chrome", identity: "Chrome" },
             { string: navigator.userAgent, subString: "MSIE", identity: "Explorer" },
+            { string: navigator.userAgent, subString: "Trident", identity: "Explorer" },
             { string: navigator.userAgent, subString: "Firefox", identity: "Firefox" },
             { string: navigator.userAgent, subString: "Safari", identity: "Safari" },
             { string: navigator.userAgent, subString: "Opera", identity: "Opera" }
         ]
     };
 
-    window.BrowserDetect.init();
+    window.browserDetect.init();
 
     var Size = (function () {
         function Size(width, height) {
@@ -2249,6 +2263,8 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
             this.triggerSocket(BaseExtension.LOAD);
 
             this.$element.removeClass();
+            this.$element.addClass('browser-' + window.browserDetect.browser);
+            this.$element.addClass('browser-version-' + window.browserDetect.version);
             if (!this.provider.isHomeDomain)
                 this.$element.addClass('embedded');
             if (this.provider.isLightbox)
@@ -2561,6 +2577,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return this.sequence.assets[index];
         };
 
+        BaseProvider.prototype.getCanvasIndexById = function (id) {
+            return null;
+        };
+
         BaseProvider.prototype.getCurrentCanvas = function () {
             return this.sequence.assets[this.canvasIndex];
         };
@@ -2728,6 +2748,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 
         BaseProvider.prototype.getStructureByIndex = function (structure, index) {
             return structure.sections[index];
+        };
+
+        BaseProvider.prototype.getStructureByPath = function (path) {
+            return null;
         };
 
         BaseProvider.prototype.getCanvasStructure = function (canvas) {
@@ -4113,13 +4137,13 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
             this.$header = $('<div class="header"></div>');
             this.$element.append(this.$header);
 
-            this.$sizeDownButton = $('<input class="btn btn-default" type="button" value="-" />');
+            this.$sizeDownButton = $('<input class="btn btn-default size-down" type="button" value="-" />');
             this.$header.append(this.$sizeDownButton);
 
-            this.$sizeRange = $('<input type="range" name="size" min="0" max="10" />');
+            this.$sizeRange = $('<input type="range" name="size" min="0" max="10" value="5" />');
             this.$header.append(this.$sizeRange);
 
-            this.$sizeUpButton = $('<input class="btn btn-default" type="button" value="+" />');
+            this.$sizeUpButton = $('<input class="btn btn-default size-up" type="button" value="+" />');
             this.$header.append(this.$sizeUpButton);
 
             this.$main = $('<div class="main"></div>');
@@ -4158,14 +4182,9 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                              </div>'
             });
 
-            var extraHeight = this.options.thumbsExtraHeight;
-
             $.views.helpers({
                 isOdd: function (num) {
                     return (num % 2 == 0) ? false : true;
-                },
-                extraHeight: function () {
-                    return extraHeight;
                 },
                 className: function () {
                     if (this.data.url) {
@@ -4222,6 +4241,9 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
             if (!this.thumbs || !this.thumbs.length)
                 return;
 
+            this.range = utils.Utils.normalise(Number(this.$sizeRange.val()), 0, 10);
+            this.range = utils.Utils.clamp(this.range, 0.05, 1);
+
             var thumbs = this.$thumbs.find('.thumb');
             var scrollTop = this.$main.scrollTop();
             var scrollHeight = this.$main.height();
@@ -4246,19 +4268,16 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
         };
 
         GalleryView.prototype.sizeThumb = function ($thumb) {
-            var range = utils.Utils.normalise(Number(this.$sizeRange.val()), 0, 10);
-            range = utils.Utils.clamp(range, 0.05, 1);
-
             var width = $thumb.data('width');
             var height = $thumb.data('height');
 
             var $wrap = $thumb.find('.wrap');
             var $img = $wrap.find('img');
 
-            $wrap.width(width * range);
-            $wrap.height(height * range);
-            $img.width(width * range);
-            $img.height(height * range);
+            $wrap.width(width * this.range);
+            $wrap.height(height * this.range);
+            $img.width(width * this.range);
+            $img.height(height * this.range);
         };
 
         GalleryView.prototype.loadThumb = function ($thumb) {
@@ -4720,7 +4739,7 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
 
             this.title = this.extension.provider.getTitle();
 
-            var browser = window.BrowserDetect.browser;
+            var browser = window.browserDetect.browser;
 
             if (browser == 'Firefox') {
                 if (this.provider.isMultiCanvas()) {
@@ -5740,7 +5759,11 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
         };
 
         Extension.prototype.viewStructure = function (path) {
-            var index = this.provider.getStructureIndex(path);
+            var structure = this.provider.getStructureByPath(path);
+
+            var canvas = structure.canvases[0];
+
+            var index = this.provider.getCanvasIndexById(canvas['@id']);
 
             this.viewPage(index);
         };
@@ -6098,41 +6121,6 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         BaseProvider.prototype.parseManifest = function () {
         };
 
-        BaseProvider.prototype.getRootStructure = function () {
-            return this.rootStructure;
-        };
-
-        BaseProvider.prototype.parseStructure = function () {
-            this.rootStructure = {
-                path: "",
-                structures: []
-            };
-
-            if (!this.manifest.structures)
-                return;
-
-            for (var i = 0; i < this.manifest.structures.length; i++) {
-                var structure = this.manifest.structures[i];
-                this.rootStructure.structures.push(structure);
-                structure.path = "/" + i;
-
-                for (var j = 0; j < structure.canvases.length; j++) {
-                    var canvas = this.getCanvasById(structure.canvases[j]);
-
-                    if (!canvas) {
-                        structure.canvases[j] = null;
-                        continue;
-                    }
-
-                    if (!canvas.structures)
-                        canvas.structures = [];
-                    canvas.structures.push(structure);
-
-                    structure.canvases[j] = canvas;
-                }
-            }
-        };
-
         BaseProvider.prototype.getStructureIndex = function (path) {
             for (var i = 0; i < this.sequence.canvases.length; i++) {
                 var canvas = this.sequence.canvases[i];
@@ -6152,6 +6140,25 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return null;
         };
 
+        BaseProvider.prototype.getStructureByPath = function (path) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+
+                if (!canvas.structures)
+                    continue;
+
+                for (var j = 0; j < canvas.structures.length; j++) {
+                    var structure = canvas.structures[j];
+
+                    if (structure.path == path) {
+                        return structure;
+                    }
+                }
+            }
+
+            return null;
+        };
+
         BaseProvider.prototype.getCanvasById = function (id) {
             for (var i = 0; i < this.sequence.canvases.length; i++) {
                 var c = this.sequence.canvases[i];
@@ -6164,8 +6171,32 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return null;
         };
 
+        BaseProvider.prototype.getCanvasIndexById = function (id) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var c = this.sequence.canvases[i];
+
+                if (c['@id'] === id) {
+                    return i;
+                }
+            }
+
+            return null;
+        };
+
         BaseProvider.prototype.getStructureByIndex = function (structure, index) {
             return structure.structures[index];
+        };
+
+        BaseProvider.prototype.getStructureById = function (id) {
+            for (var i = 0; i < this.manifest.structures.length; i++) {
+                var s = this.manifest.structures[i];
+
+                if (s['@id'] === id) {
+                    return s;
+                }
+            }
+
+            return null;
         };
 
         BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
@@ -6203,6 +6234,71 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return null;
         };
 
+        BaseProvider.prototype.getRootStructure = function () {
+            if (!this.rootStructure) {
+                this.rootStructure = {
+                    path: "",
+                    ranges: this.manifest.structures
+                };
+            }
+
+            return this.rootStructure;
+        };
+
+        BaseProvider.prototype.parseStructure = function () {
+            if (!this.manifest.structures || !this.manifest.structures.length)
+                return;
+
+            this.parseStructures(this.getRootStructure(), '');
+        };
+
+        BaseProvider.prototype.parseStructures = function (structure, path) {
+            structure.path = path;
+
+            if (structure.canvases) {
+                for (var j = 0; j < structure.canvases.length; j++) {
+                    var canvas = structure.canvases[j];
+
+                    if (typeof (canvas) === "string") {
+                        canvas = this.getCanvasById(canvas);
+                    }
+
+                    if (!canvas) {
+                        structure.canvases[j] = null;
+                        continue;
+                    }
+
+                    if (!canvas.structures)
+                        canvas.structures = [];
+
+                    canvas.structures.push(structure);
+
+                    structure.canvases[j] = canvas;
+                }
+            }
+
+            if (structure.ranges) {
+                structure.structures = [];
+
+                for (var k = 0; k < structure.ranges.length; k++) {
+                    var s = structure.ranges[k];
+
+                    if (typeof (s) === "string") {
+                        s = this.getStructureById(s);
+                    }
+
+                    if (s.parentStructure)
+                        continue;
+
+                    s.parentStructure = structure;
+
+                    structure.structures.push(s);
+
+                    this.parseStructures(s, path + '/' + k);
+                }
+            }
+        };
+
         BaseProvider.prototype.getTree = function () {
             var rootStructure = this.getRootStructure();
 
@@ -6218,13 +6314,28 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
                 var node = new TreeNode();
                 this.treeRoot.addNode(node);
 
-                node.label = structure.label;
-                node.data = structure;
-                node.data.type = "structure";
-                structure.treeNode = node;
+                this.parseTreeNode(node, structure);
             }
 
             return this.treeRoot;
+        };
+
+        BaseProvider.prototype.parseTreeNode = function (node, structure) {
+            node.label = structure.label;
+            node.data = structure;
+            node.data.type = "structure";
+            structure.treeNode = node;
+
+            if (structure.structures) {
+                for (var i = 0; i < structure.structures.length; i++) {
+                    var childStructure = structure.structures[i];
+
+                    var childNode = new TreeNode();
+                    node.addNode(childNode);
+
+                    this.parseTreeNode(childNode, childStructure);
+                }
+            }
         };
 
         BaseProvider.prototype.getDomain = function () {
@@ -6556,7 +6667,7 @@ define('modules/coreplayer-mediaelementcenterpanel-module/mediaelementCenterPane
         MediaElementCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
 
-            if (window.BrowserDetect.browser == 'Firefox' && window.BrowserDetect.version < 13) {
+            if (window.browserDetect.browser == 'Firefox' && window.browserDetect.version < 13) {
                 this.$container.width(this.mediaWidth);
                 this.$container.height(this.mediaHeight);
             } else {
@@ -6812,8 +6923,8 @@ define('modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel',["require", "ex
 
         PDFCenterPanel.prototype.viewMedia = function (canvas) {
             var _this = this;
-            var browser = window.BrowserDetect.browser;
-            var version = window.BrowserDetect.version;
+            var browser = window.browserDetect.browser;
+            var version = window.browserDetect.version;
 
             if (browser == 'Explorer' && version < 10) {
                 var myPDF = new PDFObject({
@@ -6967,8 +7078,8 @@ define('extensions/coreplayer-pdf-extension/extension',["require", "exports", ".
         };
 
         Extension.prototype.IsOldIE = function () {
-            var browser = window.BrowserDetect.browser;
-            var version = window.BrowserDetect.version;
+            var browser = window.browserDetect.browser;
+            var version = window.browserDetect.version;
 
             if (browser == 'Explorer' && version <= 9)
                 return true;

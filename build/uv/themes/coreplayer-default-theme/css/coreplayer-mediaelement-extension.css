@@ -261,14 +261,24 @@
   border: none;
 }
 #app .leftPanel .views .galleryView .header {
-  height: 40px;
+  overflow: hidden;
+  height: 45px;
 }
 #app .leftPanel .views .galleryView .header .btn {
+  float: left;
   width: 30px;
   height: 30px;
 }
+#app .leftPanel .views .galleryView .header .btn.size-up {
+  margin-left: 5px;
+}
+#app .leftPanel .views .galleryView .header .btn.size-down {
+  margin-right: 5px;
+}
 #app .leftPanel .views .galleryView .header input[type="range"] {
-  height: 5px;
+  float: left;
+  margin-top: 12px;
+  width: 100px;
 }
 #app .leftPanel .views .galleryView .main {
   overflow: auto;
@@ -311,6 +321,12 @@
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
   background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+}
+#app.browser-Explorer .leftPanel .views .galleryView .header input[type="range"] {
+  margin-top: -11px;
+}
+#app.browser-Firefox .leftPanel .views .galleryView .header input[type="range"] {
+  margin-top: 9px;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb .wrap {
   border: none;
@@ -1698,6 +1714,90 @@ input[type="submit"].btn-block,
 input[type="reset"].btn-block,
 input[type="button"].btn-block {
   width: 100%;
+}
+/* WebKit */
+input[type=range] {
+  -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 5px;
+  background: #999999;
+  border: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #555555;
+  margin-top: -4px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #ccc;
+}
+/* Firefox */
+input[type=range] {
+  /* fix for FF unable to apply focus style bug  */
+  /*required for proper track sizing in FF*/
+  width: 300px;
+  overflow: hidden;
+}
+input[type=range]::-moz-range-track {
+  width: 300px;
+  height: 5px;
+  background: #ddd;
+  border: none;
+}
+input[type=range]::-moz-range-thumb {
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #555555;
+}
+/*hide the outline behind the border*/
+input[type=range]:-moz-focusring {
+  outline: 1px solid white;
+  outline-offset: -1px;
+}
+input[type=range]:focus::-moz-range-track {
+  background: #ccc;
+}
+/* IE */
+input[type=range]::-ms-track {
+  width: 300px;
+  height: 5px;
+  /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+  background: transparent;
+  /*leave room for the larger thumb to overflow with a transparent border */
+  border-color: transparent;
+  border-width: 6px 0;
+  /*remove default tick marks*/
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #999999;
+}
+input[type=range]::-ms-fill-upper {
+  background: #eeeeee;
+}
+input[type=range]::-ms-thumb {
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #555555;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #888;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #ccc;
 }
 .btn-default .caret {
   border-top-color: #ffffff;
