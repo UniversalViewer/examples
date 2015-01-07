@@ -261,7 +261,24 @@
   border: none;
 }
 #app .leftPanel .views .galleryView .header {
-  height: 40px;
+  overflow: hidden;
+  height: 45px;
+}
+#app .leftPanel .views .galleryView .header .btn {
+  float: left;
+  width: 30px;
+  height: 30px;
+}
+#app .leftPanel .views .galleryView .header .btn.size-up {
+  margin-left: 5px;
+}
+#app .leftPanel .views .galleryView .header .btn.size-down {
+  margin-right: 5px;
+}
+#app .leftPanel .views .galleryView .header input[type="range"] {
+  float: left;
+  margin-top: 12px;
+  width: 100px;
 }
 #app .leftPanel .views .galleryView .main {
   overflow: auto;
@@ -304,6 +321,13 @@
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
   background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+}
+#app.browser-Explorer .leftPanel .views .galleryView .header input[type="range"] {
+  margin-top: -11px;
+}
+#app.browser-Firefox .leftPanel .views .galleryView .header input[type="range"] {
+  margin-top: 9px;
+  overflow: hidden;
 }
 #app.application-pdf .leftPanel .thumbsView .thumb .wrap {
   border: none;
@@ -2206,7 +2230,7 @@ hr {
 }
 .btn:hover,
 .btn:focus {
-  color: #000000;
+  color: #ffffff;
   text-decoration: none;
 }
 .btn:active,
@@ -2227,8 +2251,8 @@ fieldset[disabled] .btn {
   box-shadow: none;
 }
 .btn-default {
-  color: #000000;
-  background-color: #eeeeee;
+  color: #ffffff;
+  background-color: #555555;
   border-color: #555555;
 }
 .btn-default:hover,
@@ -2236,8 +2260,8 @@ fieldset[disabled] .btn {
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
-  color: #000000;
-  background-color: #dadada;
+  color: #ffffff;
+  background-color: #414141;
   border-color: #373737;
 }
 .btn-default:active,
@@ -2260,7 +2284,7 @@ fieldset[disabled] .btn-default:active,
 .btn-default.disabled.active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
-  background-color: #eeeeee;
+  background-color: #555555;
   border-color: #555555;
 }
 .btn-primary {
@@ -2299,6 +2323,43 @@ fieldset[disabled] .btn-primary:active,
 fieldset[disabled] .btn-primary.active {
   background-color: #cc0000;
   border-color: #cc0000;
+}
+.btn-secondary {
+  color: #ffffff;
+  background-color: #869f33;
+  border-color: #869f33;
+}
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.btn-secondary.active,
+.open .dropdown-toggle.btn-secondary {
+  color: #ffffff;
+  background-color: #6c8029;
+  border-color: #5f7124;
+}
+.btn-secondary:active,
+.btn-secondary.active,
+.open .dropdown-toggle.btn-secondary {
+  background-image: none;
+}
+.btn-secondary.disabled,
+.btn-secondary[disabled],
+fieldset[disabled] .btn-secondary,
+.btn-secondary.disabled:hover,
+.btn-secondary[disabled]:hover,
+fieldset[disabled] .btn-secondary:hover,
+.btn-secondary.disabled:focus,
+.btn-secondary[disabled]:focus,
+fieldset[disabled] .btn-secondary:focus,
+.btn-secondary.disabled:active,
+.btn-secondary[disabled]:active,
+fieldset[disabled] .btn-secondary:active,
+.btn-secondary.disabled.active,
+.btn-secondary[disabled].active,
+fieldset[disabled] .btn-secondary.active {
+  background-color: #869f33;
+  border-color: #869f33;
 }
 .btn-warning {
   color: #ffffff;
@@ -2511,8 +2572,91 @@ input[type="reset"].btn-block,
 input[type="button"].btn-block {
   width: 100%;
 }
+/* WebKit */
+input[type=range] {
+  -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 5px;
+  background: #999999;
+  border: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #555555;
+  margin-top: -5px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #999999;
+}
+/* Firefox */
+input[type=range] {
+  /* fix for FF unable to apply focus style bug  */
+  /*required for proper track sizing in FF*/
+  width: 300px;
+}
+input[type=range]::-moz-range-track {
+  width: 300px;
+  height: 5px;
+  background: #ddd;
+  border: none;
+}
+input[type=range]::-moz-range-thumb {
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #555555;
+}
+/*hide the outline behind the border*/
+input[type=range]:-moz-focusring {
+  outline: 1px solid white;
+  outline-offset: -1px;
+}
+input[type=range]:focus::-moz-range-track {
+  background: #ccc;
+}
+/* IE */
+input[type=range]::-ms-track {
+  width: 300px;
+  height: 5px;
+  /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+  background: transparent;
+  /*leave room for the larger thumb to overflow with a transparent border */
+  border-color: transparent;
+  border-width: 6px 0;
+  /*remove default tick marks*/
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #999999;
+}
+input[type=range]::-ms-fill-upper {
+  background: #999999;
+}
+input[type=range]::-ms-thumb {
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #555555;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #999999;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #eeeeee;
+}
 .btn-default .caret {
-  border-top-color: #000000;
+  border-top-color: #ffffff;
 }
 .btn-primary .caret,
 .btn-success .caret,
@@ -2522,7 +2666,7 @@ input[type="button"].btn-block {
   border-top-color: #fff;
 }
 .dropup .btn-default .caret {
-  border-bottom-color: #000000;
+  border-bottom-color: #ffffff;
 }
 .dropup .btn-primary .caret,
 .dropup .btn-success .caret,
@@ -2733,18 +2877,6 @@ input[type="button"].btn-block {
   margin: 5px 0 0 0;
   width: 385px;
   position: absolute;
-}
-#app .headerPanel .options .centerOptions .first {
-  background: url('../../../themes/coreplayer-default-theme/img/first.png') no-repeat;
-}
-#app .headerPanel .options .centerOptions .prev {
-  background: url('../../../themes/coreplayer-default-theme/img/prev.png') no-repeat;
-}
-#app .headerPanel .options .centerOptions .next {
-  background: url('../../../themes/coreplayer-default-theme/img/next.png') no-repeat;
-}
-#app .headerPanel .options .centerOptions .last {
-  background: url('../../../themes/coreplayer-default-theme/img/last.png') no-repeat;
 }
 #app .headerPanel .options .rightOptions {
   float: right;

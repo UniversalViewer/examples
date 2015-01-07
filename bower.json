@@ -1,0 +1,10 @@
+{
+  "name": "UniversalViewerExamples",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "json-editor": "~0.7.13",
+    "foundation": "~5.5.0",
+    "fontawesome": "~4.2.0"
+  }
+}
