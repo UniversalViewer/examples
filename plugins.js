@@ -1,19 +1,5 @@
 $(function(){
 
-    $.fn.updateAttr = function (attrName, oldVal, newVal) {
-
-        return this.each(function () {
-
-            var $this = $(this);
-
-            var attr = $this.attr(attrName);
-            if (attr.indexOf(oldVal) === 0){
-                attr = attr.replace(oldVal, newVal);
-                $this.attr(attrName, attr);
-            }
-        });
-    };
-
     $.fn.swapClass = function (removeClass, addClass) {
         return this.each(function () {
             $(this).removeClass(removeClass).addClass(addClass);
@@ -43,6 +29,20 @@ $(function(){
                 $(this).text(text1);
             }
 
+        });
+    };
+
+    $.fn.updateAttr = function (attrName, oldVal, newVal) {
+
+        return this.each(function () {
+
+            var $this = $(this);
+
+            var attr = $this.attr(attrName);
+            if (attr.indexOf(oldVal) === 0){
+                attr = attr.replace(oldVal, newVal);
+                $this.attr(attrName, attr);
+            }
         });
     };
 });
