@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Wellcome Player Examples: British Library</title>
+    <title>Universal Viewer Examples: British Library</title>
+    <link rel="stylesheet" href="lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="examples.css" />
 </head>
 <body>
 
-    <!--<header>-->
-        <!--<a href="index.html">Back</a>-->
-    <!--</header>-->
+    <header>
+
+    </header>
 
     <main>
-        <div class="wellcomePlayer" data-no-load="true" data-config="/examples/iiif-config.js" style="width:640px; height:480px; background-color: #000"></div>
+        <div class="wellcomePlayer" data-no-load="true" data-config="/examples/default-config.js" style="width:640px; height:480px; background-color: #000"></div>
     </main>
 
     <footer>
-        <select id="options" class="manifest">
+
+        <h3>Manifest</h3>
+
+        <select id="manifest">
             <optgroup label="IIIF2">
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json">Proceedings at Peebles</option>
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100015688900.0x000002/manifest.json">Pictures of Light. Three Pieces for Pianoforte.</option>
@@ -53,10 +58,31 @@
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522805.0x000002/manifest.json">Poland : Language, NSID 18.</option>
             </optgroup>
         </select>
+
+        <h3>Config</h3>
+
+        <select id="config">
+            <option value="/examples/default-config.js">Default</option>
+            <option value="/examples/cy-GB-config.js">Welsh</option>
+        </select>
+
+        <ul class="button-group">
+            <li><a id="editBtn" href="#" class="button">Edit</a></li>
+            <li><a id="saveBtn" href="#" class="button hide">Save</a></li>
+        </ul>
+
+        <div id="editPnl" class="hide">
+            <div id="editor"></div>
+        </div>
+
     </footer>
 
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="examples.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="lib/json-editor/dist/jsoneditor.js"></script>
+    <script type="text/javascript" src="lib/foundation/js/foundation.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+    <script type="text/javascript" src="plugins.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
 
 </body>
 </html>
