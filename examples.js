@@ -526,7 +526,7 @@ $(function(){
             iconlib: 'fontawesome4',
             schema: schema,
             disable_edit_json: false,
-            disable_properties: false,
+            disable_properties: true,
             required_by_default: true
         });
 
