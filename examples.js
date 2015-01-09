@@ -474,7 +474,7 @@ $(function(){
     var editor;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv-0.1.4/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
@@ -496,7 +496,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv-0.1.4/js/embed.js"><\/script>');
         }
     }
 
@@ -520,7 +520,6 @@ $(function(){
 
     function createEditor() {
 
-        // Initialize the editor with a JSON schema
         editor = new JSONEditor(document.getElementById('editor'),{
             form_name_root: "",
             theme: 'foundation5',
@@ -537,7 +536,7 @@ $(function(){
 
             // Not valid
             if(errors.length) {
-                alert(errors);
+                console.log(errors);
             }
         });
     }
@@ -602,7 +601,7 @@ $(function(){
 
             // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('build/uv/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
+            $.getJSON('build/uv-0.1.4/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
                 var configUrl = $('#config option:selected').val();
 
                 $.getJSON(configUrl, function(config){
@@ -619,7 +618,7 @@ $(function(){
         var errors = editor.validate();
 
         if(errors.length) {
-            alert(errors);
+            console.log(errors);
             return;
         }
 
