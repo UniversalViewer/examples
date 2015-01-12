@@ -48,7 +48,7 @@
             "content": {
                 "help": "Help",
                 "image": "Image",
-                "page": "Label",
+                "page": "Page",
                 "first": "First",
                 "previous": "Previous",
                 "next": "Next",
