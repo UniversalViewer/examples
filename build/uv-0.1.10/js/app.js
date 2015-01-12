@@ -557,6 +557,12 @@ define('utils',["require", "exports"], function(require, exports) {
             return trimmedText + "&hellip;";
         };
 
+        Utils.htmlDecode = function (encoded) {
+            var div = document.createElement('div');
+            div.innerHTML = encoded;
+            return div.firstChild.nodeValue;
+        };
+
         Utils.numericalInput = function (event) {
             if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || (event.keyCode == 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39)) {
                 return true;
@@ -3752,7 +3758,9 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../coreplayer-shared-module/baseView", "../coreplayer-shared-module/baseExtension"], function(require, exports, baseView, baseExtension) {
+define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../../utils", "../coreplayer-shared-module/baseView", "../coreplayer-shared-module/baseExtension"], function(require, exports, utils, baseView, baseExtension) {
+    var util = utils.Utils;
+
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
@@ -3762,6 +3770,8 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
         TreeView.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
+
+            var that = this;
 
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.selectTreeNodeFromCanvasIndex(canvasIndex);
@@ -3785,9 +3795,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                                    <div class="spacer"></div>\
                                {{/if}}\
                                {^{if selected}}\
-                                   <a href="#" class="selected">{{>label}}</a>\
+                                   <a href="#" title="{{>label}}" class="selected">{{>text}}</a>\
                                {{else}}\
-                                   <a href="#">{{>label}}</a>\
+                                   <a href="#" title="{{>label}}">{{>text}}</a>\
                                {{/if}}\
                            </li>\
                            {^{if expanded}}\
@@ -3807,6 +3817,8 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                         $.observable(this.data).setProperty("expanded", !this.data.expanded);
                     },
                     init: function (tagCtx, linkCtx, ctx) {
+                        var data = tagCtx.view.data;
+                        data.text = util.htmlDecode(util.ellipsis(data.label, that.ellideCount));
                         this.data = tagCtx.view.data;
                     },
                     onAfterLink: function () {
@@ -4495,6 +4507,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
             this.treeView = new tree.TreeView(this.$treeView);
+            this.treeView.ellideCount = this.config.options.ellideCount;
             this.dataBindTreeView();
         };
 
@@ -4555,7 +4568,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         TreeViewLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
 
-            if (this.$thumbsButton.hasClass('on')) {
+            if (this.$treeButton.hasClass('on')) {
+                this.openTreeView();
+            } else if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
 
