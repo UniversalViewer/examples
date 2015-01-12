@@ -72,7 +72,7 @@
                 "galleryThumbWidth": 200,
                 "galleryThumbHeight": 320,
                 "thumbsExtraHeight": 8,
-                "ellideCount": 40
+                "elideCount": 40
             },
             "content": {
                 "index": "Index",

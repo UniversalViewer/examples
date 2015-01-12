@@ -3818,7 +3818,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                     },
                     init: function (tagCtx, linkCtx, ctx) {
                         var data = tagCtx.view.data;
-                        data.text = util.htmlDecode(util.ellipsis(data.label, that.ellideCount));
+                        data.text = util.htmlDecode(util.ellipsis(data.label, that.elideCount));
                         this.data = tagCtx.view.data;
                     },
                     onAfterLink: function () {
@@ -4507,7 +4507,7 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
             this.treeView = new tree.TreeView(this.$treeView);
-            this.treeView.ellideCount = this.config.options.ellideCount;
+            this.treeView.elideCount = this.config.options.elideCount;
             this.dataBindTreeView();
         };
 
