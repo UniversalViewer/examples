@@ -79,7 +79,7 @@ docReady(function() {
         window.embedScriptIncluded = true;
 
         // get the script location.
-        var s = document.getElementById('embedWellcomePlayer');
+        var s = document.getElementById('embedUV');
 
         if (!s){
             var scripts = document.getElementsByTagName('script');

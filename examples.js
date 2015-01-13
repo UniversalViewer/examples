@@ -479,18 +479,18 @@ $(function(){
     var editor;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv-0.1.12/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-0.1.12/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
-            $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/src/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
         } else {
             // built version
 
             // remove '/examples' from paths
-            $('.wellcomePlayer').updateAttr('data-config', '/examples/', '/');
+            $('.uv').updateAttr('data-config', '/examples/', '/');
 
-            if ($('.wellcomePlayer').attr('data-uri')){
-                $('.wellcomePlayer').updateAttr('data-uri', '/examples/', '/');
+            if ($('.uv').attr('data-uri')){
+                $('.uv').updateAttr('data-uri', '/examples/', '/');
             }
 
             $('#config option').each(function() {
@@ -501,7 +501,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedWellcomePlayer" src="/build/uv-0.1.12/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-0.1.12/js/embed.js"><\/script>');
         }
     }
 
@@ -520,7 +520,7 @@ $(function(){
     }, 2000);
 
     function loadViewer() {
-        initPlayers($('.wellcomePlayer'));
+        initPlayers($('.uv'));
     }
 
     function createEditor() {
@@ -579,7 +579,7 @@ $(function(){
             manifest = $('#manifest option')[0].value;
         }
 
-        $('.wellcomePlayer').attr('data-uri', manifest);
+        $('.uv').attr('data-uri', manifest);
     }
 
     function setSelectedConfig(){
@@ -592,7 +592,7 @@ $(function(){
             config = $('#config option')[0].value;
         }
 
-        $('.wellcomePlayer').attr('data-config', config);
+        $('.uv').attr('data-config', config);
     }
 
     $('#editBtn').on('click', function(e) {
@@ -630,7 +630,7 @@ $(function(){
         // save contents of #json to session storage, set data-config attribute to 'sessionstorage' and reload viewer
         sessionStorage.setItem("uv-config", JSON.stringify(editor.getValue()));
 
-        $('.wellcomePlayer').attr('data-config', 'sessionstorage');
+        $('.uv').attr('data-config', 'sessionstorage');
 
         loadViewer();
     });
