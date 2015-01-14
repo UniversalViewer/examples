@@ -354,6 +354,11 @@ schema = {
                                 "controlsFadeLength": {
                                     "id": "controlsFadeLength",
                                     "type": "integer"
+                                },
+                                "navigatorPosition": {
+                                    "id": "navigatorPosition",
+                                    "type": "string",
+                                    "enum": ["BOTTOM_RIGHT", "BOTTOM_LEFT", "TOP_LEFT", "TOP_RIGHT"]
                                 }
                             }
                         },
