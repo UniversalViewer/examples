@@ -1085,7 +1085,7 @@
   font-size: 10px;
 }
 /* End: SourceChooser */
-/* Wellcome player */
+/* UV */
 .mejs-container.mejs-uv {
   background-color: transparent;
 }
@@ -1235,7 +1235,7 @@
 .mejs-uv .mejs-controls .mejs-captions-button {
   display: none;
 }
-/* END: Wellcome player */
+/* END: UV */
 #app .mejs-container.mejs-uv {
   background-color: #000000;
 }

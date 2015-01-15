@@ -2327,7 +2327,6 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
                 if (!_this.isOverlayActive()) {
                     $('#top').focus();
                     _this.isFullScreen = !_this.isFullScreen;
-
                     _this.triggerSocket(BaseExtension.TOGGLE_FULLSCREEN, {
                         isFullScreen: _this.isFullScreen,
                         overrideFullScreen: _this.provider.config.options.overrideFullScreen
@@ -2336,10 +2335,18 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
             });
 
             $(document).keyup(function (e) {
-                if (e.keyCode === 27)
-                    $.publish(BaseExtension.ESCAPE);
                 if (e.keyCode === 13)
                     $.publish(BaseExtension.RETURN);
+                if (e.keyCode === 27)
+                    $.publish(BaseExtension.ESCAPE);
+                if (e.keyCode === 33)
+                    $.publish(BaseExtension.PAGE_UP);
+                if (e.keyCode === 34)
+                    $.publish(BaseExtension.PAGE_DOWN);
+                if (e.keyCode === 35)
+                    $.publish(BaseExtension.END);
+                if (e.keyCode === 36)
+                    $.publish(BaseExtension.HOME);
             });
 
             $.subscribe(BaseExtension.ESCAPE, function () {
@@ -2459,6 +2466,10 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
         BaseExtension.RELOAD = 'onReload';
         BaseExtension.ESCAPE = 'onEscape';
         BaseExtension.RETURN = 'onReturn';
+        BaseExtension.PAGE_UP = 'onPageUp';
+        BaseExtension.PAGE_DOWN = 'onPageDown';
+        BaseExtension.HOME = 'onHome';
+        BaseExtension.END = 'onEnd';
         BaseExtension.WINDOW_UNLOAD = 'onWindowUnload';
         BaseExtension.OPEN_MEDIA = 'onOpenMedia';
         BaseExtension.CREATED = 'onCreated';
@@ -3122,7 +3133,7 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
             this.$rightOptions = $('<div class="rightOptions"></div>');
             this.$options.append(this.$rightOptions);
 
-            this.$settingsButton = $('<a class="imageBtn settings"></a>');
+            this.$settingsButton = $('<a class="imageBtn settings" tabindex="3"></a>');
             this.$rightOptions.append(this.$settingsButton);
 
             this.$messageBox = $('<div class="messageBox"> \
@@ -3217,10 +3228,10 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             this.$prevOptions = $('<div class="prevOptions"></div>');
             this.$centerOptions.append(this.$prevOptions);
 
-            this.$firstButton = $('<a class="imageBtn first"></a>');
+            this.$firstButton = $('<a class="imageBtn first" tabindex="13"></a>');
             this.$prevOptions.append(this.$firstButton);
 
-            this.$prevButton = $('<a class="imageBtn prev"></a>');
+            this.$prevButton = $('<a class="imageBtn prev" tabindex="14"></a>');
             this.$prevOptions.append(this.$prevButton);
 
             this.$modeOptions = $('<div class="mode"></div>');
@@ -3228,33 +3239,33 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
             this.$imageModeLabel = $('<label for="image">' + this.content.image + '</label>');
             this.$modeOptions.append(this.$imageModeLabel);
-            this.$imageModeOption = $('<input type="radio" id="image" name="mode"></input>');
+            this.$imageModeOption = $('<input type="radio" id="image" name="mode" tabindex="15"></input>');
             this.$modeOptions.append(this.$imageModeOption);
 
             this.$pageModeLabel = $('<label for="page">' + this.content.page + '</label>');
             this.$modeOptions.append(this.$pageModeLabel);
-            this.$pageModeOption = $('<input type="radio" id="page" name="mode"></input>');
+            this.$pageModeOption = $('<input type="radio" id="page" name="mode" tabindex="16"></input>');
             this.$modeOptions.append(this.$pageModeOption);
 
             this.$search = $('<div class="search"></div>');
             this.$centerOptions.append(this.$search);
 
-            this.$searchText = $('<input class="searchText" maxlength="5" type="text"></input>');
+            this.$searchText = $('<input class="searchText" maxlength="5" type="text" tabindex="17"></input>');
             this.$search.append(this.$searchText);
 
             this.$total = $('<span class="total"></span>');
             this.$search.append(this.$total);
 
-            this.$searchButton = $('<a class="imageBtn go"></a>');
+            this.$searchButton = $('<a class="imageBtn go" tabindex="18"></a>');
             this.$search.append(this.$searchButton);
 
             this.$nextOptions = $('<div class="nextOptions"></div>');
             this.$centerOptions.append(this.$nextOptions);
 
-            this.$nextButton = $('<a class="imageBtn next"></a>');
+            this.$nextButton = $('<a class="imageBtn next" tabindex="1"></a>');
             this.$nextOptions.append(this.$nextButton);
 
-            this.$lastButton = $('<a class="imageBtn last"></a>');
+            this.$lastButton = $('<a class="imageBtn last" tabindex="2"></a>');
             this.$nextOptions.append(this.$lastButton);
 
             if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
@@ -4503,6 +4514,8 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
 
                 $.publish(TreeViewLeftPanel.OPEN_THUMBS_VIEW);
             });
+
+            this.$element.attr('tabindex', '7');
         };
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
@@ -4557,6 +4570,14 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
                 } else if (treeEnabled) {
                     this.openTreeView();
                 }
+            }
+
+            if (this.isExpanded) {
+                this.$treeButton.attr('tabindex', '8');
+                this.$thumbsButton.attr('tabindex', '9');
+            } else {
+                this.$treeButton.attr('tabindex', '');
+                this.$thumbsButton.attr('tabindex', '');
             }
         };
 
@@ -4986,6 +5007,10 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                     _this.viewer.hideControls();
                 }
             }, this.config.options.controlsFadeAfterInactive);
+
+            this.$element.on('click', function () {
+                _this.$viewer.find('.keyboard-command-area').focus();
+            });
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
@@ -5002,7 +5027,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
                 controlsFadeDelay: this.config.options.controlsFadeDelay,
                 controlsFadeLength: this.config.options.controlsFadeLength,
-                navigatorPosition: 'BOTTOM_RIGHT',
+                navigatorPosition: this.config.options.navigatorPosition,
                 prefixUrl: prefixUrl,
                 navImages: {
                     zoomIn: {
@@ -5060,6 +5085,10 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             }
 
             that.lastTilesNum = that.tileSources.length;
+
+            that.$viewer.find('div[title="Zoom in"]').attr('tabindex', 10);
+            that.$viewer.find('div[title="Zoom out"]').attr('tabindex', 11);
+            that.$viewer.find('div[title="Rotate right"]').attr('tabindex', 12);
         };
 
         SeadragonCenterPanel.prototype.loadTileSources = function () {
@@ -5160,6 +5189,8 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
 
             this.$items = $('<div class="items"></div>');
             this.$main.append(this.$items);
+
+            this.$element.attr('tabindex', '4');
         };
 
         MoreInfoRightPanel.prototype.toggleFinish = function () {
@@ -5246,9 +5277,11 @@ define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "..
 
             this.$embedButton = $('<a href="#" class="imageBtn embed" title="' + this.content.embed + '"></a>');
             this.$options.append(this.$embedButton);
+            this.$embedButton.attr('tabindex', '6');
 
             this.$fullScreenBtn = $('<a href="#" class="imageBtn fullScreen" title="' + this.content.fullScreen + '"></a>');
             this.$options.append(this.$fullScreenBtn);
+            this.$fullScreenBtn.attr('tabindex', '5');
 
             this.$embedButton.on('click', function (e) {
                 e.preventDefault();
@@ -5599,7 +5632,15 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(_this.provider.getFirstPageIndex());
             });
 
+            $.subscribe(Extension.HOME, function (e) {
+                _this.viewPage(_this.provider.getFirstPageIndex());
+            });
+
             $.subscribe(header.PagingHeaderPanel.LAST, function (e) {
+                _this.viewPage(_this.provider.getLastPageIndex());
+            });
+
+            $.subscribe(Extension.END, function (e) {
                 _this.viewPage(_this.provider.getLastPageIndex());
             });
 
@@ -5607,7 +5648,15 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 _this.viewPage(_this.provider.getPrevPageIndex());
             });
 
+            $.subscribe(Extension.PAGE_UP, function (e) {
+                _this.viewPage(_this.provider.getPrevPageIndex());
+            });
+
             $.subscribe(header.PagingHeaderPanel.NEXT, function (e) {
+                _this.viewPage(_this.provider.getNextPageIndex());
+            });
+
+            $.subscribe(Extension.PAGE_DOWN, function (e) {
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
 

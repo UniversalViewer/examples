@@ -85,7 +85,8 @@
                 "defaultZoomLevel": 0,
                 "controlsFadeAfterInactive": 1500,
                 "controlsFadeDelay": 250,
-                "controlsFadeLength": 250
+                "controlsFadeLength": 250,
+                "navigatorPosition": "BOTTOM_RIGHT"
             },
             "content": {
                 "previous": "Previous",
