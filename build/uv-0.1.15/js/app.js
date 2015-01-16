@@ -245,6 +245,41 @@ define("modernizr", function(){});
         return parseInt($self.css('paddingTop')) + parseInt($self.css('paddingBottom'));
     };
 
+    $.fn.onPressed = function (callback) {
+
+        return this.each(function() {
+
+            var $this = $(this);
+
+            $this.on('click', function(e) {
+                e.preventDefault();
+                callback();
+            });
+
+            $this.on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    callback();
+                }
+            });
+        });
+    };
+
+    $.fn.onEnter = function (callback) {
+
+        return this.each(function() {
+
+            var $this = $(this);
+
+            $this.on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    callback();
+                }
+            });
+        });
+    };
+
 })(jQuery);
 
 (function ($) {
@@ -2037,10 +2072,6 @@ define('modules/coreplayer-shared-module/dialogue',["require", "exports", "./bas
                 }
             });
 
-            $.subscribe(baseExtension.BaseExtension.RETURN, function (e) {
-                _this.returnFunc();
-            });
-
             this.$top = utils.Utils.createDiv('top');
             this.$element.append(this.$top);
 
@@ -2087,6 +2118,8 @@ define('modules/coreplayer-shared-module/dialogue',["require", "exports", "./bas
             this.$element.show();
             this.setArrowPosition();
             this.isActive = true;
+
+            this.$element.find('.btn.default').focus();
 
             $.publish(shell.Shell.SHOW_OVERLAY);
 
@@ -2144,13 +2177,11 @@ define('modules/coreplayer-shared-module/genericDialogue',["require", "exports",
             this.$message = $('<p></p>');
             this.$content.append(this.$message);
 
-            this.$acceptButton = $('<a href="#" class="btn btn-primary accept"></a>');
+            this.$acceptButton = $('<a href="#" class="btn btn-primary accept default"></a>');
             this.$content.append(this.$acceptButton);
             this.$acceptButton.text(this.content.ok);
 
-            this.$acceptButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$acceptButton.onPressed(function () {
                 _this.accept();
             });
 
@@ -3014,13 +3045,17 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
     exports.BaseProvider = BaseProvider;
 });
 
+define('_Version',["require", "exports"], function(require, exports) {
+    exports.Version = '0.1.15';
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, dialogue) {
+define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "exports", "../coreplayer-shared-module/dialogue", "../../_Version"], function(require, exports, dialogue, version) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -3046,6 +3081,9 @@ define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "expor
             this.$scroll = $('<div class="scroll"></div>');
             this.$content.append(this.$scroll);
 
+            this.$version = $('<div class="version"></div>');
+            this.$content.append(this.$version);
+
             this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
             this.$scroll.append(this.$pagingEnabledCheckbox);
 
@@ -3055,6 +3093,8 @@ define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "expor
             this.$title.text(this.content.title);
 
             var that = this;
+
+            this.$version.text("v" + version.Version);
 
             this.$pagingEnabledCheckbox.change(function () {
                 var settings = that.getSettings();
@@ -3150,9 +3190,7 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
                 _this.hideMessage();
             });
 
-            this.$settingsButton.click(function (e) {
-                e.preventDefault();
-
+            this.$settingsButton.onPressed(function () {
                 $.publish(settings.SettingsDialogue.SHOW_SETTINGS_DIALOGUE);
             });
         };
@@ -3287,52 +3325,36 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                 this.$centerOptions.hide();
             }
 
-            this.$firstButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$firstButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.FIRST);
             });
 
-            this.$prevButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$prevButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.PREV);
             });
 
-            this.$nextButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$nextButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.NEXT);
             });
 
-            this.$imageModeOption.on('click', function (e) {
+            this.$imageModeOption.onPressed(function () {
                 $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.IMAGE_MODE]);
             });
 
-            this.$pageModeOption.on('click', function (e) {
+            this.$pageModeOption.onPressed(function () {
                 $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.PAGE_MODE]);
             });
 
-            this.$searchText.on('keyup', function (e) {
-                if (e.keyCode == 13) {
-                    e.preventDefault();
-                    _this.$searchText.blur();
-
-                    setTimeout(function () {
-                        _this.search();
-                    }, 1);
-                }
-            });
-
-            this.$searchButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$searchText.onEnter(function () {
+                _this.$searchText.blur();
                 _this.search();
             });
 
-            this.$lastButton.on('click', function (e) {
-                e.preventDefault();
+            this.$searchButton.onPressed(function () {
+                _this.search();
+            });
 
+            this.$lastButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.LAST);
             });
 
@@ -3546,38 +3568,32 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
             this.$main = utils.Utils.createDiv('main');
             this.$element.append(this.$main);
 
-            this.$expandButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$expandButton.onPressed(function () {
                 _this.toggle();
             });
 
-            this.$expandFullButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$expandFullButton.onPressed(function () {
                 _this.expandFull();
             });
 
-            this.$closedTitle.on('click', function (e) {
-                e.preventDefault();
-
+            this.$closedTitle.onPressed(function () {
                 _this.toggle();
             });
 
-            this.$title.on('click', function (e) {
-                e.preventDefault();
-
+            this.$title.onPressed(function () {
                 _this.toggle();
             });
 
-            this.$collapseButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$collapseButton.onPressed(function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 } else {
                     _this.toggle();
                 }
+            });
+
+            this.$collapseButton.onPressed(function () {
+                _this.toggle();
             });
 
             this.$top.hide();
@@ -3681,6 +3697,7 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
         BaseExpandPanel.prototype.expandFullFinish = function () {
             this.isFullyExpanded = true;
             this.$expandFullButton.hide();
+            this.$collapseButton.focus();
         };
 
         BaseExpandPanel.prototype.collapseFullStart = function () {
@@ -4499,23 +4516,19 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
             this.$galleryView = $('<div class="galleryView"></div>');
             this.$views.append(this.$galleryView);
 
-            this.$treeButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$treeButton.onPressed(function () {
                 _this.openTreeView();
 
                 $.publish(TreeViewLeftPanel.OPEN_TREE_VIEW);
             });
 
-            this.$thumbsButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$thumbsButton.onPressed(function () {
                 _this.openThumbsView();
 
                 $.publish(TreeViewLeftPanel.OPEN_THUMBS_VIEW);
             });
 
-            this.$element.attr('tabindex', '7');
+            this.$expandButton.attr('tabindex', '7');
         };
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
@@ -5190,7 +5203,7 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
             this.$items = $('<div class="items"></div>');
             this.$main.append(this.$items);
 
-            this.$element.attr('tabindex', '4');
+            this.$expandButton.attr('tabindex', '4');
         };
 
         MoreInfoRightPanel.prototype.toggleFinish = function () {
@@ -5244,6 +5257,8 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
 
         MoreInfoRightPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+
+            this.$main.height(this.$element.height() - this.$top.height() - this.$main.verticalMargins());
         };
         return MoreInfoRightPanel;
     })(baseRight.RightPanel);
@@ -5283,9 +5298,7 @@ define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "..
             this.$options.append(this.$fullScreenBtn);
             this.$fullScreenBtn.attr('tabindex', '5');
 
-            this.$embedButton.on('click', function (e) {
-                e.preventDefault();
-
+            this.$embedButton.onPressed(function () {
                 $.publish(FooterPanel.EMBED);
             });
 

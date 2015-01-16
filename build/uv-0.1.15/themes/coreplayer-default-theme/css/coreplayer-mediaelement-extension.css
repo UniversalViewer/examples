@@ -2155,6 +2155,10 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 7px 0 0 5px;
   display: block;
 }
+#app .rightPanel .main {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
 #app .centerPanel .title {
   height: 38px;
   font-size: 20px;
