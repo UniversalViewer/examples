@@ -3046,7 +3046,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.16';
+    exports.Version = '0.1.17';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3337,11 +3337,11 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                 $.publish(PagingHeaderPanel.NEXT);
             });
 
-            this.$imageModeOption.onPressed(function () {
+            this.$imageModeOption.on('click', function (e) {
                 $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.IMAGE_MODE]);
             });
 
-            this.$pageModeOption.onPressed(function () {
+            this.$pageModeOption.on('click', function (e) {
                 $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.PAGE_MODE]);
             });
 
@@ -3406,7 +3406,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                     this.$searchText.val(orderLabel);
                 }
             } else {
-                index++;
+                index += 1;
                 this.$searchText.val(index);
             }
         };
@@ -3425,6 +3425,8 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             } else {
                 var index = parseInt(this.$searchText.val());
 
+                index -= 1;
+
                 if (isNaN(index)) {
                     this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.invalidNumber);
                     return;
@@ -3437,7 +3439,6 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                     return;
                 }
 
-                index--;
                 $.publish(PagingHeaderPanel.IMAGE_SEARCH, [index]);
             }
         };
@@ -6357,11 +6358,13 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getRootStructure = function () {
-            for (var i = 0; i < this.manifest.structures.length; i++) {
-                var s = this.manifest.structures[i];
-                if (s.viewingHint == "top") {
-                    this.rootStructure = s;
-                    break;
+            if (this.manifest.structures) {
+                for (var i = 0; i < this.manifest.structures.length; i++) {
+                    var s = this.manifest.structures[i];
+                    if (s.viewingHint == "top") {
+                        this.rootStructure = s;
+                        break;
+                    }
                 }
             }
 
@@ -6438,13 +6441,15 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             this.treeRoot.data.type = "manifest";
             rootStructure.treeNode = this.treeRoot;
 
-            for (var i = 0; i < rootStructure.structures.length; i++) {
-                var structure = rootStructure.structures[i];
+            if (rootStructure.structures) {
+                for (var i = 0; i < rootStructure.structures.length; i++) {
+                    var structure = rootStructure.structures[i];
 
-                var node = new TreeNode();
-                this.treeRoot.addNode(node);
+                    var node = new TreeNode();
+                    this.treeRoot.addNode(node);
 
-                this.parseTreeNode(node, structure);
+                    this.parseTreeNode(node, structure);
+                }
             }
 
             return this.treeRoot;
