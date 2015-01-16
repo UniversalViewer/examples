@@ -3046,7 +3046,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.15';
+    exports.Version = '0.1.16';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3529,7 +3529,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports", "../../utils", "./baseView"], function(require, exports, utils, baseView) {
+define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports", "./baseView"], function(require, exports, baseView) {
     var BaseExpandPanel = (function (_super) {
         __extends(BaseExpandPanel, _super);
         function BaseExpandPanel($element) {
@@ -3544,19 +3544,19 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
 
             _super.prototype.create.call(this);
 
-            this.$top = utils.Utils.createDiv('top');
+            this.$top = $('<div class="top"></div>');
             this.$element.append(this.$top);
 
-            this.$title = utils.Utils.createDiv('title');
+            this.$title = $('<div class="title"></div>');
             this.$top.append(this.$title);
 
             this.$expandFullButton = $('<a class="expandFullButton"></a>');
             this.$top.append(this.$expandFullButton);
 
-            this.$collapseButton = utils.Utils.createDiv('collapseButton');
+            this.$collapseButton = $('<div class="collapseButton"></div>');
             this.$top.append(this.$collapseButton);
 
-            this.$closed = utils.Utils.createDiv('closed');
+            this.$closed = $('<div class="closed"></div>');
             this.$element.append(this.$closed);
 
             this.$expandButton = $('<a class="expandButton"></a>');
@@ -3565,7 +3565,7 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
             this.$closedTitle = $('<a class="title"></a>');
             this.$closed.append(this.$closedTitle);
 
-            this.$main = utils.Utils.createDiv('main');
+            this.$main = $('<div class="main"></div>');
             this.$element.append(this.$main);
 
             this.$expandButton.onPressed(function () {
@@ -3590,10 +3590,6 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
                 } else {
                     _this.toggle();
                 }
-            });
-
-            this.$collapseButton.onPressed(function () {
-                _this.toggle();
             });
 
             this.$top.hide();
