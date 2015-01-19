@@ -3046,7 +3046,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.17';
+    exports.Version = '0.1.18';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3288,7 +3288,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             this.$search = $('<div class="search"></div>');
             this.$centerOptions.append(this.$search);
 
-            this.$searchText = $('<input class="searchText" maxlength="5" type="text" tabindex="17"></input>');
+            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="17"></input>');
             this.$search.append(this.$searchText);
 
             this.$total = $('<span class="total"></span>');
@@ -6323,7 +6323,15 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
-            var regExp = /(\d*)\D*(\d*)|(\d*)/;
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+
+                if (canvas.label === label) {
+                    return i;
+                }
+            }
+
+            var regExp = /(\d*)|(\d*)\D*(\d*)/;
             var match = regExp.exec(label);
 
             var labelPart1 = match[1];
@@ -6337,7 +6345,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             if (labelPart2) {
                 regStr = "^" + labelPart1 + "\\D*" + labelPart2 + "$";
             } else {
-                regStr = "\\D*" + labelPart1 + "\\D*";
+                regStr = "^\\D*" + labelPart1 + "\\D*$";
             }
 
             searchRegExp = new RegExp(regStr);
