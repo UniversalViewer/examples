@@ -3052,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.20';
+    exports.Version = '0.1.21';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3260,8 +3260,6 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             this.setConfig('pagingHeaderPanel');
 
             _super.prototype.create.call(this);
-
-            var that = this;
 
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.canvasIndexChanged(canvasIndex);
@@ -6357,37 +6355,34 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
+            label = label.trim();
+
+            var doublePageRegExp = /(\d*)\D+(\d*)/;
+            var match, regExp, regStr, labelPart1, labelPart2;
+
             for (var i = 0; i < this.sequence.canvases.length; i++) {
                 var canvas = this.sequence.canvases[i];
 
                 if (canvas.label === label) {
                     return i;
                 }
-            }
 
-            var regExp = /(\d*)|(\d*)\D*(\d*)/;
-            var match = regExp.exec(label);
+                match = doublePageRegExp.exec(label);
 
-            var labelPart1 = match[1];
-            var labelPart2 = match[2];
+                if (!match)
+                    continue;
 
-            if (!labelPart1)
-                return -1;
+                labelPart1 = match[1];
+                labelPart2 = match[2];
 
-            var searchRegExp, regStr;
+                if (!labelPart2)
+                    continue;
 
-            if (labelPart2) {
-                regStr = "^" + labelPart1 + "\\D*" + labelPart2 + "$";
-            } else {
-                regStr = "^\\D*" + labelPart1 + "\\D*$";
-            }
+                regStr = "^" + labelPart1 + "\\D+" + labelPart2 + "$";
 
-            searchRegExp = new RegExp(regStr);
+                regExp = new RegExp(regStr);
 
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var canvas = this.sequence.canvases[i];
-
-                if (searchRegExp.test(canvas.label)) {
+                if (regExp.test(canvas.label)) {
                     return i;
                 }
             }
