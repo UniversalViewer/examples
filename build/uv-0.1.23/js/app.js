@@ -3052,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.22';
+    exports.Version = '0.1.23';
 });
 
 var __extends = this.__extends || function (d, b) {

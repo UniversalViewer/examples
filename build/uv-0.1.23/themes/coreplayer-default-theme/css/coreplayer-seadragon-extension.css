@@ -253,6 +253,10 @@
   margin: 0 0 0 5px;
   width: 113px;
 }
+#app .headerPanel .centerOptions .search .searchText {
+  border: none;
+  padding: 0 0 0 2px;
+}
 #app .headerPanel .centerOptions .nextOptions {
   float: left;
   margin: 0 0 0 15px;
