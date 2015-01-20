@@ -61,9 +61,14 @@ define("modernizr", function(){});
 
     $.fn.ellipsisFill = function (text) {
 
+        var textPassed = true;
+        if (!text) textPassed = false;
+
         return this.each(function () {
 
             var $self = $(this);
+
+            if (!textPassed) text = $self.text();
 
             $self.empty();
 
@@ -78,6 +83,8 @@ define("modernizr", function(){});
             // get the width of the span.
             // if it's wider than the container, remove a word until it's not.
             if ($self.spanElem.width() > $self.width()) {
+                console.log("wider");
+
                 var lastText;
 
                 while ($self.spanElem.width() > $self.width()) {
@@ -3046,7 +3053,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.18';
+    exports.Version = '0.1.19';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3840,10 +3847,13 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
                 tree: {
                     toggle: function () {
                         $.observable(this.data).setProperty("expanded", !this.data.expanded);
+                        this.contents().find('a').each(function () {
+                            that.elide($(this));
+                        });
                     },
                     init: function (tagCtx, linkCtx, ctx) {
                         var data = tagCtx.view.data;
-                        data.text = util.htmlDecode(util.ellipsis(data.label, that.elideCount));
+                        data.text = data.label;
                         this.data = tagCtx.view.data;
                     },
                     onAfterLink: function () {
@@ -3942,8 +3952,22 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
             this.$element.hide();
         };
 
+        TreeView.prototype.elide = function ($a) {
+            if (!$a.is(':visible'))
+                return;
+            var elideCount = Math.floor($a.parent().width() / 7);
+            $a.text(util.htmlDecode(util.ellipsis($a.attr('title'), elideCount)));
+        };
+
         TreeView.prototype.resize = function () {
             _super.prototype.resize.call(this);
+
+            var that = this;
+
+            this.$tree.find('a').each(function () {
+                var $this = $(this);
+                that.elide($this);
+            });
         };
         TreeView.NODE_SELECTED = 'treeView.onNodeSelected';
         return TreeView;

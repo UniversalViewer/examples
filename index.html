@@ -13,7 +13,7 @@
     </header>
 
     <main>
-        <div class="uv" data-no-load="true" data-config="/examples/default-config.js" style="width:640px; height:480px; background-color: #000"></div>
+        <div class="uv" data-no-load="true" data-config="/examples/config/default-config.js" style="width:640px; height:480px; background-color: #000"></div>
     </main>
 
     <footer>
@@ -24,12 +24,13 @@
             <optgroup label="IIIF2">
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json">Proceedings at Peebles</option>
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100015688900.0x000002/manifest.json">Pictures of Light. Three Pieces for Pianoforte.</option>
-                <option value="/examples/iiif-startcanvas.js">startcanvas</option>
-                <option value="/examples/iiif-missingimages.js">missing images</option>
+                <option value="/examples/manifest/iiif-startcanvas.js">startcanvas</option>
+                <option value="/examples/manifest/iiif-missingimages.js">missing images</option>
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404longtitle/manifest.json">long title</option>
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/add_ms_9405/manifest.json">right to left</option>
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404hierarchy/manifest.json">deep hierarchy</option>
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404deephierarchy/manifest.json">deep hierarchy 2</option>
+                <option value="/examples/manifest/iiif-deephierarchylongtitle.js">deep hierarchy with long title</option>
             </optgroup>
             <optgroup label="Europeana">
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100002273023.0x000002/manifest.json">History of the Volunteer Movement in Cheshire, 1914-1920.</option>
@@ -62,8 +63,8 @@
         <h3>Config</h3>
 
         <select id="config">
-            <option value="/examples/default-config.js">Default</option>
-            <option value="/examples/cy-GB-config.js">Welsh</option>
+            <option value="/examples/config/default-config.js">Default</option>
+            <option value="/examples/config/cy-GB-config.js">Welsh</option>
         </select>
 
         <ul class="button-group">

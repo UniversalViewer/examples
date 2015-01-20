@@ -175,7 +175,8 @@
   padding: 10px 10px 10px 10px;
 }
 #app .leftPanel .views .treeView {
-  overflow: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   color: #ffffff;
   font-weight: normal;
 }
