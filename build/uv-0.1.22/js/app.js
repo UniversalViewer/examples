@@ -3052,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.21';
+    exports.Version = '0.1.22';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3434,7 +3434,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
                 $.publish(PagingHeaderPanel.PAGE_SEARCH, [value]);
             } else {
-                var index = parseInt(this.$searchText.val());
+                var index = parseInt(this.$searchText.val(), 10);
 
                 index -= 1;
 
@@ -6356,6 +6356,10 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
         BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
             label = label.trim();
+
+            if ($.isNumeric(label)) {
+                label = parseInt(label, 10).toString();
+            }
 
             var doublePageRegExp = /(\d*)\D+(\d*)/;
             var match, regExp, regStr, labelPart1, labelPart2;
