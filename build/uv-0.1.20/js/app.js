@@ -83,8 +83,6 @@ define("modernizr", function(){});
             // get the width of the span.
             // if it's wider than the container, remove a word until it's not.
             if ($self.spanElem.width() > $self.width()) {
-                console.log("wider");
-
                 var lastText;
 
                 while ($self.spanElem.width() > $self.width()) {
@@ -2497,6 +2495,7 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
         BaseExtension.RESIZE = 'onResize';
         BaseExtension.TOGGLE_FULLSCREEN = 'onToggleFullScreen';
         BaseExtension.CANVAS_INDEX_CHANGED = 'onAssetIndexChanged';
+        BaseExtension.CANVAS_INDEX_CHANGE_FAILED = 'onAssetIndexChangeFailed';
         BaseExtension.CLOSE_ACTIVE_DIALOGUE = 'onCloseActiveDialogue';
         BaseExtension.SEQUENCE_INDEX_CHANGED = 'onSequenceIndexChanged';
         BaseExtension.REDIRECT = 'onRedirect';
@@ -3053,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.19';
+    exports.Version = '0.1.20';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3262,12 +3261,18 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
             _super.prototype.create.call(this);
 
+            var that = this;
+
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.canvasIndexChanged(canvasIndex);
             });
 
             $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
                 _this.modeChanged(mode);
+            });
+
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED, function (e) {
+                _this.setSearchFieldValue(_this.provider.canvasIndex);
             });
 
             this.$prevOptions = $('<div class="prevOptions"></div>');
@@ -3401,7 +3406,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             }
         };
 
-        PagingHeaderPanel.prototype.setSearchPlaceholder = function (index) {
+        PagingHeaderPanel.prototype.setSearchFieldValue = function (index) {
             var canvas = this.provider.getCanvasByIndex(index);
 
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
@@ -3423,6 +3428,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
             if (!value) {
                 this.extension.showDialogue(this.content.emptyValue);
+                $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
 
                 return;
             }
@@ -3436,6 +3442,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
                 if (isNaN(index)) {
                     this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.invalidNumber);
+                    $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
 
@@ -3443,6 +3450,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
                 if (!asset) {
                     this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
+                    $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
 
@@ -3451,7 +3459,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
         };
 
         PagingHeaderPanel.prototype.canvasIndexChanged = function (index) {
-            this.setSearchPlaceholder(index);
+            this.setSearchFieldValue(index);
 
             if (this.provider.isFirstCanvas()) {
                 this.disableFirstButton();
@@ -3511,7 +3519,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
         };
 
         PagingHeaderPanel.prototype.modeChanged = function (mode) {
-            this.setSearchPlaceholder(this.provider.canvasIndex);
+            this.setSearchFieldValue(this.provider.canvasIndex);
             this.setTitles();
             this.setTotal();
         };
@@ -5918,6 +5926,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
                 this.showDialogue(this.provider.config.modules.genericDialogue.content.emptyValue);
+                $.publish(Extension.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
 
@@ -5927,6 +5936,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 this.viewPage(index);
             } else {
                 this.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
+                $.publish(Extension.CANVAS_INDEX_CHANGE_FAILED);
             }
         };
 
