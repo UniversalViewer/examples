@@ -3052,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.25';
+    exports.Version = '0.1.26';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5138,11 +5138,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         SeadragonCenterPanel.prototype.loadTileSources = function () {
             this.tileSources = this.provider.getTileSources();
 
-            if (this.tileSources[0].tileSource) {
-                this.viewer.open(this.tileSources[0]);
-            } else {
-                this.extension.showDialogue(this.config.content.imageUnavailable);
-            }
+            this.viewer.open(this.tileSources);
 
             this.viewer.addHandler('open', this.openHandler, this);
         };
