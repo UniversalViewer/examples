@@ -3052,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.28';
+    exports.Version = '0.1.29';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5146,7 +5146,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 }
             });
 
-            this.viewer.open(this.tileSources);
+            this.viewer.open(this.tileSources[0]);
 
             this.viewer.addHandler('open', this.openHandler, this);
         };
