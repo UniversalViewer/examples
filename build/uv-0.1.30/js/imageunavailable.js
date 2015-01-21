@@ -1,7 +1,7 @@
 imageunavailable({
     type: 'legacy-image-pyramid',
         levels:[{
-            url: 'js/imageunavailable.jpg',
+            url: 'js/imageunavailable.png',
             height: 300,
             width:  300
         }]
