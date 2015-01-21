@@ -338,8 +338,14 @@
 #app .centerPanel div[title="Zoom in"] {
   cursor: pointer !important;
 }
+#app .centerPanel div[title="Zoom in"]:focus {
+  border: 1px solid #87cefa !important;
+}
 #app .centerPanel div[title="Zoom out"] {
   cursor: pointer !important;
+}
+#app .centerPanel div[title="Zoom out"]:focus {
+  border: 1px solid #87cefa !important;
 }
 #app .centerPanel div[title="Rotate left"] {
   display: none !important;
@@ -347,11 +353,17 @@
 #app .centerPanel div[title="Rotate right"] {
   cursor: pointer !important;
 }
+#app .centerPanel div[title="Rotate right"]:focus {
+  border: 1px solid #87cefa !important;
+}
 #app .centerPanel div[title="Previous page"] {
   display: none !important;
 }
 #app .centerPanel div[title="Next page"] {
   display: none !important;
+}
+#app .centerPanel div[title="Next page"]:focus {
+  border: 1px solid #87cefa !important;
 }
 /*
 #app .centerPanel .zoomControls{
@@ -407,6 +419,9 @@
   border-bottom: 1px solid #1f1f1f;
   color: #ffffff;
   margin-bottom: -1px;
+}
+#app .leftPanel .tabs .tab:focus {
+  border: 1px solid #87cefa;
 }
 #app .leftPanel .tabsContent {
   padding: 10px 10px 10px 10px;
@@ -1439,6 +1454,12 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 7px 5px 0 0;
   display: block;
 }
+#app .leftPanel .closed .expandButton:focus {
+  border: 1px solid #87cefa;
+}
+#app .leftPanel .closed .expandFullButton:focus {
+  border: 1px solid #87cefa;
+}
 #app .rightPanel .top {
   height: 35px;
   position: relative;
@@ -1486,6 +1507,12 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
   margin: 7px 0 0 5px;
   display: block;
+}
+#app .rightPanel .closed .expandButton:focus {
+  border: 1px solid #87cefa;
+}
+#app .rightPanel .closed .expandFullButton:focus {
+  border: 1px solid #87cefa;
 }
 #app .rightPanel .main {
   margin-right: 10px;
@@ -1671,6 +1698,9 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .imageBtn {
   cursor: pointer;
+}
+#app .imageBtn:focus {
+  border: 1px solid #87cefa;
 }
 #app .action,
 #app a.action.black,

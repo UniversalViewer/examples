@@ -171,6 +171,9 @@
   color: #ffffff;
   margin-bottom: -1px;
 }
+#app .leftPanel .tabs .tab:focus {
+  border: 1px solid #87cefa;
+}
 #app .leftPanel .tabsContent {
   padding: 10px 10px 10px 10px;
 }
@@ -2108,6 +2111,12 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 7px 5px 0 0;
   display: block;
 }
+#app .leftPanel .closed .expandButton:focus {
+  border: 1px solid #87cefa;
+}
+#app .leftPanel .closed .expandFullButton:focus {
+  border: 1px solid #87cefa;
+}
 #app .rightPanel .top {
   height: 35px;
   position: relative;
@@ -2155,6 +2164,12 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
   margin: 7px 0 0 5px;
   display: block;
+}
+#app .rightPanel .closed .expandButton:focus {
+  border: 1px solid #87cefa;
+}
+#app .rightPanel .closed .expandFullButton:focus {
+  border: 1px solid #87cefa;
 }
 #app .rightPanel .main {
   margin-right: 10px;
@@ -2340,6 +2355,9 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .imageBtn {
   cursor: pointer;
+}
+#app .imageBtn:focus {
+  border: 1px solid #87cefa;
 }
 #app .action,
 #app a.action.black,
