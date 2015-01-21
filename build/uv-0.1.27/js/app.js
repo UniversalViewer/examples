@@ -3052,7 +3052,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.26';
+    exports.Version = '0.1.27';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5137,6 +5137,14 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
 
         SeadragonCenterPanel.prototype.loadTileSources = function () {
             this.tileSources = this.provider.getTileSources();
+
+            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/coreplayer-seadragon-extension/js/imageunavailable.js' : '/js/imageunavailable.js';
+
+            _.each(this.tileSources, function (ts) {
+                if (!ts.tileSource) {
+                    ts.tileSource = imageUnavailableUri;
+                }
+            });
 
             this.viewer.open(this.tileSources);
 
