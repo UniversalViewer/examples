@@ -2321,6 +2321,8 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
     var BaseExtension = (function () {
         function BaseExtension(provider) {
             this.isFullScreen = false;
+            this.tabbing = false;
+            this.shifted = false;
             window.extension = this;
 
             this.provider = provider;
@@ -2363,6 +2365,11 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
             $(document).on('mousemove', function (e) {
                 _this.mouseX = e.pageX;
                 _this.mouseY = e.pageY;
+            });
+
+            $(document).on('keyup keydown', function (e) {
+                _this.shifted = e.shiftKey;
+                _this.tabbing = e.keyCode === 9;
             });
 
             this.$element.append('<a href="/" id="top"></a>');
@@ -3060,7 +3067,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.0';
+    exports.Version = '1.0.1';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3384,6 +3391,12 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             if (this.options.helpEnabled === false) {
                 this.$helpButton.hide();
             }
+
+            this.$searchButton.blur(function () {
+                if (_this.extension.tabbing && !_this.extension.shifted) {
+                    _this.$nextButton.focus();
+                }
+            });
         };
 
         PagingHeaderPanel.prototype.setTitles = function () {
@@ -3559,6 +3572,7 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
             this.isExpanded = false;
             this.isFullyExpanded = false;
             this.isUnopened = true;
+            this.autoToggled = false;
         }
         BaseExpandPanel.prototype.create = function () {
             var _this = this;
@@ -3626,8 +3640,10 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
             _super.prototype.init.call(this);
         };
 
-        BaseExpandPanel.prototype.toggle = function () {
+        BaseExpandPanel.prototype.toggle = function (autoToggled) {
             var _this = this;
+            (autoToggled) ? this.autoToggled = true : this.autoToggled = false;
+
             if (this.isExpanded) {
                 this.$top.hide();
                 this.$main.hide();
@@ -3711,7 +3727,7 @@ define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports",
         };
 
         BaseExpandPanel.prototype.toggleFinish = function () {
-            if (this.isExpanded) {
+            if (this.isExpanded && !this.autoToggled) {
                 this.focusCollapseButton();
             } else {
                 this.focusExpandButton();
@@ -3791,7 +3807,7 @@ define('modules/coreplayer-shared-module/leftPanel',["require", "exports", "./ba
             _super.prototype.init.call(this);
 
             if (this.options.panelOpen && this.provider.isHomeDomain) {
-                this.toggle();
+                this.toggle(true);
             }
         };
 
@@ -5224,7 +5240,7 @@ define('modules/coreplayer-shared-module/rightPanel',["require", "exports", "./b
             _super.prototype.init.call(this);
 
             if (this.options.panelOpen && this.provider.isHomeDomain) {
-                this.toggle();
+                this.toggle(true);
             }
         };
 
@@ -5854,6 +5870,8 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
 
                 $.publish(baseExtension.BaseExtension.RESIZE);
 
+                that.setDefaultFocus();
+
                 $.publish(Extension.CREATED);
             });
         };
@@ -5892,6 +5910,12 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
             if (this.isRightPanelEnabled()) {
                 this.rightPanel.init();
             }
+        };
+
+        Extension.prototype.setDefaultFocus = function () {
+            setTimeout(function () {
+                $('[tabindex=1]').focus();
+            }, 1);
         };
 
         Extension.prototype.setParams = function () {
