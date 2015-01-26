@@ -649,4 +649,8 @@ $(function(){
     $(document).bind("onCurrentViewUri", function (event, obj) {
         console.log(obj);
     });
+
+    $(document).bind("onLoad", function (event, obj) {
+        //$('#app').focus();
+    });
 });
