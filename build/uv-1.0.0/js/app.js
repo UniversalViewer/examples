@@ -3060,7 +3060,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '0.1.31';
+    exports.Version = '1.0.0';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3892,8 +3892,9 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
 
             $.views.helpers({
                 elide: function (text) {
-                    var anchorElement = this.linkCtx.elem;
-                    return util.htmlDecode(util.ellipsis(text, 40));
+                    var $a = $(this.linkCtx.elem);
+                    var elideCount = Math.floor($a.parent().width() / 7);
+                    return util.htmlDecode(util.ellipsis(text, elideCount));
                 }
             });
 
@@ -4021,8 +4022,6 @@ define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "expor
 
         TreeView.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
-            var that = this;
 
             this.elideAll();
         };
@@ -5335,6 +5334,8 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
 
             $header.text(name);
             $text.text(value);
+
+            $text.toggleExpandText(trimChars);
 
             return $elem;
         };
