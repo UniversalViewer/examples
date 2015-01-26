@@ -651,6 +651,6 @@ $(function(){
     });
 
     $(document).bind("onLoad", function (event, obj) {
-        //$('#app').focus();
+
     });
 });
