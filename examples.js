@@ -484,11 +484,7 @@ $(function(){
     var editor;
 
     if (testBuild){
-<<<<<<< HEAD
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.0/js/embed.js"><\/script>');
-=======
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.1/js/embed.js"><\/script>');
->>>>>>> bltesters
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -510,11 +506,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-<<<<<<< HEAD
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.0/js/embed.js"><\/script>');
-=======
             $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.1/js/embed.js"><\/script>');
->>>>>>> bltesters
         }
     }
 
@@ -619,11 +611,7 @@ $(function(){
 
             // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-<<<<<<< HEAD
-            $.getJSON('/build/uv-1.0.0/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
-=======
             $.getJSON('/build/uv-1.0.1/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
->>>>>>> bltesters
                 var configUrl = $('#config option:selected').val();
 
                 $.getJSON(configUrl, function(config){
