@@ -220,10 +220,10 @@
 }
 #app .leftPanel .views .thumbsView .thumbs {
   overflow: hidden;
+  width: 210px;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb {
   margin: 0 7px 7px 0;
-  float: left;
   cursor: pointer;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap {
@@ -262,6 +262,18 @@
   height: 1px;
   clear: both;
   border: none;
+}
+#app .leftPanel .views .thumbsView .thumbs.ltr .thumb {
+  float: left;
+}
+#app .leftPanel .views .thumbsView .thumbs.ltr .thumb.first {
+  float: right;
+}
+#app .leftPanel .views .thumbsView .thumbs.rtl .thumb {
+  float: right;
+}
+#app .leftPanel .views .thumbsView .thumbs.rtl .thumb.first {
+  float: left;
 }
 #app .leftPanel .views .galleryView .header {
   overflow: hidden;

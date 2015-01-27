@@ -2307,7 +2307,6 @@ define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseEx
             Shell.$overlays.height(this.extension.height());
 
             var mainHeight = this.$element.height() - parseInt(Shell.$mainPanel.css('marginTop')) - Shell.$headerPanel.height() - Shell.$footerPanel.height();
-
             Shell.$mainPanel.height(mainHeight);
         };
         Shell.SHOW_OVERLAY = 'onShowOverlay';
@@ -2735,6 +2734,10 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             }
         };
 
+        BaseProvider.prototype.getViewingDirection = function () {
+            return this.sequence.viewingDirection || "left-to-right";
+        };
+
         BaseProvider.prototype.getFirstPageIndex = function () {
             return 0;
         };
@@ -3067,7 +3070,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.1';
+    exports.Version = '1.0.2';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4077,6 +4080,12 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             this.$thumbs = utils.Utils.createDiv('thumbs');
             this.$element.append(this.$thumbs);
 
+            if (this.provider.getViewingDirection() === "right-to-left") {
+                this.$thumbs.addClass("rtl");
+            } else {
+                this.$thumbs.addClass("ltr");
+            }
+
             $.templates({
                 thumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
                                 <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
@@ -4098,11 +4107,17 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                     return extraHeight;
                 },
                 className: function () {
-                    if (this.data.url) {
-                        return "thumb";
+                    var className = "thumb";
+
+                    if (this.data.index === 0) {
+                        className += " first";
                     }
 
-                    return "thumb placeholder";
+                    if (!this.data.url) {
+                        className += " placeholder";
+                    }
+
+                    return className;
                 }
             });
 
@@ -4352,11 +4367,17 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
                     return (num % 2 == 0) ? false : true;
                 },
                 className: function () {
-                    if (this.data.url) {
-                        return "thumb";
+                    var className = "thumb";
+
+                    if (this.data.index === 0) {
+                        className += " first";
                     }
 
-                    return "thumb placeholder";
+                    if (!this.data.url) {
+                        className += " placeholder";
+                    }
+
+                    return className;
                 }
             });
 
@@ -6242,13 +6263,25 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             if (typeof (canvasIndex) === 'undefined')
                 canvasIndex = this.canvasIndex;
 
+            var indices = [];
+
             if (this.isFirstCanvas(canvasIndex) || this.isLastCanvas(canvasIndex)) {
-                return [canvasIndex];
+                indices = [canvasIndex];
             } else if (canvasIndex % 2) {
-                return [canvasIndex, canvasIndex + 1];
+                indices = [canvasIndex, canvasIndex + 1];
             } else {
-                return [canvasIndex - 1, canvasIndex];
+                indices = [canvasIndex - 1, canvasIndex];
             }
+
+            if (this.getViewingDirection() == "left-to-right") {
+                return indices;
+            } else {
+                return indices.reverse();
+            }
+        };
+
+        BaseProvider.prototype.getViewingDirection = function () {
+            return this.sequence.viewingDirection || "left-to-right";
         };
 
         BaseProvider.prototype.getFirstPageIndex = function () {
