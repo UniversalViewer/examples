@@ -12,10 +12,6 @@ schema = {
                 "collapsed": true
             },
             "properties": {
-                "IIIF": {
-                    "id": "IIIF",
-                    "type": "boolean"
-                },
                 "theme": {
                     "id": "theme",
                     "type": "string"
@@ -529,6 +525,11 @@ $(function(){
     }
 
     function createEditor() {
+
+        if (browserDetect.browser === "Explorer" && browserDetect.version === 8) {
+            $("#edit-config").hide();
+            return;
+        }
 
         editor = new JSONEditor(document.getElementById('editor'),{
             form_name_root: "",
