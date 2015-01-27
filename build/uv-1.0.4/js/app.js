@@ -3070,7 +3070,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.3';
+    exports.Version = '1.0.4';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -6306,7 +6306,12 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
             if (this.isPaged()) {
                 var indices = this.getPagedIndices(canvasIndex);
-                index = indices[0] - 1;
+
+                if (this.getViewingDirection() == "left-to-right") {
+                    index = indices[0] - 1;
+                } else {
+                    index = indices.last() - 1;
+                }
             } else {
                 index = canvasIndex - 1;
             }
@@ -6322,7 +6327,12 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
             if (this.isPaged()) {
                 var indices = this.getPagedIndices(canvasIndex);
-                index = indices.last() + 1;
+
+                if (this.getViewingDirection() == "left-to-right") {
+                    index = indices.last() + 1;
+                } else {
+                    index = indices[0] + 1;
+                }
             } else {
                 index = canvasIndex + 1;
             }
