@@ -3070,7 +3070,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.2';
+    exports.Version = '1.0.3';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4331,6 +4331,12 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$main.append(this.$thumbs);
+
+            if (this.provider.getViewingDirection() === "right-to-left") {
+                this.$thumbs.addClass("rtl");
+            } else {
+                this.$thumbs.addClass("ltr");
+            }
 
             this.$sizeDownButton.on('click', function () {
                 var val = Number(_this.$sizeRange.val()) - 1;

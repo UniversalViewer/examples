@@ -299,6 +299,7 @@
   overflow: auto;
 }
 #app .leftPanel .views .galleryView .main .thumbs {
+  margin-right: 10px;
   overflow: hidden;
   position: relative;
 }
@@ -336,6 +337,12 @@
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
   background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+}
+#app .leftPanel .views .galleryView .main .thumbs.ltr .thumb {
+  float: left;
+}
+#app .leftPanel .views .galleryView .main .thumbs.rtl .thumb {
+  float: right;
 }
 #app.browser-Explorer .leftPanel .views .galleryView .header input[type="range"] {
   margin-top: -11px;
