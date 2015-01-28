@@ -2862,7 +2862,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return canvas.structures.last();
         };
 
-        BaseProvider.prototype.getCanvasOrderLabel = function (canvas) {
+        BaseProvider.prototype.getCanvasLabel = function (canvas) {
             return canvas.orderLabel.trim();
         };
 
@@ -2895,7 +2895,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return null;
         };
 
-        BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
+        BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
             var regExp = /(\d*)\D*(\d*)|(\d*)/;
             var match = regExp.exec(label);
 
@@ -3070,7 +3070,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.4';
+    exports.Version = '1.0.5';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3378,6 +3378,10 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
                 _this.search();
             });
 
+            this.$searchText.focus(function () {
+                $(this).select();
+            });
+
             this.$searchButton.onPressed(function () {
                 _this.search();
             });
@@ -3422,7 +3426,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             var of = this.content.of;
 
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
-                this.$total.html(String.prototype.format(of, this.provider.getLastCanvasOrderLabel()));
+                this.$total.html(String.prototype.format(of, this.provider.getLastCanvasLabel()));
             } else {
                 this.$total.html(String.prototype.format(of, this.provider.getTotalCanvases()));
             }
@@ -3432,7 +3436,7 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             var canvas = this.provider.getCanvasByIndex(index);
 
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
-                var orderLabel = this.provider.getCanvasOrderLabel(canvas);
+                var orderLabel = this.provider.getCanvasLabel(canvas);
 
                 if (orderLabel === "-") {
                     this.$searchText.val("");
@@ -4056,7 +4060,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exports", "../../utils", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseView"], function(require, exports, utils, baseExtension, extension, baseView) {
+define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exports", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseView"], function(require, exports, baseExtension, extension, baseView) {
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
@@ -4077,14 +4081,12 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                 _this.setLabel();
             });
 
-            this.$thumbs = utils.Utils.createDiv('thumbs');
+            this.$thumbs = $('<div class="thumbs"></div>');
             this.$element.append(this.$thumbs);
 
-            if (this.provider.getViewingDirection() === "right-to-left") {
-                this.$thumbs.addClass("rtl");
-            } else {
-                this.$thumbs.addClass("ltr");
-            }
+            this.$thumbs.addClass(this.provider.getViewingDirection());
+
+            var that = this;
 
             $.templates({
                 thumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
@@ -4092,7 +4094,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
                                 <span class="index">{{:#index + 1}}</span>\
                                 <span class="label">{{>label}}&nbsp;</span>\
                              </div>\
-                             {{if ~isOdd(#index + 1)}} \
+                             {{if ~separator()}} \
                                  <div class="separator"></div> \
                              {{/if}}'
             });
@@ -4100,8 +4102,13 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             var extraHeight = this.options.thumbsExtraHeight;
 
             $.views.helpers({
-                isOdd: function (num) {
-                    return (num % 2 == 0) ? false : true;
+                separator: function () {
+                    var viewingDirection = that.provider.getViewingDirection();
+                    if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
+                        return true;
+                    }
+
+                    return ((this.data.index - 1) % 2 == 0) ? false : true;
                 },
                 extraHeight: function () {
                     return extraHeight;
@@ -4115,6 +4122,13 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
 
                     if (!this.data.url) {
                         className += " placeholder";
+                    }
+
+                    var viewingDirection = that.provider.getViewingDirection();
+                    if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
+                        className += " oneCol";
+                    } else {
+                        className += " twoCol";
                     }
 
                     return className;
@@ -4332,11 +4346,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$main.append(this.$thumbs);
 
-            if (this.provider.getViewingDirection() === "right-to-left") {
-                this.$thumbs.addClass("rtl");
-            } else {
-                this.$thumbs.addClass("ltr");
-            }
+            this.$thumbs.addClass(this.provider.getViewingDirection());
 
             this.$sizeDownButton.on('click', function () {
                 var val = Number(_this.$sizeRange.val()) - 1;
@@ -4369,9 +4379,6 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
             });
 
             $.views.helpers({
-                isOdd: function (num) {
-                    return (num % 2 == 0) ? false : true;
-                },
                 className: function () {
                     var className = "thumb";
 
@@ -4669,8 +4676,17 @@ define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require
         };
 
         TreeViewLeftPanel.prototype.dataBindThumbsView = function () {
-            var width = this.config.options.thumbWidth;
-            var height = this.config.options.thumbHeight;
+            var width, height;
+            var viewingDirection = this.provider.getViewingDirection();
+
+            if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
+                width = this.config.options.oneColThumbWidth;
+                height = this.config.options.oneColThumbHeight;
+            } else {
+                width = this.config.options.twoColThumbWidth;
+                height = this.config.options.twoColThumbHeight;
+            }
+
             this.thumbsView.thumbs = this.provider.getThumbs(width, height);
             this.thumbsView.dataBind();
         };
@@ -5210,12 +5226,22 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             that.viewer.removeHandler('open', that.handler);
 
             if (that.tileSources.length > 1) {
-                that.tileSources[1].x = that.viewer.world.getItemAt(0).getBounds().x + that.viewer.world.getItemAt(0).getBounds().width + that.config.options.pageGap;
+                var viewingDirection = that.provider.getViewingDirection();
+                if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
+                    that.tileSources[1].y = that.viewer.world.getItemAt(0).getBounds().y + that.viewer.world.getItemAt(0).getBounds().height + that.config.options.pageGap;
+                } else {
+                    that.tileSources[1].x = that.viewer.world.getItemAt(0).getBounds().x + that.viewer.world.getItemAt(0).getBounds().width + that.config.options.pageGap;
+                }
+
                 that.viewer.addTiledImage(that.tileSources[1]);
             }
 
             if (that.tileSources.length != that.lastTilesNum) {
-                that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, that.tileSources.length, that.viewer.world.getItemAt(0).normHeight));
+                if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
+                    that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, that.viewer.world.getItemAt(0).normHeight * 2));
+                } else {
+                    that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, that.tileSources.length, that.viewer.world.getItemAt(0).normHeight));
+                }
             }
 
             that.lastTilesNum = that.tileSources.length;
@@ -6040,7 +6066,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
                 return;
             }
 
-            var index = this.provider.getCanvasIndexByOrderLabel(label);
+            var index = this.provider.getCanvasIndexByLabel(label);
 
             if (index != -1) {
                 this.viewPage(index);
@@ -6181,11 +6207,11 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return this.manifest.seeAlso;
         };
 
-        BaseProvider.prototype.getCanvasOrderLabel = function (canvas) {
+        BaseProvider.prototype.getCanvasLabel = function (canvas) {
             return canvas.label;
         };
 
-        BaseProvider.prototype.getLastCanvasOrderLabel = function () {
+        BaseProvider.prototype.getLastCanvasLabel = function () {
             for (var i = this.sequence.canvases.length - 1; i >= 0; i--) {
                 var canvas = this.sequence.canvases[i];
 
@@ -6279,10 +6305,10 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
                 indices = [canvasIndex - 1, canvasIndex];
             }
 
-            if (this.getViewingDirection() == "left-to-right") {
-                return indices;
-            } else {
+            if (this.getViewingDirection() === "right-to-left") {
                 return indices.reverse();
+            } else {
+                return indices;
             }
         };
 
@@ -6307,10 +6333,10 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             if (this.isPaged()) {
                 var indices = this.getPagedIndices(canvasIndex);
 
-                if (this.getViewingDirection() == "left-to-right") {
-                    index = indices[0] - 1;
-                } else {
+                if (this.getViewingDirection() == "right-to-left") {
                     index = indices.last() - 1;
+                } else {
+                    index = indices[0] - 1;
                 }
             } else {
                 index = canvasIndex - 1;
@@ -6328,10 +6354,10 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             if (this.isPaged()) {
                 var indices = this.getPagedIndices(canvasIndex);
 
-                if (this.getViewingDirection() == "left-to-right") {
-                    index = indices.last() + 1;
-                } else {
+                if (this.getViewingDirection() == "right-to-left") {
                     index = indices[0] + 1;
+                } else {
+                    index = indices.last() + 1;
                 }
             } else {
                 index = canvasIndex + 1;
@@ -6488,7 +6514,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return null;
         };
 
-        BaseProvider.prototype.getCanvasIndexByOrderLabel = function (label) {
+        BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
             label = label.trim();
 
             if ($.isNumeric(label)) {

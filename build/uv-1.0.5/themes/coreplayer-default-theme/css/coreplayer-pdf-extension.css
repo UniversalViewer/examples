@@ -223,15 +223,12 @@
   width: 210px;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb {
-  margin: 0 7px 7px 0;
   cursor: pointer;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap {
   border: 2px solid #373737;
   padding: 2px;
-  max-height: 182px;
   overflow: hidden;
-  width: 98px;
   text-align: center;
   background: none;
 }
@@ -258,21 +255,35 @@
 #app .leftPanel .views .thumbsView .thumbs .thumb.placeholder .wrap {
   background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
+#app .leftPanel .views .thumbsView .thumbs .thumb.oneCol {
+  margin: 0 0 7px 0;
+}
+#app .leftPanel .views .thumbsView .thumbs .thumb.oneCol .wrap {
+  width: 208px;
+  max-height: 373px;
+}
+#app .leftPanel .views .thumbsView .thumbs .thumb.twoCol {
+  margin: 0 7px 7px 0;
+}
+#app .leftPanel .views .thumbsView .thumbs .thumb.twoCol .wrap {
+  width: 98px;
+  max-height: 182px;
+}
 #app .leftPanel .views .thumbsView .thumbs .separator {
   height: 1px;
   clear: both;
   border: none;
 }
-#app .leftPanel .views .thumbsView .thumbs.ltr .thumb {
+#app .leftPanel .views .thumbsView .thumbs.left-to-right .thumb {
   float: left;
 }
-#app .leftPanel .views .thumbsView .thumbs.ltr .thumb.first {
+#app .leftPanel .views .thumbsView .thumbs.left-to-right .thumb.first {
   float: right;
 }
-#app .leftPanel .views .thumbsView .thumbs.rtl .thumb {
+#app .leftPanel .views .thumbsView .thumbs.right-to-left .thumb {
   float: right;
 }
-#app .leftPanel .views .thumbsView .thumbs.rtl .thumb.first {
+#app .leftPanel .views .thumbsView .thumbs.right-to-left .thumb.first {
   float: left;
 }
 #app .leftPanel .views .galleryView .header {
@@ -338,10 +349,10 @@
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
   background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
-#app .leftPanel .views .galleryView .main .thumbs.ltr .thumb {
+#app .leftPanel .views .galleryView .main .thumbs.left-to-right .thumb {
   float: left;
 }
-#app .leftPanel .views .galleryView .main .thumbs.rtl .thumb {
+#app .leftPanel .views .galleryView .main .thumbs.right-to-left .thumb {
   float: right;
 }
 #app.browser-Explorer .leftPanel .views .galleryView .header input[type="range"] {
