@@ -221,6 +221,7 @@
 #app .leftPanel .views .thumbsView .thumbs {
   overflow: hidden;
   width: 210px;
+  position: relative;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb {
   cursor: pointer;

@@ -3070,7 +3070,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.5';
+    exports.Version = '1.0.6';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4285,8 +4285,7 @@ define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exp
             }
 
             if (this.lastThumbClickedIndex != index) {
-                var scrollTop = this.$element.scrollTop() + this.$selectedThumb.position().top - (this.$selectedThumb.height() / 2);
-                this.$element.scrollTop(scrollTop);
+                this.$element.scrollTop(this.$selectedThumb.position().top);
             }
 
             this.loadThumbs(index);
@@ -4368,6 +4367,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
             this.$sizeRange.on('change', function () {
                 _this.updateThumbs();
+                _this.scrollToSelectedThumb();
             });
 
             $.templates({
@@ -4529,6 +4529,7 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
             setTimeout(function () {
                 _this.selectIndex(_this.provider.canvasIndex);
+                _this.scrollToSelectedThumb();
             }, 1);
         };
 
@@ -4562,12 +4563,11 @@ define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "ex
 
             this.$selectedThumb.addClass('selected');
 
-            if (this.lastThumbClickedIndex != index) {
-                var scrollTop = this.$element.scrollTop() + this.$selectedThumb.position().top - (this.$selectedThumb.height() / 2);
-                this.$element.scrollTop(scrollTop);
-            }
-
             this.updateThumbs();
+        };
+
+        GalleryView.prototype.scrollToSelectedThumb = function () {
+            this.$main.scrollTop(this.$selectedThumb.position().top);
         };
 
         GalleryView.prototype.resize = function () {
@@ -5225,8 +5225,9 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
 
             that.viewer.removeHandler('open', that.handler);
 
+            var viewingDirection = that.provider.getViewingDirection();
+
             if (that.tileSources.length > 1) {
-                var viewingDirection = that.provider.getViewingDirection();
                 if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
                     that.tileSources[1].y = that.viewer.world.getItemAt(0).getBounds().y + that.viewer.world.getItemAt(0).getBounds().height + that.config.options.pageGap;
                 } else {
@@ -5237,10 +5238,14 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             }
 
             if (that.tileSources.length != that.lastTilesNum) {
-                if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
-                    that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, that.viewer.world.getItemAt(0).normHeight * 2));
-                } else {
-                    that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, that.tileSources.length, that.viewer.world.getItemAt(0).normHeight));
+                switch (viewingDirection) {
+                    case "top-to-bottom":
+                        that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, that.viewer.world.getItemAt(0).normHeight * that.tileSources.length));
+                        break;
+                    case "left-to-right":
+                    case "right-to-left":
+                        that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, that.tileSources.length, that.viewer.world.getItemAt(0).normHeight));
+                        break;
                 }
             }
 
