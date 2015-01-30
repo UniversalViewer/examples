@@ -88,14 +88,16 @@
                 "controlsFadeAfterInactive": 1500,
                 "controlsFadeDelay": 250,
                 "controlsFadeLength": 250,
-                "navigatorPosition": "BOTTOM_RIGHT"
+                "navigatorPosition": "BOTTOM_RIGHT",
+                "trimAttributionCount": 100
             },
             "content": {
                 "previous": "Previous",
                 "next": "Next",
                 "zoomIn": "Zoom In",
                 "zoomOut": "Zoom Out",
-                "imageUnavailable": "Image Unavailable"
+                "imageUnavailable": "Image Unavailable",
+                "acknowledgements": "Acknowledgements"
             }
         },
         "moreInfoRightPanel": {

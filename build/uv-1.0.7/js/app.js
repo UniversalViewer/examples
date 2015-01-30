@@ -146,7 +146,7 @@ define("modernizr", function(){});
 
     };
 
-    $.fn.toggleExpandText = function (chars) {
+    $.fn.toggleExpandText = function (chars, callback) {
 
         return this.each(function () {
 
@@ -183,6 +183,8 @@ define("modernizr", function(){});
                 expanded = !expanded;
 
                 $self.append($toggleButton);
+
+                if (callback) callback();
             };
 
             $self.toggle();
@@ -2645,6 +2647,18 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
             return this.sequence.assetType.replace('/', '-');
         };
 
+        BaseProvider.prototype.getAttribution = function () {
+            return this.manifest.attribution;
+        };
+
+        BaseProvider.prototype.getLicense = function () {
+            return this.manifest.license;
+        };
+
+        BaseProvider.prototype.getLogo = function () {
+            return this.manifest.logo;
+        };
+
         BaseProvider.prototype.getRootStructure = function () {
             return this.sequence.rootSection;
         };
@@ -3070,7 +3084,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.6';
+    exports.Version = '1.0.7';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4905,6 +4919,27 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.append(this.$viewer);
 
+            this.$rights = $('<div class="rights">\
+                               <div class="header">\
+                                   <div class="title"></div>\
+                                   <div class="close"></div>\
+                               </div>\
+                               <div class="main">\
+                                   <div class="attribution"></div>\
+                                   <div class="license"></div>\
+                                   <div class="logo"></div>\
+                               </div>\
+                          </div>');
+
+            this.$rights.find('.header .title').text(this.content.acknowledgements);
+            this.$content.append(this.$rights);
+
+            this.$closeRightsBtn = this.$rights.find('.header .close');
+            this.$closeRightsBtn.on('click', function (e) {
+                e.preventDefault();
+                _this.$rights.hide();
+            });
+
             this.createSeadragonViewer();
 
             if (this.provider.isMultiCanvas()) {
@@ -4983,9 +5018,48 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
                 }
                 $('div[title="Rotate right"]').hide();
             }
+
+            this.showRights();
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
+        };
+
+        SeadragonCenterPanel.prototype.showRights = function () {
+            var _this = this;
+            var attribution = this.provider.getAttribution();
+            var license = this.provider.getLicense();
+            var logo = this.provider.getLogo();
+
+            if (!attribution && !license && !logo) {
+                this.$rights.hide();
+                return;
+            }
+
+            var $attribution = this.$rights.find('.attribution');
+            var $license = this.$rights.find('.license');
+            var $logo = this.$rights.find('.logo');
+
+            if (attribution) {
+                $attribution.text(attribution);
+                $attribution.toggleExpandText(this.options.trimAttributionCount, function () {
+                    _this.resize();
+                });
+            } else {
+                $attribution.hide();
+            }
+
+            if (license) {
+                $license.text(license);
+            } else {
+                $license.hide();
+            }
+
+            if (logo) {
+                $logo.text(logo);
+            } else {
+                $logo.hide();
+            }
         };
 
         SeadragonCenterPanel.prototype.viewerOpen = function () {
@@ -5107,6 +5181,10 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
             if (this.provider.isMultiCanvas()) {
                 this.$prevButton.css('top', (this.$content.height() - this.$prevButton.height()) / 2);
                 this.$nextButton.css('top', (this.$content.height() - this.$nextButton.height()) / 2);
+            }
+
+            if (this.$rights.is(':visible')) {
+                this.$rights.css('top', this.$content.height() - this.$rights.outerHeight() - this.$rights.verticalMargins());
             }
         };
         SeadragonCenterPanel.SEADRAGON_OPEN = 'center.onOpen';
@@ -6202,6 +6280,18 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
 
         BaseProvider.prototype.getSequenceType = function () {
             return 'seadragon-iiif';
+        };
+
+        BaseProvider.prototype.getAttribution = function () {
+            return this.manifest.attribution;
+        };
+
+        BaseProvider.prototype.getLicense = function () {
+            return this.manifest.license;
+        };
+
+        BaseProvider.prototype.getLogo = function () {
+            return this.manifest.logo;
         };
 
         BaseProvider.prototype.getTitle = function () {

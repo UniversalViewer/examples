@@ -363,6 +363,10 @@ schema = {
                                     "id": "navigatorPosition",
                                     "type": "string",
                                     "enum": ["BOTTOM_RIGHT", "BOTTOM_LEFT", "TOP_LEFT", "TOP_RIGHT"]
+                                },
+                                "trimAttributionCount": {
+                                    "id": "trimAttributionCount",
+                                    "type": "integer"
                                 }
                             }
                         },
@@ -388,6 +392,10 @@ schema = {
                                 },
                                 "imageUnavailable": {
                                     "id": "imageUnavailable",
+                                    "type": "string"
+                                },
+                                "acknowledgements": {
+                                    "id": "acknowledgements",
                                     "type": "string"
                                 }
                             }
@@ -488,7 +496,7 @@ $(function(){
     var editor;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.6/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.7/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -510,7 +518,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.6/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.7/js/embed.js"><\/script>');
         }
     }
 
@@ -620,7 +628,7 @@ $(function(){
 
             // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.6/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
+            $.getJSON('/build/uv-1.0.7/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
                 var configUrl = $('#config option:selected').val();
 
                 $.getJSON(configUrl, function(config){
