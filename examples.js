@@ -534,7 +534,7 @@ $(function(){
 
     function createEditor() {
 
-        if (browserDetect.browser === "Explorer" && browserDetect.version === 8) {
+        if ((browserDetect.browser === "Explorer" && browserDetect.version === 8) || typeof(JSONEditor) === "undefined") {
             $("#edit-config").hide();
             return;
         }
