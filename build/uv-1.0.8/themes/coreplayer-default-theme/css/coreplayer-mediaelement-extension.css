@@ -396,23 +396,28 @@
 #app .rightPanel .main .items {
   padding: 0 10px 20px 10px;
 }
-#app .rightPanel .main .header {
+#app .rightPanel .main .items .item .header {
   color: #999999;
   border-bottom: 1px solid #555555;
   font-size: 11px;
   margin: 15px 10px 0 0;
   text-transform: uppercase;
 }
-#app .rightPanel .main .text {
+#app .rightPanel .main .items .item .text {
   color: #ffffff;
   margin: 5px 10px 0 0;
+  overflow: hidden;
+  word-wrap: break-word;
 }
-#app .rightPanel .main .text a.toggle {
+#app .rightPanel .main .items .item .text a.toggle {
   color: #869f33;
   font-weight: normal;
 }
-#app .rightPanel .main .text a.toggle:hover {
+#app .rightPanel .main .items .item .text a.toggle:hover {
   color: #a5c342;
+}
+#app .rightPanel .main .items .item .text img {
+  max-width: 100px;
 }
 .mejs-container {
   position: relative;

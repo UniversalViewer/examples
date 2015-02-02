@@ -89,7 +89,7 @@
                 "controlsFadeDelay": 250,
                 "controlsFadeLength": 250,
                 "navigatorPosition": "BOTTOM_RIGHT",
-                "trimAttributionCount": 100
+                "trimAttributionCount": 300
             },
             "content": {
                 "previous": "Previous",

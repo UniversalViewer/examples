@@ -152,7 +152,7 @@ define("modernizr", function(){});
 
             var $self = $(this);
 
-            var expandedText = $self.text();
+            var expandedText = $self.html();
 
             if (chars > expandedText.length) return;
 
@@ -169,9 +169,11 @@ define("modernizr", function(){});
                 if (expanded) {
                     $self.html(expandedText + "&nbsp;");
                     $toggleButton.text("less");
+                    $toggleButton.toggleClass("less", "more");
                 } else {
                     $self.html(collapsedText + "&nbsp;");
                     $toggleButton.text("more");
+                    $toggleButton.toggleClass("more", "less");
                 }
 
                 $toggleButton.one('click', function(e) {
@@ -3084,7 +3086,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.7';
+    exports.Version = '1.0.8';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5028,10 +5030,8 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
         SeadragonCenterPanel.prototype.showRights = function () {
             var _this = this;
             var attribution = this.provider.getAttribution();
-            var license = this.provider.getLicense();
-            var logo = this.provider.getLogo();
 
-            if (!attribution && !license && !logo) {
+            if (!attribution) {
                 this.$rights.hide();
                 return;
             }
@@ -5041,7 +5041,14 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
             var $logo = this.$rights.find('.logo');
 
             if (attribution) {
-                $attribution.text(attribution);
+                $attribution.html(attribution);
+                $attribution.find('img').one("load", function () {
+                    _this.resize();
+                }).each(function () {
+                    if (this.complete)
+                        $(this).load();
+                });
+                $attribution.targetBlank();
                 $attribution.toggleExpandText(this.options.trimAttributionCount, function () {
                     _this.resize();
                 });
@@ -5049,17 +5056,9 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
                 $attribution.hide();
             }
 
-            if (license) {
-                $license.text(license);
-            } else {
-                $license.hide();
-            }
+            $license.hide();
 
-            if (logo) {
-                $logo.text(logo);
-            } else {
-                $logo.hide();
-            }
+            $logo.hide();
         };
 
         SeadragonCenterPanel.prototype.viewerOpen = function () {
@@ -5484,8 +5483,9 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
 
             value = value.replace('\n', '<br>');
 
-            $header.text(name);
-            $text.text(value);
+            $header.html(name);
+            $text.html(value);
+            $text.targetBlank();
 
             $text.toggleExpandText(trimChars);
 
@@ -6779,6 +6779,17 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         };
 
         BaseProvider.prototype.getMetaData = function (callback) {
+            var metaData = this.manifest.metadata;
+
+            if (this.manifest.description)
+                metaData.push({ "label": "description", "value": this.manifest.description });
+            if (this.manifest.attribution)
+                metaData.push({ "label": "attribution", "value": this.manifest.attribution });
+            if (this.manifest.license)
+                metaData.push({ "label": "license", "value": this.manifest.license });
+            if (this.manifest.logo)
+                metaData.push({ "label": "license", "value": '<img src="' + this.manifest.logo + '"/>' });
+
             callback(this.manifest.metadata);
         };
 
