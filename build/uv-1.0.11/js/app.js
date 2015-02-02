@@ -3086,7 +3086,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.9';
+    exports.Version = '1.0.11';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5455,7 +5455,7 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
 
             this.provider.getMetaData(function (data) {
                 _this.displayInfo(data);
-            });
+            }, true);
         };
 
         MoreInfoRightPanel.prototype.displayInfo = function (data) {
@@ -6779,17 +6779,19 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
             return this.embedDomain;
         };
 
-        BaseProvider.prototype.getMetaData = function (callback) {
+        BaseProvider.prototype.getMetaData = function (callback, includeRootProperties) {
             var metaData = this.manifest.metadata;
 
-            if (this.manifest.description)
-                metaData.push({ "label": "description", "value": this.manifest.description });
-            if (this.manifest.attribution)
-                metaData.push({ "label": "attribution", "value": this.manifest.attribution });
-            if (this.manifest.license)
-                metaData.push({ "label": "license", "value": this.manifest.license });
-            if (this.manifest.logo)
-                metaData.push({ "label": "license", "value": '<img src="' + this.manifest.logo + '"/>' });
+            if (includeRootProperties) {
+                if (this.manifest.description)
+                    metaData.push({ "label": "description", "value": this.manifest.description });
+                if (this.manifest.attribution)
+                    metaData.push({ "label": "attribution", "value": this.manifest.attribution });
+                if (this.manifest.license)
+                    metaData.push({ "label": "license", "value": this.manifest.license });
+                if (this.manifest.logo)
+                    metaData.push({ "label": "license", "value": '<img src="' + this.manifest.logo + '"/>' });
+            }
 
             callback(this.manifest.metadata);
         };
