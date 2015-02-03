@@ -496,7 +496,7 @@ $(function(){
     var editor;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.12/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.13/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -518,7 +518,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.12/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.13/js/embed.js"><\/script>');
         }
     }
 
@@ -540,9 +540,13 @@ $(function(){
         initPlayers($('.uv'));
     }
 
+    function isIE8(){
+        return (browserDetect.browser === "Explorer" && browserDetect.version === 8);
+    }
+
     function createEditor() {
 
-        if ((browserDetect.browser === "Explorer" && browserDetect.version === 8) || typeof(JSONEditor) === "undefined") {
+        if (isIE8() || typeof(JSONEditor) === "undefined") {
             $("#edit-config").hide();
             return;
         }
@@ -628,7 +632,7 @@ $(function(){
 
             // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.12/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
+            $.getJSON('/build/uv-1.0.13/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
                 var configUrl = $('#config option:selected').val();
 
                 $.getJSON(configUrl, function(config){
