@@ -510,6 +510,16 @@ define('utils',["require", "exports"], function(require, exports) {
     String.prototype.b64_to_utf8 = function () {
         return decodeURIComponent(escape(window.atob(this)));
     };
+    String.prototype.toCssClass = function () {
+        return this.replace(/[^a-z0-9]/g, function (s) {
+            var c = s.charCodeAt(0);
+            if (c == 32)
+                return '-';
+            if (c >= 65 && c <= 90)
+                return '_' + s.toLowerCase();
+            return '__' + ('000' + c.toString(16)).slice(-4);
+        });
+    };
 
     if (!Array.prototype.indexOf) {
         Array.prototype.indexOf = function (searchElement, fromIndex) {
@@ -3401,7 +3411,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.13';
+    exports.Version = '1.0.14';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5794,13 +5804,18 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
 
             item = _.values(item);
 
-            var name = item[0];
-            var value = item[1];
+            var name = this.provider.sanitize(item[0]);
+            var value = this.provider.sanitize(item[1]);
+
+            name = name.trim();
+            name = name.toLowerCase();
+
+            $elem.addClass(name.toCssClass());
 
             value = value.replace('\n', '<br>');
 
-            $header.html(this.provider.sanitize(name));
-            $text.html(this.provider.sanitize(value));
+            $header.html(name);
+            $text.html(value);
             $text.targetBlank();
 
             $text.toggleExpandText(trimChars);
@@ -7120,7 +7135,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
                 if (this.manifest.license)
                     metaData.push({ "label": "license", "value": this.manifest.license });
                 if (this.manifest.logo)
-                    metaData.push({ "label": "license", "value": '<img src="' + this.manifest.logo + '"/>' });
+                    metaData.push({ "label": "logo", "value": '<img src="' + this.manifest.logo + '"/>' });
             }
 
             callback(this.manifest.metadata);
