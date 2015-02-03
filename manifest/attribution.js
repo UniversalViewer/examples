@@ -32,7 +32,7 @@
             ],
             "description": "Printed for private circulation, Edinburgh, 1841, ark:/81055/abc_B3268581",
             "license":"http://creativecommons.org/licenses/by/4.0/",
-            "attribution":"<p>Usage Terms: &copy; Chambers, William, Creative Commons Attribution Licence<br/><img src='http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by.png' /><br/><a href='http://creativecommons.org/licenses/by/4.0/'>http://creativecommons.org/licenses/by/4.0/</a></p>",
+            "attribution":"<p>Usage Terms: &copy; Chambers, William, Creative Commons Attribution Licence<br/><img src='http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by.png' /><br/><a href='http://creativecommons.org/licenses/by/4.0/'>http://creativecommons.org/licenses/by/4.0/</a><script></script></p>",
             "logo": "http://www.bl.uk/images/bl_logo_100.gif",
             "sequences": [
                 {
