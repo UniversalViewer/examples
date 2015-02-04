@@ -25,11 +25,28 @@ define("modernizr", function(){});
 
 (function ($) {
 
+    $.fn.disable = function () {
+        return this.each(function () {
+            var $this = $(this);
+            $this.addClass('disabled');
+            $this.data('tabindex', $this.attr('tabindex'));
+            $this.removeAttr('tabindex');
+        });
+    };
+
+    $.fn.enable = function () {
+        return this.each(function () {
+            var $this = $(this);
+            $this.removeClass('disabled');
+            $this.attr('tabindex', $this.data('tabindex'));
+        });
+    };
+
     $.fn.targetBlank = function () {
         return this.each(function () {
             $(this).find('a').prop('target', '_blank');
         });
-    }
+    };
 
     $.fn.swapClass = function (removeClass, addClass) {
         return this.each(function () {
@@ -3411,7 +3428,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.16';
+    exports.Version = '1.0.17';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3663,10 +3680,10 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
             this.$prevOptions = $('<div class="prevOptions"></div>');
             this.$centerOptions.append(this.$prevOptions);
 
-            this.$firstButton = $('<a class="imageBtn first" tabindex="14"></a>');
+            this.$firstButton = $('<a class="imageBtn first" tabindex="15"></a>');
             this.$prevOptions.append(this.$firstButton);
 
-            this.$prevButton = $('<a class="imageBtn prev" tabindex="15"></a>');
+            this.$prevButton = $('<a class="imageBtn prev" tabindex="16"></a>');
             this.$prevOptions.append(this.$prevButton);
 
             this.$modeOptions = $('<div class="mode"></div>');
@@ -3674,24 +3691,24 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
             this.$imageModeLabel = $('<label for="image">' + this.content.image + '</label>');
             this.$modeOptions.append(this.$imageModeLabel);
-            this.$imageModeOption = $('<input type="radio" id="image" name="mode" tabindex="16"></input>');
+            this.$imageModeOption = $('<input type="radio" id="image" name="mode" tabindex="17"></input>');
             this.$modeOptions.append(this.$imageModeOption);
 
             this.$pageModeLabel = $('<label for="page">' + this.content.page + '</label>');
             this.$modeOptions.append(this.$pageModeLabel);
-            this.$pageModeOption = $('<input type="radio" id="page" name="mode" tabindex="17"></input>');
+            this.$pageModeOption = $('<input type="radio" id="page" name="mode" tabindex="18"></input>');
             this.$modeOptions.append(this.$pageModeOption);
 
             this.$search = $('<div class="search"></div>');
             this.$centerOptions.append(this.$search);
 
-            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="18"></input>');
+            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="19"></input>');
             this.$search.append(this.$searchText);
 
             this.$total = $('<span class="total"></span>');
             this.$search.append(this.$total);
 
-            this.$searchButton = $('<a class="imageBtn go" tabindex="19"></a>');
+            this.$searchButton = $('<a class="imageBtn go" tabindex="20"></a>');
             this.$search.append(this.$searchButton);
 
             this.$nextOptions = $('<div class="nextOptions"></div>');
@@ -3875,42 +3892,42 @@ define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require
 
         PagingHeaderPanel.prototype.disableFirstButton = function () {
             this.firstButtonEnabled = false;
-            this.$firstButton.addClass('disabled');
+            this.$firstButton.disable();
         };
 
         PagingHeaderPanel.prototype.enableFirstButton = function () {
             this.firstButtonEnabled = true;
-            this.$firstButton.removeClass('disabled');
+            this.$firstButton.enable();
         };
 
         PagingHeaderPanel.prototype.disableLastButton = function () {
             this.lastButtonEnabled = false;
-            this.$lastButton.addClass('disabled');
+            this.$lastButton.disable();
         };
 
         PagingHeaderPanel.prototype.enableLastButton = function () {
             this.lastButtonEnabled = true;
-            this.$lastButton.removeClass('disabled');
+            this.$lastButton.enable();
         };
 
         PagingHeaderPanel.prototype.disablePrevButton = function () {
             this.prevButtonEnabled = false;
-            this.$prevButton.addClass('disabled');
+            this.$prevButton.disable();
         };
 
         PagingHeaderPanel.prototype.enablePrevButton = function () {
             this.prevButtonEnabled = true;
-            this.$prevButton.removeClass('disabled');
+            this.$prevButton.enable();
         };
 
         PagingHeaderPanel.prototype.disableNextButton = function () {
             this.nextButtonEnabled = false;
-            this.$nextButton.addClass('disabled');
+            this.$nextButton.disable();
         };
 
         PagingHeaderPanel.prototype.enableNextButton = function () {
             this.nextButtonEnabled = true;
-            this.$nextButton.removeClass('disabled');
+            this.$nextButton.enable();
         };
 
         PagingHeaderPanel.prototype.modeChanged = function (mode) {
@@ -5691,7 +5708,8 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
 
             that.$viewer.find('div[title="Zoom in"]').attr('tabindex', 11);
             that.$viewer.find('div[title="Zoom out"]').attr('tabindex', 12);
-            that.$viewer.find('div[title="Rotate right"]').attr('tabindex', 13);
+            that.$viewer.find('div[title="Go home"]').attr('tabindex', 13);
+            that.$viewer.find('div[title="Rotate right"]').attr('tabindex', 14);
         };
 
         SeadragonCenterPanel.prototype.goHome = function () {
