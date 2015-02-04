@@ -3411,7 +3411,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.14';
+    exports.Version = '1.0.15';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3449,11 +3449,23 @@ define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "expor
             this.$version = $('<div class="version"></div>');
             this.$content.append(this.$version);
 
+            this.$pagingEnabled = $('<div class="setting pagingEnabled"></div>');
+            this.$scroll.append(this.$pagingEnabled);
+
             this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
-            this.$scroll.append(this.$pagingEnabledCheckbox);
+            this.$pagingEnabled.append(this.$pagingEnabledCheckbox);
 
             this.$pagingEnabledTitle = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
-            this.$scroll.append(this.$pagingEnabledTitle);
+            this.$pagingEnabled.append(this.$pagingEnabledTitle);
+
+            this.$preserveViewport = $('<div class="setting preserveViewport"></div>');
+            this.$scroll.append(this.$preserveViewport);
+
+            this.$preserveViewportCheckbox = $('<input id="preserveViewport" type="checkbox" />');
+            this.$preserveViewport.append(this.$preserveViewportCheckbox);
+
+            this.$preserveViewportTitle = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
+            this.$preserveViewport.append(this.$preserveViewportTitle);
 
             this.$title.text(this.content.title);
 
@@ -3473,10 +3485,26 @@ define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "expor
                 that.updateSettings(settings);
             });
 
+            this.$preserveViewportCheckbox.change(function () {
+                var settings = that.getSettings();
+
+                if ($(this).is(":checked")) {
+                    settings.preserveViewport = true;
+                } else {
+                    settings.preserveViewport = false;
+                }
+
+                that.updateSettings(settings);
+            });
+
             var settings = this.getSettings();
 
             if (settings.pagingEnabled) {
                 this.$pagingEnabledCheckbox.attr("checked", "checked");
+            }
+
+            if (settings.preserveViewport) {
+                this.$preserveViewportCheckbox.attr("checked", "checked");
             }
 
             this.$element.hide();
@@ -5416,11 +5444,8 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
                 if (initialBounds) {
                     initialBounds = this.deserialiseBounds(initialBounds);
                     this.currentBounds = initialBounds;
+                    this.fitToBounds(this.currentBounds);
                 }
-            }
-
-            if (this.currentBounds) {
-                this.fitToBounds(this.currentBounds);
             }
         };
 
@@ -5623,7 +5648,19 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             });
         };
 
-        SeadragonCenterPanel.prototype.openHandler = function () {
+        SeadragonCenterPanel.prototype.viewerOpen = function () {
+            _super.prototype.viewerOpen.call(this);
+
+            var settings = this.provider.getSettings();
+
+            if (this.currentBounds && settings.preserveViewport) {
+                this.fitToBounds(this.currentBounds);
+            } else {
+                this.goHome();
+            }
+        };
+
+        SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
             var that = this.userData;
 
             that.viewer.removeHandler('open', that.handler);
@@ -5641,15 +5678,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             }
 
             if (that.tileSources.length != that.lastTilesNum) {
-                switch (viewingDirection) {
-                    case "top-to-bottom":
-                        that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, that.viewer.world.getItemAt(0).normHeight * that.tileSources.length));
-                        break;
-                    case "left-to-right":
-                    case "right-to-left":
-                        that.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, that.tileSources.length, that.viewer.world.getItemAt(0).normHeight));
-                        break;
-                }
+                that.goHome();
             }
 
             that.lastTilesNum = that.tileSources.length;
@@ -5657,6 +5686,20 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
             that.$viewer.find('div[title="Zoom in"]').attr('tabindex', 11);
             that.$viewer.find('div[title="Zoom out"]').attr('tabindex', 12);
             that.$viewer.find('div[title="Rotate right"]').attr('tabindex', 13);
+        };
+
+        SeadragonCenterPanel.prototype.goHome = function () {
+            var viewingDirection = this.provider.getViewingDirection();
+
+            switch (viewingDirection) {
+                case "top-to-bottom":
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.tileSources.length));
+                    break;
+                case "left-to-right":
+                case "right-to-left":
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.tileSources.length, this.viewer.world.getItemAt(0).normHeight));
+                    break;
+            }
         };
 
         SeadragonCenterPanel.prototype.loadTileSources = function () {
@@ -5672,7 +5715,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
 
             this.viewer.open(this.tileSources[0]);
 
-            this.viewer.addHandler('open', this.openHandler, this);
+            this.viewer.addHandler('open', this.openTileSourcesHandler, this);
         };
         return SeadragonCenterPanel;
     })(baseCenter.SeadragonCenterPanel);

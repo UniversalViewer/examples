@@ -5,6 +5,7 @@
         "rightPanelEnabled": true,
         "overrideFullScreen": false,
         "pagingEnabled": true,
+        "preserveViewport": false,
         "sectionMappings": {
             "CoverFrontOutside": "Front Cover",
             "CoverBackOutside": "Back Cover",
@@ -32,7 +33,8 @@
         "settingsDialogue": {
             "content": {
                 "title": "Settings",
-                "pagingEnabled": "Two Page View"
+                "pagingEnabled": "Two Page View",
+                "preserveViewport": "Preserve Zoom"
             }
         },
         "embedDialogue": {
