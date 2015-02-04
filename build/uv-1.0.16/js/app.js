@@ -3411,7 +3411,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.15';
+    exports.Version = '1.0.16';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5600,7 +5600,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 showNavigationControl: true,
                 showNavigator: true,
                 showRotationControl: true,
-                showHomeControl: false,
+                showHomeControl: true,
                 showFullPageControl: false,
                 defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
                 controlsFadeDelay: this.config.options.controlsFadeDelay,
@@ -5619,6 +5619,12 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                         GROUP: 'zoom_out.png',
                         HOVER: 'zoom_out.png',
                         DOWN: 'zoom_out.png'
+                    },
+                    home: {
+                        REST: 'home.png',
+                        GROUP: 'home.png',
+                        HOVER: 'home.png',
+                        DOWN: 'home.png'
                     },
                     rotateright: {
                         REST: 'rotate_right.png',
