@@ -3428,7 +3428,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.17';
+    exports.Version = '1.0.18';
 });
 
 var __extends = this.__extends || function (d, b) {
