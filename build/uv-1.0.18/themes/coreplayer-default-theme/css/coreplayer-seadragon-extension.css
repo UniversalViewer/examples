@@ -469,7 +469,7 @@
   border-bottom: 1px solid #373737;
 }
 #app .leftPanel .tabs .tab {
-  color: #869f33;
+  color: #ffffff;
   background-color: #1f1f1f;
   height: 24px;
   display: inline-block;
@@ -486,7 +486,7 @@
 #app .leftPanel .tabs .tab.on {
   border: 1px solid #373737;
   border-bottom: 1px solid #1f1f1f;
-  color: #ffffff;
+  color: #869f33;
   margin-bottom: -1px;
 }
 #app .leftPanel .tabs .tab:focus {
