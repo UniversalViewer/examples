@@ -164,6 +164,9 @@
 #app .rightPanel .main .items {
   padding: 0 10px 20px 10px;
 }
+#app .rightPanel .main .items .item {
+  padding: 0;
+}
 #app .rightPanel .main .items .item .header {
   color: #999999;
   border-bottom: 1px solid #555555;
