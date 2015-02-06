@@ -236,6 +236,10 @@ schema = {
                                 "close": {
                                     "id": "close",
                                     "type": "string"
+                                },
+                                "settings": {
+                                    "id": "settings",
+                                    "type": "string"
                                 }
                             },
                             "required": ["page"]
