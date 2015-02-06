@@ -3428,7 +3428,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.19';
+    exports.Version = '1.0.20';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5578,6 +5578,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
             _super.call(this, $element);
+            this.isHidingControls = false;
         }
         SeadragonCenterPanel.prototype.create = function () {
             var _this = this;
@@ -5589,21 +5590,28 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 _this.loadTileSources();
             });
 
-            this.$element.on('mousemove', function (e) {
+            this.$viewer.on('mousemove', function (e) {
                 _this.viewer.showControls();
             });
 
-            this.$element.on('mouseout', function (e) {
-                _this.viewer.hideControls();
+            this.$viewer.on('mouseleave', function (e) {
+                if (!_this.isHidingControls) {
+                    _this.viewer.hideControls();
+                }
             });
 
-            this.$element.on('mousemove', function (e) {
-                if (_this.$element.ismouseover()) {
+            this.$viewer.on('mousemove', function (e) {
+                if (_this.$viewer.ismouseover() && !_this.$viewer.find('.navigator').ismouseover()) {
+                    _this.isHidingControls = true;
                     _this.viewer.hideControls();
+
+                    setTimeout(function () {
+                        _this.isHidingControls = false;
+                    }, _this.config.options.controlsFadeLength);
                 }
             }, this.config.options.controlsFadeAfterInactive);
 
-            this.$element.on('click', function () {
+            this.$viewer.on('click', function () {
                 _this.$viewer.find('.keyboard-command-area').focus();
             });
         };
