@@ -3428,7 +3428,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.20';
+    exports.Version = '1.0.21';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3584,6 +3584,7 @@ define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./
             this.$options.append(this.$rightOptions);
 
             this.$settingsButton = $('<a class="imageBtn settings" tabindex="3"></a>');
+            this.$settingsButton.attr('title', this.content.settings);
             this.$rightOptions.append(this.$settingsButton);
 
             this.$messageBox = $('<div class="messageBox"> \
@@ -5594,20 +5595,9 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
                 _this.viewer.showControls();
             });
 
-            this.$viewer.on('mouseleave', function (e) {
-                if (!_this.isHidingControls) {
-                    _this.viewer.hideControls();
-                }
-            });
-
             this.$viewer.on('mousemove', function (e) {
-                if (_this.$viewer.ismouseover() && !_this.$viewer.find('.navigator').ismouseover()) {
-                    _this.isHidingControls = true;
+                if (!_this.$viewer.find('.navigator').ismouseover()) {
                     _this.viewer.hideControls();
-
-                    setTimeout(function () {
-                        _this.isHidingControls = false;
-                    }, _this.config.options.controlsFadeLength);
                 }
             }, this.config.options.controlsFadeAfterInactive);
 
