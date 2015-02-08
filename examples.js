@@ -500,7 +500,7 @@ $(function(){
     var editor;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.22/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.23/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -522,11 +522,13 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.22/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.23/js/embed.js"><\/script>');
         }
     }
 
     setTimeout(function(){
+        setJSONPEnabled();
+
         if ($('#manifest option').length || $('#manifest optgroup').length){
             setSelectedManifest();
         }
@@ -584,7 +586,12 @@ $(function(){
         buildQuerystring();
     });
 
+    $('#jsonp').on('change', function(){
+        buildQuerystring();
+    });
+
     function buildQuerystring() {
+        var jsonp = $('#jsonp').is(':checked');
         var config = $('#config option:selected').val();
         var manifest = $('#manifest option:selected').val();
 
@@ -592,11 +599,31 @@ $(function(){
         document.location.hash = "";
 
         var qs = document.location.search.replace('?', '');
+        qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
         qs = updateURIKeyValuePair(qs, "config", config);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
 
         // reload
         window.location.search = qs;
+    }
+
+    function setJSONPEnabled() {
+
+        var jsonp = $('#jsonp').is(':checked');
+
+        var qs = getQuerystringParameter("jsonp");
+
+        if (qs === 'false'){
+            jsonp = false;
+        }
+
+        if (jsonp){
+            $('.uv').attr('data-jsonp', 'true');
+            $('#jsonp').attr('checked');
+        } else {
+            $('.uv').removeAttr('data-jsonp');
+            $('#jsonp').removeAttr('checked');
+        }
     }
 
     function setSelectedManifest(){
@@ -636,7 +663,7 @@ $(function(){
 
             // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.22/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
+            $.getJSON('/build/uv-1.0.23/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
                 var configUrl = $('#config option:selected').val();
 
                 $.getJSON(configUrl, function(config){
