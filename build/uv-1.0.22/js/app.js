@@ -3428,7 +3428,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.21';
+    exports.Version = '1.0.22';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5278,16 +5278,19 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "exports", "./baseProvider", "./centerPanel", "../../utils"], function(require, exports, baseProvider, baseCenter, utils) {
+define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/baseProvider", "../coreplayer-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, baseProvider, baseCenter, utils) {
     var SeadragonCenterPanel = (function (_super) {
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
             _super.call(this, $element);
             this.prevButtonEnabled = false;
             this.nextButtonEnabled = false;
+            this.isFirstLoad = true;
         }
         SeadragonCenterPanel.prototype.create = function () {
             var _this = this;
+            this.setConfig('seadragonCenterPanel');
+
             _super.prototype.create.call(this);
 
             this.$viewer = $('<div id="viewer"></div>');
@@ -5316,42 +5319,28 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
 
             this.createSeadragonViewer();
 
-            if (this.provider.isMultiCanvas()) {
-                this.$prevButton = $('<div class="paging btn prev"></div>');
-                this.$prevButton.prop('title', this.content.previous);
-                this.viewer.addControl(this.$prevButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+            this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
+            this.$zoomInButton.attr('tabindex', 11);
+            this.$zoomOutButton = this.$viewer.find('div[title="Zoom out"]');
+            this.$zoomOutButton.attr('tabindex', 12);
+            this.$goHomeButton = this.$viewer.find('div[title="Go home"]');
+            this.$goHomeButton.attr('tabindex', 13);
+            this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
+            this.$rotateButton.attr('tabindex', 14);
 
-                this.$nextButton = $('<div class="paging btn next"></div>');
-                this.$nextButton.prop('title', this.content.next);
-                this.viewer.addControl(this.$nextButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
+                _this.loadTileSources();
+            });
 
-                var that = this;
+            this.$element.on('mousemove', function (e) {
+                _this.viewer.showControls();
+            });
 
-                this.$prevButton.on('touchstart click', function (e) {
-                    e.preventDefault();
-                    OpenSeadragon.cancelEvent(e);
-
-                    if (!that.prevButtonEnabled)
-                        return;
-
-                    $.publish(SeadragonCenterPanel.PREV);
-                });
-
-                this.$nextButton.on('touchstart click', function (e) {
-                    e.preventDefault();
-                    OpenSeadragon.cancelEvent(e);
-
-                    if (!that.nextButtonEnabled)
-                        return;
-
-                    $.publish(SeadragonCenterPanel.NEXT);
-                });
-
-                $('.paging.btn.next').on('pointerdown', function () {
-                    console.log('hover');
-                });
-            }
-            ;
+            this.$element.on('mousemove', function (e) {
+                if (!_this.$viewer.find('.navigator').ismouseover()) {
+                    _this.viewer.hideControls();
+                }
+            }, this.config.options.controlsFadeAfterInactive);
 
             this.viewer.addHandler('open', function (viewer) {
                 _this.viewerOpen();
@@ -5377,11 +5366,13 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
                 $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, [viewer]);
             });
 
-            $('div[title="Rotate right"]').on('click', function () {
+            this.$rotateButton.on('click', function () {
                 $.publish(SeadragonCenterPanel.SEADRAGON_ROTATION, [_this.viewer.viewport.getRotation()]);
             });
 
             this.title = this.extension.provider.getTitle();
+
+            this.createNavigationButtons();
 
             var browser = window.browserDetect.browser;
 
@@ -5390,13 +5381,171 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
                     this.$prevButton.hide();
                     this.$nextButton.hide();
                 }
-                $('div[title="Rotate right"]').hide();
+                this.$rotateButton.hide();
             }
 
             this.showRights();
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
+            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
+
+            this.viewer = OpenSeadragon({
+                id: "viewer",
+                autoHideControls: true,
+                showNavigationControl: true,
+                showNavigator: true,
+                showRotationControl: true,
+                showHomeControl: true,
+                showFullPageControl: false,
+                defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
+                controlsFadeDelay: this.config.options.controlsFadeDelay,
+                controlsFadeLength: this.config.options.controlsFadeLength,
+                navigatorPosition: this.config.options.navigatorPosition,
+                prefixUrl: prefixUrl,
+                navImages: {
+                    zoomIn: {
+                        REST: 'zoom_in.png',
+                        GROUP: 'zoom_in.png',
+                        HOVER: 'zoom_in.png',
+                        DOWN: 'zoom_in.png'
+                    },
+                    zoomOut: {
+                        REST: 'zoom_out.png',
+                        GROUP: 'zoom_out.png',
+                        HOVER: 'zoom_out.png',
+                        DOWN: 'zoom_out.png'
+                    },
+                    home: {
+                        REST: 'home.png',
+                        GROUP: 'home.png',
+                        HOVER: 'home.png',
+                        DOWN: 'home.png'
+                    },
+                    rotateright: {
+                        REST: 'rotate_right.png',
+                        GROUP: 'rotate_right.png',
+                        HOVER: 'rotate_right.png',
+                        DOWN: 'rotate_right.png'
+                    },
+                    rotateleft: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    },
+                    next: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    },
+                    previous: {
+                        REST: 'pixel.gif',
+                        GROUP: 'pixel.gif',
+                        HOVER: 'pixel.gif',
+                        DOWN: 'pixel.gif'
+                    }
+                }
+            });
+        };
+
+        SeadragonCenterPanel.prototype.createNavigationButtons = function () {
+            if (!this.provider.isMultiCanvas())
+                return;
+
+            this.$prevButton = $('<div class="paging btn prev"></div>');
+            this.$prevButton.prop('title', this.content.previous);
+            this.viewer.addControl(this.$prevButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+
+            this.$nextButton = $('<div class="paging btn next"></div>');
+            this.$nextButton.prop('title', this.content.next);
+            this.viewer.addControl(this.$nextButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+
+            var that = this;
+
+            this.$prevButton.on('touchstart click', function (e) {
+                e.preventDefault();
+                OpenSeadragon.cancelEvent(e);
+
+                if (!that.prevButtonEnabled)
+                    return;
+
+                $.publish(SeadragonCenterPanel.PREV);
+            });
+
+            this.$nextButton.on('touchstart click', function (e) {
+                e.preventDefault();
+                OpenSeadragon.cancelEvent(e);
+
+                if (!that.nextButtonEnabled)
+                    return;
+
+                $.publish(SeadragonCenterPanel.NEXT);
+            });
+        };
+
+        SeadragonCenterPanel.prototype.viewerOpen = function () {
+            if (this.provider.isMultiCanvas()) {
+                $('.navigator').addClass('extraMargin');
+
+                if (!this.provider.isFirstCanvas()) {
+                    this.enablePrevButton();
+                } else {
+                    this.disablePrevButton();
+                }
+
+                if (!this.provider.isLastCanvas()) {
+                    this.enableNextButton();
+                } else {
+                    this.disableNextButton();
+                }
+            }
+        };
+
+        SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
+            var that = this.userData;
+
+            that.viewer.removeHandler('open', that.handler);
+
+            var viewingDirection = that.provider.getViewingDirection();
+
+            if (that.tileSources.length > 1) {
+                if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
+                    that.tileSources[1].y = that.viewer.world.getItemAt(0).getBounds().y + that.viewer.world.getItemAt(0).getBounds().height + that.config.options.pageGap;
+                } else {
+                    that.tileSources[1].x = that.viewer.world.getItemAt(0).getBounds().x + that.viewer.world.getItemAt(0).getBounds().width + that.config.options.pageGap;
+                }
+
+                that.viewer.addTiledImage(that.tileSources[1]);
+            }
+
+            if (that.isFirstLoad) {
+                that.initialRotation = that.extension.getParam(3 /* rotation */);
+
+                if (that.initialRotation) {
+                    that.viewer.viewport.setRotation(parseInt(that.initialRotation));
+                }
+
+                that.initialBounds = that.extension.getParam(2 /* zoom */);
+
+                if (that.initialBounds) {
+                    that.initialBounds = that.deserialiseBounds(that.initialBounds);
+                    that.currentBounds = that.initialBounds;
+                    that.fitToBounds(that.currentBounds);
+                }
+            } else {
+                var settings = that.provider.getSettings();
+
+                if (settings.preserveViewport) {
+                    that.fitToBounds(that.currentBounds);
+                } else {
+                    that.goHome();
+                }
+            }
+
+            that.lastTilesNum = that.tileSources.length;
+            that.isFirstLoad = false;
         };
 
         SeadragonCenterPanel.prototype.showRights = function () {
@@ -5433,38 +5582,34 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
             $logo.hide();
         };
 
-        SeadragonCenterPanel.prototype.viewerOpen = function () {
-            if (this.provider.isMultiCanvas()) {
-                $('.navigator').addClass('extraMargin');
+        SeadragonCenterPanel.prototype.goHome = function () {
+            var viewingDirection = this.provider.getViewingDirection();
 
-                if (!this.provider.isFirstCanvas()) {
-                    this.enablePrevButton();
-                } else {
-                    this.disablePrevButton();
-                }
-
-                if (!this.provider.isLastCanvas()) {
-                    this.enableNextButton();
-                } else {
-                    this.disableNextButton();
-                }
+            switch (viewingDirection) {
+                case "top-to-bottom":
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.tileSources.length), true);
+                    break;
+                case "left-to-right":
+                case "right-to-left":
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.tileSources.length, this.viewer.world.getItemAt(0).normHeight), true);
+                    break;
             }
+        };
 
-            if (!this.currentBounds) {
-                var initialRotation = this.extension.getParam(3 /* rotation */);
+        SeadragonCenterPanel.prototype.loadTileSources = function () {
+            this.tileSources = this.provider.getTileSources();
 
-                if (initialRotation) {
-                    this.viewer.viewport.setRotation(parseInt(initialRotation));
+            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/coreplayer-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
+
+            _.each(this.tileSources, function (ts) {
+                if (!ts.tileSource) {
+                    ts.tileSource = imageUnavailableUri;
                 }
+            });
 
-                var initialBounds = this.extension.getParam(2 /* zoom */);
+            this.viewer.open(this.tileSources[0]);
 
-                if (initialBounds) {
-                    initialBounds = this.deserialiseBounds(initialBounds);
-                    this.currentBounds = initialBounds;
-                    this.fitToBounds(this.currentBounds);
-                }
-            }
+            this.viewer.addHandler('open', this.openTileSourcesHandler, this);
         };
 
         SeadragonCenterPanel.prototype.disablePrevButton = function () {
@@ -5565,182 +5710,6 @@ define('modules/coreplayer-shared-module/seadragonCenterPanel',["require", "expo
         SeadragonCenterPanel.NEXT = 'center.onNext';
         return SeadragonCenterPanel;
     })(baseCenter.CenterPanel);
-    exports.SeadragonCenterPanel = SeadragonCenterPanel;
-});
-
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/seadragonCenterPanel"], function(require, exports, baseExtension, baseCenter) {
-    var SeadragonCenterPanel = (function (_super) {
-        __extends(SeadragonCenterPanel, _super);
-        function SeadragonCenterPanel($element) {
-            _super.call(this, $element);
-            this.isHidingControls = false;
-        }
-        SeadragonCenterPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('seadragonCenterPanel');
-
-            _super.prototype.create.call(this);
-
-            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                _this.loadTileSources();
-            });
-
-            this.$viewer.on('mousemove', function (e) {
-                _this.viewer.showControls();
-            });
-
-            this.$viewer.on('mousemove', function (e) {
-                if (!_this.$viewer.find('.navigator').ismouseover()) {
-                    _this.viewer.hideControls();
-                }
-            }, this.config.options.controlsFadeAfterInactive);
-
-            this.$viewer.on('click', function () {
-                _this.$viewer.find('.keyboard-command-area').focus();
-            });
-        };
-
-        SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
-            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
-
-            this.viewer = OpenSeadragon({
-                id: "viewer",
-                autoHideControls: true,
-                showNavigationControl: true,
-                showNavigator: true,
-                showRotationControl: true,
-                showHomeControl: true,
-                showFullPageControl: false,
-                defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
-                controlsFadeDelay: this.config.options.controlsFadeDelay,
-                controlsFadeLength: this.config.options.controlsFadeLength,
-                navigatorPosition: this.config.options.navigatorPosition,
-                prefixUrl: prefixUrl,
-                navImages: {
-                    zoomIn: {
-                        REST: 'zoom_in.png',
-                        GROUP: 'zoom_in.png',
-                        HOVER: 'zoom_in.png',
-                        DOWN: 'zoom_in.png'
-                    },
-                    zoomOut: {
-                        REST: 'zoom_out.png',
-                        GROUP: 'zoom_out.png',
-                        HOVER: 'zoom_out.png',
-                        DOWN: 'zoom_out.png'
-                    },
-                    home: {
-                        REST: 'home.png',
-                        GROUP: 'home.png',
-                        HOVER: 'home.png',
-                        DOWN: 'home.png'
-                    },
-                    rotateright: {
-                        REST: 'rotate_right.png',
-                        GROUP: 'rotate_right.png',
-                        HOVER: 'rotate_right.png',
-                        DOWN: 'rotate_right.png'
-                    },
-                    rotateleft: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    next: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    previous: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    }
-                }
-            });
-        };
-
-        SeadragonCenterPanel.prototype.viewerOpen = function () {
-            _super.prototype.viewerOpen.call(this);
-
-            var settings = this.provider.getSettings();
-
-            if (this.currentBounds && settings.preserveViewport) {
-                this.fitToBounds(this.currentBounds);
-            } else {
-                this.goHome();
-            }
-        };
-
-        SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
-            var that = this.userData;
-
-            that.viewer.removeHandler('open', that.handler);
-
-            var viewingDirection = that.provider.getViewingDirection();
-
-            if (that.tileSources.length > 1) {
-                if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
-                    that.tileSources[1].y = that.viewer.world.getItemAt(0).getBounds().y + that.viewer.world.getItemAt(0).getBounds().height + that.config.options.pageGap;
-                } else {
-                    that.tileSources[1].x = that.viewer.world.getItemAt(0).getBounds().x + that.viewer.world.getItemAt(0).getBounds().width + that.config.options.pageGap;
-                }
-
-                that.viewer.addTiledImage(that.tileSources[1]);
-            }
-
-            if (that.tileSources.length != that.lastTilesNum) {
-                that.goHome();
-            }
-
-            that.lastTilesNum = that.tileSources.length;
-
-            that.$viewer.find('div[title="Zoom in"]').attr('tabindex', 11);
-            that.$viewer.find('div[title="Zoom out"]').attr('tabindex', 12);
-            that.$viewer.find('div[title="Go home"]').attr('tabindex', 13);
-            that.$viewer.find('div[title="Rotate right"]').attr('tabindex', 14);
-        };
-
-        SeadragonCenterPanel.prototype.goHome = function () {
-            var viewingDirection = this.provider.getViewingDirection();
-
-            switch (viewingDirection) {
-                case "top-to-bottom":
-                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.tileSources.length));
-                    break;
-                case "left-to-right":
-                case "right-to-left":
-                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.tileSources.length, this.viewer.world.getItemAt(0).normHeight));
-                    break;
-            }
-        };
-
-        SeadragonCenterPanel.prototype.loadTileSources = function () {
-            this.tileSources = this.provider.getTileSources();
-
-            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/coreplayer-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
-
-            _.each(this.tileSources, function (ts) {
-                if (!ts.tileSource) {
-                    ts.tileSource = imageUnavailableUri;
-                }
-            });
-
-            this.viewer.open(this.tileSources[0]);
-
-            this.viewer.addHandler('open', this.openTileSourcesHandler, this);
-        };
-        return SeadragonCenterPanel;
-    })(baseCenter.SeadragonCenterPanel);
     exports.SeadragonCenterPanel = SeadragonCenterPanel;
 });
 
@@ -6204,7 +6173,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue", "../../modules/coreplayer-shared-module/seadragonCenterPanel"], function(require, exports, embed, baseCenter) {
+define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel"], function(require, exports, embed, baseCenter) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -6261,7 +6230,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/galleryView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-shared-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
+define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/galleryView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -7302,9 +7271,17 @@ define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exp
             if (!iiifUri) {
                 console.warn('no service endpoint available');
             } else if (iiifUri.endsWith('/')) {
-                iiifUri += 'info.js';
+                if (this.jsonp) {
+                    iiifUri += 'info.js';
+                } else {
+                    iiifUri += 'info.json';
+                }
             } else {
-                iiifUri += '/info.js';
+                if (this.jsonp) {
+                    iiifUri += '/info.js';
+                } else {
+                    iiifUri += '/info.json';
+                }
             }
 
             var uri = String.prototype.format(template, baseUri, iiifUri);
