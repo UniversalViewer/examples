@@ -236,6 +236,10 @@ schema = {
                                 "close": {
                                     "id": "close",
                                     "type": "string"
+                                },
+                                "settings": {
+                                    "id": "settings",
+                                    "type": "string"
                                 }
                             },
                             "required": ["page"]
@@ -277,12 +281,20 @@ schema = {
                                     "id": "panelAnimationDuration",
                                     "type": "integer"
                                 },
-                                "thumbWidth": {
-                                    "id": "thumbWidth",
+                                "oneColThumbWidth": {
+                                    "id": "oneColThumbWidth",
                                     "type": "integer"
                                 },
-                                "thumbHeight": {
-                                    "id": "thumbHeight",
+                                "oneColThumbHeight": {
+                                    "id": "oneColThumbHeight",
+                                    "type": "integer"
+                                },
+                                "twoColThumbWidth": {
+                                    "id": "twoColThumbWidth",
+                                    "type": "integer"
+                                },
+                                "twoColThumbHeight": {
+                                    "id": "twoColThumbHeight",
                                     "type": "integer"
                                 },
                                 "galleryThumbWidth": {
@@ -355,6 +367,10 @@ schema = {
                                     "id": "navigatorPosition",
                                     "type": "string",
                                     "enum": ["BOTTOM_RIGHT", "BOTTOM_LEFT", "TOP_LEFT", "TOP_RIGHT"]
+                                },
+                                "trimAttributionCount": {
+                                    "id": "trimAttributionCount",
+                                    "type": "integer"
                                 }
                             }
                         },
@@ -380,6 +396,10 @@ schema = {
                                 },
                                 "imageUnavailable": {
                                     "id": "imageUnavailable",
+                                    "type": "string"
+                                },
+                                "acknowledgements": {
+                                    "id": "acknowledgements",
                                     "type": "string"
                                 }
                             }
@@ -421,6 +441,10 @@ schema = {
                             "properties": {
                                 "holdingText": {
                                     "id": "holdingText",
+                                    "type": "string"
+                                },
+                                "noData": {
+                                    "id": "noData",
                                     "type": "string"
                                 }
                             }
@@ -480,7 +504,7 @@ $(function(){
     var editor;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.1/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.25/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -502,11 +526,13 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.1/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.25/js/embed.js"><\/script>');
         }
     }
 
     setTimeout(function(){
+        setJSONPEnabled();
+
         if ($('#manifest option').length || $('#manifest optgroup').length){
             setSelectedManifest();
         }
@@ -524,9 +550,13 @@ $(function(){
         initPlayers($('.uv'));
     }
 
+    function isIE8(){
+        return (browserDetect.browser === "Explorer" && browserDetect.version === 8);
+    }
+
     function createEditor() {
 
-        if (browserDetect.browser === "Explorer" && browserDetect.version === 8) {
+        if (isIE8() || typeof(JSONEditor) === "undefined") {
             $("#edit-config").hide();
             return;
         }
@@ -560,7 +590,12 @@ $(function(){
         buildQuerystring();
     });
 
+    $('#jsonp').on('change', function(){
+        buildQuerystring();
+    });
+
     function buildQuerystring() {
+        var jsonp = $('#jsonp').is(':checked');
         var config = $('#config option:selected').val();
         var manifest = $('#manifest option:selected').val();
 
@@ -568,11 +603,33 @@ $(function(){
         document.location.hash = "";
 
         var qs = document.location.search.replace('?', '');
+        qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
         qs = updateURIKeyValuePair(qs, "config", config);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
 
         // reload
         window.location.search = qs;
+    }
+
+    function setJSONPEnabled() {
+
+        var jsonp = $('#jsonp').is(':checked');
+
+        var qs = getQuerystringParameter("jsonp");
+
+        if (qs === 'false'){
+            jsonp = false;
+        } else if (qs === 'true') {
+            jsonp = true;
+        }
+
+        if (jsonp){
+            $('.uv').attr('data-jsonp', 'true');
+            $('#jsonp').attr('checked', 'true');
+        } else {
+            $('.uv').removeAttr('data-jsonp');
+            $('#jsonp').removeAttr('checked');
+        }
     }
 
     function setSelectedManifest(){
@@ -612,7 +669,7 @@ $(function(){
 
             // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.1/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
+            $.getJSON('/build/uv-1.0.25/js/uv-seadragon-extension-config.js', function(baseConfig){
                 var configUrl = $('#config option:selected').val();
 
                 $.getJSON(configUrl, function(config){
