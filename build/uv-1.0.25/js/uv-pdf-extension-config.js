@@ -1,6 +1,6 @@
 {
     "options": {
-        "theme": "coreplayer-default-theme"
+        "theme": "uv-default-theme"
     },
     "modules": {
         "genericDialogue": {

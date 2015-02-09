@@ -1,6 +1,6 @@
 {
     "options": {
-        "theme": "coreplayer-default-theme",
+        "theme": "uv-default-theme",
         "leftPanelEnabled": true,
         "rightPanelEnabled": true,
         "overrideFullScreen": false,
@@ -111,7 +111,8 @@
                 "panelOpen": false
             },
             "content": {
-                "holdingText": "Your module goes here!"
+                "holdingText": "Your module goes here!",
+                "noData": "No data to display"
             }
         },
         "footerPanel": {

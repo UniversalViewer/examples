@@ -142,11 +142,11 @@
   background: none;
 }
 #app .rightPanel .top .title {
-  background: url('../img/coreplayer-moreinforightpanel-module/moreinfo.png') no-repeat;
+  background: url('../img/uv-moreinforightpanel-module/moreinfo.png') no-repeat;
   width: 140px;
 }
 #app .rightPanel .closed .title {
-  background: url('../img/coreplayer-moreinforightpanel-module/moreinfo_v.png') no-repeat;
+  background: url('../img/uv-moreinforightpanel-module/moreinfo_v.png') no-repeat;
   height: 140px;
 }
 #app .rightPanel .content {
@@ -191,7 +191,7 @@
   max-width: 100px;
 }
 #app.embedded .headerPanel {
-  background-image: url('../img/coreplayer-pagingheaderpanel-module/logo.png');
+  background-image: url('../img/uv-pagingheaderpanel-module/logo.png');
   background-repeat: no-repeat;
   background-position: 8px 8px;
 }
@@ -205,7 +205,7 @@
 }
 #app .headerPanel a.imageBtn.first {
   background-color: #555555;
-  background-image: url('../img/coreplayer-pagingheaderpanel-module/first.png');
+  background-image: url('../img/uv-pagingheaderpanel-module/first.png');
   background-repeat: no-repeat;
   margin: 0 0 0 0;
 }
@@ -214,7 +214,7 @@
 }
 #app .headerPanel a.imageBtn.prev {
   background-color: #555555;
-  background-image: url('../img/coreplayer-pagingheaderpanel-module/prev.png');
+  background-image: url('../img/uv-pagingheaderpanel-module/prev.png');
   background-repeat: no-repeat;
   margin: 0 0 0 5px;
 }
@@ -223,7 +223,7 @@
 }
 #app .headerPanel a.imageBtn.next {
   background-color: #555555;
-  background-image: url('../img/coreplayer-pagingheaderpanel-module/next.png');
+  background-image: url('../img/uv-pagingheaderpanel-module/next.png');
   background-repeat: no-repeat;
   margin: 0 5px 0 0;
 }
@@ -232,7 +232,7 @@
 }
 #app .headerPanel a.imageBtn.last {
   background-color: #555555;
-  background-image: url('../img/coreplayer-pagingheaderpanel-module/last.png');
+  background-image: url('../img/uv-pagingheaderpanel-module/last.png');
   background-repeat: no-repeat;
   margin: 0 0 0 0;
 }
@@ -240,7 +240,7 @@
   background-color: #333333;
 }
 #app .headerPanel a.imageBtn.go {
-  background: url('../img/coreplayer-pagingheaderpanel-module/go.png') no-repeat;
+  background: url('../img/uv-pagingheaderpanel-module/go.png') no-repeat;
   width: 28px;
 }
 #app .headerPanel a.imageBtn.disabled {
@@ -333,18 +333,18 @@
   border-radius: 0;
 }
 #app .centerPanel .paging.btn.prev {
-  background-image: url('../img/coreplayer-seadragoncenterpanel-module/prev_page.png');
+  background-image: url('../img/uv-seadragoncenterpanel-module/prev_page.png');
   left: 0;
 }
 #app .centerPanel .paging.btn.prev.disabled {
-  background-image: url('../img/coreplayer-seadragoncenterpanel-module/prev_page_disabled.png');
+  background-image: url('../img/uv-seadragoncenterpanel-module/prev_page_disabled.png');
 }
 #app .centerPanel .paging.btn.next {
-  background-image: url('../img/coreplayer-seadragoncenterpanel-module/next_page.png');
+  background-image: url('../img/uv-seadragoncenterpanel-module/next_page.png');
   right: 0;
 }
 #app .centerPanel .paging.btn.next.disabled {
-  background-image: url('../img/coreplayer-seadragoncenterpanel-module/next_page_disabled.png');
+  background-image: url('../img/uv-seadragoncenterpanel-module/next_page_disabled.png');
 }
 #app .centerPanel div[title="Zoom in"] {
   cursor: pointer !important;
@@ -408,7 +408,7 @@
   height: 16px;
   margin: 2px;
   float: right;
-  background-image: url('../img/coreplayer-seadragoncenterpanel-module/close_rights.png');
+  background-image: url('../img/uv-seadragoncenterpanel-module/close_rights.png');
   cursor: pointer;
 }
 #app .centerPanel .content .rights .main {
@@ -446,7 +446,7 @@
 #app .centerPanel .zoomControls .zoomIn{
     width: 16px;
     height: 16px;
-    background-image: url('../img/coreplayer-seadragoncenterpanel-module/zoom_in.png');
+    background-image: url('../img/uv-seadragoncenterpanel-module/zoom_in.png');
     float: left;
     cursor: pointer;
 }
@@ -454,17 +454,17 @@
 #app .centerPanel .zoomControls .zoomOut{
     width: 16px;
     height: 16px;
-    background-image: url('../img/coreplayer-seadragoncenterpanel-module/zoom_out.png');
+    background-image: url('../img/uv-seadragoncenterpanel-module/zoom_out.png');
     float: right;
     cursor: pointer;
 }
 */
 #app .leftPanel .top .title {
-  background: url('../img/coreplayer-treeviewleftpanel-module/contents.png') no-repeat;
+  background: url('../img/uv-treeviewleftpanel-module/contents.png') no-repeat;
   width: 78px;
 }
 #app .leftPanel .closed .title {
-  background: url('../img/coreplayer-treeviewleftpanel-module/contents_v.png') no-repeat;
+  background: url('../img/uv-treeviewleftpanel-module/contents_v.png') no-repeat;
   height: 78px;
 }
 #app .leftPanel .tabs {
@@ -509,10 +509,10 @@
   display: inline-block;
   height: 10px;
   width: 10px;
-  background-image: url('../img/coreplayer-treeviewleftpanel-module/plus.png');
+  background-image: url('../img/uv-treeviewleftpanel-module/plus.png');
 }
 #app .leftPanel .views .treeView .toggle.expanded {
-  background-image: url('../img/coreplayer-treeviewleftpanel-module/minus.png');
+  background-image: url('../img/uv-treeviewleftpanel-module/minus.png');
 }
 #app .leftPanel .views .treeView .spacer {
   margin-right: 5px;
@@ -560,7 +560,7 @@
   background-position: 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap.hidden {
-  background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap img {
   display: block;
@@ -575,7 +575,7 @@
   padding: 2px 0 0 0;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.placeholder .wrap {
-  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.oneCol {
   margin: 0 0 7px 0;
@@ -654,7 +654,7 @@
   background-position: 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb .wrap.hidden {
-  background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb .wrap img {
   display: block;
@@ -669,7 +669,7 @@
   padding: 2px 0 0 0;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
-  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs.left-to-right .thumb {
   float: left;
@@ -1476,7 +1476,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 6px 0 0 0;
 }
 #app .headerPanel .options .rightOptions .settings {
-  background: url('../../../themes/coreplayer-default-theme/img/settings.png');
+  background: url('../../../themes/uv-default-theme/img/settings.png');
   height: 30px;
   width: 30px;
   margin-right: 8px;
@@ -1495,7 +1495,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .messageBox .close {
   float: right;
-  background-image: url('../../../themes/coreplayer-default-theme/img/close_message_box.png');
+  background-image: url('../../../themes/uv-default-theme/img/close_message_box.png');
   background-repeat: no-repeat;
   width: 17px;
   height: 17px;
@@ -1519,7 +1519,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .collapseButton {
   float: right;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -1528,7 +1528,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .expandFullButton {
   float: right;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -1549,7 +1549,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 #app .leftPanel .closed .expandButton {
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -1575,7 +1575,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .collapseButton {
   position: absolute;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -1585,7 +1585,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .expandFullButton {
   position: absolute;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -1603,7 +1603,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 #app .rightPanel .closed .expandButton {
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -1638,12 +1638,12 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 15px;
 }
 #app .footerPanel .options a.imageBtn.embed {
-  background: url('../../../themes/coreplayer-default-theme/img/embed.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/embed.png') no-repeat;
   height: 21px;
   width: 75px;
 }
 #app .footerPanel .options a.imageBtn.fullScreen {
-  background: url('../../../themes/coreplayer-default-theme/img/fullscreen.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/fullscreen.png') no-repeat;
   height: 21px;
   width: 140px;
   float: right;
@@ -1651,7 +1651,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 0;
 }
 #app .footerPanel .options a.imageBtn.normal {
-  background: url('../../../themes/coreplayer-default-theme/img/normal.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/normal.png') no-repeat;
   height: 21px;
   width: 140px;
   float: right;
@@ -1668,14 +1668,14 @@ input[type=range]:focus::-ms-fill-upper {
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
-  background: url('../../../themes/coreplayer-default-theme/img/close_lightbox.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/close_lightbox.png') no-repeat;
 }
 #app .overlays {
   position: absolute;
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.5);
-  background-image: url('../../../themes/coreplayer-default-theme/img/modal_bg.gif');
+  background-image: url('../../../themes/uv-default-theme/img/modal_bg.gif');
   display: none;
 }
 #app .overlay {
@@ -1688,7 +1688,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app .overlay .top .close {
   height: 24px;
   width: 85px;
-  background: url('../../../themes/coreplayer-default-theme/img/close.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/close.png') no-repeat;
   cursor: pointer;
   float: right;
 }
@@ -1763,7 +1763,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .overlay .bottom {
   height: 11px;
-  background: url('../../../themes/coreplayer-default-theme/img/dialogue_arrow.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/dialogue_arrow.png') no-repeat;
 }
 #app .overlay.genericDialogue {
   width: 250px;
@@ -1808,7 +1808,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app a.action.black,
 #app input.action {
   display: inline-block;
-  background: url('../../../themes/coreplayer-default-theme/img/sprite.png') 0 -1000px no-repeat;
+  background: url('../../../themes/uv-default-theme/img/sprite.png') 0 -1000px no-repeat;
   text-transform: none;
   padding: 0 0 0 16px;
   font-weight: bold;

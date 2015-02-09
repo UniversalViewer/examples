@@ -53,8 +53,8 @@ var FindStates = {
   FIND_PENDING: 3
 };
 
-//PDFJS.imageResourcesPath = 'modules/coreplayer-pdfcenterpanel-module/img/';
-  //PDFJS.workerSrc = 'extensions/coreplayer-pdf-extension/js/pdfworker.min.js';
+//PDFJS.imageResourcesPath = 'modules/uv-pdfcenterpanel-module/img/';
+  //PDFJS.workerSrc = 'extensions/uv-pdf-extension/js/pdfworker.min.js';
   //PDFJS.cMapUrl = '../web/cmaps/';
   //PDFJS.cMapPacked = true;
 

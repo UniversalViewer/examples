@@ -142,11 +142,11 @@
   background: none;
 }
 #app .leftPanel .top .title {
-  background: url('../img/coreplayer-treeviewleftpanel-module/contents.png') no-repeat;
+  background: url('../img/uv-treeviewleftpanel-module/contents.png') no-repeat;
   width: 78px;
 }
 #app .leftPanel .closed .title {
-  background: url('../img/coreplayer-treeviewleftpanel-module/contents_v.png') no-repeat;
+  background: url('../img/uv-treeviewleftpanel-module/contents_v.png') no-repeat;
   height: 78px;
 }
 #app .leftPanel .tabs {
@@ -191,10 +191,10 @@
   display: inline-block;
   height: 10px;
   width: 10px;
-  background-image: url('../img/coreplayer-treeviewleftpanel-module/plus.png');
+  background-image: url('../img/uv-treeviewleftpanel-module/plus.png');
 }
 #app .leftPanel .views .treeView .toggle.expanded {
-  background-image: url('../img/coreplayer-treeviewleftpanel-module/minus.png');
+  background-image: url('../img/uv-treeviewleftpanel-module/minus.png');
 }
 #app .leftPanel .views .treeView .spacer {
   margin-right: 5px;
@@ -242,7 +242,7 @@
   background-position: 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap.hidden {
-  background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap img {
   display: block;
@@ -257,7 +257,7 @@
   padding: 2px 0 0 0;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.placeholder .wrap {
-  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.oneCol {
   margin: 0 0 7px 0;
@@ -336,7 +336,7 @@
   background-position: 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb .wrap.hidden {
-  background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb .wrap img {
   display: block;
@@ -351,7 +351,7 @@
   padding: 2px 0 0 0;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
-  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs.left-to-right .thumb {
   float: left;
@@ -377,11 +377,11 @@
   border: none;
 }
 #app .rightPanel .top .title {
-  background: url('../img/coreplayer-moreinforightpanel-module/moreinfo.png') no-repeat;
+  background: url('../img/uv-moreinforightpanel-module/moreinfo.png') no-repeat;
   width: 140px;
 }
 #app .rightPanel .closed .title {
-  background: url('../img/coreplayer-moreinforightpanel-module/moreinfo_v.png') no-repeat;
+  background: url('../img/uv-moreinforightpanel-module/moreinfo_v.png') no-repeat;
   height: 140px;
 }
 #app .rightPanel .content {
@@ -448,7 +448,7 @@ body {
   font-size: 10px;
   height: 100%;
   background-color: #404040;
-  background-image: url('../img/coreplayer-pdfcenterpanel-module/texture.png');
+  background-image: url('../img/uv-pdfcenterpanel-module/texture.png');
 }
 body,
 input,
@@ -673,7 +673,7 @@ select {
   height: 32px;
   background-color: #424242;
   /* fallback */
-  background-image: url('../img/coreplayer-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(77, 77, 77, 0.99), rgba(64, 64, 64, 0.95));
+  background-image: url('../img/uv-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(77, 77, 77, 0.99), rgba(64, 64, 64, 0.95));
 }
 #outerContainer[dir='ltr'] #toolbarSidebar {
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 1px 0 rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
@@ -688,7 +688,7 @@ select {
   height: 32px;
   background-color: #474747;
   /* fallback */
-  background-image: url('../img/coreplayer-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(82, 82, 82, 0.99), rgba(69, 69, 69, 0.95));
+  background-image: url('../img/uv-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(82, 82, 82, 0.99), rgba(69, 69, 69, 0.95));
 }
 #outerContainer[dir='ltr'] #toolbarContainer,
 .findbar,
@@ -786,7 +786,7 @@ select {
   -moz-user-select: none;
 }
 #findInput[data-status="pending"] {
-  background-image: url('../img/coreplayer-pdfcenterpanel-module/loading-small.png');
+  background-image: url('../img/uv-pdfcenterpanel-module/loading-small.png');
   background-repeat: no-repeat;
   background-position: right;
 }
@@ -1096,7 +1096,7 @@ select {
   max-width: 120px;
   padding: 3px 2px 2px;
   overflow: hidden;
-  background: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-menuArrows.png') no-repeat;
+  background: url('../img/uv-pdfcenterpanel-module/toolbarButton-menuArrows.png') no-repeat;
 }
 #outerContainer[dir='ltr'] .dropdownToolbarButton {
   background-position: 95%;
@@ -1181,62 +1181,62 @@ select {
   right: 4px;
 }
 #outerContainer[dir='ltr'] .toolbarButton#sidebarToggle::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-sidebarToggle.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-sidebarToggle.png');
 }
 #outerContainer[dir='rtl'] .toolbarButton#sidebarToggle::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-sidebarToggle-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-sidebarToggle-rtl.png');
 }
 #outerContainer[dir='ltr'] .toolbarButton#secondaryToolbarToggle::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle.png');
 }
 #outerContainer[dir='rtl'] .toolbarButton#secondaryToolbarToggle::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle-rtl.png');
 }
 #outerContainer[dir='ltr'] .toolbarButton.findPrevious::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-previous.png');
+  content: url('../img/uv-pdfcenterpanel-module/findbarButton-previous.png');
 }
 #outerContainer[dir='rtl'] .toolbarButton.findPrevious::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-previous-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/findbarButton-previous-rtl.png');
 }
 #outerContainer[dir='ltr'] .toolbarButton.findNext::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-next.png');
+  content: url('../img/uv-pdfcenterpanel-module/findbarButton-next.png');
 }
 #outerContainer[dir='rtl'] .toolbarButton.findNext::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-next-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/findbarButton-next-rtl.png');
 }
 #outerContainer[dir='ltr'] .toolbarButton.pageUp::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageUp.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageUp.png');
 }
 #outerContainer[dir='rtl'] .toolbarButton.pageUp::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageUp-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageUp-rtl.png');
 }
 #outerContainer[dir='ltr'] .toolbarButton.pageDown::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageDown.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageDown.png');
 }
 #outerContainer[dir='rtl'] .toolbarButton.pageDown::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageDown-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageDown-rtl.png');
 }
 .toolbarButton.zoomOut::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-zoomOut.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-zoomOut.png');
 }
 .toolbarButton.zoomIn::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-zoomIn.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-zoomIn.png');
 }
 .toolbarButton.presentationMode::before,
 .secondaryToolbarButton.presentationMode::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-presentationMode.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-presentationMode.png');
 }
 .toolbarButton.print::before,
 .secondaryToolbarButton.print::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-print.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-print.png');
 }
 .toolbarButton.openFile::before,
 .secondaryToolbarButton.openFile::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-openFile.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-openFile.png');
 }
 .toolbarButton.download::before,
 .secondaryToolbarButton.download::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-download.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-download.png');
 }
 .toolbarButton.bookmark,
 .secondaryToolbarButton.bookmark {
@@ -1256,22 +1256,22 @@ select {
 }
 .toolbarButton.bookmark::before,
 .secondaryToolbarButton.bookmark::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-bookmark.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-bookmark.png');
 }
 #viewThumbnail.toolbarButton::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewThumbnail.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewThumbnail.png');
 }
 #outerContainer[dir="ltr"] #viewOutline.toolbarButton::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewOutline.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewOutline.png');
 }
 #outerContainer[dir="rtl"] #viewOutline.toolbarButton::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewOutline-rtl.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewOutline-rtl.png');
 }
 #viewAttachments.toolbarButton::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewAttachments.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewAttachments.png');
 }
 #viewFind.toolbarButton::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-search.png');
+  content: url('../img/uv-pdfcenterpanel-module/toolbarButton-search.png');
 }
 .secondaryToolbarButton {
   position: relative;
@@ -1304,22 +1304,22 @@ select {
   padding-left: 4px;
 }
 .secondaryToolbarButton.firstPage::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-firstPage.png');
+  content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-firstPage.png');
 }
 .secondaryToolbarButton.lastPage::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-lastPage.png');
+  content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-lastPage.png');
 }
 .secondaryToolbarButton.rotateCcw::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-rotateCcw.png');
+  content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-rotateCcw.png');
 }
 .secondaryToolbarButton.rotateCw::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-rotateCw.png');
+  content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-rotateCw.png');
 }
 .secondaryToolbarButton.handTool::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-handTool.png');
+  content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-handTool.png');
 }
 .secondaryToolbarButton.documentProperties::before {
-  content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-documentProperties.png');
+  content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-documentProperties.png');
 }
 .verticalToolbarSeparator {
   display: block;
@@ -1532,7 +1532,7 @@ canvas {
   overflow: visible;
   border: 9px solid transparent;
   background-clip: content-box;
-  border-image: url('../img/coreplayer-pdfcenterpanel-module/shadow.png') 9 9 repeat;
+  border-image: url('../img/uv-pdfcenterpanel-module/shadow.png') 9 9 repeat;
   background-color: white;
 }
 .annotLink > a:hover {
@@ -1547,7 +1547,7 @@ canvas {
   top: 0;
   right: 0;
   bottom: 0;
-  background: url('../img/coreplayer-pdfcenterpanel-module/loading-icon.gif') center no-repeat;
+  background: url('../img/uv-pdfcenterpanel-module/loading-icon.gif') center no-repeat;
 }
 .textLayer {
   position: absolute;
@@ -1685,7 +1685,7 @@ canvas {
   text-align: center;
   background-color: #474747;
   /* fallback */
-  background-image: url('../img/coreplayer-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(82, 82, 82, 0.99), rgba(69, 69, 69, 0.95));
+  background-image: url('../img/uv-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(82, 82, 82, 0.99), rgba(69, 69, 69, 0.95));
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08), inset 0 1px 1px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 1px 0 rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .prompt > .row {
@@ -1720,7 +1720,7 @@ canvas {
   cursor: default;
   background-color: #474747;
   /* fallback */
-  background-image: url('../img/coreplayer-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(82, 82, 82, 0.99), rgba(69, 69, 69, 0.95));
+  background-image: url('../img/uv-pdfcenterpanel-module/texture.png'), linear-gradient(rgba(82, 82, 82, 0.99), rgba(69, 69, 69, 0.95));
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08), inset 0 1px 1px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 1px 0 rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 #documentPropertiesContainer .separator {
@@ -1826,7 +1826,7 @@ canvas {
   color: black;
 }
 .grab-to-pan-grab {
-  cursor: url('../img/coreplayer-pdfcenterpanel-module/grab.cur'), move !important;
+  cursor: url('../img/uv-pdfcenterpanel-module/grab.cur'), move !important;
   cursor: -webkit-grab !important;
   cursor: -moz-grab !important;
   cursor: grab !important;
@@ -1836,7 +1836,7 @@ canvas {
 }
 .grab-to-pan-grab:active,
 .grab-to-pan-grabbing {
-  cursor: url('../img/coreplayer-pdfcenterpanel-module/grabbing.cur'), move !important;
+  cursor: url('../img/uv-pdfcenterpanel-module/grabbing.cur'), move !important;
   cursor: -webkit-grabbing !important;
   cursor: -moz-grabbing !important;
   cursor: grabbing !important;
@@ -1880,103 +1880,103 @@ canvas {
     left: 186px;
   }
   .dropdownToolbarButton {
-    background: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-menuArrows@2x.png') no-repeat;
+    background: url('../img/uv-pdfcenterpanel-module/toolbarButton-menuArrows@2x.png') no-repeat;
     background-size: 7px 16px;
   }
   #outerContainer[dir='ltr'] .toolbarButton#sidebarToggle::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-sidebarToggle@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-sidebarToggle@2x.png');
   }
   #outerContainer[dir='rtl'] .toolbarButton#sidebarToggle::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-sidebarToggle-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-sidebarToggle-rtl@2x.png');
   }
   #outerContainer[dir='ltr'] .toolbarButton#secondaryToolbarToggle::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle@2x.png');
   }
   #outerContainer[dir='rtl'] .toolbarButton#secondaryToolbarToggle::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-secondaryToolbarToggle-rtl@2x.png');
   }
   #outerContainer[dir='ltr'] .toolbarButton.findPrevious::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-previous@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/findbarButton-previous@2x.png');
   }
   #outerContainer[dir='rtl'] .toolbarButton.findPrevious::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-previous-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/findbarButton-previous-rtl@2x.png');
   }
   #outerContainer[dir='ltr'] .toolbarButton.findNext::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-next@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/findbarButton-next@2x.png');
   }
   #outerContainer[dir='rtl'] .toolbarButton.findNext::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/findbarButton-next-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/findbarButton-next-rtl@2x.png');
   }
   #outerContainer[dir='ltr'] .toolbarButton.pageUp::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageUp@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageUp@2x.png');
   }
   #outerContainer[dir='rtl'] .toolbarButton.pageUp::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageUp-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageUp-rtl@2x.png');
   }
   #outerContainer[dir='ltr'] .toolbarButton.pageDown::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageDown@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageDown@2x.png');
   }
   #outerContainer[dir='rtl'] .toolbarButton.pageDown::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-pageDown-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-pageDown-rtl@2x.png');
   }
   .toolbarButton.zoomIn::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-zoomIn@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-zoomIn@2x.png');
   }
   .toolbarButton.zoomOut::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-zoomOut@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-zoomOut@2x.png');
   }
   .toolbarButton.presentationMode::before,
   .secondaryToolbarButton.presentationMode::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-presentationMode@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-presentationMode@2x.png');
   }
   .toolbarButton.print::before,
   .secondaryToolbarButton.print::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-print@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-print@2x.png');
   }
   .toolbarButton.openFile::before,
   .secondaryToolbarButton.openFile::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-openFile@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-openFile@2x.png');
   }
   .toolbarButton.download::before,
   .secondaryToolbarButton.download::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-download@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-download@2x.png');
   }
   .toolbarButton.bookmark::before,
   .secondaryToolbarButton.bookmark::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-bookmark@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-bookmark@2x.png');
   }
   #viewThumbnail.toolbarButton::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewThumbnail@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewThumbnail@2x.png');
   }
   #outerContainer[dir="ltr"] #viewOutline.toolbarButton::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewOutline@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewOutline@2x.png');
   }
   #outerContainer[dir="rtl"] #viewOutline.toolbarButton::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewOutline-rtl@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewOutline-rtl@2x.png');
   }
   #viewAttachments.toolbarButton::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-viewAttachments@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-viewAttachments@2x.png');
   }
   #viewFind.toolbarButton::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/toolbarButton-search@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/toolbarButton-search@2x.png');
   }
   .secondaryToolbarButton.firstPage::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-firstPage@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-firstPage@2x.png');
   }
   .secondaryToolbarButton.lastPage::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-lastPage@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-lastPage@2x.png');
   }
   .secondaryToolbarButton.rotateCcw::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-rotateCcw@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-rotateCcw@2x.png');
   }
   .secondaryToolbarButton.rotateCw::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-rotateCw@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-rotateCw@2x.png');
   }
   .secondaryToolbarButton.handTool::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-handTool@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-handTool@2x.png');
   }
   .secondaryToolbarButton.documentProperties::before {
-    content: url('../img/coreplayer-pdfcenterpanel-module/secondaryToolbarButton-documentProperties@2x.png');
+    content: url('../img/uv-pdfcenterpanel-module/secondaryToolbarButton-documentProperties@2x.png');
   }
 }
 @media print {
@@ -2928,7 +2928,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 6px 0 0 0;
 }
 #app .headerPanel .options .rightOptions .settings {
-  background: url('../../../themes/coreplayer-default-theme/img/settings.png');
+  background: url('../../../themes/uv-default-theme/img/settings.png');
   height: 30px;
   width: 30px;
   margin-right: 8px;
@@ -2947,7 +2947,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .messageBox .close {
   float: right;
-  background-image: url('../../../themes/coreplayer-default-theme/img/close_message_box.png');
+  background-image: url('../../../themes/uv-default-theme/img/close_message_box.png');
   background-repeat: no-repeat;
   width: 17px;
   height: 17px;
@@ -2971,7 +2971,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .collapseButton {
   float: right;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2980,7 +2980,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .expandFullButton {
   float: right;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3001,7 +3001,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 #app .leftPanel .closed .expandButton {
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3027,7 +3027,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .collapseButton {
   position: absolute;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3037,7 +3037,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .expandFullButton {
   position: absolute;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3055,7 +3055,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 #app .rightPanel .closed .expandButton {
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3090,12 +3090,12 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 15px;
 }
 #app .footerPanel .options a.imageBtn.embed {
-  background: url('../../../themes/coreplayer-default-theme/img/embed.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/embed.png') no-repeat;
   height: 21px;
   width: 75px;
 }
 #app .footerPanel .options a.imageBtn.fullScreen {
-  background: url('../../../themes/coreplayer-default-theme/img/fullscreen.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/fullscreen.png') no-repeat;
   height: 21px;
   width: 140px;
   float: right;
@@ -3103,7 +3103,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 0;
 }
 #app .footerPanel .options a.imageBtn.normal {
-  background: url('../../../themes/coreplayer-default-theme/img/normal.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/normal.png') no-repeat;
   height: 21px;
   width: 140px;
   float: right;
@@ -3120,14 +3120,14 @@ input[type=range]:focus::-ms-fill-upper {
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
-  background: url('../../../themes/coreplayer-default-theme/img/close_lightbox.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/close_lightbox.png') no-repeat;
 }
 #app .overlays {
   position: absolute;
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.5);
-  background-image: url('../../../themes/coreplayer-default-theme/img/modal_bg.gif');
+  background-image: url('../../../themes/uv-default-theme/img/modal_bg.gif');
   display: none;
 }
 #app .overlay {
@@ -3140,7 +3140,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app .overlay .top .close {
   height: 24px;
   width: 85px;
-  background: url('../../../themes/coreplayer-default-theme/img/close.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/close.png') no-repeat;
   cursor: pointer;
   float: right;
 }
@@ -3215,7 +3215,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .overlay .bottom {
   height: 11px;
-  background: url('../../../themes/coreplayer-default-theme/img/dialogue_arrow.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/dialogue_arrow.png') no-repeat;
 }
 #app .overlay.genericDialogue {
   width: 250px;
@@ -3260,7 +3260,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app a.action.black,
 #app input.action {
   display: inline-block;
-  background: url('../../../themes/coreplayer-default-theme/img/sprite.png') 0 -1000px no-repeat;
+  background: url('../../../themes/uv-default-theme/img/sprite.png') 0 -1000px no-repeat;
   text-transform: none;
   padding: 0 0 0 16px;
   font-weight: bold;

@@ -142,11 +142,11 @@
   background: none;
 }
 #app .leftPanel .top .title {
-  background: url('../img/coreplayer-treeviewleftpanel-module/contents.png') no-repeat;
+  background: url('../img/uv-treeviewleftpanel-module/contents.png') no-repeat;
   width: 78px;
 }
 #app .leftPanel .closed .title {
-  background: url('../img/coreplayer-treeviewleftpanel-module/contents_v.png') no-repeat;
+  background: url('../img/uv-treeviewleftpanel-module/contents_v.png') no-repeat;
   height: 78px;
 }
 #app .leftPanel .tabs {
@@ -191,10 +191,10 @@
   display: inline-block;
   height: 10px;
   width: 10px;
-  background-image: url('../img/coreplayer-treeviewleftpanel-module/plus.png');
+  background-image: url('../img/uv-treeviewleftpanel-module/plus.png');
 }
 #app .leftPanel .views .treeView .toggle.expanded {
-  background-image: url('../img/coreplayer-treeviewleftpanel-module/minus.png');
+  background-image: url('../img/uv-treeviewleftpanel-module/minus.png');
 }
 #app .leftPanel .views .treeView .spacer {
   margin-right: 5px;
@@ -242,7 +242,7 @@
   background-position: 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap.hidden {
-  background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap img {
   display: block;
@@ -257,7 +257,7 @@
   padding: 2px 0 0 0;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.placeholder .wrap {
-  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.oneCol {
   margin: 0 0 7px 0;
@@ -336,7 +336,7 @@
   background-position: 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb .wrap.hidden {
-  background: url('../img/coreplayer-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb .wrap img {
   display: block;
@@ -351,7 +351,7 @@
   padding: 2px 0 0 0;
 }
 #app .leftPanel .views .galleryView .main .thumbs .thumb.placeholder .wrap {
-  background: url('../img/coreplayer-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
+  background: url('../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .galleryView .main .thumbs.left-to-right .thumb {
   float: left;
@@ -377,11 +377,11 @@
   border: none;
 }
 #app .rightPanel .top .title {
-  background: url('../img/coreplayer-moreinforightpanel-module/moreinfo.png') no-repeat;
+  background: url('../img/uv-moreinforightpanel-module/moreinfo.png') no-repeat;
   width: 140px;
 }
 #app .rightPanel .closed .title {
-  background: url('../img/coreplayer-moreinforightpanel-module/moreinfo_v.png') no-repeat;
+  background: url('../img/uv-moreinforightpanel-module/moreinfo_v.png') no-repeat;
   height: 140px;
 }
 #app .rightPanel .content {
@@ -496,7 +496,7 @@
   width: 100px;
   height: 100px;
   margin: -50px 0 0 -50px;
-  background: url('../img/coreplayer-mediaelementcenterpanel-module/bigplay.png') no-repeat;
+  background: url('../img/uv-mediaelementcenterpanel-module/bigplay.png') no-repeat;
 }
 .mejs-overlay:hover .mejs-overlay-button {
   background-position: 0 -100px;
@@ -522,7 +522,7 @@
   display: block;
   width: 80px;
   height: 80px;
-  background: transparent url('../img/coreplayer-mediaelementcenterpanel-module/loading.gif') 50% 50% no-repeat;
+  background: transparent url('../img/uv-mediaelementcenterpanel-module/loading.gif') 50% 50% no-repeat;
 }
 /* End: LAYERS */
 /* Start: CONTROL BAR */
@@ -1136,7 +1136,7 @@
 }
 .mejs-uv .mejs-controls {
   height: 43px;
-  background-image: url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome-bg.png');
+  background-image: url('../img/uv-mediaelementcenterpanel-module/controls-wellcome-bg.png');
   background-repeat: repeat-x;
   background-position: 0 5px;
   margin: 0 0 0 11px;
@@ -1156,7 +1156,7 @@
 .mejs-uv .mejs-controls .mejs-playpause-button button {
   width: 37px;
   height: 37px;
-  background: url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -1px -18px;
+  background: url('../img/uv-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -1px -18px;
   margin: 0;
   padding: 0;
 }
@@ -1203,7 +1203,7 @@
   border: 0;
   top: -5px;
   left: -1px;
-  background: url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat 0 0;
+  background: url('../img/uv-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat 0 0;
 }
 .mejs-uv .mejs-controls .mejs-time-rail .mejs-time-float {
   display: none;
@@ -1219,14 +1219,14 @@
   margin: 3px 5px 0 0;
 }
 .mejs-uv .mejs-controls .mejs-mute button {
-  background: url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -19px 0;
+  background: url('../img/uv-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -19px 0;
   width: 18px;
   height: 17px;
   margin: 0;
   padding: 0;
 }
 .mejs-uv .mejs-controls .mejs-unmute button {
-  background: url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -40px 0;
+  background: url('../img/uv-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -40px 0;
   width: 18px;
   height: 17px;
   margin: 0;
@@ -1263,14 +1263,14 @@
 .mejs-uv .mejs-controls .mejs-fullscreen-button button {
   width: 17px;
   height: 15px;
-  background: transparent url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -1px -58px;
+  background: transparent url('../img/uv-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -1px -58px;
   margin: 0;
   padding: 0;
 }
 .mejs-uv .mejs-controls .mejs-unfullscreen button {
   width: 17px;
   height: 15px;
-  background: transparent url('../img/coreplayer-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -22px -58px;
+  background: transparent url('../img/uv-mediaelementcenterpanel-module/controls-wellcome.png') no-repeat -22px -58px;
   margin: 0;
   padding: 0;
 }
@@ -2072,7 +2072,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 6px 0 0 0;
 }
 #app .headerPanel .options .rightOptions .settings {
-  background: url('../../../themes/coreplayer-default-theme/img/settings.png');
+  background: url('../../../themes/uv-default-theme/img/settings.png');
   height: 30px;
   width: 30px;
   margin-right: 8px;
@@ -2091,7 +2091,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .messageBox .close {
   float: right;
-  background-image: url('../../../themes/coreplayer-default-theme/img/close_message_box.png');
+  background-image: url('../../../themes/uv-default-theme/img/close_message_box.png');
   background-repeat: no-repeat;
   width: 17px;
   height: 17px;
@@ -2115,7 +2115,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .collapseButton {
   float: right;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2124,7 +2124,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .expandFullButton {
   float: right;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2145,7 +2145,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 #app .leftPanel .closed .expandButton {
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2171,7 +2171,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .collapseButton {
   position: absolute;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_right.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2181,7 +2181,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .expandFullButton {
   position: absolute;
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2199,7 +2199,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 #app .rightPanel .closed .expandButton {
-  background: url('../../../themes/coreplayer-default-theme/img/arrows_left.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -2234,12 +2234,12 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 15px;
 }
 #app .footerPanel .options a.imageBtn.embed {
-  background: url('../../../themes/coreplayer-default-theme/img/embed.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/embed.png') no-repeat;
   height: 21px;
   width: 75px;
 }
 #app .footerPanel .options a.imageBtn.fullScreen {
-  background: url('../../../themes/coreplayer-default-theme/img/fullscreen.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/fullscreen.png') no-repeat;
   height: 21px;
   width: 140px;
   float: right;
@@ -2247,7 +2247,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 0;
 }
 #app .footerPanel .options a.imageBtn.normal {
-  background: url('../../../themes/coreplayer-default-theme/img/normal.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/normal.png') no-repeat;
   height: 21px;
   width: 140px;
   float: right;
@@ -2264,14 +2264,14 @@ input[type=range]:focus::-ms-fill-upper {
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
-  background: url('../../../themes/coreplayer-default-theme/img/close_lightbox.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/close_lightbox.png') no-repeat;
 }
 #app .overlays {
   position: absolute;
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.5);
-  background-image: url('../../../themes/coreplayer-default-theme/img/modal_bg.gif');
+  background-image: url('../../../themes/uv-default-theme/img/modal_bg.gif');
   display: none;
 }
 #app .overlay {
@@ -2284,7 +2284,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app .overlay .top .close {
   height: 24px;
   width: 85px;
-  background: url('../../../themes/coreplayer-default-theme/img/close.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/close.png') no-repeat;
   cursor: pointer;
   float: right;
 }
@@ -2359,7 +2359,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .overlay .bottom {
   height: 11px;
-  background: url('../../../themes/coreplayer-default-theme/img/dialogue_arrow.png') no-repeat;
+  background: url('../../../themes/uv-default-theme/img/dialogue_arrow.png') no-repeat;
 }
 #app .overlay.genericDialogue {
   width: 250px;
@@ -2404,7 +2404,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app a.action.black,
 #app input.action {
   display: inline-block;
-  background: url('../../../themes/coreplayer-default-theme/img/sprite.png') 0 -1000px no-repeat;
+  background: url('../../../themes/uv-default-theme/img/sprite.png') 0 -1000px no-repeat;
   text-transform: none;
   padding: 0 0 0 16px;
   font-weight: bold;

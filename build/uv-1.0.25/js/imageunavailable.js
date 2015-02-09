@@ -7,4 +7,4 @@ imageunavailable({
         }]
 })
 
-//todo: for debug use '/src/extensions/coreplayer-seadragon-extension/js/imageunavailable.jpg'
+//todo: for debug use '/src/extensions/uv-seadragon-extension/js/imageunavailable.jpg'

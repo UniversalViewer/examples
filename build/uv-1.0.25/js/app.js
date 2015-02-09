@@ -2281,7 +2281,7 @@ Sanitize.prototype.clean_node = function(container) {
 if ( typeof define === "function" ) {
     define( "sanitize", [], function () { return Sanitize; } );
 };
-define('modules/coreplayer-shared-module/panel',["require", "exports"], function(require, exports) {
+define('modules/uv-shared-module/panel',["require", "exports"], function(require, exports) {
     var Panel = (function () {
         function Panel($element, fitToParentWidth, fitToParentHeight) {
             this.$element = $element;
@@ -2319,7 +2319,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/baseView',["require", "exports", "./panel"], function(require, exports, panel) {
+define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], function(require, exports, panel) {
     var BaseView = (function (_super) {
         __extends(BaseView, _super);
         function BaseView($element, fitToParentWidth, fitToParentHeight) {
@@ -2363,7 +2363,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/dialogue',["require", "exports", "./baseExtension", "./shell", "../../utils", "./baseView"], function(require, exports, baseExtension, shell, utils, baseView) {
+define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtension", "./shell", "../../utils", "./baseView"], function(require, exports, baseExtension, shell, utils, baseView) {
     var Dialogue = (function (_super) {
         __extends(Dialogue, _super);
         function Dialogue($element) {
@@ -2476,7 +2476,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/genericDialogue',["require", "exports", "./baseExtension", "./dialogue"], function(require, exports, baseExtension, dialogue) {
+define('modules/uv-shared-module/genericDialogue',["require", "exports", "./baseExtension", "./dialogue"], function(require, exports, baseExtension, dialogue) {
     var GenericDialogue = (function (_super) {
         __extends(GenericDialogue, _super);
         function GenericDialogue($element) {
@@ -2557,7 +2557,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseExtension", "./baseView", "./genericDialogue"], function(require, exports, baseExtension, baseView, genericDialogue) {
+define('modules/uv-shared-module/shell',["require", "exports", "./baseExtension", "./baseView", "./genericDialogue"], function(require, exports, baseExtension, baseView, genericDialogue) {
     var Shell = (function (_super) {
         __extends(Shell, _super);
         function Shell($element) {
@@ -2625,7 +2625,7 @@ define('modules/coreplayer-shared-module/shell',["require", "exports", "./baseEx
     exports.Shell = Shell;
 });
 
-define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "../../utils", "./shell", "./genericDialogue"], function(require, exports, utils, shell, genericDialogue) {
+define('modules/uv-shared-module/baseExtension',["require", "exports", "../../utils", "./shell", "./genericDialogue"], function(require, exports, utils, shell, genericDialogue) {
     var BaseExtension = (function () {
         function BaseExtension(provider) {
             this.isFullScreen = false;
@@ -2840,7 +2840,7 @@ define('modules/coreplayer-shared-module/baseExtension',["require", "exports", "
     exports.BaseExtension = BaseExtension;
 });
 
-define('modules/coreplayer-shared-module/treeNode',["require", "exports"], function(require, exports) {
+define('modules/uv-shared-module/treeNode',["require", "exports"], function(require, exports) {
     var TreeNode = (function () {
         function TreeNode(label, data) {
             this.label = label;
@@ -2860,7 +2860,7 @@ define('modules/coreplayer-shared-module/treeNode',["require", "exports"], funct
     return TreeNode;
 });
 
-define('modules/coreplayer-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode"], function(require, exports, utils, TreeNode) {
+define('modules/uv-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode"], function(require, exports, utils, TreeNode) {
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -3428,7 +3428,7 @@ define('modules/coreplayer-shared-module/baseProvider',["require", "exports", ".
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.24';
+    exports.Version = '1.0.25';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3437,7 +3437,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-dialogues-module/settingsDialogue',["require", "exports", "../coreplayer-shared-module/dialogue", "../../_Version"], function(require, exports, dialogue, version) {
+define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version"], function(require, exports, dialogue, version) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -3554,7 +3554,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../coreplayer-dialogues-module/settingsDialogue"], function(require, exports, baseExtension, baseView, settings) {
+define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../uv-dialogues-module/settingsDialogue"], function(require, exports, baseExtension, baseView, settings) {
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -3650,7 +3650,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/headerPanel"], function(require, exports, baseExtension, extension, baseHeader) {
+define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/headerPanel"], function(require, exports, baseExtension, extension, baseHeader) {
     var PagingHeaderPanel = (function (_super) {
         __extends(PagingHeaderPanel, _super);
         function PagingHeaderPanel($element) {
@@ -3958,7 +3958,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/baseExpandPanel',["require", "exports", "./baseView"], function(require, exports, baseView) {
+define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./baseView"], function(require, exports, baseView) {
     var BaseExpandPanel = (function (_super) {
         __extends(BaseExpandPanel, _super);
         function BaseExpandPanel($element) {
@@ -4185,7 +4185,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/leftPanel',["require", "exports", "./baseExpandPanel"], function(require, exports, baseExpandPanel) {
+define('modules/uv-shared-module/leftPanel',["require", "exports", "./baseExpandPanel"], function(require, exports, baseExpandPanel) {
     var LeftPanel = (function (_super) {
         __extends(LeftPanel, _super);
         function LeftPanel($element) {
@@ -4247,7 +4247,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeView',["require", "exports", "../../utils", "../coreplayer-shared-module/baseView", "../coreplayer-shared-module/baseExtension"], function(require, exports, utils, baseView, baseExtension) {
+define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "../../utils", "../uv-shared-module/baseView", "../uv-shared-module/baseExtension"], function(require, exports, utils, baseView, baseExtension) {
     var util = utils.Utils;
 
     var TreeView = (function (_super) {
@@ -4447,7 +4447,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/thumbsView',["require", "exports", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseView"], function(require, exports, baseExtension, extension, baseView) {
+define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseView"], function(require, exports, baseExtension, extension, baseView) {
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
@@ -4693,7 +4693,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/galleryView',["require", "exports", "../../utils", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseView"], function(require, exports, utils, baseExtension, extension, baseView) {
+define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", "../../utils", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseView"], function(require, exports, utils, baseExtension, extension, baseView) {
     var GalleryView = (function (_super) {
         __extends(GalleryView, _super);
         function GalleryView($element) {
@@ -4976,7 +4976,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../coreplayer-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/coreplayer-seadragon-extension/extension", "../coreplayer-shared-module/baseExtension"], function(require, exports, baseLeft, utils, tree, thumbs, gallery, extension, baseExtension) {
+define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../uv-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseExtension"], function(require, exports, baseLeft, utils, tree, thumbs, gallery, extension, baseExtension) {
     var TreeViewLeftPanel = (function (_super) {
         __extends(TreeViewLeftPanel, _super);
         function TreeViewLeftPanel($element) {
@@ -5229,7 +5229,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/centerPanel',["require", "exports", "./shell", "./baseView"], function(require, exports, shell, baseView) {
+define('modules/uv-shared-module/centerPanel',["require", "exports", "./shell", "./baseView"], function(require, exports, shell, baseView) {
     var CenterPanel = (function (_super) {
         __extends(CenterPanel, _super);
         function CenterPanel($element) {
@@ -5278,7 +5278,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../coreplayer-shared-module/baseProvider", "../coreplayer-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, baseProvider, baseCenter, utils) {
+define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../uv-shared-module/baseExtension", "../uv-shared-module/baseProvider", "../uv-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, baseProvider, baseCenter, utils) {
     var SeadragonCenterPanel = (function (_super) {
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
@@ -5388,7 +5388,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
-            var prefixUrl = (window.DEBUG) ? 'modules/coreplayer-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/coreplayer-seadragoncenterpanel-module/';
+            var prefixUrl = (window.DEBUG) ? 'modules/uv-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/uv-seadragoncenterpanel-module/';
 
             this.viewer = OpenSeadragon({
                 id: "viewer",
@@ -5599,7 +5599,7 @@ define('modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel',["r
         SeadragonCenterPanel.prototype.loadTileSources = function () {
             this.tileSources = this.provider.getTileSources();
 
-            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/coreplayer-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
+            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
 
             _.each(this.tileSources, function (ts) {
                 if (!ts.tileSource) {
@@ -5719,7 +5719,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/rightPanel',["require", "exports", "./baseExpandPanel"], function(require, exports, baseExpandPanel) {
+define('modules/uv-shared-module/rightPanel',["require", "exports", "./baseExpandPanel"], function(require, exports, baseExpandPanel) {
     var RightPanel = (function (_super) {
         __extends(RightPanel, _super);
         function RightPanel($element) {
@@ -5777,7 +5777,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["require", "exports", "../coreplayer-shared-module/rightPanel"], function(require, exports, baseRight) {
+define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "exports", "../uv-shared-module/rightPanel"], function(require, exports, baseRight) {
     var MoreInfoRightPanel = (function (_super) {
         __extends(MoreInfoRightPanel, _super);
         function MoreInfoRightPanel($element) {
@@ -5822,7 +5822,7 @@ define('modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel',["requi
             this.$main.removeClass('loading');
 
             if (!data) {
-                this.$main.append(this.content.holdingText);
+                this.$main.append(this.content.noData);
                 return;
             }
 
@@ -5873,7 +5873,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-shared-module/footerPanel',["require", "exports", "../../utils", "./baseExtension", "./baseView"], function(require, exports, utils, baseExtension, baseView) {
+define('modules/uv-shared-module/footerPanel',["require", "exports", "../../utils", "./baseExtension", "./baseView"], function(require, exports, utils, baseExtension, baseView) {
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -5947,7 +5947,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-dialogues-module/helpDialogue',["require", "exports", "../coreplayer-shared-module/dialogue"], function(require, exports, dialogue) {
+define('modules/uv-dialogues-module/helpDialogue',["require", "exports", "../uv-shared-module/dialogue"], function(require, exports, dialogue) {
     var HelpDialogue = (function (_super) {
         __extends(HelpDialogue, _super);
         function HelpDialogue($element) {
@@ -6000,7 +6000,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-dialogues-module/embedDialogue',["require", "exports", "../../utils", "../coreplayer-shared-module/dialogue"], function(require, exports, utils, dialogue) {
+define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../../utils", "../uv-shared-module/dialogue"], function(require, exports, utils, dialogue) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -6173,7 +6173,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel"], function(require, exports, embed, baseCenter) {
+define('extensions/uv-seadragon-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel"], function(require, exports, embed, baseCenter) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -6211,7 +6211,7 @@ define('extensions/coreplayer-seadragon-extension/embedDialogue',["require", "ex
     exports.EmbedDialogue = EmbedDialogue;
 });
 
-define('extensions/coreplayer-seadragon-extension/dependencies',[],function() {
+define('extensions/uv-seadragon-extension/dependencies',[],function() {
     return {
         'openseadragon': './js/openseadragon'
     };
@@ -6230,7 +6230,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../modules/coreplayer-treeviewleftpanel-module/galleryView", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "../../extensions/coreplayer-seadragon-extension/embedDialogue", "../../modules/coreplayer-dialogues-module/settingsDialogue", "../../coreplayer-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
+define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../modules/uv-dialogues-module/settingsDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -6541,7 +6541,7 @@ define('extensions/coreplayer-seadragon-extension/extension',["require", "export
     exports.Extension = Extension;
 });
 
-define('modules/coreplayer-shared-module/thumb',["require", "exports"], function(require, exports) {
+define('modules/uv-shared-module/thumb',["require", "exports"], function(require, exports) {
     var Thumb = (function () {
         function Thumb(index, url, label, width, height, visible) {
             this.index = index;
@@ -6557,7 +6557,7 @@ define('modules/coreplayer-shared-module/thumb',["require", "exports"], function
     return Thumb;
 });
 
-define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
+define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -7161,7 +7161,7 @@ define('modules/coreplayer-shared-module/baseIIIFProvider',["require", "exports"
         BaseProvider.prototype.getMetaData = function (callback, includeRootProperties) {
             var metaData = this.manifest.metadata;
 
-            if (includeRootProperties) {
+            if (metaData && includeRootProperties) {
                 if (this.manifest.description)
                     metaData.push({ "label": "description", "value": this.manifest.description });
                 if (this.manifest.attribution)
@@ -7244,7 +7244,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/iiifProvider',["require", "exports", "../../modules/coreplayer-shared-module/baseIIIFProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "../../modules/uv-shared-module/baseIIIFProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(config, manifest) {
@@ -7338,7 +7338,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-seadragon-extension/provider',["require", "exports", "../../modules/coreplayer-shared-module/baseProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(config, manifest) {
@@ -7382,7 +7382,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-mediaelementcenterpanel-module/mediaelementCenterPanel',["require", "exports", "../coreplayer-shared-module/baseExtension", "../../extensions/coreplayer-mediaelement-extension/extension", "../coreplayer-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, extension, baseCenter, utils) {
+define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-mediaelement-extension/extension", "../uv-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, extension, baseCenter, utils) {
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
@@ -7556,7 +7556,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-mediaelement-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue"], function(require, exports, embed) {
+define('extensions/uv-mediaelement-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue"], function(require, exports, embed) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -7582,7 +7582,7 @@ define('extensions/coreplayer-mediaelement-extension/embedDialogue',["require", 
     exports.EmbedDialogue = EmbedDialogue;
 });
 
-define('extensions/coreplayer-mediaelement-extension/dependencies',[],function() {
+define('extensions/uv-mediaelement-extension/dependencies',[],function() {
     return {
         'mediaelement': './js/mediaelement-and-player'
     };
@@ -7601,7 +7601,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-mediaelement-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeView", "../../modules/coreplayer-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "./embedDialogue", "../../coreplayer-mediaelement-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed, dependencies) {
+define('extensions/uv-mediaelement-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "../../uv-mediaelement-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -7720,7 +7720,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-mediaelement-extension/provider',["require", "exports", "../../modules/coreplayer-shared-module/baseProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-mediaelement-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(config, manifest) {
@@ -7758,7 +7758,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel',["require", "exports", "../../extensions/coreplayer-pdf-extension/extension", "../coreplayer-shared-module/centerPanel"], function(require, exports, extension, baseCenter) {
+define('modules/uv-pdfcenterpanel-module/pdfCenterPanel',["require", "exports", "../../extensions/uv-pdf-extension/extension", "../uv-shared-module/centerPanel"], function(require, exports, extension, baseCenter) {
     var PDFCenterPanel = (function (_super) {
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
@@ -7789,14 +7789,14 @@ define('modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel',["require", "ex
                 var viewerPath;
 
                 if (window.DEBUG) {
-                    viewerPath = 'modules/coreplayer-pdfcenterpanel-module/html/viewer.html';
+                    viewerPath = 'modules/uv-pdfcenterpanel-module/html/viewer.html';
                 } else {
-                    viewerPath = 'html/coreplayer-pdfcenterpanel-module/viewer.html';
+                    viewerPath = 'html/uv-pdfcenterpanel-module/viewer.html';
                 }
 
                 this.$content.load(viewerPath, function () {
                     if (window.DEBUG) {
-                        PDFJS.workerSrc = 'extensions/coreplayer-pdf-extension/js/pdf.worker.min.js';
+                        PDFJS.workerSrc = 'extensions/uv-pdf-extension/js/pdf.worker.min.js';
                     } else {
                         PDFJS.workerSrc = 'js/pdf.worker.min.js';
                     }
@@ -7824,7 +7824,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-pdf-extension/embedDialogue',["require", "exports", "../../modules/coreplayer-dialogues-module/embedDialogue"], function(require, exports, embed) {
+define('extensions/uv-pdf-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue"], function(require, exports, embed) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -7850,7 +7850,7 @@ define('extensions/coreplayer-pdf-extension/embedDialogue',["require", "exports"
     exports.EmbedDialogue = EmbedDialogue;
 });
 
-define('extensions/coreplayer-pdf-extension/dependencies',[],function() {
+define('extensions/uv-pdf-extension/dependencies',[],function() {
     var paths = {
         'pdf': './js/pdf_combined',
         'pdfobject': './js/pdfobject'
@@ -7872,7 +7872,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-pdf-extension/extension',["require", "exports", "../../modules/coreplayer-shared-module/baseExtension", "../../utils", "../../modules/coreplayer-shared-module/baseProvider", "../../modules/coreplayer-shared-module/shell", "../../modules/coreplayer-shared-module/headerPanel", "../../modules/coreplayer-shared-module/leftPanel", "../../modules/coreplayer-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/coreplayer-pdfcenterpanel-module/pdfCenterPanel", "../../modules/coreplayer-shared-module/rightPanel", "../../modules/coreplayer-moreinforightpanel-module/moreInfoRightPanel", "../../modules/coreplayer-shared-module/footerPanel", "../../modules/coreplayer-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/coreplayer-treeviewleftpanel-module/thumbsView", "../../coreplayer-pdf-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, center, baseRight, right, footer, help, embed, thumbsView, dependencies) {
+define('extensions/uv-pdf-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-pdfcenterpanel-module/pdfCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../uv-pdf-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, center, baseRight, right, footer, help, embed, thumbsView, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -7999,7 +7999,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/coreplayer-pdf-extension/provider',["require", "exports", "../../modules/coreplayer-shared-module/baseProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(config, manifest) {
@@ -8075,13 +8075,13 @@ require([
     'bootstrapper',
     'l10n',
     'sanitize',
-    'extensions/coreplayer-seadragon-extension/extension',
-    'extensions/coreplayer-seadragon-extension/iiifProvider',
-    'extensions/coreplayer-seadragon-extension/provider',
-    'extensions/coreplayer-mediaelement-extension/extension',
-    'extensions/coreplayer-mediaelement-extension/provider',
-    'extensions/coreplayer-pdf-extension/extension',
-    'extensions/coreplayer-pdf-extension/provider'
+    'extensions/uv-seadragon-extension/extension',
+    'extensions/uv-seadragon-extension/iiifProvider',
+    'extensions/uv-seadragon-extension/provider',
+    'extensions/uv-mediaelement-extension/extension',
+    'extensions/uv-mediaelement-extension/provider',
+    'extensions/uv-pdf-extension/extension',
+    'extensions/uv-pdf-extension/provider'
 ], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
 
@@ -8090,37 +8090,37 @@ require([
     extensions['seadragon/dzi'] = {
         type: seadragonExtension.Extension,
         provider: seadragonProvider.Provider,
-        name: 'coreplayer-seadragon-extension'
+        name: 'uv-seadragon-extension'
     };
 
     extensions['seadragon/iiif'] = {
         type: seadragonExtension.Extension,
         provider: seadragonIIIFProvider.Provider,
-        name: 'coreplayer-seadragon-extension'
+        name: 'uv-seadragon-extension'
     };
 
     extensions['video/mp4'] = {
         type: mediaelementExtension.Extension,
         provider: mediaelementProvider.Provider,
-        name: 'coreplayer-mediaelement-extension'
+        name: 'uv-mediaelement-extension'
     };
 
     extensions['video/multiple-sources'] = {
         type: mediaelementExtension.Extension,
         provider: mediaelementProvider.Provider,
-        name: 'coreplayer-mediaelement-extension'
+        name: 'uv-mediaelement-extension'
     };
 
     extensions['audio/mp3'] = {
         type: mediaelementExtension.Extension,
         provider: mediaelementProvider.Provider,
-        name: 'coreplayer-mediaelement-extension'
+        name: 'uv-mediaelement-extension'
     };
 
     extensions['application/pdf'] = {
         type: pdfExtension.Extension,
         provider: pdfProvider.Provider,
-        name: 'coreplayer-pdf-extension'
+        name: 'uv-pdf-extension'
     };
 
     new bootstrapper(extensions);
