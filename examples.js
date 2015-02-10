@@ -519,7 +519,7 @@ $(function(){
             setSelectedConfig();
         }
 
-        createEditor();
+//        createEditor();
 
         loadViewer();
     }, 2000);
