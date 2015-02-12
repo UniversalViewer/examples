@@ -3472,8 +3472,8 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
             this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
             this.$pagingEnabled.append(this.$pagingEnabledCheckbox);
 
-            this.$pagingEnabledTitle = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
-            this.$pagingEnabled.append(this.$pagingEnabledTitle);
+            this.$pagingEnabledLabel = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
+            this.$pagingEnabled.append(this.$pagingEnabledLabel);
 
             this.$preserveViewport = $('<div class="setting preserveViewport"></div>');
             this.$scroll.append(this.$preserveViewport);
@@ -3481,8 +3481,8 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
             this.$preserveViewportCheckbox = $('<input id="preserveViewport" type="checkbox" />');
             this.$preserveViewport.append(this.$preserveViewportCheckbox);
 
-            this.$preserveViewportTitle = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
-            this.$preserveViewport.append(this.$preserveViewportTitle);
+            this.$preserveViewportLabel = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
+            this.$preserveViewport.append(this.$preserveViewportLabel);
 
             this.$title.text(this.content.title);
 

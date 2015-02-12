@@ -143,6 +143,10 @@ schema = {
                                 "pagingEnabled": {
                                     "id": "pagingEnabled",
                                     "type": "string"
+                                },
+                                "locale": {
+                                    "id": "locale",
+                                    "type": "string"
                                 }
                             }
                         }
