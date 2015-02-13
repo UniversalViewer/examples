@@ -486,6 +486,17 @@ define("yepnope", function(){});
 })( this, this.document );
 define("yepnopecss", ["yepnope"], function(){});
 
+define('bootstrapParams',["require", "exports"], function(require, exports) {
+    var bootstrapParams = (function () {
+        function bootstrapParams() {
+        }
+        return bootstrapParams;
+    })();
+
+    
+    return bootstrapParams;
+});
+
 define('utils',["require", "exports"], function(require, exports) {
     String.prototype.format = function () {
         var s = arguments[0];
@@ -766,7 +777,7 @@ define('utils',["require", "exports"], function(require, exports) {
         };
 
         Utils.getBool = function (val, defaultVal) {
-            if (typeof (val) === 'undefined') {
+            if (val === null || typeof (val) === 'undefined') {
                 return defaultVal;
             }
 
@@ -831,32 +842,49 @@ define('utils',["require", "exports"], function(require, exports) {
     exports.Utils = Utils;
 });
 
-define('bootstrapper',["require", "exports", "utils"], function(require, exports, utils) {
+define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], function(require, exports, BootstrapParams, utils) {
+    var util = utils.Utils;
+
     var BootStrapper = (function () {
         function BootStrapper(extensions) {
-            this.IIIF = true;
             this.extensions = extensions;
+        }
+        BootStrapper.prototype.getBootstrapParams = function () {
+            var p = new BootstrapParams();
 
+            p.manifestUri = util.getQuerystringParameter('manifestUri');
+            p.configExtensionUri = util.getQuerystringParameter('configExtensionUri');
+            p.jsonp = util.getBool(util.getQuerystringParameter('jsonp'), false);
+            p.isHomeDomain = util.getQuerystringParameter('isHomeDomain') === "true";
+            p.isReload = util.getQuerystringParameter('isReload') === "true";
+            p.locale = util.getQuerystringParameter('locale');
+            p.embedDomain = util.getQuerystringParameter('embedDomain');
+            p.isOnlyInstance = util.getQuerystringParameter('isOnlyInstance') === "true";
+            p.embedScriptUri = util.getQuerystringParameter('embedScriptUri');
+            p.domain = util.getQuerystringParameter('domain');
+            p.isLightbox = util.getQuerystringParameter('isLightbox') === "true";
+
+            return p;
+        };
+
+        BootStrapper.prototype.bootStrap = function (params) {
             var that = this;
 
-            that.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
-            that.manifestUri = utils.Utils.getQuerystringParameter('du');
-            that.configExtensionUri = utils.Utils.getQuerystringParameter('c');
-            that.jsonp = utils.Utils.getBool(utils.Utils.getQuerystringParameter('jsonp'), false);
+            that.params = this.getBootstrapParams();
 
-            if (that.dataBaseUri) {
-                that.manifestUri = that.dataBaseUri + that.manifestUri;
+            if (params) {
+                that.params = $.extend(true, that.params, params);
             }
 
             jQuery.support.cors = true;
 
-            if (that.configExtensionUri) {
-                if (that.configExtensionUri.toLowerCase() === "sessionstorage") {
+            if (that.params.configExtensionUri) {
+                if (that.params.configExtensionUri.toLowerCase() === "sessionstorage") {
                     var config = sessionStorage.getItem("uv-config");
                     that.configExtension = JSON.parse(config);
                     that.loadManifest();
                 } else {
-                    $.getJSON(that.configExtensionUri, function (configExtension) {
+                    $.getJSON(that.params.configExtensionUri, function (configExtension) {
                         that.configExtension = configExtension;
                         that.loadManifest();
                     });
@@ -864,21 +892,22 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
             } else {
                 that.loadManifest();
             }
-        }
+        };
+
         BootStrapper.prototype.corsEnabled = function () {
-            return Modernizr.cors && !this.jsonp;
+            return Modernizr.cors && !this.params.jsonp;
         };
 
         BootStrapper.prototype.loadManifest = function () {
             var that = this;
 
             if (this.corsEnabled()) {
-                $.getJSON(that.manifestUri, function (manifest) {
+                $.getJSON(that.params.manifestUri, function (manifest) {
                     that.parseManifest(manifest);
                 });
             } else {
                 var settings = {
-                    url: that.manifestUri,
+                    url: that.params.manifestUri,
                     type: 'GET',
                     dataType: 'jsonp',
                     jsonp: 'callback',
@@ -896,30 +925,15 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.parseManifest = function (manifest) {
             this.manifest = manifest;
 
-            var isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
-            var isReload = utils.Utils.getQuerystringParameter('rl') === "true";
-            var sequenceParam = 'si';
-
-            if (this.configExtension && this.configExtension.options && this.configExtension.options.IIIF) {
-                this.IIIF = this.configExtension.options.IIIF;
-            }
-
-            if (!this.IIIF)
-                sequenceParam = 'asi';
-
-            if (isHomeDomain && !isReload) {
-                this.sequenceIndex = parseInt(utils.Utils.getHashParameter(sequenceParam, parent.document));
+            if (this.params.isHomeDomain && !this.params.isReload) {
+                this.sequenceIndex = parseInt(util.getHashParameter("si", parent.document));
             }
 
             if (!this.sequenceIndex) {
-                this.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(sequenceParam)) || 0;
+                this.sequenceIndex = parseInt(util.getQuerystringParameter("si")) || 0;
             }
 
-            if (!this.IIIF) {
-                this.sequences = this.manifest.assetSequences;
-            } else {
-                this.sequences = this.manifest.sequences;
-            }
+            this.sequences = this.manifest.sequences;
 
             if (!this.sequences) {
                 this.notFound();
@@ -931,31 +945,16 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         BootStrapper.prototype.loadSequence = function () {
             var that = this;
 
-            if (!that.IIIF) {
-                if (!that.sequences[that.sequenceIndex].$ref) {
-                    that.sequence = that.sequences[that.sequenceIndex];
-                    that.loadDependencies();
-                } else {
-                    var baseManifestUri = that.manifestUri.substr(0, that.manifestUri.lastIndexOf('/') + 1);
-                    var sequenceUri = baseManifestUri + that.sequences[that.sequenceIndex].$ref;
-
-                    $.getJSON(sequenceUri, function (sequenceData) {
-                        that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
-                        that.loadDependencies();
-                    });
-                }
+            if (that.sequences[that.sequenceIndex].canvases) {
+                that.sequence = that.sequences[that.sequenceIndex];
+                that.loadDependencies();
             } else {
-                if (that.sequences[that.sequenceIndex].canvases) {
-                    that.sequence = that.sequences[that.sequenceIndex];
-                    that.loadDependencies();
-                } else {
-                    var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
+                var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
 
-                    $.getJSON(sequenceUri, function (sequenceData) {
-                        that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
-                        that.loadDependencies();
-                    });
-                }
+                $.getJSON(sequenceUri, function (sequenceData) {
+                    that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
+                    that.loadDependencies();
+                });
             }
         };
 
@@ -971,13 +970,9 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
             var that = this;
             var extension;
 
-            if (!that.IIIF) {
-                extension = that.extensions[that.sequence.assetType];
-            } else {
-                extension = that.extensions['seadragon/iiif'];
-            }
+            extension = that.extensions['seadragon/iiif'];
 
-            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config.js' : 'js/' + extension.name + '-config.js';
+            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.locale + '.config.js' : 'js/' + extension.name + '.' + that.params.locale + '.config.js';
 
             yepnope({
                 test: window.btoa && window.atob,
@@ -985,7 +980,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
                 complete: function () {
                     $.getJSON(configPath, function (config) {
                         if (that.configExtension) {
-                            config.uri = that.configExtensionUri;
+                            config.uri = that.params.configExtensionUri;
 
                             $.extend(true, config, that.configExtension);
                         }
@@ -1001,7 +996,7 @@ define('bootstrapper',["require", "exports", "utils"], function(require, exports
         };
 
         BootStrapper.prototype.createExtension = function (extension, config) {
-            var provider = new extension.provider(config, this.manifest);
+            var provider = new extension.provider(this, config, this.manifest);
 
             new extension.type(provider);
         };
@@ -2645,15 +2640,18 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
             this.$element.width($win.width());
             this.$element.height($win.height());
 
-            this.socket = new easyXDM.Socket({
-                onMessage: function (message, origin) {
-                    message = $.parseJSON(message);
-                    _this.handleParentFrameEvent(message);
-                }
-            });
+            if (!this.provider.isReload) {
+                this.socket = new easyXDM.Socket({
+                    onMessage: function (message, origin) {
+                        message = $.parseJSON(message);
+                        _this.handleParentFrameEvent(message);
+                    }
+                });
 
-            this.triggerSocket(BaseExtension.LOAD);
+                this.triggerSocket(BaseExtension.LOAD);
+            }
 
+            this.$element.empty();
             this.$element.removeClass();
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
@@ -2823,7 +2821,7 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
         BaseExtension.SEQUENCE_INDEX_CHANGED = 'onSequenceIndexChanged';
         BaseExtension.REDIRECT = 'onRedirect';
         BaseExtension.REFRESH = 'onRefresh';
-        BaseExtension.RELOAD = 'onReload';
+        BaseExtension.RELOAD_MANIFEST = 'onReloadManifest';
         BaseExtension.ESCAPE = 'onEscape';
         BaseExtension.RETURN = 'onReturn';
         BaseExtension.PAGE_UP = 'onPageUp';
@@ -2860,7 +2858,9 @@ define('modules/uv-shared-module/treeNode',["require", "exports"], function(requ
     return TreeNode;
 });
 
-define('modules/uv-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode"], function(require, exports, utils, TreeNode) {
+define('modules/uv-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode", "../../bootstrapParams"], function(require, exports, utils, TreeNode, BootstrapParams) {
+    var util = utils.Utils;
+
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -2870,34 +2870,34 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
     var params = exports.params;
 
     var BaseProvider = (function () {
-        function BaseProvider(config, manifest) {
+        function BaseProvider(bootstrapper, config, manifest) {
             this.paramMap = ['asi', 'ai', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
                 timestampUris: false,
                 mediaUriTemplate: "{0}{1}"
             };
+            this.bootstrapper = bootstrapper;
             this.config = config;
             this.manifest = manifest;
 
-            this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
-
-            this.dataUri = utils.Utils.getQuerystringParameter('du');
-            this.embedDomain = utils.Utils.getQuerystringParameter('ed');
-            this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
-            this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
-            this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
-            this.isReload = utils.Utils.getQuerystringParameter('rl') === "true";
-            this.domain = utils.Utils.getQuerystringParameter('d');
-            this.isLightbox = utils.Utils.getQuerystringParameter('lb') === "true";
-            this.jsonp = utils.Utils.getQuerystringParameter('jsonp') === "true";
+            this.manifestUri = this.bootstrapper.params.manifestUri;
+            this.jsonp = this.bootstrapper.params.jsonp;
+            this.locale = this.bootstrapper.params.locale;
+            this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
+            this.isReload = this.bootstrapper.params.isReload;
+            this.embedDomain = this.bootstrapper.params.embedDomain;
+            this.isOnlyInstance = this.bootstrapper.params.isOnlyInstance;
+            this.embedScriptUri = this.bootstrapper.params.embedScriptUri;
+            this.domain = this.bootstrapper.params.domain;
+            this.isLightbox = this.bootstrapper.params.isLightbox;
 
             if (this.isHomeDomain && !this.isReload) {
-                this.sequenceIndex = parseInt(utils.Utils.getHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
+                this.sequenceIndex = parseInt(util.getHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
             }
 
             if (!this.sequenceIndex) {
-                this.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
+                this.sequenceIndex = parseInt(util.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
             }
 
             this.canvasIndex = -1;
@@ -2920,16 +2920,27 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
             this.parseStructure();
         };
 
+        BaseProvider.prototype.reload = function (params) {
+            var p = new BootstrapParams();
+            p.isReload = true;
+
+            if (params) {
+                p = $.extend(p, params);
+            }
+
+            this.bootstrapper.bootStrap(p);
+        };
+
         BaseProvider.prototype.corsEnabled = function () {
             return Modernizr.cors && !this.jsonp;
         };
 
-        BaseProvider.prototype.reload = function (callback) {
+        BaseProvider.prototype.reloadManifest = function (callback) {
             var _this = this;
-            var manifestUri = this.dataUri;
+            var manifestUri = this.manifestUri;
 
             if (this.options.dataBaseUri) {
-                manifestUri = this.options.dataBaseUri + this.dataUri;
+                manifestUri = this.options.dataBaseUri + this.manifestUri;
             }
 
             manifestUri = this.addTimestamp(manifestUri);
@@ -3271,7 +3282,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
         };
 
         BaseProvider.prototype.addTimestamp = function (uri) {
-            return uri + "?t=" + utils.Utils.getTimeStamp();
+            return uri + "?t=" + util.getTimeStamp();
         };
 
         BaseProvider.prototype.isDeepLinkingEnabled = function () {
@@ -3352,7 +3363,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
         };
 
         BaseProvider.prototype.getDomain = function () {
-            var parts = utils.Utils.getUrlParts(this.dataUri);
+            var parts = util.getUrlParts(this.manifestUri);
             return parts.host;
         };
 
@@ -3422,13 +3433,17 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 
             return $elem.contents().html();
         };
+
+        BaseProvider.prototype.getLocales = function () {
+            return this.config.locales;
+        };
         return BaseProvider;
     })();
     exports.BaseProvider = BaseProvider;
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.25';
+    exports.Version = '1.0.27';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3437,7 +3452,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version"], function(require, exports, dialogue, version) {
+define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version", "../../bootstrapParams"], function(require, exports, dialogue, version, BootstrapParams) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -3466,63 +3481,33 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
             this.$version = $('<div class="version"></div>');
             this.$content.append(this.$version);
 
-            this.$pagingEnabled = $('<div class="setting pagingEnabled"></div>');
-            this.$scroll.append(this.$pagingEnabled);
+            this.$locale = $('<div class="setting locale"></div>');
+            this.$scroll.append(this.$locale);
 
-            this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
-            this.$pagingEnabled.append(this.$pagingEnabledCheckbox);
+            this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
+            this.$locale.append(this.$localeLabel);
 
-            this.$pagingEnabledLabel = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
-            this.$pagingEnabled.append(this.$pagingEnabledLabel);
-
-            this.$preserveViewport = $('<div class="setting preserveViewport"></div>');
-            this.$scroll.append(this.$preserveViewport);
-
-            this.$preserveViewportCheckbox = $('<input id="preserveViewport" type="checkbox" />');
-            this.$preserveViewport.append(this.$preserveViewportCheckbox);
-
-            this.$preserveViewportLabel = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
-            this.$preserveViewport.append(this.$preserveViewportLabel);
+            this.$localeDropDown = $('<select id="locale"></select>');
+            this.$locale.append(this.$localeDropDown);
 
             this.$title.text(this.content.title);
 
-            var that = this;
-
             this.$version.text("v" + version.Version);
 
-            this.$pagingEnabledCheckbox.change(function () {
-                var settings = that.getSettings();
+            var locales = this.provider.getLocales();
 
-                if ($(this).is(":checked")) {
-                    settings.pagingEnabled = true;
-                } else {
-                    settings.pagingEnabled = false;
-                }
-
-                that.updateSettings(settings);
-            });
-
-            this.$preserveViewportCheckbox.change(function () {
-                var settings = that.getSettings();
-
-                if ($(this).is(":checked")) {
-                    settings.preserveViewport = true;
-                } else {
-                    settings.preserveViewport = false;
-                }
-
-                that.updateSettings(settings);
-            });
-
-            var settings = this.getSettings();
-
-            if (settings.pagingEnabled) {
-                this.$pagingEnabledCheckbox.attr("checked", "checked");
+            for (var i = 0; i < locales.length; i++) {
+                var locale = locales[i];
+                this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
             }
 
-            if (settings.preserveViewport) {
-                this.$preserveViewportCheckbox.attr("checked", "checked");
-            }
+            this.$localeDropDown.val(this.provider.locale);
+
+            this.$localeDropDown.change(function () {
+                var p = new BootstrapParams();
+                p.locale = _this.$localeDropDown.val();
+                _this.provider.reload(p);
+            });
 
             this.$element.hide();
         };
@@ -4988,7 +4973,7 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
 
             _super.prototype.create.call(this);
 
-            $.subscribe(extension.Extension.RELOAD, function () {
+            $.subscribe(extension.Extension.RELOAD_MANIFEST, function () {
                 _this.dataBindThumbsView();
                 _this.dataBindGalleryView();
             });
@@ -5321,12 +5306,19 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
             this.$zoomInButton.attr('tabindex', 11);
+            this.$zoomInButton.addClass('zoomIn');
+
             this.$zoomOutButton = this.$viewer.find('div[title="Zoom out"]');
             this.$zoomOutButton.attr('tabindex', 12);
+            this.$zoomOutButton.addClass('zoomOut');
+
             this.$goHomeButton = this.$viewer.find('div[title="Go home"]');
             this.$goHomeButton.attr('tabindex', 13);
+            this.$goHomeButton.addClass('goHome');
+
             this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
             this.$rotateButton.attr('tabindex', 14);
+            this.$rotateButton.addClass('rotate');
 
             $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
                 _this.loadTileSources();
@@ -6211,6 +6203,81 @@ define('extensions/uv-seadragon-extension/embedDialogue',["require", "exports", 
     exports.EmbedDialogue = EmbedDialogue;
 });
 
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/settingsDialogue"], function(require, exports, baseSettings) {
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            _super.call(this, $element);
+        }
+        SettingsDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('settingsDialogue');
+
+            _super.prototype.create.call(this);
+
+            this.$pagingEnabled = $('<div class="setting pagingEnabled"></div>');
+            this.$scroll.append(this.$pagingEnabled);
+
+            this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
+            this.$pagingEnabled.append(this.$pagingEnabledCheckbox);
+
+            this.$pagingEnabledLabel = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
+            this.$pagingEnabled.append(this.$pagingEnabledLabel);
+
+            this.$preserveViewport = $('<div class="setting preserveViewport"></div>');
+            this.$scroll.append(this.$preserveViewport);
+
+            this.$preserveViewportCheckbox = $('<input id="preserveViewport" type="checkbox" />');
+            this.$preserveViewport.append(this.$preserveViewportCheckbox);
+
+            this.$preserveViewportLabel = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
+            this.$preserveViewport.append(this.$preserveViewportLabel);
+
+            this.$pagingEnabledCheckbox.change(function () {
+                var settings = _this.getSettings();
+
+                if (_this.$pagingEnabledCheckbox.is(":checked")) {
+                    settings.pagingEnabled = true;
+                } else {
+                    settings.pagingEnabled = false;
+                }
+
+                _this.updateSettings(settings);
+            });
+
+            this.$preserveViewportCheckbox.change(function () {
+                var settings = _this.getSettings();
+
+                if (_this.$preserveViewportCheckbox.is(":checked")) {
+                    settings.preserveViewport = true;
+                } else {
+                    settings.preserveViewport = false;
+                }
+
+                _this.updateSettings(settings);
+            });
+
+            var settings = this.getSettings();
+
+            if (settings.pagingEnabled) {
+                this.$pagingEnabledCheckbox.attr("checked", "checked");
+            }
+
+            if (settings.preserveViewport) {
+                this.$preserveViewportCheckbox.attr("checked", "checked");
+            }
+        };
+        return SettingsDialogue;
+    })(baseSettings.SettingsDialogue);
+    exports.SettingsDialogue = SettingsDialogue;
+});
+
 define('extensions/uv-seadragon-extension/dependencies',[],function() {
     return {
         'openseadragon': './js/openseadragon'
@@ -6230,7 +6297,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../modules/uv-dialogues-module/settingsDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
+define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -6289,8 +6356,8 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             });
 
             $.subscribe(settingsDialogue.SettingsDialogue.UPDATE_SETTINGS, function (e) {
-                _this.provider.reload(function () {
-                    $.publish(baseExtension.BaseExtension.RELOAD);
+                _this.provider.reloadManifest(function () {
+                    $.publish(baseExtension.BaseExtension.RELOAD_MANIFEST);
                     _this.viewPage(_this.provider.canvasIndex, true);
                 });
             });
@@ -6557,7 +6624,9 @@ define('modules/uv-shared-module/thumb',["require", "exports"], function(require
     return Thumb;
 });
 
-define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../../utils", "./treeNode", "./thumb"], function(require, exports, utils, TreeNode, Thumb) {
+define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../../bootstrapParams", "../../utils", "./treeNode", "./thumb"], function(require, exports, BootstrapParams, utils, TreeNode, Thumb) {
+    var util = utils.Utils;
+
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -6567,34 +6636,34 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
     var params = exports.params;
 
     var BaseProvider = (function () {
-        function BaseProvider(config, manifest) {
+        function BaseProvider(bootstrapper, config, manifest) {
             this.paramMap = ['si', 'ci', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
                 timestampUris: false,
                 mediaUriTemplate: "{0}{1}"
             };
+            this.bootstrapper = bootstrapper;
             this.config = config;
             this.manifest = manifest;
 
-            this.options.dataBaseUri = utils.Utils.getQuerystringParameter('dbu');
-
-            this.dataUri = utils.Utils.getQuerystringParameter('du');
-            this.embedDomain = utils.Utils.getQuerystringParameter('ed');
-            this.isHomeDomain = utils.Utils.getQuerystringParameter('hd') === "true";
-            this.isOnlyInstance = utils.Utils.getQuerystringParameter('oi') === "true";
-            this.embedScriptUri = utils.Utils.getQuerystringParameter('esu');
-            this.isReload = utils.Utils.getQuerystringParameter('rl') === "true";
-            this.domain = utils.Utils.getQuerystringParameter('d');
-            this.isLightbox = utils.Utils.getQuerystringParameter('lb') === "true";
-            this.jsonp = utils.Utils.getQuerystringParameter('jsonp') === "true";
+            this.manifestUri = this.bootstrapper.params.manifestUri;
+            this.jsonp = this.bootstrapper.params.jsonp;
+            this.locale = this.bootstrapper.params.locale;
+            this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
+            this.isReload = this.bootstrapper.params.isReload;
+            this.embedDomain = this.bootstrapper.params.embedDomain;
+            this.isOnlyInstance = this.bootstrapper.params.isOnlyInstance;
+            this.embedScriptUri = this.bootstrapper.params.embedScriptUri;
+            this.domain = this.bootstrapper.params.domain;
+            this.isLightbox = this.bootstrapper.params.isLightbox;
 
             if (this.isHomeDomain && !this.isReload) {
-                this.sequenceIndex = parseInt(utils.Utils.getHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
+                this.sequenceIndex = parseInt(util.getHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
             }
 
             if (!this.sequenceIndex) {
-                this.sequenceIndex = parseInt(utils.Utils.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
+                this.sequenceIndex = parseInt(util.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
             }
 
             this.load();
@@ -6613,17 +6682,24 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
             this.parseStructure();
         };
 
+        BaseProvider.prototype.reload = function (params) {
+            var p = new BootstrapParams();
+            p.isReload = true;
+
+            if (params) {
+                p = $.extend(p, params);
+            }
+
+            this.bootstrapper.bootStrap(p);
+        };
+
         BaseProvider.prototype.corsEnabled = function () {
             return Modernizr.cors && !this.jsonp;
         };
 
-        BaseProvider.prototype.reload = function (callback) {
+        BaseProvider.prototype.reloadManifest = function (callback) {
             var _this = this;
-            var manifestUri = this.dataUri;
-
-            if (this.options.dataBaseUri) {
-                manifestUri = this.options.dataBaseUri + this.dataUri;
-            }
+            var manifestUri = this.manifestUri;
 
             manifestUri = this.addTimestamp(manifestUri);
 
@@ -6859,7 +6935,7 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
         };
 
         BaseProvider.prototype.addTimestamp = function (uri) {
-            return uri + "?t=" + utils.Utils.getTimeStamp();
+            return uri + "?t=" + util.getTimeStamp();
         };
 
         BaseProvider.prototype.isDeepLinkingEnabled = function () {
@@ -7150,7 +7226,7 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
         };
 
         BaseProvider.prototype.getDomain = function () {
-            var parts = utils.Utils.getUrlParts(this.dataUri);
+            var parts = util.getUrlParts(this.manifestUri);
             return parts.host;
         };
 
@@ -7233,6 +7309,10 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
 
             return $elem.html();
         };
+
+        BaseProvider.prototype.getLocales = function () {
+            return this.config.locales;
+        };
         return BaseProvider;
     })();
     exports.BaseProvider = BaseProvider;
@@ -7247,15 +7327,15 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "../../modules/uv-shared-module/baseIIIFProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(config, manifest) {
-            _super.call(this, config, manifest);
+        function Provider(bootstrapper, config, manifest) {
+            _super.call(this, bootstrapper, config, manifest);
 
             this.config.options = $.extend(true, this.options, {
                 imageUriTemplate: "{0}{1}"
             }, config.options);
         }
         Provider.prototype.getImageUri = function (canvas, imageBaseUri, imageUriTemplate) {
-            var baseUri = imageBaseUri ? imageBaseUri : this.options.imageBaseUri || this.options.dataBaseUri || "";
+            var baseUri = imageBaseUri ? imageBaseUri : this.options.imageBaseUri || "";
             var template = imageUriTemplate ? imageUriTemplate : this.options.imageUriTemplate;
 
             var iiifUri;
@@ -7296,7 +7376,7 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, canvasIndex, zoom, rotation, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, configUri, width, height, esu);
 
             return script;
         };
@@ -7341,15 +7421,15 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(config, manifest) {
-            _super.call(this, config, manifest);
+        function Provider(bootstrapper, config, manifest) {
+            _super.call(this, bootstrapper, config, manifest);
 
             this.config.options = $.extend(true, this.options, {
                 dziUriTemplate: "{0}{1}"
             }, config.options);
         }
         Provider.prototype.getImageUri = function (asset, dziBaseUri, dziUriTemplate) {
-            var baseUri = dziBaseUri ? dziBaseUri : this.options.dziBaseUri || this.options.dataBaseUri || "";
+            var baseUri = dziBaseUri ? dziBaseUri : this.options.dziBaseUri || "";
             var template = dziUriTemplate ? dziUriTemplate : this.options.dziUriTemplate;
             var uri = String.prototype.format(template, baseUri, asset.dziUri);
 
@@ -7363,7 +7443,7 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, assetIndex, zoom, rotation, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, assetIndex, zoom, rotation, configUri, width, height, esu);
 
             return script;
         };
@@ -7723,8 +7803,8 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-mediaelement-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(config, manifest) {
-            _super.call(this, config, manifest);
+        function Provider(bootstrapper, config, manifest) {
+            _super.call(this, bootstrapper, config, manifest);
 
             this.config.options = $.extend(true, this.options, {}, config.options);
         }
@@ -7735,7 +7815,7 @@ define('extensions/uv-mediaelement-extension/provider',["require", "exports", ".
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, configUri, width, height, esu);
 
             return script;
         };
@@ -8002,8 +8082,8 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(config, manifest) {
-            _super.call(this, config, manifest);
+        function Provider(bootstrapper, config, manifest) {
+            _super.call(this, bootstrapper, config, manifest);
 
             this.config.options = $.extend(true, this.options, {}, config.options);
         }
@@ -8019,7 +8099,7 @@ define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modu
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.dataUri, this.sequenceIndex, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, configUri, width, height, esu);
 
             return script;
         };
@@ -8123,7 +8203,9 @@ require([
         name: 'uv-pdf-extension'
     };
 
-    new bootstrapper(extensions);
+    var bs = new bootstrapper(extensions);
+
+    bs.bootStrap();
 });
 
 define("app", function(){});

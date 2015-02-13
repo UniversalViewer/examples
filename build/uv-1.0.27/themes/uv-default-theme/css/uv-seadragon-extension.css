@@ -346,31 +346,31 @@
 #app .centerPanel .paging.btn.next.disabled {
   background-image: url('../img/uv-seadragoncenterpanel-module/next_page_disabled.png');
 }
-#app .centerPanel div[title="Zoom in"] {
+#app .centerPanel .zoomIn {
   cursor: pointer !important;
 }
-#app .centerPanel div[title="Zoom in"]:focus {
+#app .centerPanel .zoomIn:focus {
   border: 1px solid #87cefa !important;
 }
-#app .centerPanel div[title="Zoom out"] {
+#app .centerPanel .zoomOut {
   cursor: pointer !important;
 }
-#app .centerPanel div[title="Zoom out"]:focus {
+#app .centerPanel .zoomOut:focus {
   border: 1px solid #87cefa !important;
 }
-#app .centerPanel div[title="Go home"] {
+#app .centerPanel .goHome {
   cursor: pointer !important;
 }
-#app .centerPanel div[title="Go home"]:focus {
+#app .centerPanel .goHome:focus {
   border: 1px solid #87cefa !important;
 }
 #app .centerPanel div[title="Rotate left"] {
   display: none !important;
 }
-#app .centerPanel div[title="Rotate right"] {
+#app .centerPanel .rotate {
   cursor: pointer !important;
 }
-#app .centerPanel div[title="Rotate right"]:focus {
+#app .centerPanel .rotate:focus {
   border: 1px solid #87cefa !important;
 }
 #app .centerPanel div[title="Previous page"] {
