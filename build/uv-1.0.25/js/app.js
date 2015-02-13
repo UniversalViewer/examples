@@ -6289,7 +6289,7 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             });
 
             $.subscribe(settingsDialogue.SettingsDialogue.UPDATE_SETTINGS, function (e) {
-                _this.provider.reload(function () {
+                _this.provider.reloadManifest(function () {
                     $.publish(baseExtension.BaseExtension.RELOAD);
                     _this.viewPage(_this.provider.canvasIndex, true);
                 });
