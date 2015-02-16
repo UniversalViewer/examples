@@ -331,6 +331,10 @@ schema = {
                                 "thumbnails": {
                                     "id": "thumbnails",
                                     "type": "string"
+                                },
+                                "contents": {
+                                    "id": "contents",
+                                    "type": "string"
                                 }
                             }
                         }
@@ -449,6 +453,10 @@ schema = {
                                 },
                                 "noData": {
                                     "id": "noData",
+                                    "type": "string"
+                                },
+                                "moreInformation": {
+                                    "id": "moreInformation",
                                     "type": "string"
                                 }
                             }
