@@ -67,6 +67,25 @@ schema = {
                 "collapsed": true
             },
             "properties": {
+                "dialogue": {
+                    "id": "dialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "close": {
+                                    "id": "close",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
                 "genericDialogue": {
                     "id": "genericDialogue",
                     "type": "object",
