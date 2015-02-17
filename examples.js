@@ -199,6 +199,18 @@ schema = {
                                 "instructions": {
                                     "id": "instructions",
                                     "type": "string"
+                                },
+                                "width": {
+                                    "id": "width",
+                                    "type": "string"
+                                },
+                                "height": {
+                                    "id": "height",
+                                    "type": "string"
+                                },
+                                "customSize": {
+                                    "id": "customSize",
+                                    "type": "string"
                                 }
                             }
                         }
