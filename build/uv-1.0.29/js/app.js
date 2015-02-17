@@ -3450,7 +3450,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.28';
+    exports.Version = '1.0.29';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3701,7 +3701,7 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
             this.$total = $('<span class="total"></span>');
             this.$search.append(this.$total);
 
-            this.$searchButton = $('<a class="imageBtn go" tabindex="20"></a>');
+            this.$searchButton = $('<a class="go btn btn-primary" tabindex="20">' + this.content.go + '</a>');
             this.$search.append(this.$searchButton);
 
             this.$nextOptions = $('<div class="nextOptions"></div>');

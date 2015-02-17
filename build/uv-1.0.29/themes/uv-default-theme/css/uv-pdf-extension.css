@@ -138,6 +138,12 @@
 #app .overlay.settings .scroll .setting {
   margin-bottom: 10px;
 }
+#app .overlay.settings .scroll .setting input {
+  margin: 0 5px 0 0;
+}
+#app .overlay.settings .scroll .setting label {
+  margin: 0 5px 0 0;
+}
 #app .overlay.settings .bottom {
   background: none;
 }
