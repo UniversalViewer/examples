@@ -2318,20 +2318,27 @@ define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], fu
     var BaseView = (function (_super) {
         __extends(BaseView, _super);
         function BaseView($element, fitToParentWidth, fitToParentHeight) {
+            this.modules = [];
             _super.call(this, $element, fitToParentWidth, fitToParentHeight);
         }
         BaseView.prototype.create = function () {
+            var _this = this;
             _super.prototype.create.call(this);
 
             this.extension = window.extension;
             this.provider = this.extension.provider;
 
-            if (this.moduleName) {
-                this.config = this.provider.config.modules[this.moduleName];
-                if (!this.config)
-                    this.config = {};
-                this.content = this.config.content || {};
-                this.options = this.config.options || {};
+            this.config = {};
+            this.config.content = {};
+            this.config.options = {};
+            this.content = this.config.content;
+            this.options = this.config.options;
+
+            if (this.modules.length) {
+                this.modules = this.modules.reverse();
+                _.each(this.modules, function (moduleName) {
+                    _this.config = $.extend(true, _this.config, _this.provider.config.modules[moduleName]);
+                });
             }
         };
 
@@ -2339,9 +2346,7 @@ define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], fu
         };
 
         BaseView.prototype.setConfig = function (moduleName) {
-            if (!this.moduleName) {
-                this.moduleName = moduleName;
-            }
+            this.modules.push(moduleName);
         };
 
         BaseView.prototype.resize = function () {
@@ -2358,7 +2363,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtension", "./shell", "../../utils", "./baseView"], function(require, exports, baseExtension, shell, utils, baseView) {
+define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtension", "./shell", "./baseView"], function(require, exports, baseExtension, shell, baseView) {
     var Dialogue = (function (_super) {
         __extends(Dialogue, _super);
         function Dialogue($element) {
@@ -2368,6 +2373,8 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
         }
         Dialogue.prototype.create = function () {
             var _this = this;
+            this.setConfig('dialogue');
+
             _super.prototype.create.call(this);
 
             $.subscribe(baseExtension.BaseExtension.CLOSE_ACTIVE_DIALOGUE, function () {
@@ -2386,19 +2393,19 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
                 }
             });
 
-            this.$top = utils.Utils.createDiv('top');
+            this.$top = $('<div class="top"></div>');
             this.$element.append(this.$top);
 
-            this.$closeButton = utils.Utils.createDiv('close');
+            this.$closeButton = $('<a href="#" class="close">' + this.content.close + '</a>');
             this.$top.append(this.$closeButton);
 
-            this.$middle = utils.Utils.createDiv('middle');
+            this.$middle = $('<div class="middle"></div>');
             this.$element.append(this.$middle);
 
-            this.$content = utils.Utils.createDiv('content');
+            this.$content = $('<div class="content"></div>');
             this.$middle.append(this.$content);
 
-            this.$bottom = utils.Utils.createDiv('bottom');
+            this.$bottom = $('<div class="bottom"></div>');
             this.$element.append(this.$bottom);
 
             this.$closeButton.on('click', function (e) {
@@ -3443,7 +3450,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.27';
+    exports.Version = '1.0.28';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3955,8 +3962,6 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
         }
         BaseExpandPanel.prototype.create = function () {
             var _this = this;
-            this.setConfig('shared');
-
             _super.prototype.create.call(this);
 
             this.$top = $('<div class="top"></div>');
@@ -4029,12 +4034,9 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
                 this.$closed.show();
             }
 
-            var targetWidth = this.getTargetWidth();
-            var targetLeft = this.getTargetLeft();
-
             this.$element.stop().animate({
-                width: targetWidth,
-                left: targetLeft
+                width: this.getTargetWidth(),
+                left: this.getTargetLeft()
             }, this.options.panelAnimationDuration, function () {
                 _this.toggled();
             });
@@ -5030,6 +5032,9 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             this.$expandButton.attr('tabindex', '7');
             this.$collapseButton.attr('tabindex', '7');
             this.$expandFullButton.attr('tabindex', '8');
+
+            this.$title.text(this.content.contents);
+            this.$closedTitle.text(this.content.contents);
         };
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
@@ -5599,6 +5604,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                 }
             });
 
+            this.viewer.cancel;
             this.viewer.open(this.tileSources[0]);
 
             this.viewer.addHandler('open', this.openTileSourcesHandler, this);
@@ -5790,6 +5796,9 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
 
             this.$expandButton.attr('tabindex', '4');
             this.$collapseButton.attr('tabindex', '4');
+
+            this.$title.text(this.content.moreInformation);
+            this.$closedTitle.text(this.content.moreInformation);
         };
 
         MoreInfoRightPanel.prototype.toggleFinish = function () {
@@ -5884,11 +5893,11 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
 
-            this.$embedButton = $('<a href="#" class="imageBtn embed" title="' + this.content.embed + '"></a>');
+            this.$embedButton = $('<a href="#" class="embed" title="' + this.content.embed + '">' + this.content.embed + '</a>');
             this.$options.append(this.$embedButton);
             this.$embedButton.attr('tabindex', '6');
 
-            this.$fullScreenBtn = $('<a href="#" class="imageBtn fullScreen" title="' + this.content.fullScreen + '"></a>');
+            this.$fullScreenBtn = $('<a href="#" class="fullScreen" title="' + this.content.fullScreen + '">' + this.content.fullScreen + '</a>');
             this.$options.append(this.$fullScreenBtn);
             this.$fullScreenBtn.attr('tabindex', '5');
 
@@ -5916,10 +5925,12 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
 
         FooterPanel.prototype.toggleFullScreen = function () {
             if (this.extension.isFullScreen) {
-                this.$fullScreenBtn.swapClass('fullScreen', 'normal');
+                this.$fullScreenBtn.swapClass('fullScreen', 'exitFullscreen');
+                this.$fullScreenBtn.text(this.content.exitFullScreen);
                 this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
             } else {
-                this.$fullScreenBtn.swapClass('normal', 'fullScreen');
+                this.$fullScreenBtn.swapClass('exitFullscreen', 'fullScreen');
+                this.$fullScreenBtn.text(this.content.fullScreen);
                 this.$fullScreenBtn.attr('title', this.content.fullScreen);
             }
         };
