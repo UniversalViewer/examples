@@ -2,7 +2,7 @@
 // todo: look at using typson to generate this from a ts definition file: https://github.com/lbovet/typson
 schema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "https://github.com/britishlibrary/UniversalViewer",
+    "id": "https://github.com/UniversalViewer/universalviewer",
     "type": "object",
     "properties": {
         "options": {
