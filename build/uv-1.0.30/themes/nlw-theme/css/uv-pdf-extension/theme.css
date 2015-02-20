@@ -3222,6 +3222,7 @@ input[type=range]:focus::-ms-fill-upper {
   padding-right: 34px;
   padding-left: 10px;
   float: right;
+  background-color: #222222;
 }
 #app .overlay .top .close:link,
 #app .overlay .top .close:visited,
