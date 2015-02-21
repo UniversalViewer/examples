@@ -13,7 +13,7 @@
     </header>
 
     <main>
-        <div class="uv" data-no-load="true" data-jsonp="true" data-config="/examples/config/default-config.js" style="width:640px; height:480px; background-color: #000"></div>
+        <div class="uv" data-no-load="true" style="width:640px; height:480px; background-color: #000"></div>
     </main>
 
     <footer>
@@ -31,6 +31,10 @@
                 <option value="http://dms-data.stanford.edu/data/manifests/RomanCoins/bb853kn3021/manifest.json">Roman Coins</option>
                 <option value="http://dms-data.stanford.edu/data/manifests/McLaughlin/bc788vp3448/manifest.json">California as Island</option>
                 <option value="http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json">Japanese Songbook</option>
+            </optgroup>
+            <optgroup label="National Library of Wales">
+                <option value="http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json">Cardiganshire Constabulary</option>
+                <option value="/examples/manifest/translations.js">Translations</option>
             </optgroup>
             <optgroup label="British Library">
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json">Proceedings at Peebles</option>
@@ -76,22 +80,6 @@
                 <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522771.0x000002/manifest.json">[Hongrie. S.G.A. le 20/12/19. EÌchelle de 1 : 1,000,000]</option>
             </optgroup>
         </select>
-
-        <h3>Config</h3>
-
-        <select id="config">
-            <option value="/examples/config/default-config.js">Default</option>
-            <option value="/examples/config/cy-GB-config.js">Welsh</option>
-        </select>
-
-        <ul id="edit-config" class="button-group">
-            <li><a id="editBtn" href="#" class="button">Edit</a></li>
-            <li><a id="saveBtn" href="#" class="button hide">Save</a></li>
-        </ul>
-
-        <div id="editPnl" class="hide">
-            <div id="editor"></div>
-        </div>
 
     </footer>
 

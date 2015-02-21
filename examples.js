@@ -545,6 +545,7 @@ $(function(){
     var testBuild = getQuerystringParameter("build");
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
     var editor;
+    var localeDefault = 'en-GB';
 
     if (testBuild){
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.30/js/embed.js"><\/script>');
@@ -561,7 +562,7 @@ $(function(){
                 $('.uv').updateAttr('data-uri', '/examples/', '/');
             }
 
-            $('#config option').each(function() {
+            $('#locale option').each(function() {
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
@@ -573,24 +574,25 @@ $(function(){
         }
     }
 
-    setTimeout(function(){
-        setJSONPEnabled();
+    setJSONPEnabled();
 
-        if ($('#manifest option').length || $('#manifest optgroup').length){
-            setSelectedManifest();
-        }
+    if ($('#manifest option').length || $('#manifest optgroup').length){
+        setSelectedManifest();
+    }
 
-        if ($('#config option').length || $('#config optgroup').length){
-            setSelectedConfig();
-        }
-
-        createEditor();
-
-        loadViewer();
-    }, 2000);
+    createEditor();
+    setSelectedLocale();
+    loadViewer();
 
     function loadViewer() {
-        initPlayers($('.uv'));
+
+        // todo: update embed.js to work with script loaders.
+        if (window.initPlayers && window.easyXDM){
+            initPlayers($('.uv'));
+        } else {
+            setTimeout(loadViewer, 100);
+        }
+
     }
 
     function isIE8(){
@@ -614,7 +616,7 @@ $(function(){
             required_by_default: true
         });
 
-        editor.on('change',function() {
+        editor.on('change', function() {
             // Get an array of errors from the validator
             var errors = editor.validate();
 
@@ -629,7 +631,7 @@ $(function(){
         buildQuerystring();
     });
 
-    $('#config').on('change', function(){
+    $('#locale').on('change', function(){
         buildQuerystring();
     });
 
@@ -639,7 +641,7 @@ $(function(){
 
     function buildQuerystring() {
         var jsonp = $('#jsonp').is(':checked');
-        var config = $('#config option:selected').val();
+        var locale = $('#locale option:selected').val() || localeDefault;
         var manifest = $('#manifest option:selected').val();
 
         // clear hash params
@@ -647,7 +649,7 @@ $(function(){
 
         var qs = document.location.search.replace('?', '');
         qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
-        qs = updateURIKeyValuePair(qs, "config", config);
+        qs = updateURIKeyValuePair(qs, "locale", locale);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
 
         // reload
@@ -688,17 +690,19 @@ $(function(){
         $('.uv').attr('data-uri', manifest);
     }
 
-    function setSelectedConfig(){
+    function setSelectedLocale() {
+        var locale = getQuerystringParameter("locale") || localeDefault;
 
-        var config = getQuerystringParameter("config");
+        //if (locale) {
 
-        if (config) {
-            $("#config").val(config);
-        } else {
-            config = $('#config option')[0].value;
-        }
 
-        $('.uv').attr('data-config', config);
+
+            $("#locale").val(locale);
+        //} else {
+        //    $('#locale option[value="' + locale + '"]').prop('selected', true);
+        //}
+
+        $('.uv').attr('data-locale', locale);
     }
 
     $('#editBtn').on('click', function(e) {
@@ -752,6 +756,13 @@ $(function(){
     });
 
     $(document).bind("onLoad", function (event, obj) {
+        var locales = obj.config.localisation.locales;
 
+        for (var i = 0; i < locales.length; i++){
+            var l = locales[i];
+            $('#locale').append('<option value="' + l.name + '">' + l.label + '</option>');
+        }
+
+        setSelectedLocale();
     });
 });
