@@ -376,6 +376,9 @@
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
+#app .rightPanel .main .noData {
+  padding: 0 10px 20px 10px;
+}
 #app .rightPanel .main .items {
   padding: 0 10px 20px 10px;
 }
@@ -3177,13 +3180,44 @@ input[type=range]:focus::-ms-fill-upper {
   color: #ffffff;
   text-decoration: none;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.embed {
+#app .footerPanel .options.minimiseButtons a.embed {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 27px;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.fullScreen {
+#app .footerPanel .options.minimiseButtons a.fullScreen {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 21px;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.normal {
+#app .footerPanel .options.minimiseButtons a.exitFullscreen {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
+  width: 21px;
+}
+#app .footerPanel .options.minimiseButtons a.normal {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {

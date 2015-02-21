@@ -159,6 +159,9 @@
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
+#app .rightPanel .main .noData {
+  padding: 0 10px 20px 10px;
+}
 #app .rightPanel .main .items {
   padding: 0 10px 20px 10px;
 }
@@ -309,16 +312,19 @@
   font-size: 11px;
   overflow: hidden;
 }
-#app .centerPanel .displayregion {
+#app .centerPanel .content {
+  position: relative;
+}
+#app .centerPanel .content .displayregion {
   border: 2px solid #fff !important;
 }
-#app .centerPanel #viewer {
+#app .centerPanel .content #viewer {
   padding: 0 8px 0 8px;
 }
-#app .centerPanel .navigator.extraMargin {
+#app .centerPanel .content #viewer .navigator.extraMargin {
   margin: 0 30px 0 0 !important;
 }
-#app .centerPanel .paging.btn {
+#app .centerPanel .content #viewer .paging.btn {
   position: absolute !important;
   width: 30px;
   height: 90px;
@@ -331,55 +337,62 @@
   -o-border-radius: 0;
   border-radius: 0;
 }
-#app .centerPanel .paging.btn.prev {
+#app .centerPanel .content #viewer .paging.btn.prev {
   background-image: url('../../img/uv-seadragoncenterpanel-module/prev_page.png');
   left: 0;
 }
-#app .centerPanel .paging.btn.prev.disabled {
+#app .centerPanel .content #viewer .paging.btn.prev.disabled {
   background-image: url('../../img/uv-seadragoncenterpanel-module/prev_page_disabled.png');
 }
-#app .centerPanel .paging.btn.next {
+#app .centerPanel .content #viewer .paging.btn.next {
   background-image: url('../../img/uv-seadragoncenterpanel-module/next_page.png');
   right: 0;
 }
-#app .centerPanel .paging.btn.next.disabled {
+#app .centerPanel .content #viewer .paging.btn.next.disabled {
   background-image: url('../../img/uv-seadragoncenterpanel-module/next_page_disabled.png');
 }
-#app .centerPanel .zoomIn {
+#app .centerPanel .content #viewer .zoomIn {
   cursor: pointer !important;
 }
-#app .centerPanel .zoomIn:focus {
+#app .centerPanel .content #viewer .zoomIn:focus {
   border: 1px solid lightskyblue !important;
 }
-#app .centerPanel .zoomOut {
+#app .centerPanel .content #viewer .zoomOut {
   cursor: pointer !important;
 }
-#app .centerPanel .zoomOut:focus {
+#app .centerPanel .content #viewer .zoomOut:focus {
   border: 1px solid lightskyblue !important;
 }
-#app .centerPanel .goHome {
+#app .centerPanel .content #viewer .goHome {
   cursor: pointer !important;
 }
-#app .centerPanel .goHome:focus {
+#app .centerPanel .content #viewer .goHome:focus {
   border: 1px solid lightskyblue !important;
 }
-#app .centerPanel div[title="Rotate left"] {
+#app .centerPanel .content #viewer div[title="Rotate left"] {
   display: none !important;
 }
-#app .centerPanel .rotate {
+#app .centerPanel .content #viewer .rotate {
   cursor: pointer !important;
 }
-#app .centerPanel .rotate:focus {
+#app .centerPanel .content #viewer .rotate:focus {
   border: 1px solid lightskyblue !important;
 }
-#app .centerPanel div[title="Previous page"] {
+#app .centerPanel .content #viewer div[title="Previous page"] {
   display: none !important;
 }
-#app .centerPanel div[title="Next page"] {
+#app .centerPanel .content #viewer div[title="Next page"] {
   display: none !important;
 }
-#app .centerPanel .content {
-  position: relative;
+#app .centerPanel .content .spinner {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  width: 34px;
+  height: 34px;
+  border-radius: 34px;
+  background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAAAAAP///zw8PLy8vP///5ycnHx8fGxsbCH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 }
 #app .centerPanel .content .rights {
   background: #333333;
@@ -436,28 +449,6 @@
 #app .centerPanel .content .rights .main .attribution {
   overflow: hidden;
 }
-/*
-#app .centerPanel .zoomControls{
-    position: absolute;
-    height: 16px;
-}
-
-#app .centerPanel .zoomControls .zoomIn{
-    width: 16px;
-    height: 16px;
-    background-image: url('../../img/uv-seadragoncenterpanel-module/zoom_in.png');
-    float: left;
-    cursor: pointer;
-}
-
-#app .centerPanel .zoomControls .zoomOut{
-    width: 16px;
-    height: 16px;
-    background-image: url('../../img/uv-seadragoncenterpanel-module/zoom_out.png');
-    float: right;
-    cursor: pointer;
-}
-*/
 #app .leftPanel .tabs {
   height: 25px;
   border-bottom: 1px solid #373737;
@@ -1722,13 +1713,44 @@ input[type=range]:focus::-ms-fill-upper {
   color: #ffffff;
   text-decoration: none;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.embed {
+#app .footerPanel .options.minimiseButtons a.embed {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 27px;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.fullScreen {
+#app .footerPanel .options.minimiseButtons a.fullScreen {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 21px;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.normal {
+#app .footerPanel .options.minimiseButtons a.exitFullscreen {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
+  width: 21px;
+}
+#app .footerPanel .options.minimiseButtons a.normal {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {

@@ -853,7 +853,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             var p = new BootstrapParams();
 
             p.manifestUri = util.getQuerystringParameter('manifestUri');
-            p.configExtensionUri = util.getQuerystringParameter('configExtensionUri');
+            p.config = util.getQuerystringParameter('config');
             p.jsonp = util.getBool(util.getQuerystringParameter('jsonp'), false);
             p.isHomeDomain = util.getQuerystringParameter('isHomeDomain') === "true";
             p.isReload = util.getQuerystringParameter('isReload') === "true";
@@ -884,13 +884,13 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
 
             jQuery.support.cors = true;
 
-            if (that.params.configExtensionUri) {
-                if (that.params.configExtensionUri.toLowerCase() === "sessionstorage") {
+            if (that.params.config) {
+                if (that.params.config.toLowerCase() === "sessionstorage") {
                     var config = sessionStorage.getItem("uv-config");
                     that.configExtension = JSON.parse(config);
                     that.loadManifest();
                 } else {
-                    $.getJSON(that.params.configExtensionUri, function (configExtension) {
+                    $.getJSON(that.params.config, function (configExtension) {
                         that.configExtension = configExtension;
                         that.loadManifest();
                     });
@@ -986,7 +986,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
                 complete: function () {
                     $.getJSON(configPath, function (config) {
                         if (that.configExtension) {
-                            config.uri = that.params.configExtensionUri;
+                            config.uri = that.params.config;
 
                             $.extend(true, config, that.configExtension);
                         }
@@ -2660,9 +2660,11 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                         _this.handleParentFrameEvent(message);
                     }
                 });
-
-                this.triggerSocket(BaseExtension.LOAD);
             }
+
+            this.triggerSocket(BaseExtension.LOAD, {
+                config: this.provider.config
+            });
 
             this.$element.empty();
             this.$element.removeClass();
@@ -3460,7 +3462,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.30';
+    exports.Version = '1.0.31';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5003,10 +5005,10 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             this.$tabs = $('<div class="tabs"></div>');
             this.$main.append(this.$tabs);
 
-            this.$treeButton = $('<a class="tab first">' + this.content.index + '</a>');
+            this.$treeButton = $('<a class="index tab first">' + this.content.index + '</a>');
             this.$tabs.append(this.$treeButton);
 
-            this.$thumbsButton = $('<a class="tab">' + this.content.thumbnails + '</a>');
+            this.$thumbsButton = $('<a class="thumbs tab">' + this.content.thumbnails + '</a>');
             this.$tabs.append(this.$thumbsButton);
 
             this.$tabsContent = $('<div class="tabsContent"></div>');
@@ -5286,6 +5288,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             this.prevButtonEnabled = false;
             this.nextButtonEnabled = false;
             this.isFirstLoad = true;
+            this.controlsVisible = false;
         }
         SeadragonCenterPanel.prototype.create = function () {
             var _this = this;
@@ -5295,6 +5298,9 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.append(this.$viewer);
+
+            this.$spinner = $('<div class="spinner"></div>');
+            this.$content.append(this.$spinner);
 
             this.$rights = $('<div class="rights">\
                                <div class="header">\
@@ -5317,6 +5323,10 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                 _this.$rights.hide();
             });
 
+            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
+                _this.loadTileSources();
+            });
+
             this.createSeadragonViewer();
 
             this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
@@ -5335,16 +5345,25 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             this.$rotateButton.attr('tabindex', 14);
             this.$rotateButton.addClass('rotate');
 
-            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                _this.loadTileSources();
+            this.$element.on('mousemove', function (e) {
+                if (_this.controlsVisible)
+                    return;
+                _this.controlsVisible = true;
+                _this.viewer.showControls();
             });
 
-            this.$element.on('mousemove', function (e) {
-                _this.viewer.showControls();
+            this.$element.on('mouseleave', function (e) {
+                if (!_this.controlsVisible)
+                    return;
+                _this.controlsVisible = false;
+                _this.viewer.hideControls();
             });
 
             this.$element.on('mousemove', function (e) {
                 if (!_this.$viewer.find('.navigator').ismouseover()) {
+                    if (!_this.controlsVisible)
+                        return;
+                    _this.controlsVisible = false;
                     _this.viewer.hideControls();
                 }
             }, this.config.options.controlsFadeAfterInactive);
@@ -5381,17 +5400,9 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             this.createNavigationButtons();
 
-            var browser = window.browserDetect.browser;
-
-            if (browser == 'Firefox') {
-                if (this.provider.isMultiCanvas()) {
-                    this.$prevButton.hide();
-                    this.$nextButton.hide();
-                }
-                this.$rotateButton.hide();
-            }
-
             this.showAttribution();
+
+            this.resize();
         };
 
         SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
@@ -5399,7 +5410,6 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             window.openSeadragonViewer = this.viewer = OpenSeadragon({
                 id: "viewer",
-                autoHideControls: true,
                 showNavigationControl: true,
                 showNavigator: true,
                 showRotationControl: true,
@@ -5510,6 +5520,27 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             }
         };
 
+        SeadragonCenterPanel.prototype.loadTileSources = function () {
+            if (!this.viewer)
+                return;
+
+            this.tileSources = this.provider.getTileSources();
+
+            this.$spinner.show();
+
+            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
+
+            _.each(this.tileSources, function (ts) {
+                if (!ts.tileSource) {
+                    ts.tileSource = imageUnavailableUri;
+                }
+            });
+
+            this.viewer.addHandler('open', this.openTileSourcesHandler, this);
+
+            this.viewer.open(this.tileSources[0]);
+        };
+
         SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
             var that = this.userData;
 
@@ -5553,6 +5584,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             that.lastTilesNum = that.tileSources.length;
             that.isFirstLoad = false;
+            that.$spinner.hide();
         };
 
         SeadragonCenterPanel.prototype.showAttribution = function () {
@@ -5603,22 +5635,6 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             }
         };
 
-        SeadragonCenterPanel.prototype.loadTileSources = function () {
-            this.tileSources = this.provider.getTileSources();
-
-            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
-
-            _.each(this.tileSources, function (ts) {
-                if (!ts.tileSource) {
-                    ts.tileSource = imageUnavailableUri;
-                }
-            });
-
-            this.viewer.open(this.tileSources[0]);
-
-            this.viewer.addHandler('open', this.openTileSourcesHandler, this);
-        };
-
         SeadragonCenterPanel.prototype.disablePrevButton = function () {
             this.prevButtonEnabled = false;
             this.$prevButton.addClass('disabled');
@@ -5665,7 +5681,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
         };
 
         SeadragonCenterPanel.prototype.getBounds = function () {
-            if (!this.viewer.viewport)
+            if (!this.viewer || !this.viewer.viewport)
                 return null;
 
             var bounds = this.viewer.viewport.getBounds(true);
@@ -5698,12 +5714,15 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             this.$viewer.height(this.$content.height());
 
-            if (this.provider.isMultiCanvas()) {
+            this.$spinner.css('top', (this.$content.height() / 2) - (this.$spinner.height() / 2));
+            this.$spinner.css('left', (this.$content.width() / 2) - (this.$spinner.width() / 2));
+
+            if (this.provider.isMultiCanvas() && this.$prevButton && this.$nextButton) {
                 this.$prevButton.css('top', (this.$content.height() - this.$prevButton.height()) / 2);
                 this.$nextButton.css('top', (this.$content.height() - this.$nextButton.height()) / 2);
             }
 
-            if (this.$rights.is(':visible')) {
+            if (this.$rights && this.$rights.is(':visible')) {
                 this.$rights.css('top', this.$content.height() - this.$rights.outerHeight() - this.$rights.verticalMargins());
             }
         };
@@ -5803,6 +5822,9 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
             this.$items = $('<div class="items"></div>');
             this.$main.append(this.$items);
 
+            this.$noData = $('<div class="noData">' + this.content.noData + '</div>');
+            this.$main.append(this.$noData);
+
             this.$expandButton.attr('tabindex', '4');
             this.$collapseButton.attr('tabindex', '4');
 
@@ -5832,9 +5854,11 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
             this.$main.removeClass('loading');
 
             if (!data) {
-                this.$main.append(this.content.noData);
+                this.$noData.show();
                 return;
             }
+
+            this.$noData.hide();
 
             _.each(data, function (item) {
                 _this.$items.append(_this.buildItem(item, 130));
@@ -6153,8 +6177,6 @@ define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../..
                 _this.getCustomSize();
             });
 
-            this.formatCode();
-
             this.$element.hide();
         };
 
@@ -6423,7 +6445,9 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             });
 
             $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
-                _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
+                if (_this.centerPanel) {
+                    _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
+                }
             });
 
             $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
