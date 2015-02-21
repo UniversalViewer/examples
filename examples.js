@@ -49,6 +49,10 @@ schema = {
                     "id": "pagingEnabled",
                     "type": "boolean"
                 },
+                "preserveViewport": {
+                    "id": "preserveViewport",
+                    "type": "boolean"
+                },
                 "sectionMappings": {
                     "id": "sectionMappings",
                     "type": "object",
@@ -182,6 +186,10 @@ schema = {
                                 },
                                 "locale": {
                                     "id": "locale",
+                                    "type": "string"
+                                },
+                                "preserveViewport": {
+                                    "id": "preserveViewport",
                                     "type": "string"
                                 }
                             }
