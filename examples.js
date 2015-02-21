@@ -5,6 +5,23 @@ schema = {
     "id": "https://github.com/UniversalViewer/universalviewer",
     "type": "object",
     "properties": {
+        "localisation": {
+            "id": "localisation",
+            "type": "object",
+            "options": {
+                "hidden": true
+            },
+            "properties": {
+                "label": {
+                    "id": "label",
+                    "type": "string"
+                },
+                "locales": {
+                    "id": "locales",
+                    "type": "array"
+                }
+            }
+        },
         "options": {
             "id": "options",
             "type": "object",
@@ -544,8 +561,7 @@ $(function(){
 
     var testBuild = getQuerystringParameter("build");
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
-    var editor;
-    var localeDefault = 'en-GB';
+    var editor, locale, localeDefault = 'en-GB';
 
     if (testBuild){
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.30/js/embed.js"><\/script>');
@@ -580,6 +596,7 @@ $(function(){
         setSelectedManifest();
     }
 
+    $('footer').hide();
     createEditor();
     setSelectedLocale();
     loadViewer();
@@ -640,6 +657,8 @@ $(function(){
     });
 
     function buildQuerystring() {
+        $('footer').hide();
+
         var jsonp = $('#jsonp').is(':checked');
         var locale = $('#locale option:selected').val() || localeDefault;
         var manifest = $('#manifest option:selected').val();
@@ -691,16 +710,9 @@ $(function(){
     }
 
     function setSelectedLocale() {
-        var locale = getQuerystringParameter("locale") || localeDefault;
+        locale = getQuerystringParameter("locale") || localeDefault;
 
-        //if (locale) {
-
-
-
-            $("#locale").val(locale);
-        //} else {
-        //    $('#locale option[value="' + locale + '"]').prop('selected', true);
-        //}
+        $("#locale").val(locale);
 
         $('.uv').attr('data-locale', locale);
     }
@@ -708,24 +720,23 @@ $(function(){
     $('#editBtn').on('click', function(e) {
         e.preventDefault();
 
+        edit();
+    });
+
+    function edit() {
         $('#editPnl').toggleClass('show', 'hide');
         $('#saveBtn').toggleClass('show', 'hide');
-        $(this).toggleText('Edit', 'Close');
+        $('#resetBtn').toggleClass('show', 'hide')
+        $('#editBtn').toggleText('Edit', 'Close');
 
         if ($('#editPnl').hasClass('show')){
 
-            // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.30/js/uv-seadragon-extension-config.js', function(baseConfig){
-                var configUrl = $('#config option:selected').val();
-
-                $.getJSON(configUrl, function(config){
-                    $.extend(true, baseConfig, config);
-                    editor.setValue(baseConfig);
-                });
+            $.getJSON('/build/uv-1.0.30/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
+                editor.setValue(config);
             });
         }
-    });
+    }
 
     $('#saveBtn').on('click', function(e) {
         e.preventDefault();
@@ -745,6 +756,17 @@ $(function(){
         loadViewer();
     });
 
+    $('#resetBtn').on('click', function(e){
+        e.preventDefault();
+
+        $('.uv').removeAttr('data-config');
+        sessionStorage.removeItem("uv-config");
+
+        loadViewer();
+
+        edit();
+    });
+
     // test overrideFullScreen option
     $(document).bind("onToggleFullScreen", function (event, isFullScreen) {
         console.log('full screen: ' + isFullScreen);
@@ -756,6 +778,8 @@ $(function(){
     });
 
     $(document).bind("onLoad", function (event, obj) {
+        $('#locale').empty();
+
         var locales = obj.config.localisation.locales;
 
         for (var i = 0; i < locales.length; i++){
@@ -764,5 +788,7 @@ $(function(){
         }
 
         setSelectedLocale();
+
+        $('footer').show();
     });
 });
