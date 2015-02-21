@@ -39,7 +39,8 @@ $(function(){
             var $this = $(this);
 
             var attr = $this.attr(attrName);
-            if (attr.indexOf(oldVal) === 0){
+
+            if (attr && attr.indexOf(oldVal) === 0){
                 attr = attr.replace(oldVal, newVal);
                 $this.attr(attrName, attr);
             }

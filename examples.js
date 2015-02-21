@@ -581,10 +581,8 @@ $(function(){
 
             // remove '/examples' from paths
             $('.uv').updateAttr('data-config', '/examples/', '/');
-
-            if ($('.uv').attr('data-uri')){
-                $('.uv').updateAttr('data-uri', '/examples/', '/');
-            }
+            
+            $('.uv').updateAttr('data-uri', '/examples/', '/');
 
             $('#locale option').each(function() {
                 $(this).updateAttr('value', '/examples/', '/');
