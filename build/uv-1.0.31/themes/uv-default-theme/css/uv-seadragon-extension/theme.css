@@ -1485,7 +1485,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .title {
   height: 20px;
-  margin: 6px 0 0 10px;
+  margin: 9px 0 0 10px;
   float: left;
   cursor: pointer;
 }
@@ -1515,10 +1515,23 @@ input[type=range]:focus::-ms-fill-upper {
   float: right;
 }
 #app .leftPanel .closed .title {
-  width: 20px;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
   display: block;
-  margin: 5px 0 0 0;
+  margin: 8px 8px 0 0px;
   cursor: pointer;
+  text-transform: uppercase;
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+#app .leftPanel .closed .title:link,
+#app .leftPanel .closed .title:visited,
+#app .leftPanel .closed .title:hover,
+#app .leftPanel .closed .title:active {
+  color: #ffffff;
+  text-decoration: none;
 }
 #app .leftPanel .closed .expandButton {
   background: url('../../img/arrows_right.png') no-repeat;
@@ -1534,6 +1547,10 @@ input[type=range]:focus::-ms-fill-upper {
 #app .leftPanel .closed .expandFullButton:focus {
   border: 1px solid lightskyblue;
 }
+#app.browser-Explorer.browser-version-8 .leftPanel .closed .title {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  width: 250px;
+}
 #app .rightPanel .top {
   height: 35px;
   position: relative;
@@ -1541,7 +1558,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app .rightPanel .top .title {
   position: absolute;
   height: 20px;
-  margin-top: 6px;
+  margin-top: 9px;
   cursor: pointer;
   left: 35px;
 }
@@ -1569,10 +1586,23 @@ input[type=range]:focus::-ms-fill-upper {
   width: 25px;
 }
 #app .rightPanel .closed .title {
-  width: 20px;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
   display: block;
-  margin: 5px 0 0 5px;
+  margin: 8px 3px 0 5px;
   cursor: pointer;
+  text-transform: uppercase;
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+#app .rightPanel .closed .title:link,
+#app .rightPanel .closed .title:visited,
+#app .rightPanel .closed .title:hover,
+#app .rightPanel .closed .title:active {
+  color: #ffffff;
+  text-decoration: none;
 }
 #app .rightPanel .closed .expandButton {
   background: url('../../img/arrows_left.png') no-repeat;
@@ -1592,6 +1622,10 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 10px;
   margin-bottom: 10px;
 }
+#app.browser-Explorer.browser-version-8 .rightPanel .closed .title {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  width: 250px;
+}
 #app .centerPanel .title {
   height: 38px;
   font-size: 20px;
@@ -1604,39 +1638,113 @@ input[type=range]:focus::-ms-fill-upper {
 #app .footerPanel .options {
   height: 41px;
 }
-#app .footerPanel .options a.imageBtn {
+#app .footerPanel .options a {
   float: left;
   margin-top: 10px;
   margin-right: 15px;
 }
-#app .footerPanel .options a.imageBtn.embed {
-  background: url('../../img/embed.png') no-repeat;
-  height: 21px;
-  width: 75px;
+#app .footerPanel .options a.embed {
+  background-image: url('../../img/embed.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 35px;
+  padding-right: 10px;
+  line-height: 22px;
 }
-#app .footerPanel .options a.imageBtn.fullScreen {
-  background: url('../../img/fullscreen.png') no-repeat;
-  height: 21px;
-  width: 140px;
+#app .footerPanel .options a.embed:link,
+#app .footerPanel .options a.embed:visited,
+#app .footerPanel .options a.embed:hover,
+#app .footerPanel .options a.embed:active {
+  color: #ffffff;
+  text-decoration: none;
+}
+#app .footerPanel .options a.fullScreen {
+  background-image: url('../../img/fullscreen.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: right center;
+  padding-right: 30px;
+  padding-left: 10px;
+  line-height: 22px;
   float: right;
-  background-position: right;
   margin-right: 0;
 }
-#app .footerPanel .options a.imageBtn.normal {
-  background: url('../../img/normal.png') no-repeat;
-  height: 21px;
-  width: 140px;
+#app .footerPanel .options a.fullScreen:link,
+#app .footerPanel .options a.fullScreen:visited,
+#app .footerPanel .options a.fullScreen:hover,
+#app .footerPanel .options a.fullScreen:active {
+  color: #ffffff;
+  text-decoration: none;
+}
+#app .footerPanel .options a.exitFullscreen {
+  background-image: url('../../img/exit_fullscreen.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: right center;
+  padding-right: 30px;
+  padding-left: 10px;
+  line-height: 22px;
   float: right;
-  background-position: right;
   margin-right: 0;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.embed {
+#app .footerPanel .options a.exitFullscreen:link,
+#app .footerPanel .options a.exitFullscreen:visited,
+#app .footerPanel .options a.exitFullscreen:hover,
+#app .footerPanel .options a.exitFullscreen:active {
+  color: #ffffff;
+  text-decoration: none;
+}
+#app .footerPanel .options.minimiseButtons a.embed {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 27px;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.fullScreen {
+#app .footerPanel .options.minimiseButtons a.fullScreen {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 21px;
 }
-#app .footerPanel .options.minimiseButtons a.imageBtn.normal {
+#app .footerPanel .options.minimiseButtons a.exitFullscreen {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
+  width: 21px;
+}
+#app .footerPanel .options.minimiseButtons a.normal {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
@@ -1658,11 +1766,25 @@ input[type=range]:focus::-ms-fill-upper {
   overflow: auto;
 }
 #app .overlay .top .close {
+  background-image: url('../../img/close.png');
+  background-repeat: no-repeat;
   height: 24px;
-  width: 85px;
-  background: url('../../img/close.png') no-repeat;
+  line-height: 24px;
   cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: right center;
+  padding-right: 34px;
+  padding-left: 10px;
   float: right;
+  background-color: #222222;
+}
+#app .overlay .top .close:link,
+#app .overlay .top .close:visited,
+#app .overlay .top .close:hover,
+#app .overlay .top .close:active {
+  color: #ffffff;
+  text-decoration: none;
 }
 #app .overlay .middle {
   background: #ffffff;
