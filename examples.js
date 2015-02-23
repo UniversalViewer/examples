@@ -21,6 +21,9 @@ $(function(){
         }
     }
 
+    setSelectedManifest();
+    loadViewer();
+
     function loadViewer() {
 
         // todo: update embed.js to work with script loaders.
@@ -30,6 +33,15 @@ $(function(){
             setTimeout(loadViewer, 100);
         }
 
+    }
+
+    function setSelectedManifest(){
+
+        var manifest = getQuerystringParameter("manifest");
+
+        if (manifest) {
+            $('.uv').attr('data-uri', manifest);
+        }
     }
 
     function isIE8(){
