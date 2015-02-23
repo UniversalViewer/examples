@@ -38,9 +38,8 @@ manifestCallback(
         "@id": "http://api.bl.uk/ark:/81055/vdc_000000000143",
         "@type": "sc:Sequence",
         "label": "Current Page Order",
-        "viewingDirection": "left-to-right",
+        "viewingDirection": "top-to-bottom",
         "viewingHint": "paged",
-        "startCanvas": "http://api.bl.uk/ark:/81055/vdc_000000000143.0x000024",
         "canvases": [
             {
                 "@id": "http://api.bl.uk/ark:/81055/vdc_000000000143.0x000001",

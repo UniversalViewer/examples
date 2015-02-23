@@ -2,9 +2,26 @@
 // todo: look at using typson to generate this from a ts definition file: https://github.com/lbovet/typson
 schema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "https://github.com/britishlibrary/UniversalViewer",
+    "id": "https://github.com/UniversalViewer/universalviewer",
     "type": "object",
     "properties": {
+        "localisation": {
+            "id": "localisation",
+            "type": "object",
+            "options": {
+                "hidden": true
+            },
+            "properties": {
+                "label": {
+                    "id": "label",
+                    "type": "string"
+                },
+                "locales": {
+                    "id": "locales",
+                    "type": "array"
+                }
+            }
+        },
         "options": {
             "id": "options",
             "type": "object",
@@ -12,10 +29,6 @@ schema = {
                 "collapsed": true
             },
             "properties": {
-                "IIIF": {
-                    "id": "IIIF",
-                    "type": "boolean"
-                },
                 "theme": {
                     "id": "theme",
                     "type": "string"
@@ -34,6 +47,10 @@ schema = {
                 },
                 "pagingEnabled": {
                     "id": "pagingEnabled",
+                    "type": "boolean"
+                },
+                "preserveViewport": {
+                    "id": "preserveViewport",
                     "type": "boolean"
                 },
                 "sectionMappings": {
@@ -71,6 +88,25 @@ schema = {
                 "collapsed": true
             },
             "properties": {
+                "dialogue": {
+                    "id": "dialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "close": {
+                                    "id": "close",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
                 "genericDialogue": {
                     "id": "genericDialogue",
                     "type": "object",
@@ -147,6 +183,14 @@ schema = {
                                 "pagingEnabled": {
                                     "id": "pagingEnabled",
                                     "type": "string"
+                                },
+                                "locale": {
+                                    "id": "locale",
+                                    "type": "string"
+                                },
+                                "preserveViewport": {
+                                    "id": "preserveViewport",
+                                    "type": "string"
                                 }
                             }
                         }
@@ -179,6 +223,18 @@ schema = {
                                 },
                                 "instructions": {
                                     "id": "instructions",
+                                    "type": "string"
+                                },
+                                "width": {
+                                    "id": "width",
+                                    "type": "string"
+                                },
+                                "height": {
+                                    "id": "height",
+                                    "type": "string"
+                                },
+                                "customSize": {
+                                    "id": "customSize",
                                     "type": "string"
                                 }
                             }
@@ -240,6 +296,10 @@ schema = {
                                 "close": {
                                     "id": "close",
                                     "type": "string"
+                                },
+                                "settings": {
+                                    "id": "settings",
+                                    "type": "string"
                                 }
                             },
                             "required": ["page"]
@@ -281,12 +341,20 @@ schema = {
                                     "id": "panelAnimationDuration",
                                     "type": "integer"
                                 },
-                                "thumbWidth": {
-                                    "id": "thumbWidth",
+                                "oneColThumbWidth": {
+                                    "id": "oneColThumbWidth",
                                     "type": "integer"
                                 },
-                                "thumbHeight": {
-                                    "id": "thumbHeight",
+                                "oneColThumbHeight": {
+                                    "id": "oneColThumbHeight",
+                                    "type": "integer"
+                                },
+                                "twoColThumbWidth": {
+                                    "id": "twoColThumbWidth",
+                                    "type": "integer"
+                                },
+                                "twoColThumbHeight": {
+                                    "id": "twoColThumbHeight",
                                     "type": "integer"
                                 },
                                 "galleryThumbWidth": {
@@ -318,6 +386,10 @@ schema = {
                                 },
                                 "thumbnails": {
                                     "id": "thumbnails",
+                                    "type": "string"
+                                },
+                                "contents": {
+                                    "id": "contents",
                                     "type": "string"
                                 }
                             }
@@ -359,6 +431,10 @@ schema = {
                                     "id": "navigatorPosition",
                                     "type": "string",
                                     "enum": ["BOTTOM_RIGHT", "BOTTOM_LEFT", "TOP_LEFT", "TOP_RIGHT"]
+                                },
+                                "trimAttributionCount": {
+                                    "id": "trimAttributionCount",
+                                    "type": "integer"
                                 }
                             }
                         },
@@ -384,6 +460,10 @@ schema = {
                                 },
                                 "imageUnavailable": {
                                     "id": "imageUnavailable",
+                                    "type": "string"
+                                },
+                                "acknowledgements": {
+                                    "id": "acknowledgements",
                                     "type": "string"
                                 }
                             }
@@ -425,6 +505,14 @@ schema = {
                             "properties": {
                                 "holdingText": {
                                     "id": "holdingText",
+                                    "type": "string"
+                                },
+                                "noData": {
+                                    "id": "noData",
+                                    "type": "string"
+                                },
+                                "moreInformation": {
+                                    "id": "moreInformation",
                                     "type": "string"
                                 }
                             }
@@ -481,10 +569,10 @@ $(function(){
 
     var testBuild = getQuerystringParameter("build");
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
-    var editor;
+    var editor, locale, localeDefault = 'en-GB';
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.0/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.31/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -494,11 +582,9 @@ $(function(){
             // remove '/examples' from paths
             $('.uv').updateAttr('data-config', '/examples/', '/');
 
-            if ($('.uv').attr('data-uri')){
-                $('.uv').updateAttr('data-uri', '/examples/', '/');
-            }
+            $('.uv').updateAttr('data-uri', '/examples/', '/');
 
-            $('#config option').each(function() {
+            $('#locale option').each(function() {
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
@@ -506,29 +592,39 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.0/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.31/js/embed.js"><\/script>');
         }
     }
 
-    setTimeout(function(){
-        if ($('#manifest option').length || $('#manifest optgroup').length){
-            setSelectedManifest();
-        }
+    setJSONPEnabled();
 
-        if ($('#config option').length || $('#config optgroup').length){
-            setSelectedConfig();
-        }
+    if ($('#manifest option').length || $('#manifest optgroup').length){
+        setSelectedManifest();
+    }
 
 //        createEditor();
 
-        loadViewer();
-    }, 2000);
-
     function loadViewer() {
-        initPlayers($('.uv'));
+
+        // todo: update embed.js to work with script loaders.
+        if (window.initPlayers && window.easyXDM){
+            initPlayers($('.uv'));
+        } else {
+            setTimeout(loadViewer, 100);
+        }
+
+    }
+
+    function isIE8(){
+        return (browserDetect.browser === "Explorer" && browserDetect.version === 8);
     }
 
     function createEditor() {
+
+        if (isIE8() || typeof(JSONEditor) === "undefined") {
+            $("#edit-config").hide();
+            return;
+        }
 
         editor = new JSONEditor(document.getElementById('editor'),{
             form_name_root: "",
@@ -540,7 +636,7 @@ $(function(){
             required_by_default: true
         });
 
-        editor.on('change',function() {
+        editor.on('change', function() {
             // Get an array of errors from the validator
             var errors = editor.validate();
 
@@ -555,23 +651,52 @@ $(function(){
         buildQuerystring();
     });
 
-    $('#config').on('change', function(){
+    $('#locale').on('change', function(){
+        buildQuerystring();
+    });
+
+    $('#jsonp').on('change', function(){
         buildQuerystring();
     });
 
     function buildQuerystring() {
-        var config = $('#config option:selected').val();
+        $('footer').hide();
+
+        var jsonp = $('#jsonp').is(':checked');
+        var locale = $('#locale option:selected').val() || localeDefault;
         var manifest = $('#manifest option:selected').val();
 
         // clear hash params
         document.location.hash = "";
 
         var qs = document.location.search.replace('?', '');
-        qs = updateURIKeyValuePair(qs, "config", config);
+        qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
+        qs = updateURIKeyValuePair(qs, "locale", locale);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
 
         // reload
         window.location.search = qs;
+    }
+
+    function setJSONPEnabled() {
+
+        var jsonp = $('#jsonp').is(':checked');
+
+        var qs = getQuerystringParameter("jsonp");
+
+        if (qs === 'false'){
+            jsonp = false;
+        } else if (qs === 'true') {
+            jsonp = true;
+        }
+
+        if (jsonp){
+            $('.uv').attr('data-jsonp', 'true');
+            $('#jsonp').attr('checked', 'true');
+        } else {
+            $('.uv').removeAttr('data-jsonp');
+            $('#jsonp').removeAttr('checked');
+        }
     }
 
     function setSelectedManifest(){
@@ -587,40 +712,34 @@ $(function(){
         $('.uv').attr('data-uri', manifest);
     }
 
-    function setSelectedConfig(){
+    function setSelectedLocale() {
+        locale = getQuerystringParameter("locale") || localeDefault;
 
-        var config = getQuerystringParameter("config");
+        $("#locale").val(locale);
 
-        if (config) {
-            $("#config").val(config);
-        } else {
-            config = $('#config option')[0].value;
-        }
-
-        $('.uv').attr('data-config', config);
+        $('.uv').attr('data-locale', locale);
     }
 
     $('#editBtn').on('click', function(e) {
         e.preventDefault();
 
+        edit();
+    });
+
+    function edit() {
         $('#editPnl').toggleClass('show', 'hide');
         $('#saveBtn').toggleClass('show', 'hide');
-        $(this).toggleText('Edit', 'Close');
+        $('#resetBtn').toggleClass('show', 'hide')
+        $('#editBtn').toggleText('Edit', 'Close');
 
         if ($('#editPnl').hasClass('show')){
 
-            // first get the default extension config
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.0/js/coreplayer-seadragon-extension-config.js', function(baseConfig){
-                var configUrl = $('#config option:selected').val();
-
-                $.getJSON(configUrl, function(config){
-                    $.extend(true, baseConfig, config);
-                    editor.setValue(baseConfig);
-                });
+            $.getJSON('/build/uv-1.0.31/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
+                editor.setValue(config);
             });
         }
-    });
+    }
 
     $('#saveBtn').on('click', function(e) {
         e.preventDefault();
@@ -640,6 +759,17 @@ $(function(){
         loadViewer();
     });
 
+    $('#resetBtn').on('click', function(e){
+        e.preventDefault();
+
+        $('.uv').removeAttr('data-config');
+        sessionStorage.removeItem("uv-config");
+
+        loadViewer();
+
+        edit();
+    });
+
     // test overrideFullScreen option
     $(document).bind("onToggleFullScreen", function (event, isFullScreen) {
         console.log('full screen: ' + isFullScreen);
@@ -651,6 +781,17 @@ $(function(){
     });
 
     $(document).bind("onLoad", function (event, obj) {
+        $('#locale').empty();
 
+        var locales = obj.config.localisation.locales;
+
+        for (var i = 0; i < locales.length; i++){
+            var l = locales[i];
+            $('#locale').append('<option value="' + l.name + '">' + l.label + '</option>');
+        }
+
+        setSelectedLocale();
+
+        $('footer').show();
     });
 });

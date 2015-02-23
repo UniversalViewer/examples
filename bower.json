@@ -1,6 +1,5 @@
 {
   "name": "Universal Viewer",
-  "version": "0.1.7",
   "repository": {
     "type": "git",
     "url": "git://github.com/BritishLibrary/UniversalViewer"
@@ -13,6 +12,14 @@
     "tests",
     "Gruntfile.js"
   ],
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "jquery": "~1.11.2",
+    "json-editor": "~0.7.13",
+    "foundation": "~5.5.0",
+    "fontawesome": "~4.2.0"
+  },
+  "devDependencies": {},
+  "resolutions": {
+    "jquery": "~1.11.2"
+  }
 }

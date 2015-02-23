@@ -12,7 +12,7 @@ header {
     height: 480px;
 }
 
-#saveBtn{
+#saveBtn, #resetBtn{
     margin-left: 10px;
 }
 
