@@ -572,7 +572,7 @@ $(function(){
     var editor, locale, localeDefault = 'en-GB';
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.31/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.32/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -592,7 +592,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.31/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.32/js/embed.js"><\/script>');
         }
     }
 
@@ -738,7 +738,7 @@ $(function(){
         if ($('#editPnl').hasClass('show')){
 
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.31/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.32/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
