@@ -7445,7 +7445,7 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.locale, configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
 
             return script;
         };
@@ -7512,7 +7512,7 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, assetIndex, zoom, rotation, configUri, width, height, esu);
+            var script = String.prototype.format(template, this.locale, configUri, this.manifestUri, this.sequenceIndex, assetIndex, zoom, rotation, width, height, esu);
 
             return script;
         };
