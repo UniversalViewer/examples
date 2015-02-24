@@ -21,6 +21,7 @@ $(function(){
         }
     }
 
+    setJSONPEnabled();
     setSelectedManifest();
     loadViewer();
 
