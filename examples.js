@@ -5,7 +5,7 @@ $(function(){
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.31/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.33/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -17,7 +17,7 @@ $(function(){
 
             $('.uv').updateAttr('data-uri', '/examples/', '/');
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.31/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.33/js/embed.js"><\/script>');
         }
     }
 

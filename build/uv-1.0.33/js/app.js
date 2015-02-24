@@ -3462,7 +3462,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.31';
+    exports.Version = '1.0.33';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5349,14 +5349,14 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                 if (_this.controlsVisible)
                     return;
                 _this.controlsVisible = true;
-                _this.viewer.showControls();
+                _this.viewer.setControlsEnabled(true);
             });
 
             this.$element.on('mouseleave', function (e) {
                 if (!_this.controlsVisible)
                     return;
                 _this.controlsVisible = false;
-                _this.viewer.hideControls();
+                _this.viewer.setControlsEnabled(false);
             });
 
             this.$element.on('mousemove', function (e) {
@@ -5364,7 +5364,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                     if (!_this.controlsVisible)
                         return;
                     _this.controlsVisible = false;
-                    _this.viewer.hideControls();
+                    _this.viewer.setControlsEnabled(false);
                 }
             }, this.config.options.controlsFadeAfterInactive);
 
