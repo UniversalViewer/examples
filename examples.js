@@ -35,6 +35,18 @@ $(function(){
 
     }
 
+    function setJSONPEnabled() {
+
+        var qs = getQuerystringParameter("jsonp");
+
+        if (qs === 'false'){
+            $('.uv').removeAttr('data-jsonp');
+        } else if (qs === 'true') {
+            $('.uv').attr('data-jsonp', 'true');
+        }
+
+    }
+
     function setSelectedManifest(){
 
         var manifest = getQuerystringParameter("manifest");
