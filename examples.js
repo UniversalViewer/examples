@@ -52,9 +52,12 @@ $(function(){
 
         var manifest = getQuerystringParameter("manifest");
 
-        if (manifest) {
-            $('.uv').attr('data-uri', manifest);
+        if (!manifest) {
+            manifest = $('.links a').first().prop('href');
+            manifest = manifest.substring(manifest.indexOf('manifest=') + 9);
         }
+
+        $('.uv').attr('data-uri', manifest);
     }
 
     function isIE8(){
@@ -72,6 +75,8 @@ $(function(){
     });
 
     $(document).bind("onLoad", function (event, obj) {
-
+        setTimeout(function() {
+            setTestIds();
+        }, 1000);
     });
 });
