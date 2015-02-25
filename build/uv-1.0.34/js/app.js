@@ -2727,6 +2727,10 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 }
             });
 
+            $.subscribe(BaseExtension.CREATED, function () {
+                _this.triggerSocket(BaseExtension.CREATED);
+            });
+
             this.shell = new shell.Shell(this.$element);
 
             this.canvasIndex = -1;
@@ -3462,7 +3466,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.33';
+    exports.Version = '1.0.34';
 });
 
 var __extends = this.__extends || function (d, b) {

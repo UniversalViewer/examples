@@ -572,7 +572,7 @@ $(function(){
     var editor, locale, localeDefault = 'en-GB';
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.33/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.34/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -592,7 +592,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.33/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.34/js/embed.js"><\/script>');
         }
     }
 
@@ -738,7 +738,7 @@ $(function(){
         if ($('#editPnl').hasClass('show')){
 
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.33/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.34/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
@@ -773,17 +773,19 @@ $(function(){
         edit();
     });
 
-    // test overrideFullScreen option
-    $(document).bind("onToggleFullScreen", function (event, isFullScreen) {
+    $(document).bind("uv.onToggleFullScreen", function (event, isFullScreen) {
         console.log('full screen: ' + isFullScreen);
     });
 
-    // test currentViewUri event
-    $(document).bind("onCurrentViewUri", function (event, obj) {
-        console.log(obj);
+    $(document).bind("uv.onSequenceIndexChanged", function (event, isFullScreen) {
+
     });
 
-    $(document).bind("onLoad", function (event, obj) {
+    $(document).bind("uv.onCurrentViewUri", function (event, obj) {
+
+    });
+
+    $(document).bind("uv.onLoad", function (event, obj) {
         $('#locale').empty();
 
         var locales = obj.config.localisation.locales;
@@ -796,5 +798,9 @@ $(function(){
         setSelectedLocale();
 
         $('footer').show();
+    });
+
+    $(document).bind("uv.onCreated", function (event, obj) {
+
     });
 });
