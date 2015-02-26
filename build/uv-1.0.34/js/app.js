@@ -908,10 +908,13 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             var that = this;
 
             if (this.corsEnabled()) {
+                console.log('CORS Enabled');
                 $.getJSON(that.params.manifestUri, function (manifest) {
                     that.parseManifest(manifest);
                 });
             } else {
+                console.log('JSONP Enabled');
+
                 var settings = {
                     url: that.params.manifestUri,
                     type: 'GET',
