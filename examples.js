@@ -662,10 +662,15 @@ $(function(){
         buildQuerystring();
     });
 
+    $('#testids').on('change', function(){
+        buildQuerystring();
+    });
+
     function buildQuerystring() {
         $('footer').hide();
 
         var jsonp = $('#jsonp').is(':checked');
+        var testids = $('#testids').is(':checked');
         var locale = $('#locale option:selected').val() || localeDefault;
         var manifest = $('#manifest option:selected').val();
 
@@ -674,6 +679,7 @@ $(function(){
 
         var qs = document.location.search.replace('?', '');
         qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
+        qs = updateURIKeyValuePair(qs, "testids", testids);
         qs = updateURIKeyValuePair(qs, "locale", locale);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
 
@@ -721,6 +727,19 @@ $(function(){
         $("#locale").val(locale);
 
         $('.uv').attr('data-locale', locale);
+    }
+
+    function setTestIds(){
+        var testids = $('#testids').is(':checked');
+
+        var qs = getQuerystringParameter("testids");
+
+        if (qs === 'true') {
+            createTestIds();
+            $('#testids').attr('checked', 'true');
+        } else {
+            $('#testids').removeAttr('checked');
+        }
     }
 
     $('#editBtn').on('click', function(e) {
