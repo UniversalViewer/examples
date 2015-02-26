@@ -908,13 +908,10 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             var that = this;
 
             if (this.corsEnabled()) {
-                console.log('CORS Enabled');
                 $.getJSON(that.params.manifestUri, function (manifest) {
                     that.parseManifest(manifest);
                 });
             } else {
-                console.log('JSONP Enabled');
-
                 var settings = {
                     url: that.params.manifestUri,
                     type: 'GET',
@@ -3469,7 +3466,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.34';
+    exports.Version = '1.0.35';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -7427,13 +7424,13 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
             if (!iiifUri) {
                 console.warn('no service endpoint available');
             } else if (iiifUri.endsWith('/')) {
-                if (this.jsonp) {
+                if (!this.corsEnabled()) {
                     iiifUri += 'info.js';
                 } else {
                     iiifUri += 'info.json';
                 }
             } else {
-                if (this.jsonp) {
+                if (!this.corsEnabled()) {
                     iiifUri += '/info.js';
                 } else {
                     iiifUri += '/info.json';
