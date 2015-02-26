@@ -801,6 +801,6 @@ $(function(){
     });
 
     $(document).bind("uv.onCreated", function (event, obj) {
-
+        setTestIds();
     });
 });
