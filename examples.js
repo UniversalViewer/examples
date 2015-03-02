@@ -569,7 +569,7 @@ $(function(){
 
     var testBuild = getQuerystringParameter("build");
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
-    var editor, locale, localeDefault = 'en-GB';
+    var config, editor, locale, localeDefault = 'en-GB';
 
     if (testBuild){
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.36/js/embed.js"><\/script>');
@@ -602,7 +602,6 @@ $(function(){
         setSelectedManifest();
     }
 
-    $('footer').hide();
     createEditor();
     setSelectedLocale();
     loadViewer();
@@ -755,9 +754,8 @@ $(function(){
         $('#editBtn').toggleText('Edit', 'Close');
 
         if ($('#editPnl').hasClass('show')){
-
-            // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.36/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
+            
+            $.getJSON('/build/uv-1.0.36/js/' + config.name + '.' + locale + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
@@ -807,7 +805,9 @@ $(function(){
     $(document).bind("uv.onLoad", function (event, obj) {
         $('#locale').empty();
 
-        var locales = obj.config.localisation.locales;
+        config = obj.config;
+
+        var locales = config.localisation.locales;
 
         for (var i = 0; i < locales.length; i++){
             var l = locales[i];
