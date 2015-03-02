@@ -5,6 +5,13 @@ schema = {
     "id": "https://github.com/UniversalViewer/universalviewer",
     "type": "object",
     "properties": {
+        "extends": {
+            "id": "extends",
+            "type": "string",
+            "options": {
+                "hidden": true
+            }
+        },
         "localisation": {
             "id": "localisation",
             "type": "object",
