@@ -147,6 +147,22 @@
 #app .overlay.settings .bottom {
   background: none;
 }
+#app .overlay.externalContent {
+  width: 470px;
+  height: 300px;
+}
+#app .overlay.externalContent .middle .content {
+  width: 470px;
+  height: 300px;
+  overflow: hidden;
+}
+#app .overlay.externalContent .middle .content iframe {
+  overflow: auto;
+  border: none;
+}
+#app .overlay.externalContent .bottom {
+  background: none;
+}
 #app .leftPanel .tabs {
   height: 25px;
   border-bottom: 1px solid #373737;
@@ -2148,6 +2164,7 @@ canvas {
 }
 ::-webkit-scrollbar {
   width: 12px;
+  height: 12px;
 }
 ::-webkit-scrollbar-track {
   background: #555555;
@@ -2913,8 +2930,14 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 385px;
+  width: 420px;
   position: absolute;
+}
+#app .headerPanel .options .centerOptions .mode label {
+  width: 42px;
+}
+#app .headerPanel .options .centerOptions .search {
+  width: 125px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;

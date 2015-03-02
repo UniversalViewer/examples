@@ -3466,7 +3466,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.35';
+    exports.Version = '1.0.36';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5272,6 +5272,7 @@ define('modules/uv-shared-module/centerPanel',["require", "exports", "./shell", 
             }
 
             this.$content.height(this.$element.height() - titleHeight);
+            this.$content.width(this.$element.width());
         };
         return CenterPanel;
     })(baseView.BaseView);
@@ -5716,7 +5717,11 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
 
             this.$title.ellipsisFill(this.title);
 
-            this.$viewer.height(this.$content.height());
+            this.$viewer.height(this.$content.height() - this.$viewer.verticalMargins());
+            this.$viewer.width(this.$content.width() - this.$viewer.horizontalMargins());
+
+            if (this.currentBounds)
+                this.fitToBounds(this.currentBounds);
 
             this.$spinner.css('top', (this.$content.height() / 2) - (this.$spinner.height() / 2));
             this.$spinner.css('left', (this.$content.width() / 2) - (this.$spinner.width() / 2));
@@ -6325,6 +6330,52 @@ define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports
     exports.SettingsDialogue = SettingsDialogue;
 });
 
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/uv-dialogues-module/externalContentDialogue',["require", "exports", "../uv-shared-module/dialogue"], function(require, exports, dialogue) {
+    var ExternalContentDialogue = (function (_super) {
+        __extends(ExternalContentDialogue, _super);
+        function ExternalContentDialogue($element) {
+            _super.call(this, $element);
+        }
+        ExternalContentDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('externalContentDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(ExternalContentDialogue.SHOW_EXTERNALCONTENT_DIALOGUE, function (e, params) {
+                _this.open();
+                _this.$iframe.prop('src', params.uri);
+            });
+
+            $.subscribe(ExternalContentDialogue.HIDE_EXTERNALCONTENT_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$iframe = $('<iframe></iframe>');
+            this.$content.append(this.$iframe);
+
+            this.$element.hide();
+        };
+
+        ExternalContentDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+
+            this.$iframe.width(this.$content.width());
+            this.$iframe.height(this.$content.height());
+        };
+        ExternalContentDialogue.SHOW_EXTERNALCONTENT_DIALOGUE = 'onShowExternalContentDialogue';
+        ExternalContentDialogue.HIDE_EXTERNALCONTENT_DIALOGUE = 'onHideExternalContentDialogue';
+        return ExternalContentDialogue;
+    })(dialogue.Dialogue);
+    exports.ExternalContentDialogue = ExternalContentDialogue;
+});
+
 define('extensions/uv-seadragon-extension/dependencies',[],function() {
     return {
         'openseadragon': './js/openseadragon'
@@ -6344,7 +6395,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, dependencies) {
+define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, externalContentDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -6508,17 +6559,21 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
 
             this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
 
-            this.$helpDialogue = utils.Utils.createDiv('overlay help');
+            this.$helpDialogue = $('<div class="overlay help"></div>');
             shell.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
 
-            this.$embedDialogue = utils.Utils.createDiv('overlay embed');
+            this.$embedDialogue = $('<div class="overlay embed"></div>');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
 
-            this.$settingsDialogue = utils.Utils.createDiv('overlay settings');
+            this.$settingsDialogue = $('<div class="overlay settings"></div>');
             shell.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new settingsDialogue.SettingsDialogue(this.$settingsDialogue);
+
+            this.$externalContentDialogue = $('<div class="overlay externalContent"></div>');
+            shell.Shell.$overlays.append(this.$externalContentDialogue);
+            this.externalContentDialogue = new externalContentDialogue.ExternalContentDialogue(this.$externalContentDialogue);
 
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
@@ -6654,6 +6709,109 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
         Extension.IMAGE_MODE = "imageMode";
         return Extension;
     })(baseExtension.BaseExtension);
+    exports.Extension = Extension;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/bl-footerpanel-module/footerPanel',["require", "exports", "../uv-shared-module/footerPanel"], function(require, exports, baseFooter) {
+    var FooterPanel = (function (_super) {
+        __extends(FooterPanel, _super);
+        function FooterPanel($element) {
+            _super.call(this, $element);
+        }
+        FooterPanel.prototype.create = function () {
+            this.setConfig('footerPanel');
+
+            _super.prototype.create.call(this);
+
+            this.$downloadButton = $('<a class="download" title="' + this.content.download + '">' + this.content.download + '</a>');
+            this.$options.prepend(this.$downloadButton);
+
+            this.$downloadButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.DOWNLOAD);
+            });
+        };
+
+        FooterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        FooterPanel.DOWNLOAD = 'footer.onDownload';
+        return FooterPanel;
+    })(baseFooter.FooterPanel);
+    exports.FooterPanel = FooterPanel;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/bl-seadragon-extension/extension',["require", "exports", "../uv-seadragon-extension/extension", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/bl-footerpanel-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue"], function(require, exports, coreExtension, shell, header, left, center, right, footer, help, embed, settingsDialogue, externalContentDialogue) {
+    var Extension = (function (_super) {
+        __extends(Extension, _super);
+        function Extension(provider) {
+            _super.call(this, provider);
+        }
+        Extension.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                $.publish(externalContentDialogue.ExternalContentDialogue.SHOW_EXTERNALCONTENT_DIALOGUE, [{
+                        uri: _this.provider.config.modules.externalContentDialogue.options.downloadUri
+                    }]);
+            });
+        };
+
+        Extension.prototype.createModules = function () {
+            this.headerPanel = new header.PagingHeaderPanel(shell.Shell.$headerPanel);
+
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
+            }
+
+            this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
+
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
+            }
+
+            this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
+
+            this.$helpDialogue = $('<div class="overlay help"></div>');
+            shell.Shell.$overlays.append(this.$helpDialogue);
+            this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
+
+            this.$embedDialogue = $('<div class="overlay embed"></div>');
+            shell.Shell.$overlays.append(this.$embedDialogue);
+            this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            shell.Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new settingsDialogue.SettingsDialogue(this.$settingsDialogue);
+
+            this.$externalContentDialogue = $('<div class="overlay externalContent"></div>');
+            shell.Shell.$overlays.append(this.$externalContentDialogue);
+            this.externalContentDialogue = new externalContentDialogue.ExternalContentDialogue(this.$externalContentDialogue);
+
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel.init();
+            }
+
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel.init();
+            }
+        };
+        return Extension;
+    })(coreExtension.Extension);
     exports.Extension = Extension;
 });
 
@@ -7491,6 +7649,25 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+define('extensions/bl-seadragon-extension/provider',["require", "exports", "../uv-seadragon-extension/iiifProvider"], function(require, exports, coreProvider) {
+    var Provider = (function (_super) {
+        __extends(Provider, _super);
+        function Provider(bootstrapper, config, manifest) {
+            _super.call(this, bootstrapper, config, manifest);
+
+            $.extend(true, this.config.options, {});
+        }
+        return Provider;
+    })(coreProvider.Provider);
+    exports.Provider = Provider;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
@@ -8228,8 +8405,8 @@ require([
     'bootstrapper',
     'l10n',
     'sanitize',
-    'extensions/uv-seadragon-extension/extension',
-    'extensions/uv-seadragon-extension/iiifProvider',
+    'extensions/bl-seadragon-extension/extension',
+    'extensions/bl-seadragon-extension/provider',
     'extensions/uv-seadragon-extension/provider',
     'extensions/uv-mediaelement-extension/extension',
     'extensions/uv-mediaelement-extension/provider',
@@ -8249,7 +8426,7 @@ require([
     extensions['seadragon/iiif'] = {
         type: seadragonExtension.Extension,
         provider: seadragonIIIFProvider.Provider,
-        name: 'uv-seadragon-extension'
+        name: 'bl-seadragon-extension'
     };
 
     extensions['video/mp4'] = {
