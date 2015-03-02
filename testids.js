@@ -278,6 +278,12 @@ var ids = [
         path: function() {
             return getCenterPanel().find('.btn.prev');
         }
+    },
+    {
+        id: 'acknowledgements',
+        path: function() {
+            return getCenterPanel().find('.rights');
+        }
     }];
 
 function createTestIds() {
