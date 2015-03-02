@@ -142,6 +142,25 @@ schema = {
                         }
                     }
                 },
+                "externalContentDialogue": {
+                    "id": "externalContentDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "downloadUri": {
+                                    "id": "downloadUri",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
                 "helpDialogue": {
                     "id": "helpDialogue",
                     "type": "object",
