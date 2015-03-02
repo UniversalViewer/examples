@@ -985,6 +985,8 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
                 nope: 'js/base64.min.js',
                 complete: function () {
                     $.getJSON(configPath, function (config) {
+                        config.name = extension.name;
+
                         if (that.configExtension) {
                             config.uri = that.params.config;
 
@@ -3466,7 +3468,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.36';
+    exports.Version = '1.0.37';
 });
 
 var __extends = this.__extends || function (d, b) {
