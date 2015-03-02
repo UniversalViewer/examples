@@ -776,7 +776,7 @@ $(function(){
         if ($('#editPnl').hasClass('show')){
 
             // todo: figure out how to make this work for more than just seadragon extension
-            $.getJSON('/build/uv-1.0.36/js/uv-seadragon-extension.' + locale + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.36/js/bl-seadragon-extension.' + locale + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
