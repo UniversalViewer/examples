@@ -846,6 +846,8 @@ $(function(){
     });
 
     $(document).bind("uv.onCreated", function (event, obj) {
-        setTestIds();
+        setTimeout(function() {
+            setTestIds();
+        }, 1000);
     });
 });

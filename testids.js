@@ -296,7 +296,15 @@ var ids = [
         path: function() {
             return getOverlays().find('.externalContent');
         }
-    }];
+    },
+    {
+        id: 'tile',
+        path: function() {
+            var img = getCenterPanel().find('.openseadragon-canvas img').first();
+            return getCenterPanel().find('.openseadragon-canvas img').first();
+        }
+    }
+    ];
 
 function createTestIds() {
 
