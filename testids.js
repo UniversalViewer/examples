@@ -284,6 +284,18 @@ var ids = [
         path: function() {
             return getCenterPanel().find('.rights');
         }
+    },
+    {
+        id: 'downloadBtn',
+        path: function() {
+            return getFooterPanel().find('.download');
+        }
+    },
+    {
+        id: 'externalContentDialogue',
+        path: function() {
+            return getOverlays().find('.externalContent');
+        }
     }];
 
 function createTestIds() {
