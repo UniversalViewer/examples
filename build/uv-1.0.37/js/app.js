@@ -6767,8 +6767,13 @@ define('extensions/bl-seadragon-extension/extension',["require", "exports", "../
             _super.prototype.create.call(this);
 
             $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                var downloadUri = _this.provider.config.modules.externalContentDialogue.options.downloadUri;
+                var infoUri = _this.provider.getImageUri(_this.provider.getCanvasByIndex(_this.provider.canvasIndex));
+
+                var uri = downloadUri + "?info=" + infoUri;
+
                 $.publish(externalContentDialogue.ExternalContentDialogue.SHOW_EXTERNALCONTENT_DIALOGUE, [{
-                        uri: _this.provider.config.modules.externalContentDialogue.options.downloadUri
+                        uri: uri
                     }]);
             });
         };
