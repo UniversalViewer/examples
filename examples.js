@@ -598,7 +598,7 @@ $(function(){
     var config, editor, locale, localeDefault = 'en-GB';
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.37/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.38/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -618,7 +618,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.37/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.38/js/embed.js"><\/script>');
         }
     }
 
@@ -781,7 +781,7 @@ $(function(){
 
         if ($('#editPnl').hasClass('show')){
 
-            $.getJSON('/build/uv-1.0.37/js/' + config.name + '.' + locale + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.38/js/' + config.name + '.' + locale + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
