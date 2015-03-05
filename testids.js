@@ -300,8 +300,37 @@ var ids = [
     {
         id: 'tile',
         path: function() {
-            var img = getCenterPanel().find('.openseadragon-canvas img').first();
             return getCenterPanel().find('.openseadragon-canvas img').first();
+        }
+    },
+    {
+        id: 'moreInfoItems',
+        path: function() {
+            return getRightPanel().find('.items');
+        }
+    },
+    {
+        id: 'titleTextLink',
+        path: function() {
+            return getRightPanel().find('.title .text a');
+        }
+    },
+    {
+        id: 'titleMore',
+        path: function() {
+            return getRightPanel().find('.title .more');
+        }
+    },
+    {
+        id: 'titleLess',
+        path: function() {
+            return getRightPanel().find('.title .less');
+        }
+    },
+    {
+        id: 'licenseText',
+        path: function() {
+            return getRightPanel().find('.license .text');
         }
     }
     ];
