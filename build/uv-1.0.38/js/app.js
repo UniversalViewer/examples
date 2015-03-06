@@ -5551,7 +5551,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
             var that = this.userData;
 
-            that.viewer.removeHandler('open', that.handler);
+            that.viewer.removeHandler('open', that.openTileSourcesHandler);
 
             var viewingDirection = that.provider.getViewingDirection();
 
@@ -6720,7 +6720,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/bl-footerpanel-module/footerPanel',["require", "exports", "../uv-shared-module/footerPanel"], function(require, exports, baseFooter) {
+define('modules/bl-footerpanel-module/footerPanel',["require", "exports", "../uv-shared-module/footerPanel", "../../utils"], function(require, exports, baseFooter, utils) {
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -6739,6 +6739,10 @@ define('modules/bl-footerpanel-module/footerPanel',["require", "exports", "../uv
 
                 $.publish(FooterPanel.DOWNLOAD);
             });
+
+            if (!utils.Utils.getBool(this.options.downloadEnabled, true)) {
+                this.$downloadButton.hide();
+            }
         };
 
         FooterPanel.prototype.resize = function () {
