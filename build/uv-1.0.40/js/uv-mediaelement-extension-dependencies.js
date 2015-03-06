@@ -1,6 +1,6 @@
 define(function() {
     return {
-        'mediaelement': './js/mediaelement-and-player'
+        'mediaelement': 'mediaelement-and-player'
     };
 
     var Dependencies = (function () {
