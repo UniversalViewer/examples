@@ -560,6 +560,10 @@ schema = {
                                     "id": "embedEnabled",
                                     "type": "boolean"
                                 },
+                                "downloadEnabled": {
+                                    "id": "downloadEnabled",
+                                    "type": "boolean"
+                                },
                                 "minimiseButtons": {
                                     "id": "minimiseButtons",
                                     "type": "boolean"
@@ -580,6 +584,10 @@ schema = {
                                 },
                                 "embed": {
                                     "id": "embed",
+                                    "type": "string"
+                                },
+                                "download": {
+                                    "id": "download",
                                     "type": "string"
                                 }
                             }
