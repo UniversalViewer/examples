@@ -3468,7 +3468,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.40';
+    exports.Version = '1.0.41';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -6906,8 +6906,6 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
                 }
             }
 
-            this.parseManifest();
-
             this.parseStructure();
         };
 
@@ -6928,7 +6926,7 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
 
         BaseProvider.prototype.reloadManifest = function (callback) {
             var _this = this;
-            this.manifest = null;
+            this.rootStructure = null;
             var manifestUri = this.manifestUri;
 
             manifestUri = this.addTimestamp(manifestUri);
