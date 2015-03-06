@@ -541,6 +541,10 @@ schema = {
                                     "id": "embedEnabled",
                                     "type": "boolean"
                                 },
+                                "fullscreenEnabled": {
+                                    "id": "fullscreenEnabled",
+                                    "type": "boolean"
+                                },
                                 "minimiseButtons": {
                                     "id": "minimiseButtons",
                                     "type": "boolean"
