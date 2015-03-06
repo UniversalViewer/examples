@@ -564,6 +564,10 @@ schema = {
                                     "id": "downloadEnabled",
                                     "type": "boolean"
                                 },
+                                "fullscreenEnabled": {
+                                    "id": "fullscreenEnabled",
+                                    "type": "boolean"
+                                },
                                 "minimiseButtons": {
                                     "id": "minimiseButtons",
                                     "type": "boolean"
