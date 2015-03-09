@@ -668,6 +668,10 @@ $(function(){
         buildQuerystring();
     });
 
+    $('#setLocalesBtn').on('click', function(){
+        buildQuerystring();
+    });
+
     $('#jsonp').on('change', function(){
         buildQuerystring();
     });
@@ -681,7 +685,15 @@ $(function(){
 
         var jsonp = $('#jsonp').is(':checked');
         var testids = $('#testids').is(':checked');
-        var locale = $('#locale option:selected').val() || localeDefault;
+
+        var locale;
+
+        if ($('#locales').val()){
+            locale = $('#locales').val();
+        }else {
+            locale = $('#locale option:selected').val() || localeDefault;
+        }
+
         var manifest = $('#manifest option:selected').val();
 
         // clear hash params
