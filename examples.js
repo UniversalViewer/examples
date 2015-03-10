@@ -389,8 +389,15 @@ schema = {
                                 "elideCount": {
                                     "id": "ellideCount",
                                     "type": "integer"
+                                },
+                                "treeEnabled": {
+                                    "id": "treeEnabled",
+                                    "type": "boolean"
+                                },
+                                "thumbsEnabled": {
+                                    "id": "thumbsEnabled",
+                                    "type": "boolean"
                                 }
-
                             }
                         },
                         "content": {
