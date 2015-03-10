@@ -3544,6 +3544,14 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 
             locales.move(index, 0);
 
+            var str = this.serializeLocales(locales);
+
+            var p = new BootstrapParams();
+            p.setLocale(str);
+            this.reload(p);
+        };
+
+        BaseProvider.prototype.serializeLocales = function (locales) {
             var str = '';
 
             for (var i = 0; i < locales.length; i++) {
@@ -3556,9 +3564,11 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
                 }
             }
 
-            var p = new BootstrapParams();
-            p.setLocale(str);
-            this.reload(p);
+            return str;
+        };
+
+        BaseProvider.prototype.getSerializedLocales = function () {
+            return this.serializeLocales(this.locales);
         };
 
         BaseProvider.prototype.getLabel = function (resource) {
@@ -3574,7 +3584,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.38';
+    exports.Version = '1.0.43';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3916,6 +3926,10 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
 
             if (this.options.helpEnabled === false) {
                 this.$helpButton.hide();
+            }
+
+            if (this.options.localeToggleEnabled === false) {
+                this.$localeToggleButton.hide();
             }
 
             this.$searchButton.blur(function () {
@@ -7625,6 +7639,14 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
 
             locales.move(index, 0);
 
+            var str = this.serializeLocales(locales);
+
+            var p = new BootstrapParams();
+            p.setLocale(str);
+            this.reload(p);
+        };
+
+        BaseProvider.prototype.serializeLocales = function (locales) {
             var str = '';
 
             for (var i = 0; i < locales.length; i++) {
@@ -7637,9 +7659,11 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
                 }
             }
 
-            var p = new BootstrapParams();
-            p.setLocale(str);
-            this.reload(p);
+            return str;
+        };
+
+        BaseProvider.prototype.getSerializedLocales = function () {
+            return this.serializeLocales(this.locales);
         };
         return BaseProvider;
     })();
@@ -7704,7 +7728,7 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.locale, configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
+            var script = String.prototype.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
 
             return script;
         };
@@ -7771,7 +7795,7 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
 
             var configUri = this.config.uri || '';
 
-            var script = String.prototype.format(template, this.locale, configUri, this.manifestUri, this.sequenceIndex, assetIndex, zoom, rotation, width, height, esu);
+            var script = String.prototype.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, assetIndex, zoom, rotation, width, height, esu);
 
             return script;
         };
