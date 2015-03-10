@@ -255,6 +255,16 @@ schema = {
                         "collapsed": true
                     },
                     "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "localeToggleEnabled": {
+                                    "id": "localeToggleEnabled",
+                                    "type": "boolean"
+                                }
+                            }
+                        },
                         "content": {
                             "id": "content",
                             "type": "object",
@@ -580,7 +590,7 @@ $(function(){
 
     var testBuild = getQuerystringParameter("build");
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
-    var config, editor, locale, localeDefault = 'en-GB';
+    var config, editor, locales;
 
     if (testBuild){
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.38/js/embed.js"><\/script>');
@@ -665,7 +675,7 @@ $(function(){
     });
 
     $('#locale').on('change', function(){
-        buildQuerystring();
+        $('#locales').val($('#locale option:selected').val());
     });
 
     $('#setLocalesBtn').on('click', function(){
@@ -685,14 +695,7 @@ $(function(){
 
         var jsonp = $('#jsonp').is(':checked');
         var testids = $('#testids').is(':checked');
-
-        var locale;
-
-        if ($('#locales').val()){
-            locale = $('#locales').val();
-        }else {
-            locale = $('#locale option:selected').val() || localeDefault;
-        }
+        var locale = $('#locales').val();
 
         var manifest = $('#manifest option:selected').val();
 
@@ -707,6 +710,21 @@ $(function(){
 
         // reload
         window.location.search = qs;
+    }
+
+    function getDefaultLocale(l) {
+        var parsed = [];
+        var l = l.split(',');
+
+        for (var i = 0; i < l.length; i++) {
+            var v = l[i].split(':');
+            parsed.push({
+                name: v[0].trim(),
+                label: (v[1]) ? v[1].trim() : ""
+            });
+        }
+
+        return parsed[0].name;
     }
 
     function setJSONPEnabled() {
@@ -744,11 +762,13 @@ $(function(){
     }
 
     function setSelectedLocale() {
-        locale = getQuerystringParameter("locale") || localeDefault;
+        locales = getQuerystringParameter("locale") || "en-GB";
 
-        $("#locale").val(locale);
+        $("#locale").val(getDefaultLocale(locales));
 
-        $('.uv').attr('data-locale', locale);
+        $("#locales").val(locales);
+
+        $('.uv').attr('data-locale', locales);
     }
 
     function setTestIds(){
@@ -778,7 +798,7 @@ $(function(){
 
         if ($('#editPnl').hasClass('show')){
 
-            $.getJSON('/build/uv-1.0.38/js/' + config.name + '.' + locale + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.38/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
