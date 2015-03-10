@@ -490,6 +490,24 @@ define('bootstrapParams',["require", "exports"], function(require, exports) {
     var bootstrapParams = (function () {
         function bootstrapParams() {
         }
+        bootstrapParams.prototype.setLocale = function (locale) {
+            this.locales = [];
+            var l = locale.split(',');
+
+            for (var i = 0; i < l.length; i++) {
+                var v = l[i].split(':');
+                this.locales.push({
+                    name: v[0].trim(),
+                    label: (v[1]) ? v[1].trim() : ""
+                });
+            }
+
+            this._locale = this.locales[0].name;
+        };
+
+        bootstrapParams.prototype.getLocale = function () {
+            return this._locale;
+        };
         return bootstrapParams;
     })();
 
@@ -563,6 +581,18 @@ define('utils',["require", "exports"], function(require, exports) {
         };
     }
 
+    Array.prototype.indexOfTest = function (test, fromIndex) {
+        var i = (fromIndex || 0);
+        var j = this.length;
+
+        for (i; i < j; i++) {
+            if (test(this[i]))
+                return i;
+        }
+
+        return -1;
+    };
+
     if (!Array.prototype.clone) {
         Array.prototype.clone = function () {
             return this.slice(0);
@@ -581,6 +611,14 @@ define('utils',["require", "exports"], function(require, exports) {
             return this.indexOf(val) !== -1;
         };
     }
+
+    Array.prototype.move = function (fromIndex, toIndex) {
+        if (fromIndex < 0 || fromIndex > this.length - 1)
+            throw new RangeError("fromIndex out of range");
+        if (toIndex < 0 || toIndex > this.length - 1)
+            throw new RangeError("toIndex out of range");
+        this.splice(toIndex, 0, this.splice(fromIndex, 1)[0]);
+    };
 
     window.browserDetect = {
         init: function () {
@@ -857,7 +895,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             p.jsonp = util.getBool(util.getQuerystringParameter('jsonp'), false);
             p.isHomeDomain = util.getQuerystringParameter('isHomeDomain') === "true";
             p.isReload = util.getQuerystringParameter('isReload') === "true";
-            p.locale = util.getQuerystringParameter('locale');
+            p.setLocale(util.getQuerystringParameter('locale'));
             p.embedDomain = util.getQuerystringParameter('embedDomain');
             p.isOnlyInstance = util.getQuerystringParameter('isOnlyInstance') === "true";
             p.embedScriptUri = util.getQuerystringParameter('embedScriptUri');
@@ -978,7 +1016,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
 
             extension = that.extensions['seadragon/iiif'];
 
-            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.locale + '.config.js' : 'js/' + extension.name + '.' + that.params.locale + '.config.js';
+            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.getLocale() + '.config.js' : 'js/' + extension.name + '.' + that.params.getLocale() + '.config.js';
 
             yepnope({
                 test: window.btoa && window.atob,
@@ -2904,7 +2942,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 
             this.manifestUri = this.bootstrapper.params.manifestUri;
             this.jsonp = this.bootstrapper.params.jsonp;
-            this.locale = this.bootstrapper.params.locale;
+            this.locale = this.bootstrapper.params.getLocale();
             this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
             this.isReload = this.bootstrapper.params.isReload;
             this.embedDomain = this.bootstrapper.params.embedDomain;
@@ -3452,7 +3490,75 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
         };
 
         BaseProvider.prototype.getLocales = function () {
-            return this.config.localisation.locales;
+            if (this.locales)
+                return this.locales;
+
+            var items = this.config.localisation.locales.clone();
+            var sorting = this.bootstrapper.params.locales;
+            var result = [];
+
+            _.each(sorting, function (sortItem) {
+                var match = _.filter(items, function (item) {
+                    return item.name === sortItem.name;
+                });
+                if (match.length) {
+                    var m = match[0];
+                    if (sortItem.label)
+                        m.label = sortItem.label;
+                    m.added = true;
+                    result.push(m);
+                }
+            });
+
+            _.each(items, function (item) {
+                if (!item.added) {
+                    result.push(item);
+                }
+                delete item.added;
+            });
+
+            return this.locales = result;
+        };
+
+        BaseProvider.prototype.getAlternateLocale = function () {
+            var locales = this.getLocales();
+
+            var alternateLocale;
+
+            for (var i = 0; i < locales.length; i++) {
+                var l = locales[i];
+                if (l.name !== this.locale) {
+                    alternateLocale = l;
+                }
+            }
+
+            return l;
+        };
+
+        BaseProvider.prototype.changeLocale = function (locale) {
+            var locales = this.locales.clone();
+
+            var index = locales.indexOfTest(function (l) {
+                return l.name === locale;
+            });
+
+            locales.move(index, 0);
+
+            var str = '';
+
+            for (var i = 0; i < locales.length; i++) {
+                var l = locales[i];
+                if (i > 0)
+                    str += ',';
+                str += l.name;
+                if (l.label) {
+                    str += ':' + l.label;
+                }
+            }
+
+            var p = new BootstrapParams();
+            p.setLocale(str);
+            this.reload(p);
         };
 
         BaseProvider.prototype.getLabel = function (resource) {
@@ -3468,7 +3574,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.37';
+    exports.Version = '1.0.38';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3477,7 +3583,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version", "../../bootstrapParams"], function(require, exports, dialogue, version, BootstrapParams) {
+define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version"], function(require, exports, dialogue, version) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -3529,9 +3635,7 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
             this.$localeDropDown.val(this.provider.locale);
 
             this.$localeDropDown.change(function () {
-                var p = new BootstrapParams();
-                p.locale = _this.$localeDropDown.val();
-                _this.provider.reload(p);
+                _this.provider.changeLocale(_this.$localeDropDown.val());
             });
 
             this.$element.hide();
@@ -3593,6 +3697,9 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
             this.$rightOptions = $('<div class="rightOptions"></div>');
             this.$options.append(this.$rightOptions);
 
+            this.$localeToggleButton = $('<a class="localeToggle"></a>');
+            this.$rightOptions.append(this.$localeToggleButton);
+
             this.$settingsButton = $('<a class="imageBtn settings" tabindex="3"></a>');
             this.$settingsButton.attr('title', this.content.settings);
             this.$rightOptions.append(this.$settingsButton);
@@ -3611,9 +3718,24 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
                 _this.hideMessage();
             });
 
+            this.updateLocaleToggle();
+
+            this.$localeToggleButton.on('click', function () {
+                _this.provider.changeLocale(_this.$localeToggleButton.data('locale'));
+            });
+
             this.$settingsButton.onPressed(function () {
                 $.publish(settings.SettingsDialogue.SHOW_SETTINGS_DIALOGUE);
             });
+        };
+
+        HeaderPanel.prototype.updateLocaleToggle = function () {
+            var alternateLocale = this.provider.getAlternateLocale();
+            var text = alternateLocale.name.split('-')[0].toUpperCase();
+
+            this.$localeToggleButton.data('locale', alternateLocale.name);
+            this.$localeToggleButton.attr('title', alternateLocale.label);
+            this.$localeToggleButton.text(text);
         };
 
         HeaderPanel.prototype.showMessage = function (message) {
@@ -4995,6 +5117,7 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
 
             $.subscribe(extension.Extension.RELOAD_MANIFEST, function () {
                 _this.dataBindThumbsView();
+                _this.dataBindTreeView();
                 _this.dataBindGalleryView();
             });
 
@@ -5062,6 +5185,8 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
         };
 
         TreeViewLeftPanel.prototype.dataBindTreeView = function () {
+            if (!this.treeView)
+                return;
             this.treeView.rootNode = this.provider.getTree();
             this.treeView.dataBind();
         };
@@ -5072,6 +5197,8 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
         };
 
         TreeViewLeftPanel.prototype.dataBindThumbsView = function () {
+            if (!this.thumbsView)
+                return;
             var width, height;
             var viewingDirection = this.provider.getViewingDirection();
 
@@ -5959,6 +6086,10 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
                 this.$embedButton.hide();
             }
 
+            if (!utils.Utils.getBool(this.options.fullscreenEnabled, true)) {
+                this.$fullScreenBtn.hide();
+            }
+
             if (this.provider.isLightbox) {
                 this.$fullScreenBtn.addClass('lightbox');
             }
@@ -6755,7 +6886,7 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
 
             this.manifestUri = this.bootstrapper.params.manifestUri;
             this.jsonp = this.bootstrapper.params.jsonp;
-            this.locale = this.bootstrapper.params.locale;
+            this.locale = this.bootstrapper.params.getLocale();
             this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
             this.isReload = this.bootstrapper.params.isReload;
             this.embedDomain = this.bootstrapper.params.embedDomain;
@@ -6783,8 +6914,6 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
                 }
             }
 
-            this.parseManifest();
-
             this.parseStructure();
         };
 
@@ -6805,6 +6934,7 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
 
         BaseProvider.prototype.reloadManifest = function (callback) {
             var _this = this;
+            this.rootStructure = null;
             var manifestUri = this.manifestUri;
 
             manifestUri = this.addTimestamp(manifestUri);
@@ -7441,7 +7571,75 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
         };
 
         BaseProvider.prototype.getLocales = function () {
-            return this.config.localisation.locales;
+            if (this.locales)
+                return this.locales;
+
+            var items = this.config.localisation.locales.clone();
+            var sorting = this.bootstrapper.params.locales;
+            var result = [];
+
+            _.each(sorting, function (sortItem) {
+                var match = _.filter(items, function (item) {
+                    return item.name === sortItem.name;
+                });
+                if (match.length) {
+                    var m = match[0];
+                    if (sortItem.label)
+                        m.label = sortItem.label;
+                    m.added = true;
+                    result.push(m);
+                }
+            });
+
+            _.each(items, function (item) {
+                if (!item.added) {
+                    result.push(item);
+                }
+                delete item.added;
+            });
+
+            return this.locales = result;
+        };
+
+        BaseProvider.prototype.getAlternateLocale = function () {
+            var locales = this.getLocales();
+
+            var alternateLocale;
+
+            for (var i = 0; i < locales.length; i++) {
+                var l = locales[i];
+                if (l.name !== this.locale) {
+                    alternateLocale = l;
+                }
+            }
+
+            return l;
+        };
+
+        BaseProvider.prototype.changeLocale = function (locale) {
+            var locales = this.locales.clone();
+
+            var index = locales.indexOfTest(function (l) {
+                return l.name === locale;
+            });
+
+            locales.move(index, 0);
+
+            var str = '';
+
+            for (var i = 0; i < locales.length; i++) {
+                var l = locales[i];
+                if (i > 0)
+                    str += ',';
+                str += l.name;
+                if (l.label) {
+                    str += ':' + l.label;
+                }
+            }
+
+            var p = new BootstrapParams();
+            p.setLocale(str);
+            this.reload(p);
         };
         return BaseProvider;
     })();
