@@ -321,6 +321,14 @@ schema = {
                                 "settings": {
                                     "id": "settings",
                                     "type": "string"
+                                },
+                                "oneUp": {
+                                    "id": "oneUp",
+                                    "type": "string"
+                                },
+                                "twoUp": {
+                                    "id": "twoUp",
+                                    "type": "string"
                                 }
                             },
                             "required": ["page"]
