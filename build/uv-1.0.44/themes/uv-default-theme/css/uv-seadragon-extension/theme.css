@@ -309,6 +309,17 @@
 #app .headerPanel .centerOptions.modeOptionsDisabled {
   width: 280px;
 }
+#app .headerPanel .rightOptions .pagingToggle {
+  margin: -1px 4px 0 0;
+}
+#app .headerPanel .rightOptions .pagingToggle.one-up {
+  background-image: url('../../img/uv-pagingheaderpanel-module/one_up.png');
+  background-repeat: no-repeat;
+}
+#app .headerPanel .rightOptions .pagingToggle.two-up {
+  background-image: url('../../img/uv-pagingheaderpanel-module/two_up.png');
+  background-repeat: no-repeat;
+}
 #app .headerPanel .rightOptions .localeToggle {
   color: #ffffff;
   text-decoration: none;
@@ -1481,14 +1492,8 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 420px;
+  width: 385px;
   position: absolute;
-}
-#app .headerPanel .options .centerOptions .mode label {
-  width: 42px;
-}
-#app .headerPanel .options .centerOptions .search {
-  width: 125px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;

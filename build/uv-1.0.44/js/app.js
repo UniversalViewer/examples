@@ -3584,7 +3584,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.43';
+    exports.Version = '1.0.44';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3661,6 +3661,10 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
             $.publish(SettingsDialogue.UPDATE_SETTINGS, [settings]);
         };
 
+        SettingsDialogue.prototype.open = function () {
+            _super.prototype.open.call(this);
+        };
+
         SettingsDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -3690,6 +3694,10 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
 
             _super.prototype.create.call(this);
 
+            $.subscribe(baseExtension.BaseExtension.SETTINGS_CHANGED, function (e, message) {
+                _this.updatePagingToggle();
+            });
+
             $.subscribe(baseExtension.BaseExtension.SHOW_MESSAGE, function (e, message) {
                 _this.showMessage(message);
             });
@@ -3706,6 +3714,9 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
 
             this.$rightOptions = $('<div class="rightOptions"></div>');
             this.$options.append(this.$rightOptions);
+
+            this.$pagingToggleButton = $('<a class="imageBtn pagingToggle"></a>');
+            this.$rightOptions.append(this.$pagingToggleButton);
 
             this.$localeToggleButton = $('<a class="localeToggle"></a>');
             this.$rightOptions.append(this.$localeToggleButton);
@@ -3728,7 +3739,15 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
                 _this.hideMessage();
             });
 
+            this.updatePagingToggle();
+
             this.updateLocaleToggle();
+
+            this.$pagingToggleButton.on('click', function () {
+                var settings = _this.getSettings();
+                settings.pagingEnabled = !settings.pagingEnabled;
+                _this.updateSettings(settings);
+            });
 
             this.$localeToggleButton.on('click', function () {
                 _this.provider.changeLocale(_this.$localeToggleButton.data('locale'));
@@ -3737,6 +3756,28 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
             this.$settingsButton.onPressed(function () {
                 $.publish(settings.SettingsDialogue.SHOW_SETTINGS_DIALOGUE);
             });
+
+            if (this.options.localeToggleEnabled === false) {
+                this.$localeToggleButton.hide();
+            }
+
+            if (this.options.pagingToggleEnabled === false) {
+                this.$pagingToggleButton.hide();
+            }
+        };
+
+        HeaderPanel.prototype.updatePagingToggle = function () {
+            var settings = this.provider.getSettings();
+
+            if (settings.pagingEnabled) {
+                this.$pagingToggleButton.removeClass('two-up');
+                this.$pagingToggleButton.addClass('one-up');
+                this.$pagingToggleButton.prop('title', this.content.oneUp);
+            } else {
+                this.$pagingToggleButton.removeClass('one-up');
+                this.$pagingToggleButton.addClass('two-up');
+                this.$pagingToggleButton.prop('title', this.content.twoUp);
+            }
         };
 
         HeaderPanel.prototype.updateLocaleToggle = function () {
@@ -3762,6 +3803,16 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
             this.extension.resize();
         };
 
+        HeaderPanel.prototype.getSettings = function () {
+            return this.provider.getSettings();
+        };
+
+        HeaderPanel.prototype.updateSettings = function (settings) {
+            this.provider.updateSettings(settings);
+
+            $.publish(HeaderPanel.UPDATE_SETTINGS, [settings]);
+        };
+
         HeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
 
@@ -3780,7 +3831,20 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
                 $text.width(this.$element.width() - this.$messageBox.find('.close').outerWidth(true));
                 $text.ellipsisFill(this.message);
             }
+
+            if (this.extension.width() < 610) {
+                if (this.options.pagingToggleEnabled)
+                    this.$pagingToggleButton.hide();
+                if (this.options.localeToggleEnabled)
+                    this.$localeToggleButton.hide();
+            } else {
+                if (this.options.pagingToggleEnabled)
+                    this.$pagingToggleButton.show();
+                if (this.options.localeToggleEnabled)
+                    this.$localeToggleButton.show();
+            }
         };
+        HeaderPanel.UPDATE_SETTINGS = 'header.onUpdateSettings';
         return HeaderPanel;
     })(baseView.BaseView);
     exports.HeaderPanel = HeaderPanel;
@@ -3926,10 +3990,6 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
 
             if (this.options.helpEnabled === false) {
                 this.$helpButton.hide();
-            }
-
-            if (this.options.localeToggleEnabled === false) {
-                this.$localeToggleButton.hide();
             }
 
             this.$searchButton.blur(function () {
@@ -6461,15 +6521,23 @@ define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports
 
                 _this.updateSettings(settings);
             });
+        };
+
+        SettingsDialogue.prototype.open = function () {
+            _super.prototype.open.call(this);
 
             var settings = this.getSettings();
 
             if (settings.pagingEnabled) {
                 this.$pagingEnabledCheckbox.attr("checked", "checked");
+            } else {
+                this.$pagingEnabledCheckbox.removeAttr("checked");
             }
 
             if (settings.preserveViewport) {
                 this.$preserveViewportCheckbox.attr("checked", "checked");
+            } else {
+                this.$preserveViewportCheckbox.removeAttr("checked");
             }
         };
         return SettingsDialogue;
@@ -6600,11 +6668,12 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 _this.viewPage(index);
             });
 
+            $.subscribe(header.PagingHeaderPanel.UPDATE_SETTINGS, function (e) {
+                _this.updateSettings();
+            });
+
             $.subscribe(settingsDialogue.SettingsDialogue.UPDATE_SETTINGS, function (e) {
-                _this.provider.reloadManifest(function () {
-                    $.publish(baseExtension.BaseExtension.RELOAD_MANIFEST);
-                    _this.viewPage(_this.provider.canvasIndex, true);
-                });
+                _this.updateSettings();
             });
 
             $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
@@ -6729,6 +6798,15 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             if (this.isRightPanelEnabled()) {
                 this.rightPanel.init();
             }
+        };
+
+        Extension.prototype.updateSettings = function () {
+            var _this = this;
+            this.provider.reloadManifest(function () {
+                $.publish(baseExtension.BaseExtension.RELOAD_MANIFEST);
+                _this.viewPage(_this.provider.canvasIndex, true);
+                $.publish(Extension.SETTINGS_CHANGED);
+            });
         };
 
         Extension.prototype.setDefaultFocus = function () {
