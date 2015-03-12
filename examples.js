@@ -424,8 +424,24 @@ schema = {
                                     "id": "thumbnails",
                                     "type": "string"
                                 },
-                                "contents": {
-                                    "id": "contents",
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                },
+                                "expand": {
+                                    "id": "expand",
+                                    "type": "string"
+                                },
+                                "expandFull": {
+                                    "id": "expandFull",
+                                    "type": "string"
+                                },
+                                "collapse": {
+                                    "id": "collapse",
+                                    "type": "string"
+                                },
+                                "collapseFull": {
+                                    "id": "collapseFull",
                                     "type": "string"
                                 }
                             }
@@ -547,8 +563,24 @@ schema = {
                                     "id": "noData",
                                     "type": "string"
                                 },
-                                "moreInformation": {
-                                    "id": "moreInformation",
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                },
+                                "expand": {
+                                    "id": "expand",
+                                    "type": "string"
+                                },
+                                "expandFull": {
+                                    "id": "expandFull",
+                                    "type": "string"
+                                },
+                                "collapse": {
+                                    "id": "collapse",
+                                    "type": "string"
+                                },
+                                "collapseFull": {
+                                    "id": "collapseFull",
                                     "type": "string"
                                 }
                             }
@@ -612,7 +644,7 @@ $(function(){
     var config, editor, locales;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.44/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.45/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -632,7 +664,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.44/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.45/js/embed.js"><\/script>');
         }
     }
 
@@ -817,7 +849,7 @@ $(function(){
 
         if ($('#editPnl').hasClass('show')){
 
-            $.getJSON('/build/uv-1.0.44/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.45/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
                 editor.setValue(config);
             });
         }

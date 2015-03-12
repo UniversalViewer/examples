@@ -3584,7 +3584,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.44';
+    exports.Version = '1.0.45';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4182,21 +4182,26 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
             this.$element.append(this.$top);
 
             this.$title = $('<div class="title"></div>');
+            this.$title.prop('title', this.content.title);
             this.$top.append(this.$title);
 
             this.$expandFullButton = $('<a class="expandFullButton"></a>');
+            this.$expandFullButton.prop('title', this.content.expandFull);
             this.$top.append(this.$expandFullButton);
 
             this.$collapseButton = $('<div class="collapseButton"></div>');
+            this.$collapseButton.prop('title', this.content.collapse);
             this.$top.append(this.$collapseButton);
 
             this.$closed = $('<div class="closed"></div>');
             this.$element.append(this.$closed);
 
             this.$expandButton = $('<a class="expandButton"></a>');
+            this.$expandButton.prop('title', this.content.expand);
             this.$closed.append(this.$expandButton);
 
             this.$closedTitle = $('<a class="title"></a>');
+            this.$closedTitle.prop('title', this.content.title);
             this.$closed.append(this.$closedTitle);
 
             this.$main = $('<div class="main"></div>');
@@ -5209,9 +5214,11 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             this.$main.append(this.$tabs);
 
             this.$treeButton = $('<a class="index tab first">' + this.content.index + '</a>');
+            this.$treeButton.prop('title', this.content.index);
             this.$tabs.append(this.$treeButton);
 
             this.$thumbsButton = $('<a class="thumbs tab">' + this.content.thumbnails + '</a>');
+            this.$thumbsButton.prop('title', this.content.thumbnails);
             this.$tabs.append(this.$thumbsButton);
 
             this.$tabsContent = $('<div class="tabsContent"></div>');
@@ -5248,8 +5255,8 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             this.$collapseButton.attr('tabindex', '7');
             this.$expandFullButton.attr('tabindex', '8');
 
-            this.$title.text(this.content.contents);
-            this.$closedTitle.text(this.content.contents);
+            this.$title.text(this.content.title);
+            this.$closedTitle.text(this.content.title);
         };
 
         TreeViewLeftPanel.prototype.createTreeView = function () {
@@ -6040,8 +6047,8 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
             this.$expandButton.attr('tabindex', '4');
             this.$collapseButton.attr('tabindex', '4');
 
-            this.$title.text(this.content.moreInformation);
-            this.$closedTitle.text(this.content.moreInformation);
+            this.$title.text(this.content.title);
+            this.$closedTitle.text(this.content.title);
         };
 
         MoreInfoRightPanel.prototype.toggleFinish = function () {

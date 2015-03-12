@@ -163,6 +163,9 @@
 #app .overlay.externalContent .bottom {
   background: none;
 }
+#app .rightPanel .top .title {
+  text-transform: uppercase;
+}
 #app .rightPanel .content {
   padding: 10px 10px 10px 10px;
 }
@@ -490,6 +493,9 @@
 }
 #app .centerPanel .content .rights .main .attribution {
   overflow: hidden;
+}
+#app .leftPanel .top .title {
+  text-transform: uppercase;
 }
 #app .leftPanel .tabs {
   height: 25px;
@@ -1492,14 +1498,8 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 420px;
+  width: 385px;
   position: absolute;
-}
-#app .headerPanel .options .centerOptions .mode label {
-  width: 42px;
-}
-#app .headerPanel .options .centerOptions .search {
-  width: 125px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;

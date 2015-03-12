@@ -163,6 +163,9 @@
 #app .overlay.externalContent .bottom {
   background: none;
 }
+#app .leftPanel .top .title {
+  text-transform: uppercase;
+}
 #app .leftPanel .tabs {
   height: 25px;
   border-bottom: 1px solid #373737;
@@ -388,6 +391,9 @@
 #app.browser-Firefox .leftPanel .views .galleryView .header input[type="range"] {
   margin-top: 9px;
   overflow: hidden;
+}
+#app .rightPanel .top .title {
+  text-transform: uppercase;
 }
 #app .rightPanel .content {
   padding: 10px 10px 10px 10px;
