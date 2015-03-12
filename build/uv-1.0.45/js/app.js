@@ -3648,6 +3648,10 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
                 _this.provider.changeLocale(_this.$localeDropDown.val());
             });
 
+            if (this.provider.getLocales().length < 2) {
+                this.$locale.hide();
+            }
+
             this.$element.hide();
         };
 
@@ -3781,12 +3785,25 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
         };
 
         HeaderPanel.prototype.updateLocaleToggle = function () {
+            if (!this.localeToggleIsVisible()) {
+                this.$localeToggleButton.hide();
+                return;
+            }
+
             var alternateLocale = this.provider.getAlternateLocale();
             var text = alternateLocale.name.split('-')[0].toUpperCase();
 
             this.$localeToggleButton.data('locale', alternateLocale.name);
             this.$localeToggleButton.attr('title', alternateLocale.label);
             this.$localeToggleButton.text(text);
+        };
+
+        HeaderPanel.prototype.localeToggleIsVisible = function () {
+            return this.provider.getLocales().length > 1 && this.options.localeToggleEnabled;
+        };
+
+        HeaderPanel.prototype.pagingToggleIsVisible = function () {
+            return this.options.pagingToggleEnabled;
         };
 
         HeaderPanel.prototype.showMessage = function (message) {
@@ -3833,14 +3850,14 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
             }
 
             if (this.extension.width() < 610) {
-                if (this.options.pagingToggleEnabled)
+                if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.hide();
-                if (this.options.localeToggleEnabled)
+                if (this.localeToggleIsVisible())
                     this.$localeToggleButton.hide();
             } else {
-                if (this.options.pagingToggleEnabled)
+                if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.show();
-                if (this.options.localeToggleEnabled)
+                if (this.localeToggleIsVisible())
                     this.$localeToggleButton.show();
             }
         };
