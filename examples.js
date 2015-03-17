@@ -615,7 +615,6 @@ schema = {
                                     "id": "embedEnabled",
                                     "type": "boolean"
                                 },
-                                ,
                                 "downloadEnabled": {
                                     "id": "downloadEnabled",
                                     "type": "boolean"
