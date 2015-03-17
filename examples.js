@@ -644,6 +644,10 @@ schema = {
                                 "embed": {
                                     "id": "embed",
                                     "type": "string"
+                                },
+                                "download": {
+                                    "id": "download",
+                                    "type": "string"
                                 }
                             }
                         }
