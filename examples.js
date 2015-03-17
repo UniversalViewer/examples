@@ -615,6 +615,11 @@ schema = {
                                     "id": "embedEnabled",
                                     "type": "boolean"
                                 },
+                                ,
+                                "downloadEnabled": {
+                                    "id": "downloadEnabled",
+                                    "type": "boolean"
+                                },
                                 "fullscreenEnabled": {
                                     "id": "fullscreenEnabled",
                                     "type": "boolean"
