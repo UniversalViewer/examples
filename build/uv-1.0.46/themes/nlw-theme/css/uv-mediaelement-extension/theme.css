@@ -2306,6 +2306,26 @@ input[type=range]:focus::-ms-fill-upper {
   color: #ffffff;
   text-decoration: none;
 }
+#app .footerPanel .options a.download {
+  background-image: url('../../img/download.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 30px;
+  padding-right: 10px;
+  line-height: 22px;
+}
+#app .footerPanel .options a.download:link,
+#app .footerPanel .options a.download:visited,
+#app .footerPanel .options a.download:hover,
+#app .footerPanel .options a.download:active {
+  color: #ffffff;
+  text-decoration: none;
+}
 #app .footerPanel .options a.fullScreen {
   background-image: url('../../img/fullscreen.png');
   background-repeat: no-repeat;

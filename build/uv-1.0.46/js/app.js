@@ -6171,12 +6171,21 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             this.$options.append(this.$embedButton);
             this.$embedButton.attr('tabindex', '6');
 
+            this.$downloadButton = $('<a class="download" title="' + this.content.download + '">' + this.content.download + '</a>');
+            this.$options.prepend(this.$downloadButton);
+
             this.$fullScreenBtn = $('<a href="#" class="fullScreen" title="' + this.content.fullScreen + '">' + this.content.fullScreen + '</a>');
             this.$options.append(this.$fullScreenBtn);
             this.$fullScreenBtn.attr('tabindex', '5');
 
             this.$embedButton.onPressed(function () {
                 $.publish(FooterPanel.EMBED);
+            });
+
+            this.$downloadButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.DOWNLOAD);
             });
 
             this.$fullScreenBtn.on('click', function (e) {
@@ -6186,6 +6195,10 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
 
             if (!utils.Utils.getBool(this.options.embedEnabled, true)) {
                 this.$embedButton.hide();
+            }
+
+            if (!utils.Utils.getBool(this.options.downloadEnabled, true)) {
+                this.$downloadButton.hide();
             }
 
             if (!utils.Utils.getBool(this.options.fullscreenEnabled, true)) {
@@ -6217,6 +6230,7 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             _super.prototype.resize.call(this);
         };
         FooterPanel.EMBED = 'footer.onEmbed';
+        FooterPanel.DOWNLOAD = 'footer.onDownload';
         return FooterPanel;
     })(baseView.BaseView);
     exports.FooterPanel = FooterPanel;
@@ -6764,6 +6778,11 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
 
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
+            });
+
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                var c = _this.provider.getCanvasByIndex(_this.provider.canvasIndex);
+                c = c['@id'];
             });
 
             var deps = overrideDependencies || dependencies;
