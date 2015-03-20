@@ -116,7 +116,7 @@
   padding: 0 0 30px 8px;
 }
 #app .overlay.download .middle ol.options {
-  margin: 10px 0 0 0;
+  padding: 10px 0 0 0;
 }
 #app .overlay.help {
   width: 470px;
@@ -1907,10 +1907,8 @@ input[type=range]:focus::-ms-fill-upper {
   list-style-position: inside;
   list-style-type: none;
   margin: 0;
-  padding: 0;
 }
 #app .overlay .middle .content ol.options li {
-  background: #eeeeee;
   margin: 2px 0 0 0;
   padding: 4px;
 }
@@ -1919,10 +1917,10 @@ input[type=range]:focus::-ms-fill-upper {
   padding: 0;
   width: auto;
   height: auto;
-  display: inline-block;
+  display: inline;
 }
 #app .overlay .middle .content ol.options li label {
-  display: inline-block;
+  display: inline;
   margin: 0 0 0 5px;
   padding: 0;
   float: none;
