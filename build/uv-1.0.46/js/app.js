@@ -2809,7 +2809,7 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                         $.publish(BaseExtension.TOGGLE_FULLSCREEN, message.eventObject);
                         break;
                 }
-            }, 100);
+            }, 1000);
         };
 
         BaseExtension.prototype.getParam = function (key) {
