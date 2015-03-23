@@ -261,6 +261,63 @@ schema = {
                         }
                     }
                 },
+                "downloadDialogue": {
+                    "id": "downloadDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "confinedImageSize": {
+                                    "id": "confinedImageSize",
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                },
+                                "currentViewAsJpg": {
+                                    "id": "currentViewAsJpg",
+                                    "type": "string"
+                                },
+                                "wholeImageHighResAsJpg": {
+                                    "id": "wholeImageHighResAsJpg",
+                                    "type": "string"
+                                },
+                                "wholeImageLowResAsJpg": {
+                                    "id": "wholeImageLowResAsJpg",
+                                    "type": "string"
+                                },
+                                "entireDocumentAsPdf": {
+                                    "id": "entireDocumentAsPdf",
+                                    "type": "string"
+                                },
+                                "entireFileAsOriginal": {
+                                    "id": "entireFileAsOriginal",
+                                    "type": "string"
+                                },
+                                "preview": {
+                                    "id": "preview",
+                                    "type": "string"
+                                },
+                                "download": {
+                                    "id": "download",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
                 "pagingHeaderPanel": {
                     "id": "pagingHeaderPanel",
                     "type": "object",
