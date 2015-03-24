@@ -3037,6 +3037,16 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
             return this.getRootStructure().sectionType.toLowerCase();
         };
 
+        BaseProvider.prototype.getManifestation = function (type) {
+            var service = this.sequence.service;
+
+            if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
+                if (service.format.endsWith("pdf")) {
+                    return service["@id"];
+                }
+            }
+        };
+
         BaseProvider.prototype.getSequenceType = function () {
             return this.sequence.assetType.replace('/', '-');
         };
@@ -3590,7 +3600,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.46';
+    exports.Version = '1.0.47';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -6553,17 +6563,21 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             this.$downloadOptions = $('<ol class="options"></ol>');
             this.$content.append(this.$downloadOptions);
 
-            this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions"></input><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
+            this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions" /><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$currentViewAsJpgButton);
             this.$currentViewAsJpgButton.hide();
 
-            this.$wholeImageHighResAsJpgButton = $('<li><input id="wholeImageHighResAsJpg" type="radio" name="downloadOptions"></input><label for="wholeImageHighResAsJpg">' + this.content.wholeImageHighResAsJpg + '</label></li>');
+            this.$wholeImageHighResAsJpgButton = $('<li><input id="wholeImageHighResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageHighResAsJpg">' + this.content.wholeImageHighResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageHighResAsJpgButton);
             this.$wholeImageHighResAsJpgButton.hide();
 
-            this.$wholeImageLowResAsJpgButton = $('<li><input id="wholeImageLowResAsJpg" type="radio" name="downloadOptions"></input><label for="wholeImageLowResAsJpg">' + this.content.wholeImageLowResAsJpg + '</label></li>');
+            this.$wholeImageLowResAsJpgButton = $('<li><input id="wholeImageLowResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageLowResAsJpg">' + this.content.wholeImageLowResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageLowResAsJpgButton);
             this.$wholeImageLowResAsJpgButton.hide();
+
+            this.$entireDocumentAsPdfButton = $('<li><input id="entireDocumentAsPdf" type="radio" name="downloadOptions" /><label for="entireDocumentAsPdf">' + this.content.entireDocumentAsPdf + '</label></li>');
+            this.$downloadOptions.append(this.$entireDocumentAsPdfButton);
+            this.$entireDocumentAsPdfButton.hide();
 
             this.$buttonsContainer = $('<div class="buttons"></div>');
             this.$content.append(this.$buttonsContainer);
@@ -6595,6 +6609,10 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                         window.open(that.provider.getConfinedImageUri(canvas, that.options.confinedImageSize));
                         $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageLowResAsJpg']);
                         break;
+                    case 'entireDocumentAsPdf':
+                        window.open(that.provider.getManifestation("pdf"));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['entireDocumentAsPdf']);
+                        break;
                 }
 
                 _this.close();
@@ -6621,6 +6639,10 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                 this.$wholeImageLowResAsJpgButton.show();
             }
 
+            if (this.isDownloadOptionAvailable("entireDocumentAsPdf")) {
+                this.$entireDocumentAsPdfButton.show();
+            }
+
             this.$downloadOptions.find('input:first').prop("checked", true);
 
             this.resize();
@@ -6635,6 +6657,13 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
         };
 
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            if (option === "entireDocumentAsPdf") {
+                if (this.provider.getManifestation("pdf")) {
+                    return true;
+                }
+
+                return false;
+            }
             return true;
         };
 
@@ -7275,6 +7304,16 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
 
         BaseProvider.prototype.getManifestType = function () {
             return 'monograph';
+        };
+
+        BaseProvider.prototype.getManifestation = function (type) {
+            var service = this.sequence.service;
+
+            if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
+                if (service.format.endsWith("pdf")) {
+                    return service["@id"];
+                }
+            }
         };
 
         BaseProvider.prototype.getSequenceType = function () {
