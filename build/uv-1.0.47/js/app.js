@@ -2803,11 +2803,13 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
         };
 
         BaseExtension.prototype.handleParentFrameEvent = function (message) {
-            switch (message.eventName) {
-                case BaseExtension.TOGGLE_FULLSCREEN:
-                    $.publish(BaseExtension.TOGGLE_FULLSCREEN, message.eventObject);
-                    break;
-            }
+            setTimeout(function () {
+                switch (message.eventName) {
+                    case BaseExtension.TOGGLE_FULLSCREEN:
+                        $.publish(BaseExtension.TOGGLE_FULLSCREEN, message.eventObject);
+                        break;
+                }
+            }, 1000);
         };
 
         BaseExtension.prototype.getParam = function (key) {
@@ -3035,6 +3037,16 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
             return this.getRootStructure().sectionType.toLowerCase();
         };
 
+        BaseProvider.prototype.getManifestation = function (type) {
+            var service = this.sequence.service;
+
+            if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
+                if (service.format.endsWith("pdf")) {
+                    return service["@id"];
+                }
+            }
+        };
+
         BaseProvider.prototype.getSequenceType = function () {
             return this.sequence.assetType.replace('/', '-');
         };
@@ -3061,6 +3073,10 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 
         BaseProvider.prototype.getSeeAlso = function () {
             return this.sequence.seeAlso;
+        };
+
+        BaseProvider.prototype.isCanvasIndexOutOfRange = function (canvasIndex) {
+            return canvasIndex > this.getTotalCanvases() - 1;
         };
 
         BaseProvider.prototype.isFirstCanvas = function (canvasIndex) {
@@ -3584,7 +3600,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
 });
 
 define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.45';
+    exports.Version = '1.0.47';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3647,6 +3663,10 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
             this.$localeDropDown.change(function () {
                 _this.provider.changeLocale(_this.$localeDropDown.val());
             });
+
+            if (this.provider.getLocales().length < 2) {
+                this.$locale.hide();
+            }
 
             this.$element.hide();
         };
@@ -3781,12 +3801,25 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
         };
 
         HeaderPanel.prototype.updateLocaleToggle = function () {
+            if (!this.localeToggleIsVisible()) {
+                this.$localeToggleButton.hide();
+                return;
+            }
+
             var alternateLocale = this.provider.getAlternateLocale();
             var text = alternateLocale.name.split('-')[0].toUpperCase();
 
             this.$localeToggleButton.data('locale', alternateLocale.name);
             this.$localeToggleButton.attr('title', alternateLocale.label);
             this.$localeToggleButton.text(text);
+        };
+
+        HeaderPanel.prototype.localeToggleIsVisible = function () {
+            return this.provider.getLocales().length > 1 && this.options.localeToggleEnabled;
+        };
+
+        HeaderPanel.prototype.pagingToggleIsVisible = function () {
+            return this.options.pagingToggleEnabled;
         };
 
         HeaderPanel.prototype.showMessage = function (message) {
@@ -3833,14 +3866,14 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
             }
 
             if (this.extension.width() < 610) {
-                if (this.options.pagingToggleEnabled)
+                if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.hide();
-                if (this.options.localeToggleEnabled)
+                if (this.localeToggleIsVisible())
                     this.$localeToggleButton.hide();
             } else {
-                if (this.options.pagingToggleEnabled)
+                if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.show();
-                if (this.options.localeToggleEnabled)
+                if (this.localeToggleIsVisible())
                     this.$localeToggleButton.show();
             }
         };
@@ -6143,6 +6176,10 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
                 _this.toggleFullScreen();
             });
 
+            $.subscribe(baseExtension.BaseExtension.SETTINGS_CHANGED, function () {
+                _this.updateDownloadButton();
+            });
+
             this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
 
@@ -6150,12 +6187,21 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             this.$options.append(this.$embedButton);
             this.$embedButton.attr('tabindex', '6');
 
+            this.$downloadButton = $('<a class="download" title="' + this.content.download + '">' + this.content.download + '</a>');
+            this.$options.prepend(this.$downloadButton);
+
             this.$fullScreenBtn = $('<a href="#" class="fullScreen" title="' + this.content.fullScreen + '">' + this.content.fullScreen + '</a>');
             this.$options.append(this.$fullScreenBtn);
             this.$fullScreenBtn.attr('tabindex', '5');
 
             this.$embedButton.onPressed(function () {
                 $.publish(FooterPanel.EMBED);
+            });
+
+            this.$downloadButton.on('click', function (e) {
+                e.preventDefault();
+
+                $.publish(FooterPanel.DOWNLOAD);
             });
 
             this.$fullScreenBtn.on('click', function (e) {
@@ -6166,6 +6212,8 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             if (!utils.Utils.getBool(this.options.embedEnabled, true)) {
                 this.$embedButton.hide();
             }
+
+            this.updateDownloadButton();
 
             if (!utils.Utils.getBool(this.options.fullscreenEnabled, true)) {
                 this.$fullScreenBtn.hide();
@@ -6192,10 +6240,22 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             }
         };
 
+        FooterPanel.prototype.updateDownloadButton = function () {
+            var configEnabled = utils.Utils.getBool(this.options.downloadEnabled, true);
+            var settings = this.provider.getSettings();
+
+            if (configEnabled && !settings.pagingEnabled) {
+                this.$downloadButton.show();
+            } else {
+                this.$downloadButton.hide();
+            }
+        };
+
         FooterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
         FooterPanel.EMBED = 'footer.onEmbed';
+        FooterPanel.DOWNLOAD = 'footer.onDownload';
         return FooterPanel;
     })(baseView.BaseView);
     exports.FooterPanel = FooterPanel;
@@ -6475,6 +6535,157 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports", "../../modules/uv-shared-module/dialogue"], function(require, exports, dialogue) {
+    var DownloadDialogue = (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            _super.call(this, $element);
+            this.isOpened = false;
+        }
+        DownloadDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('downloadDialogue');
+
+            _super.prototype.create.call(this);
+
+            $.subscribe(DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE, function (e, params) {
+                _this.open();
+                _this.opened();
+            });
+
+            $.subscribe(DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE, function (e) {
+                _this.close();
+            });
+
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+
+            this.$downloadOptions = $('<ol class="options"></ol>');
+            this.$content.append(this.$downloadOptions);
+
+            this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions" /><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
+            this.$downloadOptions.append(this.$currentViewAsJpgButton);
+            this.$currentViewAsJpgButton.hide();
+
+            this.$wholeImageHighResAsJpgButton = $('<li><input id="wholeImageHighResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageHighResAsJpg">' + this.content.wholeImageHighResAsJpg + '</label></li>');
+            this.$downloadOptions.append(this.$wholeImageHighResAsJpgButton);
+            this.$wholeImageHighResAsJpgButton.hide();
+
+            this.$wholeImageLowResAsJpgButton = $('<li><input id="wholeImageLowResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageLowResAsJpg">' + this.content.wholeImageLowResAsJpg + '</label></li>');
+            this.$downloadOptions.append(this.$wholeImageLowResAsJpgButton);
+            this.$wholeImageLowResAsJpgButton.hide();
+
+            this.$entireDocumentAsPdfButton = $('<li><input id="entireDocumentAsPdf" type="radio" name="downloadOptions" /><label for="entireDocumentAsPdf">' + this.content.entireDocumentAsPdf + '</label></li>');
+            this.$downloadOptions.append(this.$entireDocumentAsPdfButton);
+            this.$entireDocumentAsPdfButton.hide();
+
+            this.$buttonsContainer = $('<div class="buttons"></div>');
+            this.$content.append(this.$buttonsContainer);
+
+            this.$downloadButton = $('<a class="btn btn-primary" href="#">' + this.content.download + '</a>');
+            this.$buttonsContainer.append(this.$downloadButton);
+
+            var that = this;
+
+            this.$downloadButton.on('click', function (e) {
+                e.preventDefault();
+
+                var selectedOption = that.getSelectedOption();
+
+                var id = selectedOption.attr('id');
+                var canvas = _this.provider.getCurrentCanvas();
+
+                switch (id) {
+                    case 'currentViewAsJpg':
+                        var viewer = that.extension.getViewer();
+                        window.open(that.provider.getCroppedImageUri(canvas, viewer, true));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['currentViewAsJpg']);
+                        break;
+                    case 'wholeImageHighResAsJpg':
+                        window.open(that.provider.getConfinedImageUri(canvas, canvas.width, canvas.height));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageHighResAsJpg']);
+                        break;
+                    case 'wholeImageLowResAsJpg':
+                        window.open(that.provider.getConfinedImageUri(canvas, that.options.confinedImageSize));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageLowResAsJpg']);
+                        break;
+                    case 'entireDocumentAsPdf':
+                        window.open(that.provider.getManifestation("pdf"));
+                        $.publish(DownloadDialogue.DOWNLOAD, ['entireDocumentAsPdf']);
+                        break;
+                }
+
+                _this.close();
+            });
+
+            this.$element.hide();
+        };
+
+        DownloadDialogue.prototype.opened = function () {
+            if (this.isOpened)
+                return;
+
+            this.isOpened = true;
+
+            if (this.isDownloadOptionAvailable("currentViewAsJpg")) {
+                this.$currentViewAsJpgButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("wholeImageHighResAsJpg")) {
+                this.$wholeImageHighResAsJpgButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("wholeImageLowResAsJpg")) {
+                this.$wholeImageLowResAsJpgButton.show();
+            }
+
+            if (this.isDownloadOptionAvailable("entireDocumentAsPdf")) {
+                this.$entireDocumentAsPdfButton.show();
+            }
+
+            this.$downloadOptions.find('input:first').prop("checked", true);
+
+            this.resize();
+        };
+
+        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
+            return fileUri.split('.').pop();
+        };
+
+        DownloadDialogue.prototype.getSelectedOption = function () {
+            return this.$downloadOptions.find("input:checked");
+        };
+
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            if (option === "entireDocumentAsPdf") {
+                if (this.provider.getManifestation("pdf")) {
+                    return true;
+                }
+
+                return false;
+            }
+            return true;
+        };
+
+        DownloadDialogue.prototype.resize = function () {
+            this.$element.css({
+                'top': this.extension.height() - this.$element.outerHeight(true)
+            });
+        };
+        DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE = 'onShowDownloadDialogue';
+        DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE = 'onHideDownloadDialogue';
+        DownloadDialogue.DOWNLOAD = 'onDownload';
+        return DownloadDialogue;
+    })(dialogue.Dialogue);
+    exports.DownloadDialogue = DownloadDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/settingsDialogue"], function(require, exports, baseSettings) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
@@ -6617,7 +6828,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "../../extensions/uv-seadragon-extension/embedDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, settingsDialogue, externalContentDialogue, dependencies) {
+define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "./downloadDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, download, settingsDialogue, externalContentDialogue, dependencies) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
@@ -6726,6 +6937,13 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 if (_this.centerPanel) {
                     _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
                 }
+
+                var canvas = _this.provider.getCurrentCanvas();
+
+                _this.triggerSocket(Extension.CURRENT_VIEW_URI, {
+                    "cropUri": that.provider.getCroppedImageUri(canvas, _this.getViewer(), true),
+                    "fullUri": that.provider.getConfinedImageUri(canvas, canvas.width, canvas.height)
+                });
             });
 
             $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
@@ -6745,6 +6963,10 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
             });
 
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                $.publish(download.DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE);
+            });
+
             var deps = overrideDependencies || dependencies;
             require(_.values(deps), function () {
                 that.createModules();
@@ -6755,6 +6977,11 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
 
                 if (!that.provider.isReload) {
                     canvasIndex = parseInt(that.getParam(1 /* canvasIndex */)) || that.provider.getStartCanvasIndex();
+                }
+
+                if (that.provider.isCanvasIndexOutOfRange(canvasIndex)) {
+                    that.showDialogue(that.provider.config.content.canvasIndexOutOfRange);
+                    return;
                 }
 
                 that.viewPage(canvasIndex || that.provider.getStartCanvasIndex());
@@ -6789,6 +7016,10 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             this.$embedDialogue = $('<div class="overlay embed"></div>');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
+
+            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            shell.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new download.DownloadDialogue(this.$downloadDialogue);
 
             this.$settingsDialogue = $('<div class="overlay settings"></div>');
             shell.Shell.$overlays.append(this.$settingsDialogue);
@@ -6860,6 +7091,10 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 $.publish(Extension.OPEN_MEDIA, [uri]);
                 _this.setParam(1 /* canvasIndex */, canvasIndex);
             });
+        };
+
+        Extension.prototype.getViewer = function () {
+            return this.centerPanel.viewer;
         };
 
         Extension.prototype.getMode = function () {
@@ -6937,6 +7172,8 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 this.viewStructure(data.path);
             }
         };
+        Extension.CURRENT_VIEW_URI = 'onCurrentViewUri';
+
         Extension.PAGE_MODE = "pageMode";
         Extension.IMAGE_MODE = "imageMode";
         return Extension;
@@ -7069,6 +7306,16 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
             return 'monograph';
         };
 
+        BaseProvider.prototype.getManifestation = function (type) {
+            var service = this.sequence.service;
+
+            if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
+                if (service.format.endsWith("pdf")) {
+                    return service["@id"];
+                }
+            }
+        };
+
         BaseProvider.prototype.getSequenceType = function () {
             return 'seadragon-iiif';
         };
@@ -7105,6 +7352,10 @@ define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../..
             }
 
             return '-';
+        };
+
+        BaseProvider.prototype.isCanvasIndexOutOfRange = function (canvasIndex) {
+            return canvasIndex > this.getTotalCanvases() - 1;
         };
 
         BaseProvider.prototype.isFirstCanvas = function (canvasIndex) {
@@ -7768,13 +8019,102 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
             _super.call(this, bootstrapper, config, manifest);
 
             this.config.options = $.extend(true, this.options, {
-                imageUriTemplate: "{0}{1}"
+                iiifImageUriTemplate: '{0}/{1}/{2}/{3}/{4}/{5}.jpg'
             }, config.options);
         }
-        Provider.prototype.getImageUri = function (canvas, imageBaseUri, imageUriTemplate) {
-            var baseUri = imageBaseUri ? imageBaseUri : this.options.imageBaseUri || "";
-            var template = imageUriTemplate ? imageUriTemplate : this.options.imageUriTemplate;
+        Provider.prototype.getCroppedImageUri = function (canvas, viewer) {
+            var bounds = viewer.viewport.getBounds(true);
+            var containerSize = viewer.viewport.getContainerSize();
+            var zoom = viewer.viewport.getZoom(true);
 
+            var top = Math.max(0, bounds.y);
+            var left = Math.max(0, bounds.x);
+
+            top = 1 / (canvas.height / parseInt(String(canvas.width * top)));
+
+            var viewportWidthPx = containerSize.x;
+            var viewportHeightPx = containerSize.y;
+
+            var imageWidthPx = parseInt(String(viewportWidthPx * zoom));
+            var ratio = canvas.width / imageWidthPx;
+            var imageHeightPx = parseInt(String(canvas.height / ratio));
+
+            var viewportLeftPx = parseInt(String(left * imageWidthPx));
+            var viewportTopPx = parseInt(String(top * imageHeightPx));
+
+            var rect1Left = 0;
+            var rect1Right = imageWidthPx;
+            var rect1Top = 0;
+            var rect1Bottom = imageHeightPx;
+
+            var rect2Left = viewportLeftPx;
+            var rect2Right = viewportLeftPx + viewportWidthPx;
+            var rect2Top = viewportTopPx;
+            var rect2Bottom = viewportTopPx + viewportHeightPx;
+
+            var cropWidth = Math.max(0, Math.min(rect1Right, rect2Right) - Math.max(rect1Left, rect2Left));
+            var cropHeight = Math.max(0, Math.min(rect1Bottom, rect2Bottom) - Math.max(rect1Top, rect2Top));
+
+            var ratio2 = canvas.width / imageWidthPx;
+
+            var widthPx = parseInt(String(cropWidth * ratio2));
+            var heightPx = parseInt(String(cropHeight * ratio2));
+
+            var topPx = parseInt(String(canvas.height * top));
+            var leftPx = parseInt(String(canvas.width * left));
+
+            if (topPx < 0)
+                topPx = 0;
+            if (leftPx < 0)
+                leftPx = 0;
+
+            var baseUri = this.getImageBaseUri(canvas);
+            var id = this.getImageId(canvas);
+            var region = leftPx + "," + topPx + "," + widthPx + "," + heightPx;
+            var size = cropWidth + ',' + cropHeight;
+            var rotation = 0;
+            var quality = 'default';
+            var uri = String.prototype.format(this.config.options.iiifImageUriTemplate, baseUri, id, region, size, rotation, quality);
+
+            return uri;
+        };
+
+        Provider.prototype.getConfinedImageUri = function (canvas, width, height) {
+            var baseUri = this.getImageBaseUri(canvas);
+
+            var id = this.getImageId(canvas);
+            var region = 'full';
+            var size;
+
+            if (typeof (height) != "undefined") {
+                size = width + ',' + height;
+            } else {
+                size = width + ",";
+            }
+
+            var rotation = 0;
+            var quality = 'default';
+            var uri = String.prototype.format(this.config.options.iiifImageUriTemplate, baseUri, id, region, size, rotation, quality);
+            return uri;
+        };
+
+        Provider.prototype.getImageId = function (canvas) {
+            var id = this.getImageUri(canvas);
+            id = id.substr(0, id.lastIndexOf("/"));
+            return id.substr(id.lastIndexOf("/") + 1);
+        };
+
+        Provider.prototype.getImageBaseUri = function (canvas) {
+            if (this.config.options.iiifImageBaseUri) {
+                return this.config.options.iiifImageBaseUri;
+            }
+            var uri = this.getImageUri(canvas);
+            uri = uri.substr(0, uri.lastIndexOf("/"));
+            uri = uri.substr(0, uri.lastIndexOf("/"));
+            return uri;
+        };
+
+        Provider.prototype.getImageUri = function (canvas) {
             var iiifUri;
 
             if (canvas.resources) {
@@ -7801,9 +8141,7 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
                 }
             }
 
-            var uri = String.prototype.format(template, baseUri, iiifUri);
-
-            return uri;
+            return iiifUri;
         };
 
         Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, rotation, embedTemplate) {
@@ -7843,50 +8181,6 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
                     return tileSources;
                 }
             }
-        };
-        return Provider;
-    })(baseProvider.BaseProvider);
-    exports.Provider = Provider;
-});
-
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
-    var Provider = (function (_super) {
-        __extends(Provider, _super);
-        function Provider(bootstrapper, config, manifest) {
-            _super.call(this, bootstrapper, config, manifest);
-
-            this.config.options = $.extend(true, this.options, {
-                dziUriTemplate: "{0}{1}"
-            }, config.options);
-        }
-        Provider.prototype.getImageUri = function (asset, dziBaseUri, dziUriTemplate) {
-            var baseUri = dziBaseUri ? dziBaseUri : this.options.dziBaseUri || "";
-            var template = dziUriTemplate ? dziUriTemplate : this.options.dziUriTemplate;
-            var uri = String.prototype.format(template, baseUri, asset.dziUri);
-
-            return uri;
-        };
-
-        Provider.prototype.getEmbedScript = function (assetIndex, zoom, width, height, rotation, embedTemplate) {
-            var esu = this.options.embedScriptUri || this.embedScriptUri;
-
-            var template = this.options.embedTemplate || embedTemplate;
-
-            var configUri = this.config.uri || '';
-
-            var script = String.prototype.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, assetIndex, zoom, rotation, width, height, esu);
-
-            return script;
-        };
-
-        Provider.prototype.getTileSources = function () {
-            return null;
         };
         return Provider;
     })(baseProvider.BaseProvider);
@@ -8594,50 +8888,19 @@ require([
     'sanitize',
     'extensions/uv-seadragon-extension/extension',
     'extensions/uv-seadragon-extension/iiifProvider',
-    'extensions/uv-seadragon-extension/provider',
     'extensions/uv-mediaelement-extension/extension',
     'extensions/uv-mediaelement-extension/provider',
     'extensions/uv-pdf-extension/extension',
     'extensions/uv-pdf-extension/provider'
-], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonIIIFProvider, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
+], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonIIIFProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
 
     var extensions = {};
-
-    extensions['seadragon/dzi'] = {
-        type: seadragonExtension.Extension,
-        provider: seadragonProvider.Provider,
-        name: 'uv-seadragon-extension'
-    };
 
     extensions['seadragon/iiif'] = {
         type: seadragonExtension.Extension,
         provider: seadragonIIIFProvider.Provider,
         name: 'uv-seadragon-extension'
-    };
-
-    extensions['video/mp4'] = {
-        type: mediaelementExtension.Extension,
-        provider: mediaelementProvider.Provider,
-        name: 'uv-mediaelement-extension'
-    };
-
-    extensions['video/multiple-sources'] = {
-        type: mediaelementExtension.Extension,
-        provider: mediaelementProvider.Provider,
-        name: 'uv-mediaelement-extension'
-    };
-
-    extensions['audio/mp3'] = {
-        type: mediaelementExtension.Extension,
-        provider: mediaelementProvider.Provider,
-        name: 'uv-mediaelement-extension'
-    };
-
-    extensions['application/pdf'] = {
-        type: pdfExtension.Extension,
-        provider: pdfProvider.Provider,
-        name: 'uv-pdf-extension'
     };
 
     var bs = new bootstrapper(extensions);

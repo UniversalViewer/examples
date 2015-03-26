@@ -116,7 +116,7 @@
   padding: 0 0 30px 8px;
 }
 #app .overlay.download .middle ol.options {
-  margin: 10px 0 0 0;
+  padding: 10px 0 0 0;
 }
 #app .overlay.help {
   width: 470px;
@@ -1719,6 +1719,26 @@ input[type=range]:focus::-ms-fill-upper {
   color: #ffffff;
   text-decoration: none;
 }
+#app .footerPanel .options a.download {
+  background-image: url('../../img/download.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 30px;
+  padding-right: 10px;
+  line-height: 22px;
+}
+#app .footerPanel .options a.download:link,
+#app .footerPanel .options a.download:visited,
+#app .footerPanel .options a.download:hover,
+#app .footerPanel .options a.download:active {
+  color: #ffffff;
+  text-decoration: none;
+}
 #app .footerPanel .options a.fullScreen {
   background-image: url('../../img/fullscreen.png');
   background-repeat: no-repeat;
@@ -1887,10 +1907,8 @@ input[type=range]:focus::-ms-fill-upper {
   list-style-position: inside;
   list-style-type: none;
   margin: 0;
-  padding: 0;
 }
 #app .overlay .middle .content ol.options li {
-  background: #eeeeee;
   margin: 2px 0 0 0;
   padding: 4px;
 }
@@ -1899,10 +1917,10 @@ input[type=range]:focus::-ms-fill-upper {
   padding: 0;
   width: auto;
   height: auto;
-  display: inline-block;
+  display: inline;
 }
 #app .overlay .middle .content ol.options li label {
-  display: inline-block;
+  display: inline;
   margin: 0 0 0 5px;
   padding: 0;
   float: none;

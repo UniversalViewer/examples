@@ -88,6 +88,19 @@ schema = {
                 }
             }
         },
+        "content": {
+            "id": "content",
+            "type": "object",
+            "options": {
+                "collapsed": true
+            },
+            "properties": {
+                "canvasIndexOutOfRange": {
+                    "id": "canvasIndexOutOfRange",
+                    "type": "string"
+                }
+            }
+        },
         "modules": {
             "id": "modules",
             "type": "object",
@@ -242,6 +255,63 @@ schema = {
                                 },
                                 "customSize": {
                                     "id": "customSize",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "downloadDialogue": {
+                    "id": "downloadDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "confinedImageSize": {
+                                    "id": "confinedImageSize",
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                },
+                                "currentViewAsJpg": {
+                                    "id": "currentViewAsJpg",
+                                    "type": "string"
+                                },
+                                "wholeImageHighResAsJpg": {
+                                    "id": "wholeImageHighResAsJpg",
+                                    "type": "string"
+                                },
+                                "wholeImageLowResAsJpg": {
+                                    "id": "wholeImageLowResAsJpg",
+                                    "type": "string"
+                                },
+                                "entireDocumentAsPdf": {
+                                    "id": "entireDocumentAsPdf",
+                                    "type": "string"
+                                },
+                                "entireFileAsOriginal": {
+                                    "id": "entireFileAsOriginal",
+                                    "type": "string"
+                                },
+                                "preview": {
+                                    "id": "preview",
+                                    "type": "string"
+                                },
+                                "download": {
+                                    "id": "download",
                                     "type": "string"
                                 }
                             }
@@ -602,6 +672,10 @@ schema = {
                                     "id": "embedEnabled",
                                     "type": "boolean"
                                 },
+                                "downloadEnabled": {
+                                    "id": "downloadEnabled",
+                                    "type": "boolean"
+                                },
                                 "fullscreenEnabled": {
                                     "id": "fullscreenEnabled",
                                     "type": "boolean"
@@ -626,6 +700,10 @@ schema = {
                                 },
                                 "embed": {
                                     "id": "embed",
+                                    "type": "string"
+                                },
+                                "download": {
+                                    "id": "download",
                                     "type": "string"
                                 }
                             }
@@ -679,6 +757,7 @@ $(function(){
 
     createEditor();
     setSelectedLocale();
+    setDefaultToFullScreen();
     loadViewer();
 
     function loadViewer() {
@@ -744,11 +823,16 @@ $(function(){
         buildQuerystring();
     });
 
+    $('#defaultToFullScreen').on('change', function(){
+        buildQuerystring();
+    });
+
     function buildQuerystring() {
         $('footer').hide();
 
         var jsonp = $('#jsonp').is(':checked');
         var testids = $('#testids').is(':checked');
+        var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
         var locale = $('#locales').val();
 
         var manifest = $('#manifest option:selected').val();
@@ -759,6 +843,7 @@ $(function(){
         var qs = document.location.search.replace('?', '');
         qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
         qs = updateURIKeyValuePair(qs, "testids", testids);
+        qs = updateURIKeyValuePair(qs, "defaultToFullScreen", defaultToFullScreen);
         qs = updateURIKeyValuePair(qs, "locale", locale);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
 
@@ -773,8 +858,8 @@ $(function(){
         for (var i = 0; i < l.length; i++) {
             var v = l[i].split(':');
             parsed.push({
-                name: v[0].trim(),
-                label: (v[1]) ? v[1].trim() : ""
+                name: v[0],
+                label: (v[1]) ? v[1] : ""
             });
         }
 
@@ -838,6 +923,20 @@ $(function(){
         }
     }
 
+    function setDefaultToFullScreen(){
+        var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
+
+        var qs = getQuerystringParameter("defaultToFullScreen");
+
+        if (qs === 'true') {
+            $('.uv').attr('data-fullscreen', true);
+            $('#defaultToFullScreen').attr('checked', 'true');
+        } else {
+            $('.uv').removeAttr('data-fullscreen');
+            $('#defaultToFullScreen').removeAttr('checked');
+        }
+    }
+
     $('#editBtn').on('click', function(e) {
         e.preventDefault();
 
@@ -852,7 +951,7 @@ $(function(){
 
         if ($('#editPnl').hasClass('show')){
 
-            $.getJSON('/build/uv-1.0.45/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.47/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
@@ -918,5 +1017,6 @@ $(function(){
 
     $(document).bind("uv.onCreated", function (event, obj) {
         setTestIds();
+        showLightbox();
     });
 });
