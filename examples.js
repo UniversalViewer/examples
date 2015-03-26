@@ -855,8 +855,8 @@ $(function(){
         for (var i = 0; i < l.length; i++) {
             var v = l[i].split(':');
             parsed.push({
-                name: v[0].trim(),
-                label: (v[1]) ? v[1].trim() : ""
+                name: v[0],
+                label: (v[1]) ? v[1] : ""
             });
         }
 
