@@ -486,14 +486,13 @@ define("yepnope", function(){});
 })( this, this.document );
 define("yepnopecss", ["yepnope"], function(){});
 
-define('bootstrapParams',["require", "exports"], function(require, exports) {
+define('bootstrapParams',["require", "exports"], function (require, exports) {
     var bootstrapParams = (function () {
         function bootstrapParams() {
         }
         bootstrapParams.prototype.setLocale = function (locale) {
             this.locales = [];
             var l = locale.split(',');
-
             for (var i = 0; i < l.length; i++) {
                 var v = l[i].split(':');
                 this.locales.push({
@@ -501,31 +500,25 @@ define('bootstrapParams',["require", "exports"], function(require, exports) {
                     label: (v[1]) ? v[1].trim() : ""
                 });
             }
-
             this._locale = this.locales[0].name;
         };
-
         bootstrapParams.prototype.getLocale = function () {
             return this._locale;
         };
         return bootstrapParams;
     })();
-
-    
     return bootstrapParams;
 });
 
-define('utils',["require", "exports"], function(require, exports) {
+define('utils',["require", "exports"], function (require, exports) {
     String.prototype.format = function () {
         var s = arguments[0];
         for (var i = 0; i < arguments.length - 1; i++) {
             var reg = new RegExp("\\{" + i + "\\}", "gm");
             s = s.replace(reg, arguments[i + 1]);
         }
-
         return s;
     };
-
     String.prototype.startsWith = function (str) {
         return this.indexOf(str) == 0;
     };
@@ -566,12 +559,10 @@ define('utils',["require", "exports"], function(require, exports) {
             return '__' + ('000' + c.toString(16)).slice(-4);
         });
     };
-
     if (!Array.prototype.indexOf) {
         Array.prototype.indexOf = function (searchElement, fromIndex) {
             var i = (fromIndex || 0);
             var j = this.length;
-
             for (i; i < j; i++) {
                 if (this[i] === searchElement) {
                     return i;
@@ -580,38 +571,31 @@ define('utils',["require", "exports"], function(require, exports) {
             return -1;
         };
     }
-
     Array.prototype.indexOfTest = function (test, fromIndex) {
         var i = (fromIndex || 0);
         var j = this.length;
-
         for (i; i < j; i++) {
             if (test(this[i]))
                 return i;
         }
-
         return -1;
     };
-
     if (!Array.prototype.clone) {
         Array.prototype.clone = function () {
             return this.slice(0);
         };
     }
-
     if (!Array.prototype.last) {
         Array.prototype.last = function () {
             return this[this.length - 1];
         };
     }
     ;
-
     if (!Array.prototype.contains) {
         Array.prototype.contains = function (val) {
             return this.indexOf(val) !== -1;
         };
     }
-
     Array.prototype.move = function (fromIndex, toIndex) {
         if (fromIndex < 0 || fromIndex > this.length - 1)
             throw new RangeError("fromIndex out of range");
@@ -619,12 +603,10 @@ define('utils',["require", "exports"], function(require, exports) {
             throw new RangeError("toIndex out of range");
         this.splice(toIndex, 0, this.splice(fromIndex, 1)[0]);
     };
-
     window.browserDetect = {
         init: function () {
             this.browser = this.searchString(this.dataBrowser) || "Other";
             this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
-
             if (this.browser == 'Explorer' && this.version == '7' && navigator.userAgent.match(/Trident/i)) {
                 this.version = this.searchVersionIE();
             }
@@ -633,7 +615,6 @@ define('utils',["require", "exports"], function(require, exports) {
             for (var i = 0; i < data.length; i++) {
                 var dataString = data[i].string;
                 this.versionSearchString = data[i].subString;
-
                 if (dataString.indexOf(data[i].subString) != -1) {
                     return data[i].identity;
                 }
@@ -647,9 +628,10 @@ define('utils',["require", "exports"], function(require, exports) {
         },
         searchVersionIE: function () {
             var ua = navigator.userAgent.toString().toLowerCase(), match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ['', null, -1], ver;
-            try  {
+            try {
                 ver = match[2].split('.')[0];
-            } catch (err) {
+            }
+            catch (err) {
                 ver = 'unknown';
             }
             return ver;
@@ -660,12 +642,10 @@ define('utils',["require", "exports"], function(require, exports) {
             { string: navigator.userAgent, subString: "Trident", identity: "Explorer" },
             { string: navigator.userAgent, subString: "Firefox", identity: "Firefox" },
             { string: navigator.userAgent, subString: "Safari", identity: "Safari" },
-            { string: navigator.userAgent, subString: "Opera", identity: "Opera" }
+            { string: navigator.userAgent, subString: "Opera", identity: "Opera" },
         ]
     };
-
     window.browserDetect.init();
-
     var Size = (function () {
         function Size(width, height) {
             this.width = width;
@@ -674,7 +654,6 @@ define('utils',["require", "exports"], function(require, exports) {
         return Size;
     })();
     exports.Size = Size;
-
     var Utils = (function () {
         function Utils() {
         }
@@ -685,17 +664,16 @@ define('utils',["require", "exports"], function(require, exports) {
             trimmedText = trimmedText.substr(0, Math.min(trimmedText.length, trimmedText.lastIndexOf(" ")));
             return trimmedText + "&hellip;";
         };
-
         Utils.htmlDecode = function (encoded) {
             var div = document.createElement('div');
             div.innerHTML = encoded;
             return div.firstChild.nodeValue;
         };
-
         Utils.numericalInput = function (event) {
             if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || (event.keyCode == 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39)) {
                 return true;
-            } else {
+            }
+            else {
                 if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
                     event.preventDefault();
                     return false;
@@ -703,11 +681,9 @@ define('utils',["require", "exports"], function(require, exports) {
                 return true;
             }
         };
-
         Utils.getTimeStamp = function () {
             return new Date().getTime();
         };
-
         Utils.getHashParameter = function (key, doc) {
             if (!doc)
                 doc = window.document;
@@ -715,91 +691,69 @@ define('utils',["require", "exports"], function(require, exports) {
             var match = regex.exec(doc.location.hash);
             return (match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : null);
         };
-
         Utils.setHashParameter = function (key, value, doc) {
             if (!doc)
                 doc = window.document;
-
             var kvp = this.updateURIKeyValuePair(doc.location.hash.replace('#?', ''), key, value);
-
             var newHash = "#?" + kvp;
-
             var url = doc.URL;
-
             var index = url.indexOf('#');
-
             if (index != -1) {
                 url = url.substr(0, url.indexOf('#'));
             }
-
             doc.location.replace(url + newHash);
         };
-
-        Utils.getQuerystringParameter = function (key, doc) {
-            if (!doc)
-                doc = window.document;
+        Utils.getQuerystringParameter = function (key, w) {
+            if (!w)
+                w = window;
+            return this.getQuerystringParameterFromString(key, w.location.search);
+        };
+        Utils.getQuerystringParameterFromString = function (key, querystring) {
             key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
-            var match = regex.exec(window.location.search);
+            var match = regex.exec(querystring);
             return (match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : null);
         };
-
         Utils.setQuerystringParameter = function (key, value, doc) {
             if (!doc)
                 doc = window.document;
-
             var kvp = this.updateURIKeyValuePair(doc.location.hash.replace('#?', ''), key, value);
-
             window.location.search = kvp;
         };
-
         Utils.updateURIKeyValuePair = function (uriSegment, key, value) {
             key = encodeURIComponent(key);
             value = encodeURIComponent(value);
-
             var kvp = uriSegment.split('&');
-
             if (kvp[0] == "")
                 kvp.shift();
-
             var i = kvp.length;
             var x;
-
             while (i--) {
                 x = kvp[i].split('=');
-
                 if (x[0] == key) {
                     x[1] = value;
                     kvp[i] = x.join('=');
                     break;
                 }
             }
-
             if (i < 0) {
                 kvp[kvp.length] = [key, value].join('=');
             }
-
             return kvp.join('&');
         };
-
         Utils.clamp = function (value, min, max) {
             return Math.min(Math.max(value, min), max);
         };
-
         Utils.roundNumber = function (num, dec) {
             return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
         };
-
         Utils.normalise = function (num, min, max) {
             return (num - min) / (max - min);
         };
-
         Utils.fitRect = function (width1, height1, width2, height2) {
             var ratio1 = height1 / width1;
             var ratio2 = height2 / width2;
-
             var width, height, scale;
-
             if (ratio1 < ratio2) {
                 scale = width2 / width1;
                 width = width1 * scale;
@@ -810,38 +764,29 @@ define('utils',["require", "exports"], function(require, exports) {
                 width = width1 * scale;
                 height = height1 * scale;
             }
-
             return new Size(Math.floor(width), Math.floor(height));
         };
-
         Utils.getBool = function (val, defaultVal) {
             if (val === null || typeof (val) === 'undefined') {
                 return defaultVal;
             }
-
             return val;
         };
-
         Utils.getUrlParts = function (url) {
             var a = document.createElement('a');
             a.href = url;
             return a;
         };
-
         Utils.convertToRelativeUrl = function (url) {
             var parts = this.getUrlParts(url);
-            var relUri = parts.pathname + parts.search;
-
+            var relUri = parts.pathname + parts.searchWithin;
             if (!relUri.startsWith("/")) {
                 relUri = "/" + relUri;
             }
-
             return relUri;
         };
-
         Utils.debounce = function (fn, debounceDuration) {
             debounceDuration = debounceDuration || 100;
-
             return function () {
                 if (!fn.debouncing) {
                     var args = Array.prototype.slice.apply(arguments);
@@ -852,26 +797,20 @@ define('utils',["require", "exports"], function(require, exports) {
                 fn.debounceTimeout = setTimeout(function () {
                     fn.debouncing = false;
                 }, debounceDuration);
-
                 return fn.lastReturnVal;
             };
         };
-
         Utils.createElement = function (tagName, id, className) {
             var $elem = $(document.createElement(tagName));
-
             if (id)
                 $elem.attr('id', id);
             if (className)
                 $elem.attr('class', className);
-
             return $elem;
         };
-
         Utils.createDiv = function (className) {
             return Utils.createElement('div', null, className);
         };
-
         Utils.loadCss = function (uri) {
             $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', uri));
         };
@@ -880,16 +819,14 @@ define('utils',["require", "exports"], function(require, exports) {
     exports.Utils = Utils;
 });
 
-define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], function(require, exports, BootstrapParams, utils) {
+define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], function (require, exports, BootstrapParams, utils) {
     var util = utils.Utils;
-
     var BootStrapper = (function () {
         function BootStrapper(extensions) {
             this.extensions = extensions;
         }
         BootStrapper.prototype.getBootstrapParams = function () {
             var p = new BootstrapParams();
-
             p.manifestUri = util.getQuerystringParameter('manifestUri');
             p.config = util.getQuerystringParameter('config');
             p.jsonp = util.getBool(util.getQuerystringParameter('jsonp'), false);
@@ -901,55 +838,46 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             p.embedScriptUri = util.getQuerystringParameter('embedScriptUri');
             p.domain = util.getQuerystringParameter('domain');
             p.isLightbox = util.getQuerystringParameter('isLightbox') === "true";
-
             return p;
         };
-
         BootStrapper.prototype.bootStrap = function (params) {
             var that = this;
-
             that.params = this.getBootstrapParams();
-
             if (params) {
                 that.params = $.extend(true, that.params, params);
             }
-
             $('#app').empty();
-
             $('#app').addClass('loading');
-
             $('link[type*="text/css"]').remove();
-
             jQuery.support.cors = true;
-
             if (that.params.config) {
                 if (that.params.config.toLowerCase() === "sessionstorage") {
                     var config = sessionStorage.getItem("uv-config");
                     that.configExtension = JSON.parse(config);
                     that.loadManifest();
-                } else {
+                }
+                else {
                     $.getJSON(that.params.config, function (configExtension) {
                         that.configExtension = configExtension;
                         that.loadManifest();
                     });
                 }
-            } else {
+            }
+            else {
                 that.loadManifest();
             }
         };
-
         BootStrapper.prototype.corsEnabled = function () {
             return Modernizr.cors && !this.params.jsonp;
         };
-
         BootStrapper.prototype.loadManifest = function () {
             var that = this;
-
             if (this.corsEnabled()) {
                 $.getJSON(that.params.manifestUri, function (manifest) {
                     that.parseManifest(manifest);
                 });
-            } else {
+            }
+            else {
                 var settings = {
                     url: that.params.manifestUri,
                     type: 'GET',
@@ -957,82 +885,64 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
                     jsonp: 'callback',
                     jsonpCallback: 'manifestCallback'
                 };
-
                 $.ajax(settings);
-
                 window.manifestCallback = function (manifest) {
                     that.parseManifest(manifest);
                 };
             }
         };
-
         BootStrapper.prototype.parseManifest = function (manifest) {
             this.manifest = manifest;
-
             if (this.params.isHomeDomain && !this.params.isReload) {
                 this.sequenceIndex = parseInt(util.getHashParameter("si", parent.document));
             }
-
             if (!this.sequenceIndex) {
                 this.sequenceIndex = parseInt(util.getQuerystringParameter("si")) || 0;
             }
-
             this.sequences = this.manifest.sequences;
-
             if (!this.sequences) {
                 this.notFound();
             }
-
             this.loadSequence();
         };
-
         BootStrapper.prototype.loadSequence = function () {
             var that = this;
-
             if (that.sequences[that.sequenceIndex].canvases) {
                 that.sequence = that.sequences[that.sequenceIndex];
                 that.loadDependencies();
-            } else {
+            }
+            else {
                 var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
-
                 $.getJSON(sequenceUri, function (sequenceData) {
                     that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
                     that.loadDependencies();
                 });
             }
         };
-
         BootStrapper.prototype.notFound = function () {
-            try  {
+            try {
                 parent.$(parent.document).trigger("onNotFound");
                 return;
-            } catch (e) {
+            }
+            catch (e) {
             }
         };
-
         BootStrapper.prototype.loadDependencies = function () {
             var that = this;
             var extension;
-
             extension = that.extensions['seadragon/iiif'];
-
             var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.getLocale() + '.config.js' : 'js/' + extension.name + '.' + that.params.getLocale() + '.config.js';
-
             yepnope({
                 test: window.btoa && window.atob,
                 nope: 'js/base64.min.js',
                 complete: function () {
                     $.getJSON(configPath, function (config) {
                         config.name = extension.name;
-
                         if (that.configExtension) {
                             config.uri = that.params.config;
-
                             $.extend(true, config, that.configExtension);
                         }
-
                         var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/theme/' + config.options.theme + '.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
-
                         yepnope.injectCss(cssPath, function () {
                             that.createExtension(extension, config);
                         });
@@ -1040,16 +950,12 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
                 }
             });
         };
-
         BootStrapper.prototype.createExtension = function (extension, config) {
             var provider = new extension.provider(this, config, this.manifest);
-
             new extension.type(provider);
         };
         return BootStrapper;
     })();
-
-    
     return BootStrapper;
 });
 
@@ -2322,13 +2228,12 @@ Sanitize.prototype.clean_node = function(container) {
 if ( typeof define === "function" ) {
     define( "sanitize", [], function () { return Sanitize; } );
 };
-define('modules/uv-shared-module/panel',["require", "exports"], function(require, exports) {
+define('modules/uv-shared-module/panel',["require", "exports"], function (require, exports) {
     var Panel = (function () {
         function Panel($element, fitToParentWidth, fitToParentHeight) {
             this.$element = $element;
             this.fitToParentWidth = fitToParentWidth || false;
             this.fitToParentHeight = fitToParentHeight || false;
-
             this.create();
         }
         Panel.prototype.create = function () {
@@ -2337,14 +2242,11 @@ define('modules/uv-shared-module/panel',["require", "exports"], function(require
                 _this.resize();
             });
         };
-
         Panel.prototype.resize = function () {
             var $parent = this.$element.parent();
-
             if (this.fitToParentWidth) {
                 this.$element.width($parent.width());
             }
-
             if (this.fitToParentHeight) {
                 this.$element.height($parent.height());
             }
@@ -2360,7 +2262,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], function(require, exports, panel) {
+define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], function (require, exports, panel) {
     var BaseView = (function (_super) {
         __extends(BaseView, _super);
         function BaseView($element, fitToParentWidth, fitToParentHeight) {
@@ -2370,16 +2272,13 @@ define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], fu
         BaseView.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-
             this.extension = window.extension;
             this.provider = this.extension.provider;
-
             this.config = {};
             this.config.content = {};
             this.config.options = {};
             this.content = this.config.content;
             this.options = this.config.options;
-
             if (this.modules.length) {
                 this.modules = this.modules.reverse();
                 _.each(this.modules, function (moduleName) {
@@ -2387,14 +2286,11 @@ define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], fu
                 });
             }
         };
-
         BaseView.prototype.init = function () {
         };
-
         BaseView.prototype.setConfig = function (moduleName) {
             this.modules.push(moduleName);
         };
-
         BaseView.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -2409,7 +2305,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtension", "./shell", "./baseView"], function(require, exports, baseExtension, shell, baseView) {
+define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtension", "./shell", "./baseView"], function (require, exports, baseExtension, shell, baseView) {
     var Dialogue = (function (_super) {
         __extends(Dialogue, _super);
         function Dialogue($element) {
@@ -2420,9 +2316,7 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
         Dialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('dialogue');
-
             _super.prototype.create.call(this);
-
             $.subscribe(baseExtension.BaseExtension.CLOSE_ACTIVE_DIALOGUE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
@@ -2430,7 +2324,6 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
                     }
                 }
             });
-
             $.subscribe(baseExtension.BaseExtension.ESCAPE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
@@ -2438,41 +2331,30 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
                     }
                 }
             });
-
             this.$top = $('<div class="top"></div>');
             this.$element.append(this.$top);
-
             this.$closeButton = $('<a href="#" class="close">' + this.content.close + '</a>');
             this.$top.append(this.$closeButton);
-
             this.$middle = $('<div class="middle"></div>');
             this.$element.append(this.$middle);
-
             this.$content = $('<div class="content"></div>');
             this.$middle.append(this.$content);
-
             this.$bottom = $('<div class="bottom"></div>');
             this.$element.append(this.$bottom);
-
             this.$closeButton.on('click', function (e) {
                 e.preventDefault();
-
                 _this.close();
             });
-
             this.returnFunc = this.close;
         };
-
         Dialogue.prototype.enableClose = function () {
             this.allowClose = true;
             this.$closeButton.show();
         };
-
         Dialogue.prototype.disableClose = function () {
             this.allowClose = false;
             this.$closeButton.hide();
         };
-
         Dialogue.prototype.setArrowPosition = function () {
             var paddingLeft = parseInt(this.$element.css("padding-left"));
             var pos = this.extension.mouseX - paddingLeft - 10;
@@ -2480,34 +2362,26 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
                 pos = 0;
             this.$bottom.css('backgroundPosition', pos + 'px 0px');
         };
-
         Dialogue.prototype.open = function () {
             var _this = this;
             this.$element.show();
             this.setArrowPosition();
             this.isActive = true;
-
             setTimeout(function () {
                 _this.$element.find('.btn.default').focus();
             }, 1);
-
             $.publish(shell.Shell.SHOW_OVERLAY);
-
             this.resize();
         };
-
         Dialogue.prototype.close = function () {
             if (this.isActive) {
                 this.$element.hide();
                 this.isActive = false;
-
                 $.publish(shell.Shell.HIDE_OVERLAY);
             }
         };
-
         Dialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$element.css({
                 'top': (this.extension.height() / 2) - (this.$element.height() / 2),
                 'left': (this.extension.width() / 2) - (this.$element.width() / 2)
@@ -2524,7 +2398,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/genericDialogue',["require", "exports", "./baseExtension", "./dialogue"], function(require, exports, baseExtension, dialogue) {
+define('modules/uv-shared-module/genericDialogue',["require", "exports", "./baseExtension", "./dialogue"], function (require, exports, baseExtension, dialogue) {
     var GenericDialogue = (function (_super) {
         __extends(GenericDialogue, _super);
         function GenericDialogue($element) {
@@ -2533,62 +2407,47 @@ define('modules/uv-shared-module/genericDialogue',["require", "exports", "./base
         GenericDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('genericDialogue');
-
             _super.prototype.create.call(this);
-
             $.subscribe(GenericDialogue.SHOW_GENERIC_DIALOGUE, function (e, params) {
                 _this.showMessage(params);
             });
-
             $.subscribe(GenericDialogue.HIDE_GENERIC_DIALOGUE, function (e) {
                 _this.close();
             });
-
             this.$message = $('<p></p>');
             this.$content.append(this.$message);
-
             this.$acceptButton = $('<a href="#" class="btn btn-primary accept default"></a>');
             this.$content.append(this.$acceptButton);
             this.$acceptButton.text(this.content.ok);
-
             this.$acceptButton.onPressed(function () {
                 _this.accept();
             });
-
             this.returnFunc = function () {
                 if (_this.isActive) {
                     _this.accept();
                 }
             };
-
             this.$element.hide();
         };
-
         GenericDialogue.prototype.accept = function () {
             $.publish(baseExtension.BaseExtension.CLOSE_ACTIVE_DIALOGUE);
-
             if (this.acceptCallback)
                 this.acceptCallback();
         };
-
         GenericDialogue.prototype.showMessage = function (params) {
             this.$message.html(params.message);
-
             if (params.buttonText) {
                 this.$acceptButton.text(params.buttonText);
-            } else {
+            }
+            else {
                 this.$acceptButton.text(this.content.ok);
             }
-
             this.acceptCallback = params.acceptCallback;
-
             if (params.allowClose === false) {
                 this.disableClose();
             }
-
             this.open();
         };
-
         GenericDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -2605,7 +2464,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/shell',["require", "exports", "./baseExtension", "./baseView", "./genericDialogue"], function(require, exports, baseExtension, baseView, genericDialogue) {
+define('modules/uv-shared-module/shell',["require", "exports", "./baseExtension", "./baseView", "./genericDialogue"], function (require, exports, baseExtension, baseView, genericDialogue) {
     var Shell = (function (_super) {
         __extends(Shell, _super);
         function Shell($element) {
@@ -2614,55 +2473,40 @@ define('modules/uv-shared-module/shell',["require", "exports", "./baseExtension"
         }
         Shell.prototype.create = function () {
             _super.prototype.create.call(this);
-
             $.subscribe(Shell.SHOW_OVERLAY, function () {
                 Shell.$overlays.show();
             });
-
             $.subscribe(Shell.HIDE_OVERLAY, function () {
                 Shell.$overlays.hide();
             });
-
             Shell.$headerPanel = $('<div class="headerPanel"></div>');
             this.$element.append(Shell.$headerPanel);
-
             Shell.$mainPanel = $('<div class="mainPanel"></div>');
             this.$element.append(Shell.$mainPanel);
-
             Shell.$centerPanel = $('<div class="centerPanel"></div>');
             Shell.$mainPanel.append(Shell.$centerPanel);
-
             Shell.$leftPanel = $('<div class="leftPanel"></div>');
             Shell.$mainPanel.append(Shell.$leftPanel);
-
             Shell.$rightPanel = $('<div class="rightPanel"></div>');
             Shell.$mainPanel.append(Shell.$rightPanel);
-
             Shell.$footerPanel = $('<div class="footerPanel"></div>');
             Shell.$element.append(Shell.$footerPanel);
-
             Shell.$overlays = $('<div class="overlays"></div>');
             this.$element.append(Shell.$overlays);
-
             Shell.$genericDialogue = $('<div class="overlay genericDialogue"></div>');
             Shell.$overlays.append(Shell.$genericDialogue);
-
             Shell.$overlays.on('click', function (e) {
                 if ($(e.target).hasClass('overlays')) {
                     e.preventDefault();
                     $.publish(baseExtension.BaseExtension.CLOSE_ACTIVE_DIALOGUE);
                 }
             });
-
             new genericDialogue.GenericDialogue(Shell.$genericDialogue);
         };
-
         Shell.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             Shell.$overlays.width(this.extension.width());
             Shell.$overlays.height(this.extension.height());
-
             var mainHeight = this.$element.height() - parseInt(Shell.$mainPanel.css('marginTop')) - Shell.$headerPanel.height() - Shell.$footerPanel.height();
             Shell.$mainPanel.height(mainHeight);
         };
@@ -2673,26 +2517,22 @@ define('modules/uv-shared-module/shell',["require", "exports", "./baseExtension"
     exports.Shell = Shell;
 });
 
-define('modules/uv-shared-module/baseExtension',["require", "exports", "../../utils", "./shell", "./genericDialogue"], function(require, exports, utils, shell, genericDialogue) {
+define('modules/uv-shared-module/baseExtension',["require", "exports", "../../utils", "./shell", "./genericDialogue"], function (require, exports, utils, shell, genericDialogue) {
     var BaseExtension = (function () {
         function BaseExtension(provider) {
             this.isFullScreen = false;
             this.tabbing = false;
             this.shifted = false;
             window.extension = this;
-
             this.provider = provider;
-
             this.create();
         }
         BaseExtension.prototype.create = function () {
             var _this = this;
             this.$element = $('#app');
-
             var $win = $(window);
             this.$element.width($win.width());
             this.$element.height($win.height());
-
             if (!this.provider.isReload) {
                 this.socket = new easyXDM.Socket({
                     onMessage: function (message, origin) {
@@ -2701,11 +2541,9 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                     }
                 });
             }
-
             this.triggerSocket(BaseExtension.LOAD, {
                 config: this.provider.config
             });
-
             this.$element.empty();
             this.$element.removeClass();
             this.$element.addClass('browser-' + window.browserDetect.browser);
@@ -2715,26 +2553,20 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
             if (this.provider.isLightbox)
                 this.$element.addClass('lightbox');
             this.$element.addClass(this.provider.getSequenceType());
-
             window.onresize = function () {
                 var $win = $(window);
                 $('body').height($win.height());
-
                 _this.resize();
             };
-
             $(document).on('mousemove', function (e) {
                 _this.mouseX = e.pageX;
                 _this.mouseY = e.pageY;
             });
-
             $(document).on('keyup keydown', function (e) {
                 _this.shifted = e.shiftKey;
                 _this.tabbing = e.keyCode === 9;
             });
-
             this.$element.append('<a href="/" id="top"></a>');
-
             $.subscribe(BaseExtension.TOGGLE_FULLSCREEN, function () {
                 if (!_this.isOverlayActive()) {
                     $('#top').focus();
@@ -2745,7 +2577,6 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                     });
                 }
             });
-
             $(document).keyup(function (e) {
                 if (e.keyCode === 13)
                     $.publish(BaseExtension.RETURN);
@@ -2760,48 +2591,37 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 if (e.keyCode === 36)
                     $.publish(BaseExtension.HOME);
             });
-
             $.subscribe(BaseExtension.ESCAPE, function () {
                 if (_this.isFullScreen) {
                     $.publish(BaseExtension.TOGGLE_FULLSCREEN);
                 }
             });
-
             $.subscribe(BaseExtension.CREATED, function () {
                 _this.triggerSocket(BaseExtension.CREATED);
             });
-
             this.shell = new shell.Shell(this.$element);
-
             this.canvasIndex = -1;
         };
-
         BaseExtension.prototype.width = function () {
             return $(window).width();
         };
-
         BaseExtension.prototype.height = function () {
             return $(window).height();
         };
-
         BaseExtension.prototype.triggerSocket = function (eventName, eventObject) {
             if (this.socket) {
                 this.socket.postMessage(JSON.stringify({ eventName: eventName, eventObject: eventObject }));
             }
         };
-
         BaseExtension.prototype.redirect = function (uri) {
             this.triggerSocket(BaseExtension.REDIRECT, uri);
         };
-
         BaseExtension.prototype.refresh = function () {
             this.triggerSocket(BaseExtension.REFRESH, null);
         };
-
         BaseExtension.prototype.resize = function () {
             $.publish(BaseExtension.RESIZE);
         };
-
         BaseExtension.prototype.handleParentFrameEvent = function (message) {
             setTimeout(function () {
                 switch (message.eventName) {
@@ -2811,64 +2631,53 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 }
             }, 1000);
         };
-
         BaseExtension.prototype.getParam = function (key) {
             var value;
-
             if (this.provider.isDeepLinkingEnabled()) {
                 value = utils.Utils.getHashParameter(this.provider.paramMap[key], parent.document);
             }
-
             if (!value) {
                 value = utils.Utils.getQuerystringParameter(this.provider.paramMap[key]);
             }
-
             return value;
         };
-
         BaseExtension.prototype.setParam = function (key, value) {
             if (this.provider.isDeepLinkingEnabled()) {
                 utils.Utils.setHashParameter(this.provider.paramMap[key], value, parent.document);
             }
         };
-
         BaseExtension.prototype.viewCanvas = function (canvasIndex, callback) {
             this.provider.canvasIndex = canvasIndex;
-
             $.publish(BaseExtension.CANVAS_INDEX_CHANGED, [canvasIndex]);
-
             if (callback)
                 callback(canvasIndex);
         };
-
         BaseExtension.prototype.showDialogue = function (message, acceptCallback, buttonText, allowClose) {
             this.closeActiveDialogue();
-
-            $.publish(genericDialogue.GenericDialogue.SHOW_GENERIC_DIALOGUE, [{
+            $.publish(genericDialogue.GenericDialogue.SHOW_GENERIC_DIALOGUE, [
+                {
                     message: message,
                     acceptCallback: acceptCallback,
                     buttonText: buttonText,
                     allowClose: allowClose
-                }]);
+                }
+            ]);
         };
-
         BaseExtension.prototype.closeActiveDialogue = function () {
             $.publish(BaseExtension.CLOSE_ACTIVE_DIALOGUE);
         };
-
         BaseExtension.prototype.isOverlayActive = function () {
             return shell.Shell.$overlays.is(':visible');
         };
-
         BaseExtension.prototype.viewManifest = function (manifest) {
             var seeAlsoUri = this.provider.getManifestSeeAlsoUri(manifest);
             if (seeAlsoUri) {
                 window.open(seeAlsoUri, '_blank');
-            } else {
+            }
+            else {
                 if (this.isFullScreen) {
                     $.publish(BaseExtension.TOGGLE_FULLSCREEN);
                 }
-
                 this.triggerSocket(BaseExtension.SEQUENCE_INDEX_CHANGED, manifest.assetSequence);
             }
         };
@@ -2899,7 +2708,7 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
     exports.BaseExtension = BaseExtension;
 });
 
-define('modules/uv-shared-module/treeNode',["require", "exports"], function(require, exports) {
+define('modules/uv-shared-module/treeNode',["require", "exports"], function (require, exports) {
     var TreeNode = (function () {
         function TreeNode(label, data) {
             this.label = label;
@@ -2914,14 +2723,26 @@ define('modules/uv-shared-module/treeNode',["require", "exports"], function(requ
         };
         return TreeNode;
     })();
-
-    
     return TreeNode;
 });
 
-define('modules/uv-shared-module/baseProvider',["require", "exports", "../../utils", "./treeNode", "../../bootstrapParams"], function(require, exports, utils, TreeNode, BootstrapParams) {
-    var util = utils.Utils;
+define('modules/uv-shared-module/thumb',["require", "exports"], function (require, exports) {
+    var Thumb = (function () {
+        function Thumb(index, url, label, width, height, visible) {
+            this.index = index;
+            this.url = url;
+            this.label = label;
+            this.width = width;
+            this.height = height;
+            this.visible = visible;
+        }
+        return Thumb;
+    })();
+    return Thumb;
+});
 
+define('modules/uv-shared-module/baseProvider',["require", "exports", "../../bootstrapParams", "../../utils", "./treeNode", "./thumb"], function (require, exports, BootstrapParams, utils, TreeNode, Thumb) {
+    var util = utils.Utils;
     (function (params) {
         params[params["sequenceIndex"] = 0] = "sequenceIndex";
         params[params["canvasIndex"] = 1] = "canvasIndex";
@@ -2929,10 +2750,9 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
         params[params["rotation"] = 3] = "rotation";
     })(exports.params || (exports.params = {}));
     var params = exports.params;
-
     var BaseProvider = (function () {
         function BaseProvider(bootstrapper, config, manifest) {
-            this.paramMap = ['asi', 'ai', 'z', 'r'];
+            this.paramMap = ['si', 'ci', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
                 timestampUris: false,
@@ -2941,7 +2761,6 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
             this.bootstrapper = bootstrapper;
             this.config = config;
             this.manifest = manifest;
-
             this.manifestUri = this.bootstrapper.params.manifestUri;
             this.jsonp = this.bootstrapper.params.jsonp;
             this.locale = this.bootstrapper.params.getLocale();
@@ -2952,77 +2771,52 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
             this.embedScriptUri = this.bootstrapper.params.embedScriptUri;
             this.domain = this.bootstrapper.params.domain;
             this.isLightbox = this.bootstrapper.params.isLightbox;
-
             if (this.isHomeDomain && !this.isReload) {
                 this.sequenceIndex = parseInt(util.getHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
             }
-
             if (!this.sequenceIndex) {
                 this.sequenceIndex = parseInt(util.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
             }
-
-            this.canvasIndex = -1;
-
             this.load();
         }
         BaseProvider.prototype.load = function () {
-            this.sequence = this.manifest.assetSequences[this.sequenceIndex];
-
-            for (var i = 0; i < this.manifest.assetSequences.length; i++) {
-                if (this.manifest.assetSequences[i].$ref) {
-                    this.manifest.assetSequences[i] = {};
+            this.sequence = this.manifest.sequences[this.sequenceIndex];
+            for (var i = 0; i < this.manifest.sequences.length; i++) {
+                if (!this.manifest.sequences[i].canvases) {
+                    this.manifest.sequences[i] = {};
                 }
             }
-
-            if (this.manifest.rootStructure) {
-                this.parseManifest();
-            }
-
             this.parseStructure();
         };
-
         BaseProvider.prototype.reload = function (params) {
             var p = new BootstrapParams();
             p.isReload = true;
-
             if (params) {
                 p = $.extend(p, params);
             }
-
             this.bootstrapper.bootStrap(p);
         };
-
         BaseProvider.prototype.corsEnabled = function () {
             return Modernizr.cors && !this.jsonp;
         };
-
         BaseProvider.prototype.reloadManifest = function (callback) {
             var _this = this;
+            this.rootStructure = null;
             var manifestUri = this.manifestUri;
-
-            if (this.options.dataBaseUri) {
-                manifestUri = this.options.dataBaseUri + this.manifestUri;
-            }
-
             manifestUri = this.addTimestamp(manifestUri);
-
             if (this.corsEnabled()) {
                 $.getJSON(manifestUri, function (data) {
                     _this.manifest = data;
-
                     _this.load();
-
                     callback();
                 });
-            } else {
+            }
+            else {
                 window.manifestCallback = function (data) {
                     _this.manifest = data;
-
                     _this.load();
-
                     callback();
                 };
-
                 $.ajax({
                     url: manifestUri,
                     type: 'GET',
@@ -3032,423 +2826,440 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
                 });
             }
         };
-
         BaseProvider.prototype.getManifestType = function () {
-            return this.getRootStructure().sectionType.toLowerCase();
+            return 'monograph';
         };
-
         BaseProvider.prototype.getManifestation = function (type) {
             var service = this.sequence.service;
-
             if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
                 if (service.format.endsWith("pdf")) {
                     return service["@id"];
                 }
             }
         };
-
         BaseProvider.prototype.getSequenceType = function () {
-            return this.sequence.assetType.replace('/', '-');
+            return 'seadragon-iiif';
         };
-
         BaseProvider.prototype.getAttribution = function () {
-            return this.manifest.attribution;
+            return this.getLocalisedValue(this.manifest.attribution);
         };
-
         BaseProvider.prototype.getLicense = function () {
             return this.manifest.license;
         };
-
         BaseProvider.prototype.getLogo = function () {
             return this.manifest.logo;
         };
-
-        BaseProvider.prototype.getRootStructure = function () {
-            return this.sequence.rootSection;
-        };
-
         BaseProvider.prototype.getTitle = function () {
-            return this.getRootStructure().title;
+            return this.manifest.label;
         };
-
         BaseProvider.prototype.getSeeAlso = function () {
-            return this.sequence.seeAlso;
+            return this.manifest.seeAlso;
         };
-
+        BaseProvider.prototype.getLastCanvasLabel = function () {
+            for (var i = this.sequence.canvases.length - 1; i >= 0; i--) {
+                var canvas = this.sequence.canvases[i];
+                var regExp = /\d/;
+                if (regExp.test(canvas.label)) {
+                    return this.getLocalisedValue(canvas.label);
+                }
+            }
+            return '-';
+        };
         BaseProvider.prototype.isCanvasIndexOutOfRange = function (canvasIndex) {
             return canvasIndex > this.getTotalCanvases() - 1;
         };
-
         BaseProvider.prototype.isFirstCanvas = function (canvasIndex) {
             if (typeof (canvasIndex) === 'undefined')
                 canvasIndex = this.canvasIndex;
             return canvasIndex == 0;
         };
-
         BaseProvider.prototype.isLastCanvas = function (canvasIndex) {
             if (typeof (canvasIndex) === 'undefined')
                 canvasIndex = this.canvasIndex;
             return canvasIndex == this.getTotalCanvases() - 1;
         };
-
         BaseProvider.prototype.isSeeAlsoEnabled = function () {
             return this.config.options.seeAlsoEnabled !== false;
         };
-
         BaseProvider.prototype.getCanvasByIndex = function (index) {
-            return this.sequence.assets[index];
+            return this.sequence.canvases[index];
         };
-
-        BaseProvider.prototype.getCanvasIndexById = function (id) {
-            return null;
-        };
-
-        BaseProvider.prototype.getCurrentCanvas = function () {
-            return this.sequence.assets[this.canvasIndex];
-        };
-
-        BaseProvider.prototype.getTotalCanvases = function () {
-            return this.sequence.assets.length;
-        };
-
-        BaseProvider.prototype.isMultiCanvas = function () {
-            return this.sequence.assets.length > 1;
-        };
-
-        BaseProvider.prototype.isMultiSequence = function () {
-            return this.manifest.assetSequences.length > 1;
-        };
-
-        BaseProvider.prototype.isPaged = function () {
-            return false;
-        };
-
-        BaseProvider.prototype.getMediaUri = function (mediaUri) {
-            var baseUri = this.options.mediaBaseUri || "";
-            var template = this.options.mediaUriTemplate;
-            var uri = String.prototype.format(template, baseUri, mediaUri);
-
-            return uri;
-        };
-
-        BaseProvider.prototype.setMediaUri = function (canvas) {
-            if (canvas.mediaUri) {
-                canvas.mediaUri = this.getMediaUri(canvas.mediaUri);
-            } else {
-                canvas.mediaUri = this.getMediaUri(canvas.fileUri);
-            }
-        };
-
-        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
-            return null;
-        };
-
-        BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-
-            if (this.isFirstCanvas() || this.isLastCanvas()) {
-                return [canvasIndex];
-            } else if (canvasIndex % 2) {
-                return [canvasIndex, canvasIndex + 1];
-            } else {
-                return [canvasIndex - 1, canvasIndex];
-            }
-        };
-
-        BaseProvider.prototype.getViewingDirection = function () {
-            return this.sequence.viewingDirection || "left-to-right";
-        };
-
-        BaseProvider.prototype.getFirstPageIndex = function () {
-            return 0;
-        };
-
-        BaseProvider.prototype.getLastPageIndex = function () {
-            return this.getTotalCanvases() - 1;
-        };
-
-        BaseProvider.prototype.getPrevPageIndex = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-
-            var index;
-
-            if (this.isPaged()) {
-                var indices = this.getPagedIndices(canvasIndex);
-                index = indices[0] - 1;
-            } else {
-                index = canvasIndex - 1;
-            }
-
-            return index;
-        };
-
-        BaseProvider.prototype.getNextPageIndex = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-
-            var index;
-
-            if (this.isPaged()) {
-                var indices = this.getPagedIndices(canvasIndex);
-                index = indices.last() + 1;
-            } else {
-                index = canvasIndex + 1;
-            }
-
-            if (index > this.getTotalCanvases() - 1) {
-                return -1;
-            }
-
-            return index;
-        };
-
-        BaseProvider.prototype.getStartCanvasIndex = function () {
-            return 0;
-        };
-
-        BaseProvider.prototype.parseManifest = function () {
-            this.parseManifestation(this.manifest.rootStructure, this.manifest.assetSequences, '');
-        };
-
-        BaseProvider.prototype.parseManifestation = function (structure, sequences, path) {
-            structure.path = path;
-
-            if (typeof (structure.assetSequence) != 'undefined') {
-                var sequence = sequences[structure.assetSequence];
-
-                sequence.index = structure.sequence;
-                sequence.structure = structure;
-                structure.sequence = sequence;
-            }
-
-            if (structure.structures) {
-                for (var j = 0; j < structure.structures.length; j++) {
-                    this.parseManifestation(structure.structures[j], sequences, path + '/' + j);
-                }
-            }
-        };
-
-        BaseProvider.prototype.parseStructure = function () {
-            this.parseStructures(this.getRootStructure(), this.sequence.assets, '');
-        };
-
-        BaseProvider.prototype.parseStructures = function (structure, canvases, path) {
-            structure.path = path;
-
-            structure.sectionType = this.replaceStructureType(structure.sectionType);
-
-            for (var i = 0; i < structure.assets.length; i++) {
-                var index = structure.assets[i];
-
-                var canvas = canvases[index];
-
-                if (!canvas.structures)
-                    canvas.structures = [];
-
-                canvas.structures.push(structure);
-            }
-
-            if (structure.sections) {
-                for (var j = 0; j < structure.sections.length; j++) {
-                    this.parseStructures(structure.sections[j], canvases, path + '/' + j);
-                }
-            }
-        };
-
-        BaseProvider.prototype.replaceStructureType = function (structureType) {
-            if (this.config.options.sectionMappings && this.config.options.sectionMappings[structureType]) {
-                return this.config.options.sectionMappings[structureType];
-            }
-
-            return structureType;
-        };
-
         BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
             if (index == -1)
                 return null;
             var canvas = this.getCanvasByIndex(index);
             return this.getCanvasStructure(canvas);
         };
-
-        BaseProvider.prototype.getStructureByIndex = function (structure, index) {
-            return structure.sections[index];
-        };
-
-        BaseProvider.prototype.getStructureByPath = function (path) {
+        BaseProvider.prototype.getCanvasStructure = function (canvas) {
+            if (canvas.structures) {
+                return canvas.structures.last();
+            }
             return null;
         };
-
-        BaseProvider.prototype.getCanvasStructure = function (canvas) {
-            return canvas.structures.last();
+        BaseProvider.prototype.getCurrentCanvas = function () {
+            return this.sequence.canvases[this.canvasIndex];
         };
-
-        BaseProvider.prototype.getLastCanvasOrderLabel = function () {
-            for (var i = this.sequence.assets.length - 1; i >= 0; i--) {
-                var canvas = this.sequence.assets[i];
-
-                var regExp = /\d/;
-
-                if (regExp.test(canvas.orderLabel)) {
-                    return canvas.orderLabel;
+        BaseProvider.prototype.getTotalCanvases = function () {
+            return this.sequence.canvases.length;
+        };
+        BaseProvider.prototype.isMultiCanvas = function () {
+            return this.sequence.canvases.length > 1;
+        };
+        BaseProvider.prototype.isMultiSequence = function () {
+            return this.manifest.sequences.length > 1;
+        };
+        BaseProvider.prototype.isPaged = function () {
+            return this.sequence.viewingHint && (this.sequence.viewingHint == "paged") && this.getSettings().pagingEnabled;
+        };
+        BaseProvider.prototype.getMediaUri = function (mediaUri) {
+            var baseUri = this.options.mediaBaseUri || "";
+            var template = this.options.mediaUriTemplate;
+            var uri = String.prototype.format(template, baseUri, mediaUri);
+            return uri;
+        };
+        BaseProvider.prototype.setMediaUri = function (canvas) {
+        };
+        BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            var indices = [];
+            if (!this.isPaged()) {
+                indices.push(this.canvasIndex);
+            }
+            else {
+                if (this.isFirstCanvas(canvasIndex) || this.isLastCanvas(canvasIndex)) {
+                    indices = [canvasIndex];
+                }
+                else if (canvasIndex % 2) {
+                    indices = [canvasIndex, canvasIndex + 1];
+                }
+                else {
+                    indices = [canvasIndex - 1, canvasIndex];
+                }
+                if (this.getViewingDirection() === "right-to-left") {
+                    indices = indices.reverse();
                 }
             }
-
-            return '-';
+            return indices;
         };
-
+        BaseProvider.prototype.getViewingDirection = function () {
+            return this.sequence.viewingDirection || "left-to-right";
+        };
+        BaseProvider.prototype.getFirstPageIndex = function () {
+            return 0;
+        };
+        BaseProvider.prototype.getLastPageIndex = function () {
+            return this.getTotalCanvases() - 1;
+        };
+        BaseProvider.prototype.getPrevPageIndex = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            var index;
+            if (this.isPaged()) {
+                var indices = this.getPagedIndices(canvasIndex);
+                if (this.getViewingDirection() == "right-to-left") {
+                    index = indices.last() - 1;
+                }
+                else {
+                    index = indices[0] - 1;
+                }
+            }
+            else {
+                index = canvasIndex - 1;
+            }
+            return index;
+        };
+        BaseProvider.prototype.getNextPageIndex = function (canvasIndex) {
+            if (typeof (canvasIndex) === 'undefined')
+                canvasIndex = this.canvasIndex;
+            var index;
+            if (this.isPaged()) {
+                var indices = this.getPagedIndices(canvasIndex);
+                if (this.getViewingDirection() == "right-to-left") {
+                    index = indices[0] + 1;
+                }
+                else {
+                    index = indices.last() + 1;
+                }
+            }
+            else {
+                index = canvasIndex + 1;
+            }
+            if (index > this.getTotalCanvases() - 1) {
+                return -1;
+            }
+            return index;
+        };
+        BaseProvider.prototype.getStartCanvasIndex = function () {
+            if (this.sequence.startCanvas) {
+                for (var i = 0; i < this.sequence.canvases.length; i++) {
+                    var canvas = this.sequence.canvases[i];
+                    if (canvas["@id"] == this.sequence.startCanvas)
+                        return i;
+                }
+            }
+            return 0;
+        };
+        BaseProvider.prototype.addTimestamp = function (uri) {
+            return uri + "?t=" + util.getTimeStamp();
+        };
+        BaseProvider.prototype.isDeepLinkingEnabled = function () {
+            return (this.isHomeDomain && this.isOnlyInstance);
+        };
+        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
+            var uri;
+            if (canvas.resources) {
+                uri = canvas.resources[0].resource.service['@id'];
+            }
+            else if (canvas.images && canvas.images[0].resource.service) {
+                uri = canvas.images[0].resource.service['@id'];
+            }
+            else {
+                return "";
+            }
+            var tile = 'full/' + width + ',' + height + '/0/default.jpg';
+            if (uri.endsWith('/')) {
+                uri += tile;
+            }
+            else {
+                uri += '/' + tile;
+            }
+            return uri;
+        };
+        BaseProvider.prototype.getThumbs = function (width, height) {
+            var thumbs = [];
+            for (var i = 0; i < this.getTotalCanvases(); i++) {
+                var canvas = this.sequence.canvases[i];
+                var heightRatio = canvas.height / canvas.width;
+                if (heightRatio) {
+                    height = Math.floor(width * heightRatio);
+                }
+                var uri = this.getThumbUri(canvas, width, height);
+                thumbs.push(new Thumb(i, uri, this.getLocalisedValue(canvas.label), width, height, true));
+            }
+            return thumbs;
+        };
+        BaseProvider.prototype.getLocalisedValue = function (prop) {
+            if (!(prop instanceof Array)) {
+                return prop;
+            }
+            for (var i = 0; i < prop.length; i++) {
+                var value = prop[i];
+                var language = value['@language'];
+                if (this.locale === language) {
+                    return value['@value'];
+                }
+            }
+            for (var i = 0; i < prop.length; i++) {
+                var value = prop[i];
+                var language = value['@language'];
+                var match = this.locale.substr(0, this.locale.indexOf('-'));
+                if (language === match) {
+                    return value['@value'];
+                }
+            }
+            return null;
+        };
+        BaseProvider.prototype.parseManifest = function () {
+        };
         BaseProvider.prototype.getStructureIndex = function (path) {
-            for (var i = 0; i < this.sequence.assets.length; i++) {
-                var canvas = this.sequence.assets[i];
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+                if (!canvas.structures)
+                    continue;
                 for (var j = 0; j < canvas.structures.length; j++) {
                     var structure = canvas.structures[j];
-
                     if (structure.path == path) {
                         return i;
                     }
                 }
             }
-
             return null;
         };
-
-        BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
-            var regExp = /(\d*)\D*(\d*)|(\d*)/;
-            var match = regExp.exec(label);
-
-            var labelPart1 = match[1];
-            var labelPart2 = match[2];
-
-            if (!labelPart1)
-                return -1;
-
-            var searchRegExp, regStr;
-
-            if (labelPart2) {
-                regStr = "^" + labelPart1 + "\\D*" + labelPart2 + "$";
-            } else {
-                regStr = "\\D*" + labelPart1 + "\\D*";
+        BaseProvider.prototype.getStructureByPath = function (path) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+                if (!canvas.structures)
+                    continue;
+                for (var j = 0; j < canvas.structures.length; j++) {
+                    var structure = canvas.structures[j];
+                    if (structure.path == path) {
+                        return structure;
+                    }
+                }
             }
-
-            searchRegExp = new RegExp(regStr);
-
-            for (var i = 0; i < this.sequence.assets.length; i++) {
-                var canvas = this.sequence.assets[i];
-
-                if (searchRegExp.test(canvas.orderLabel)) {
+            return null;
+        };
+        BaseProvider.prototype.getCanvasById = function (id) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var c = this.sequence.canvases[i];
+                if (c['@id'] === id) {
+                    return c;
+                }
+            }
+            return null;
+        };
+        BaseProvider.prototype.getCanvasIndexById = function (id) {
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var c = this.sequence.canvases[i];
+                if (c['@id'] === id) {
                     return i;
                 }
             }
-
+            return null;
+        };
+        BaseProvider.prototype.getStructureByIndex = function (structure, index) {
+            return structure.structures[index];
+        };
+        BaseProvider.prototype.getStructureById = function (id) {
+            for (var i = 0; i < this.manifest.structures.length; i++) {
+                var s = this.manifest.structures[i];
+                if (s['@id'] === id) {
+                    return s;
+                }
+            }
+            return null;
+        };
+        BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
+            label = label.trim();
+            if ($.isNumeric(label)) {
+                label = parseInt(label, 10).toString();
+            }
+            var doublePageRegExp = /(\d*)\D+(\d*)/;
+            var match, regExp, regStr, labelPart1, labelPart2;
+            for (var i = 0; i < this.sequence.canvases.length; i++) {
+                var canvas = this.sequence.canvases[i];
+                if (canvas.label === label) {
+                    return i;
+                }
+                match = doublePageRegExp.exec(label);
+                if (!match)
+                    continue;
+                labelPart1 = match[1];
+                labelPart2 = match[2];
+                if (!labelPart2)
+                    continue;
+                regStr = "^" + labelPart1 + "\\D+" + labelPart2 + "$";
+                regExp = new RegExp(regStr);
+                if (regExp.test(canvas.label)) {
+                    return i;
+                }
+            }
             return -1;
         };
-
         BaseProvider.prototype.getManifestSeeAlsoUri = function (manifest) {
-            if (manifest.seeAlso && manifest.seeAlso.tag && manifest.seeAlso.data) {
-                if (manifest.seeAlso.tag === 'OpenExternal') {
-                    return this.getMediaUri(manifest.seeAlso.data);
+            return null;
+        };
+        BaseProvider.prototype.getRootStructure = function () {
+            if (this.manifest.structures) {
+                for (var i = 0; i < this.manifest.structures.length; i++) {
+                    var s = this.manifest.structures[i];
+                    if (s.viewingHint == "top") {
+                        this.rootStructure = s;
+                        break;
+                    }
+                }
+            }
+            if (!this.rootStructure) {
+                this.rootStructure = {
+                    path: "",
+                    ranges: this.manifest.structures
+                };
+            }
+            return this.rootStructure;
+        };
+        BaseProvider.prototype.parseStructure = function () {
+            if (!this.manifest.structures || !this.manifest.structures.length)
+                return;
+            this.parseStructures(this.getRootStructure(), '');
+        };
+        BaseProvider.prototype.parseStructures = function (structure, path) {
+            structure.path = path;
+            if (structure.canvases) {
+                for (var j = 0; j < structure.canvases.length; j++) {
+                    var canvas = structure.canvases[j];
+                    if (typeof (canvas) === "string") {
+                        canvas = this.getCanvasById(canvas);
+                    }
+                    if (!canvas) {
+                        structure.canvases[j] = null;
+                        continue;
+                    }
+                    if (!canvas.structures)
+                        canvas.structures = [];
+                    canvas.structures.push(structure);
+                    structure.canvases[j] = canvas;
+                }
+            }
+            if (structure.ranges) {
+                structure.structures = [];
+                for (var k = 0; k < structure.ranges.length; k++) {
+                    var s = structure.ranges[k];
+                    if (typeof (s) === "string") {
+                        s = this.getStructureById(s);
+                    }
+                    if (s.parentStructure)
+                        continue;
+                    s.parentStructure = structure;
+                    structure.structures.push(s);
+                    this.parseStructures(s, path + '/' + k);
                 }
             }
         };
-
-        BaseProvider.prototype.addTimestamp = function (uri) {
-            return uri + "?t=" + util.getTimeStamp();
-        };
-
-        BaseProvider.prototype.isDeepLinkingEnabled = function () {
-            return (this.isHomeDomain && this.isOnlyInstance);
-        };
-
         BaseProvider.prototype.getTree = function () {
+            var rootStructure = this.getRootStructure();
             this.treeRoot = new TreeNode('root');
-            var rootStructure = this.manifest.rootStructure;
-
-            if (rootStructure) {
-                this.parseTreeStructure(this.treeRoot, rootStructure);
-            }
-
-            if (!this.sectionsRootNode) {
-                this.sectionsRootNode = this.treeRoot;
-                this.sectionsRootNode.data = this.sequence.rootSection;
-            }
-
-            if (this.sequence.rootSection.sections) {
-                for (var i = 0; i < this.sequence.rootSection.sections.length; i++) {
-                    var section = this.sequence.rootSection.sections[i];
-
-                    var childNode = new TreeNode();
-                    this.sectionsRootNode.addNode(childNode);
-
-                    this.parseTreeSection(childNode, section);
+            this.treeRoot.label = "root";
+            this.treeRoot.data = rootStructure;
+            this.treeRoot.data.type = "manifest";
+            rootStructure.treeNode = this.treeRoot;
+            if (rootStructure.structures) {
+                for (var i = 0; i < rootStructure.structures.length; i++) {
+                    var structure = rootStructure.structures[i];
+                    var node = new TreeNode();
+                    this.treeRoot.addNode(node);
+                    this.parseTreeNode(node, structure);
                 }
             }
-
             return this.treeRoot;
         };
-
-        BaseProvider.prototype.parseTreeStructure = function (node, structure) {
-            node.label = structure.name || "root";
+        BaseProvider.prototype.parseTreeNode = function (node, structure) {
+            node.label = this.getLocalisedValue(structure.label);
             node.data = structure;
-            node.data.type = "manifest";
-            node.data.treeNode = node;
-
-            if (this.sequence.structure == structure) {
-                this.sectionsRootNode = node;
-                this.sectionsRootNode.selected = true;
-                this.sectionsRootNode.expanded = true;
-            }
-
+            node.data.type = "structure";
+            structure.treeNode = node;
             if (structure.structures) {
                 for (var i = 0; i < structure.structures.length; i++) {
                     var childStructure = structure.structures[i];
-
                     var childNode = new TreeNode();
                     node.addNode(childNode);
-
-                    this.parseTreeStructure(childNode, childStructure);
+                    this.parseTreeNode(childNode, childStructure);
                 }
             }
         };
-
-        BaseProvider.prototype.parseTreeSection = function (node, section) {
-            node.label = section.sectionType;
-            node.data = section;
-            node.data.type = "structure";
-            node.data.treeNode = node;
-
-            if (section.sections) {
-                for (var i = 0; i < section.sections.length; i++) {
-                    var childSection = section.sections[i];
-
-                    var childNode = new TreeNode();
-                    node.addNode(childNode);
-
-                    this.parseTreeSection(childNode, childSection);
-                }
-            }
-        };
-
-        BaseProvider.prototype.getThumbs = function (width, height) {
-            return null;
-        };
-
         BaseProvider.prototype.getDomain = function () {
             var parts = util.getUrlParts(this.manifestUri);
             return parts.host;
         };
-
         BaseProvider.prototype.getEmbedDomain = function () {
             return this.embedDomain;
         };
-
-        BaseProvider.prototype.getMetaData = function (callback) {
-            callback(null);
+        BaseProvider.prototype.getMetaData = function (callback, includeRootProperties) {
+            var metaData = this.manifest.metadata;
+            if (metaData && includeRootProperties) {
+                if (this.manifest.description)
+                    metaData.push({ "label": "description", "value": this.manifest.description });
+                if (this.manifest.attribution)
+                    metaData.push({ "label": "attribution", "value": this.manifest.attribution });
+                if (this.manifest.license)
+                    metaData.push({ "label": "license", "value": this.manifest.license });
+                if (this.manifest.logo)
+                    metaData.push({ "label": "logo", "value": '<img src="' + this.manifest.logo + '"/>' });
+            }
+            callback(this.manifest.metadata);
         };
-
         BaseProvider.prototype.defaultToThumbsView = function () {
             var manifestType = this.getManifestType();
-
             switch (manifestType) {
                 case 'monograph':
                     if (!this.isMultiSequence())
@@ -3463,32 +3274,24 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
                 case 'artwork':
                     return true;
             }
-
             var sequenceType = this.getSequenceType();
-
             switch (sequenceType) {
                 case 'application-pdf':
                     return true;
                     break;
             }
-
             return false;
         };
-
         BaseProvider.prototype.getSettings = function () {
             return this.config.options;
         };
-
         BaseProvider.prototype.updateSettings = function (settings) {
             this.config.options = settings;
         };
-
         BaseProvider.prototype.sanitize = function (html) {
-            var elem = document.createDocumentFragment();
+            var elem = document.createElement('div');
             var $elem = $(elem);
-
             $elem.html(html);
-
             var s = new Sanitize({
                 elements: ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
                 attributes: {
@@ -3499,20 +3302,15 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
                     a: { href: ['http', 'https'] }
                 }
             });
-
             $elem.html(s.clean_node(elem));
-
-            return $elem.contents().html();
+            return $elem.html();
         };
-
         BaseProvider.prototype.getLocales = function () {
             if (this.locales)
                 return this.locales;
-
             var items = this.config.localisation.locales.clone();
             var sorting = this.bootstrapper.params.locales;
             var result = [];
-
             _.each(sorting, function (sortItem) {
                 var match = _.filter(items, function (item) {
                     return item.name === sortItem.name;
@@ -3525,51 +3323,38 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
                     result.push(m);
                 }
             });
-
             _.each(items, function (item) {
                 if (!item.added) {
                     result.push(item);
                 }
                 delete item.added;
             });
-
             return this.locales = result;
         };
-
         BaseProvider.prototype.getAlternateLocale = function () {
             var locales = this.getLocales();
-
             var alternateLocale;
-
             for (var i = 0; i < locales.length; i++) {
                 var l = locales[i];
                 if (l.name !== this.locale) {
                     alternateLocale = l;
                 }
             }
-
             return l;
         };
-
         BaseProvider.prototype.changeLocale = function (locale) {
             var locales = this.locales.clone();
-
             var index = locales.indexOfTest(function (l) {
                 return l.name === locale;
             });
-
             locales.move(index, 0);
-
             var str = this.serializeLocales(locales);
-
             var p = new BootstrapParams();
             p.setLocale(str);
             this.reload(p);
         };
-
         BaseProvider.prototype.serializeLocales = function (locales) {
             var str = '';
-
             for (var i = 0; i < locales.length; i++) {
                 var l = locales[i];
                 if (i > 0)
@@ -3579,28 +3364,18 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../uti
                     str += ':' + l.label;
                 }
             }
-
             return str;
         };
-
         BaseProvider.prototype.getSerializedLocales = function () {
             return this.serializeLocales(this.locales);
-        };
-
-        BaseProvider.prototype.getLabel = function (resource) {
-            return null;
-        };
-
-        BaseProvider.prototype.getLocalisedValue = function (values) {
-            return null;
         };
         return BaseProvider;
     })();
     exports.BaseProvider = BaseProvider;
 });
 
-define('_Version',["require", "exports"], function(require, exports) {
-    exports.Version = '1.0.47';
+define('_Version',["require", "exports"], function (require, exports) {
+    exports.Version = '1.0.48';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3609,7 +3384,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version"], function(require, exports, dialogue, version) {
+define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "../uv-shared-module/dialogue", "../../_Version"], function (require, exports, dialogue, version) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -3618,73 +3393,51 @@ define('modules/uv-dialogues-module/settingsDialogue',["require", "exports", "..
         SettingsDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('settingsDialogue');
-
             _super.prototype.create.call(this);
-
             $.subscribe(SettingsDialogue.SHOW_SETTINGS_DIALOGUE, function (e, params) {
                 _this.open();
             });
-
             $.subscribe(SettingsDialogue.HIDE_SETTINGS_DIALOGUE, function (e) {
                 _this.close();
             });
-
             this.$title = $('<h1></h1>');
             this.$content.append(this.$title);
-
             this.$scroll = $('<div class="scroll"></div>');
             this.$content.append(this.$scroll);
-
             this.$version = $('<div class="version"></div>');
             this.$content.append(this.$version);
-
             this.$locale = $('<div class="setting locale"></div>');
             this.$scroll.append(this.$locale);
-
             this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
             this.$locale.append(this.$localeLabel);
-
             this.$localeDropDown = $('<select id="locale"></select>');
             this.$locale.append(this.$localeDropDown);
-
             this.$title.text(this.content.title);
-
             this.$version.text("v" + version.Version);
-
             var locales = this.provider.getLocales();
-
             for (var i = 0; i < locales.length; i++) {
                 var locale = locales[i];
                 this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
             }
-
             this.$localeDropDown.val(this.provider.locale);
-
             this.$localeDropDown.change(function () {
                 _this.provider.changeLocale(_this.$localeDropDown.val());
             });
-
             if (this.provider.getLocales().length < 2) {
                 this.$locale.hide();
             }
-
             this.$element.hide();
         };
-
         SettingsDialogue.prototype.getSettings = function () {
             return this.provider.getSettings();
         };
-
         SettingsDialogue.prototype.updateSettings = function (settings) {
             this.provider.updateSettings(settings);
-
             $.publish(SettingsDialogue.UPDATE_SETTINGS, [settings]);
         };
-
         SettingsDialogue.prototype.open = function () {
             _super.prototype.open.call(this);
         };
-
         SettingsDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -3702,7 +3455,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../uv-dialogues-module/settingsDialogue"], function(require, exports, baseExtension, baseView, settings) {
+define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExtension", "./baseView", "../uv-dialogues-module/settingsDialogue"], function (require, exports, baseExtension, baseView, settings) {
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -3711,117 +3464,90 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
         HeaderPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('headerPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(baseExtension.BaseExtension.SETTINGS_CHANGED, function (e, message) {
                 _this.updatePagingToggle();
             });
-
             $.subscribe(baseExtension.BaseExtension.SHOW_MESSAGE, function (e, message) {
                 _this.showMessage(message);
             });
-
             $.subscribe(baseExtension.BaseExtension.HIDE_MESSAGE, function () {
                 _this.hideMessage();
             });
-
             this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
-
             this.$centerOptions = $('<div class="centerOptions"></div>');
             this.$options.append(this.$centerOptions);
-
             this.$rightOptions = $('<div class="rightOptions"></div>');
             this.$options.append(this.$rightOptions);
-
             this.$pagingToggleButton = $('<a class="imageBtn pagingToggle"></a>');
             this.$rightOptions.append(this.$pagingToggleButton);
-
             this.$localeToggleButton = $('<a class="localeToggle"></a>');
             this.$rightOptions.append(this.$localeToggleButton);
-
             this.$settingsButton = $('<a class="imageBtn settings" tabindex="3"></a>');
             this.$settingsButton.attr('title', this.content.settings);
             this.$rightOptions.append(this.$settingsButton);
-
             this.$messageBox = $('<div class="messageBox"> \
                                 <div class="text"></div> \
                                 <div class="close"></div> \
                               </div>');
-
             this.$element.append(this.$messageBox);
-
             this.$messageBox.hide();
             this.$messageBox.find('.close').attr('title', this.content.close);
             this.$messageBox.find('.close').on('click', function (e) {
                 e.preventDefault();
                 _this.hideMessage();
             });
-
             this.updatePagingToggle();
-
             this.updateLocaleToggle();
-
             this.$pagingToggleButton.on('click', function () {
                 var settings = _this.getSettings();
                 settings.pagingEnabled = !settings.pagingEnabled;
                 _this.updateSettings(settings);
             });
-
             this.$localeToggleButton.on('click', function () {
                 _this.provider.changeLocale(_this.$localeToggleButton.data('locale'));
             });
-
             this.$settingsButton.onPressed(function () {
                 $.publish(settings.SettingsDialogue.SHOW_SETTINGS_DIALOGUE);
             });
-
             if (this.options.localeToggleEnabled === false) {
                 this.$localeToggleButton.hide();
             }
-
             if (this.options.pagingToggleEnabled === false) {
                 this.$pagingToggleButton.hide();
             }
         };
-
         HeaderPanel.prototype.updatePagingToggle = function () {
             var settings = this.provider.getSettings();
-
             if (settings.pagingEnabled) {
                 this.$pagingToggleButton.removeClass('two-up');
                 this.$pagingToggleButton.addClass('one-up');
                 this.$pagingToggleButton.prop('title', this.content.oneUp);
-            } else {
+            }
+            else {
                 this.$pagingToggleButton.removeClass('one-up');
                 this.$pagingToggleButton.addClass('two-up');
                 this.$pagingToggleButton.prop('title', this.content.twoUp);
             }
         };
-
         HeaderPanel.prototype.updateLocaleToggle = function () {
             if (!this.localeToggleIsVisible()) {
                 this.$localeToggleButton.hide();
                 return;
             }
-
             var alternateLocale = this.provider.getAlternateLocale();
             var text = alternateLocale.name.split('-')[0].toUpperCase();
-
             this.$localeToggleButton.data('locale', alternateLocale.name);
             this.$localeToggleButton.attr('title', alternateLocale.label);
             this.$localeToggleButton.text(text);
         };
-
         HeaderPanel.prototype.localeToggleIsVisible = function () {
             return this.provider.getLocales().length > 1 && this.options.localeToggleEnabled;
         };
-
         HeaderPanel.prototype.pagingToggleIsVisible = function () {
             return this.options.pagingToggleEnabled;
         };
-
         HeaderPanel.prototype.showMessage = function (message) {
             this.message = message;
             this.$messageBox.find('.text').html(message).find('a').attr('target', '_top');
@@ -3829,48 +3555,39 @@ define('modules/uv-shared-module/headerPanel',["require", "exports", "./baseExte
             this.$element.addClass('showMessage');
             this.extension.resize();
         };
-
         HeaderPanel.prototype.hideMessage = function () {
             this.$element.removeClass('showMessage');
             this.$messageBox.hide();
             this.extension.resize();
         };
-
         HeaderPanel.prototype.getSettings = function () {
             return this.provider.getSettings();
         };
-
         HeaderPanel.prototype.updateSettings = function (settings) {
             this.provider.updateSettings(settings);
-
             $.publish(HeaderPanel.UPDATE_SETTINGS, [settings]);
         };
-
         HeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             var headerWidth = this.$element.width();
             var center = headerWidth / 2;
             var containerWidth = this.$centerOptions.outerWidth();
             var pos = center - (containerWidth / 2);
-
             this.$centerOptions.css({
                 left: pos
             });
-
             if (this.$messageBox.is(':visible')) {
                 var $text = this.$messageBox.find('.text');
-
                 $text.width(this.$element.width() - this.$messageBox.find('.close').outerWidth(true));
                 $text.ellipsisFill(this.message);
             }
-
             if (this.extension.width() < 610) {
                 if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.hide();
                 if (this.localeToggleIsVisible())
                     this.$localeToggleButton.hide();
-            } else {
+            }
+            else {
                 if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.show();
                 if (this.localeToggleIsVisible())
@@ -3889,7 +3606,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/headerPanel"], function(require, exports, baseExtension, extension, baseHeader) {
+define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/headerPanel"], function (require, exports, baseExtension, extension, baseHeader) {
     var PagingHeaderPanel = (function (_super) {
         __extends(PagingHeaderPanel, _super);
         function PagingHeaderPanel($element) {
@@ -3902,280 +3619,224 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('pagingHeaderPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.canvasIndexChanged(canvasIndex);
             });
-
             $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
                 _this.modeChanged(mode);
             });
-
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED, function (e) {
                 _this.setSearchFieldValue(_this.provider.canvasIndex);
             });
-
             this.$prevOptions = $('<div class="prevOptions"></div>');
             this.$centerOptions.append(this.$prevOptions);
-
             this.$firstButton = $('<a class="imageBtn first" tabindex="15"></a>');
             this.$prevOptions.append(this.$firstButton);
-
             this.$prevButton = $('<a class="imageBtn prev" tabindex="16"></a>');
             this.$prevOptions.append(this.$prevButton);
-
             this.$modeOptions = $('<div class="mode"></div>');
             this.$centerOptions.append(this.$modeOptions);
-
             this.$imageModeLabel = $('<label for="image">' + this.content.image + '</label>');
             this.$modeOptions.append(this.$imageModeLabel);
             this.$imageModeOption = $('<input type="radio" id="image" name="mode" tabindex="17"></input>');
             this.$modeOptions.append(this.$imageModeOption);
-
             this.$pageModeLabel = $('<label for="page">' + this.content.page + '</label>');
             this.$modeOptions.append(this.$pageModeLabel);
             this.$pageModeOption = $('<input type="radio" id="page" name="mode" tabindex="18"></input>');
             this.$modeOptions.append(this.$pageModeOption);
-
             this.$search = $('<div class="search"></div>');
             this.$centerOptions.append(this.$search);
-
             this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="19"></input>');
             this.$search.append(this.$searchText);
-
             this.$total = $('<span class="total"></span>');
             this.$search.append(this.$total);
-
             this.$searchButton = $('<a class="go btn btn-primary" tabindex="20">' + this.content.go + '</a>');
             this.$search.append(this.$searchButton);
-
             this.$nextOptions = $('<div class="nextOptions"></div>');
             this.$centerOptions.append(this.$nextOptions);
-
             this.$nextButton = $('<a class="imageBtn next" tabindex="1"></a>');
             this.$nextOptions.append(this.$nextButton);
-
             this.$lastButton = $('<a class="imageBtn last" tabindex="2"></a>');
             this.$nextOptions.append(this.$lastButton);
-
             if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
                 this.$pageModeOption.attr('checked', 'checked');
                 this.$pageModeOption.removeAttr('disabled');
                 this.$pageModeLabel.removeClass('disabled');
-            } else {
+            }
+            else {
                 this.$imageModeOption.attr('checked', 'checked');
-
                 this.$pageModeOption.attr('disabled', 'disabled');
                 this.$pageModeLabel.addClass('disabled');
             }
-
             this.setTitles();
-
             this.setTotal();
-
             if (this.provider.getTotalCanvases() == 1) {
                 this.$centerOptions.hide();
             }
-
             this.$firstButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.FIRST);
             });
-
             this.$prevButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.PREV);
             });
-
             this.$nextButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.NEXT);
             });
-
             this.$imageModeOption.on('click', function (e) {
                 $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.IMAGE_MODE]);
             });
-
             this.$pageModeOption.on('click', function (e) {
                 $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.PAGE_MODE]);
             });
-
             this.$searchText.onEnter(function () {
                 _this.$searchText.blur();
                 _this.search();
             });
-
             this.$searchText.focus(function () {
                 $(this).select();
             });
-
             this.$searchButton.onPressed(function () {
                 _this.search();
             });
-
             this.$lastButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.LAST);
             });
-
             if (this.options.modeOptionsEnabled === false) {
                 this.$modeOptions.hide();
                 this.$centerOptions.addClass('modeOptionsDisabled');
             }
-
             if (this.options.helpEnabled === false) {
                 this.$helpButton.hide();
             }
-
             this.$searchButton.blur(function () {
                 if (_this.extension.tabbing && !_this.extension.shifted) {
                     _this.$nextButton.focus();
                 }
             });
         };
-
         PagingHeaderPanel.prototype.setTitles = function () {
             var mode;
-
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
                 mode = this.content.page;
-            } else {
+            }
+            else {
                 mode = this.content.image;
             }
-
             this.$firstButton.prop('title', this.content.first + " " + mode);
             this.$prevButton.prop('title', this.content.previous + " " + mode);
             this.$nextButton.prop('title', this.content.next + " " + mode);
             this.$lastButton.prop('title', this.content.last + " " + mode);
             this.$searchButton.prop('title', this.content.go);
         };
-
         PagingHeaderPanel.prototype.setTotal = function () {
             var of = this.content.of;
-
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
                 this.$total.html(String.prototype.format(of, this.provider.getLastCanvasLabel()));
-            } else {
+            }
+            else {
                 this.$total.html(String.prototype.format(of, this.provider.getTotalCanvases()));
             }
         };
-
         PagingHeaderPanel.prototype.setSearchFieldValue = function (index) {
             var canvas = this.provider.getCanvasByIndex(index);
-
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
                 var orderLabel = this.provider.getLocalisedValue(canvas.label);
-
                 if (orderLabel === "-") {
                     this.$searchText.val("");
-                } else {
+                }
+                else {
                     this.$searchText.val(orderLabel);
                 }
-            } else {
+            }
+            else {
                 index += 1;
                 this.$searchText.val(index);
             }
         };
-
         PagingHeaderPanel.prototype.search = function () {
             var value = this.$searchText.val();
-
             if (!value) {
                 this.extension.showDialogue(this.content.emptyValue);
                 $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
-
                 return;
             }
-
             if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
                 $.publish(PagingHeaderPanel.PAGE_SEARCH, [value]);
-            } else {
+            }
+            else {
                 var index = parseInt(this.$searchText.val(), 10);
-
                 index -= 1;
-
                 if (isNaN(index)) {
                     this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.invalidNumber);
                     $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
-
                 var asset = this.provider.getCanvasByIndex(index);
-
                 if (!asset) {
                     this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
                     $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
-
                 $.publish(PagingHeaderPanel.IMAGE_SEARCH, [index]);
             }
         };
-
         PagingHeaderPanel.prototype.canvasIndexChanged = function (index) {
             this.setSearchFieldValue(index);
-
             if (this.provider.isFirstCanvas()) {
                 this.disableFirstButton();
                 this.disablePrevButton();
-            } else {
+            }
+            else {
                 this.enableFirstButton();
                 this.enablePrevButton();
             }
-
             if (this.provider.isLastCanvas()) {
                 this.disableLastButton();
                 this.disableNextButton();
-            } else {
+            }
+            else {
                 this.enableLastButton();
                 this.enableNextButton();
             }
         };
-
         PagingHeaderPanel.prototype.disableFirstButton = function () {
             this.firstButtonEnabled = false;
             this.$firstButton.disable();
         };
-
         PagingHeaderPanel.prototype.enableFirstButton = function () {
             this.firstButtonEnabled = true;
             this.$firstButton.enable();
         };
-
         PagingHeaderPanel.prototype.disableLastButton = function () {
             this.lastButtonEnabled = false;
             this.$lastButton.disable();
         };
-
         PagingHeaderPanel.prototype.enableLastButton = function () {
             this.lastButtonEnabled = true;
             this.$lastButton.enable();
         };
-
         PagingHeaderPanel.prototype.disablePrevButton = function () {
             this.prevButtonEnabled = false;
             this.$prevButton.disable();
         };
-
         PagingHeaderPanel.prototype.enablePrevButton = function () {
             this.prevButtonEnabled = true;
             this.$prevButton.enable();
         };
-
         PagingHeaderPanel.prototype.disableNextButton = function () {
             this.nextButtonEnabled = false;
             this.$nextButton.disable();
         };
-
         PagingHeaderPanel.prototype.enableNextButton = function () {
             this.nextButtonEnabled = true;
             this.$nextButton.enable();
         };
-
         PagingHeaderPanel.prototype.modeChanged = function (mode) {
             this.setSearchFieldValue(this.provider.canvasIndex);
             this.setTitles();
             this.setTotal();
         };
-
         PagingHeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -4197,7 +3858,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./baseView"], function(require, exports, baseView) {
+define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./baseView"], function (require, exports, baseView) {
     var BaseExpandPanel = (function (_super) {
         __extends(BaseExpandPanel, _super);
         function BaseExpandPanel($element) {
@@ -4210,82 +3871,66 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
         BaseExpandPanel.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-
             this.$top = $('<div class="top"></div>');
             this.$element.append(this.$top);
-
             this.$title = $('<div class="title"></div>');
             this.$title.prop('title', this.content.title);
             this.$top.append(this.$title);
-
             this.$expandFullButton = $('<a class="expandFullButton"></a>');
             this.$expandFullButton.prop('title', this.content.expandFull);
             this.$top.append(this.$expandFullButton);
-
             this.$collapseButton = $('<div class="collapseButton"></div>');
             this.$collapseButton.prop('title', this.content.collapse);
             this.$top.append(this.$collapseButton);
-
             this.$closed = $('<div class="closed"></div>');
             this.$element.append(this.$closed);
-
             this.$expandButton = $('<a class="expandButton"></a>');
             this.$expandButton.prop('title', this.content.expand);
             this.$closed.append(this.$expandButton);
-
             this.$closedTitle = $('<a class="title"></a>');
             this.$closedTitle.prop('title', this.content.title);
             this.$closed.append(this.$closedTitle);
-
             this.$main = $('<div class="main"></div>');
             this.$element.append(this.$main);
-
             this.$expandButton.onPressed(function () {
                 _this.toggle();
             });
-
             this.$expandFullButton.onPressed(function () {
                 _this.expandFull();
             });
-
             this.$closedTitle.onPressed(function () {
                 _this.toggle();
             });
-
             this.$title.onPressed(function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
-                } else {
+                }
+                else {
                     _this.toggle();
                 }
             });
-
             this.$collapseButton.onPressed(function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
-                } else {
+                }
+                else {
                     _this.toggle();
                 }
             });
-
             this.$top.hide();
             this.$main.hide();
         };
-
         BaseExpandPanel.prototype.init = function () {
             _super.prototype.init.call(this);
         };
-
         BaseExpandPanel.prototype.toggle = function (autoToggled) {
             var _this = this;
             (autoToggled) ? this.autoToggled = true : this.autoToggled = false;
-
             if (this.isExpanded) {
                 this.$top.hide();
                 this.$main.hide();
                 this.$closed.show();
             }
-
             this.$element.stop().animate({
                 width: this.getTargetWidth(),
                 left: this.getTargetLeft()
@@ -4293,30 +3938,22 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
                 _this.toggled();
             });
         };
-
         BaseExpandPanel.prototype.toggled = function () {
             this.toggleStart();
-
             this.isExpanded = !this.isExpanded;
-
             if (this.isExpanded) {
                 this.$closed.hide();
                 this.$top.show();
                 this.$main.show();
             }
-
             this.toggleFinish();
-
             this.isUnopened = false;
         };
-
         BaseExpandPanel.prototype.expandFull = function () {
             var _this = this;
             var targetWidth = this.getFullTargetWidth();
             var targetLeft = this.getFullTargetLeft();
-
             this.expandFullStart();
-
             this.$element.stop().animate({
                 width: targetWidth,
                 left: targetLeft
@@ -4324,14 +3961,11 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
                 _this.expandFullFinish();
             });
         };
-
         BaseExpandPanel.prototype.collapseFull = function () {
             var _this = this;
             var targetWidth = this.getTargetWidth();
             var targetLeft = this.getTargetLeft();
-
             this.collapseFullStart();
-
             this.$element.stop().animate({
                 width: targetWidth,
                 left: targetLeft
@@ -4339,78 +3973,62 @@ define('modules/uv-shared-module/baseExpandPanel',["require", "exports", "./base
                 _this.collapseFullFinish();
             });
         };
-
         BaseExpandPanel.prototype.getTargetWidth = function () {
             return 0;
         };
-
         BaseExpandPanel.prototype.getTargetLeft = function () {
             return 0;
         };
-
         BaseExpandPanel.prototype.getFullTargetWidth = function () {
             return 0;
         };
-
         BaseExpandPanel.prototype.getFullTargetLeft = function () {
             return 0;
         };
-
         BaseExpandPanel.prototype.toggleStart = function () {
         };
-
         BaseExpandPanel.prototype.toggleFinish = function () {
             if (this.isExpanded && !this.autoToggled) {
                 this.focusCollapseButton();
-            } else {
+            }
+            else {
                 this.focusExpandButton();
             }
         };
-
         BaseExpandPanel.prototype.expandFullStart = function () {
         };
-
         BaseExpandPanel.prototype.expandFullFinish = function () {
             this.isFullyExpanded = true;
             this.$expandFullButton.hide();
-
             this.focusCollapseButton();
         };
-
         BaseExpandPanel.prototype.collapseFullStart = function () {
         };
-
         BaseExpandPanel.prototype.collapseFullFinish = function () {
             this.isFullyExpanded = false;
             this.$expandFullButton.show();
-
             this.focusExpandFullButton();
         };
-
         BaseExpandPanel.prototype.focusExpandButton = function () {
             var _this = this;
             setTimeout(function () {
                 _this.$expandButton.focus();
             }, 1);
         };
-
         BaseExpandPanel.prototype.focusExpandFullButton = function () {
             var _this = this;
             setTimeout(function () {
                 _this.$expandFullButton.focus();
             }, 1);
         };
-
         BaseExpandPanel.prototype.focusCollapseButton = function () {
             var _this = this;
             setTimeout(function () {
                 _this.$collapseButton.focus();
             }, 1);
         };
-
         BaseExpandPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$main.height(this.$element.parent().height() - this.$top.outerHeight(true));
         };
         return BaseExpandPanel;
@@ -4424,7 +4042,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/leftPanel',["require", "exports", "./baseExpandPanel"], function(require, exports, baseExpandPanel) {
+define('modules/uv-shared-module/leftPanel',["require", "exports", "./baseExpandPanel"], function (require, exports, baseExpandPanel) {
     var LeftPanel = (function (_super) {
         __extends(LeftPanel, _super);
         function LeftPanel($element) {
@@ -4432,43 +4050,36 @@ define('modules/uv-shared-module/leftPanel',["require", "exports", "./baseExpand
         }
         LeftPanel.prototype.create = function () {
             _super.prototype.create.call(this);
-
             this.$element.width(this.options.panelCollapsedWidth);
         };
-
         LeftPanel.prototype.init = function () {
             _super.prototype.init.call(this);
-
             if (this.options.panelOpen && this.provider.isHomeDomain) {
                 this.toggle(true);
             }
         };
-
         LeftPanel.prototype.getTargetWidth = function () {
             if (this.isFullyExpanded || !this.isExpanded) {
                 return this.options.panelExpandedWidth;
-            } else {
+            }
+            else {
                 return this.options.panelCollapsedWidth;
             }
         };
-
         LeftPanel.prototype.getFullTargetWidth = function () {
             return this.$element.parent().width();
         };
-
         LeftPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
-
             if (this.isExpanded) {
                 $.publish(LeftPanel.OPEN_LEFT_PANEL);
-            } else {
+            }
+            else {
                 $.publish(LeftPanel.CLOSE_LEFT_PANEL);
             }
         };
-
         LeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             if (this.isFullyExpanded) {
                 this.$element.width(this.$element.parent().width());
             }
@@ -4486,9 +4097,8 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "../../utils", "../uv-shared-module/baseView", "../uv-shared-module/baseExtension"], function(require, exports, utils, baseView, baseExtension) {
+define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "../../utils", "../uv-shared-module/baseView", "../uv-shared-module/baseExtension"], function (require, exports, utils, baseView, baseExtension) {
     var util = utils.Utils;
-
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
@@ -4498,16 +4108,12 @@ define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "..
         TreeView.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-
             var that = this;
-
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.selectTreeNodeFromCanvasIndex(canvasIndex);
             });
-
             this.$tree = $('<ul class="tree"></ul>');
             this.$element.append(this.$tree);
-
             $.templates({
                 pageTemplate: '{^{for nodes}}\
                                {^{tree/}}\
@@ -4538,7 +4144,6 @@ define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "..
                                </li>\
                            {{/if}}'
             });
-
             $.views.helpers({
                 elide: function (text) {
                     var $a = $(this.linkCtx.elem);
@@ -4546,7 +4151,6 @@ define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "..
                     return util.htmlDecode(util.ellipsis(text, elideCount));
                 }
             });
-
             $.views.tags({
                 tree: {
                     toggle: function () {
@@ -4559,16 +4163,13 @@ define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "..
                     },
                     onAfterLink: function () {
                         var self = this;
-
                         self.contents("li").first().on("click", ".toggle", function () {
                             self.toggle();
                         }).on("click", "a", function (e) {
                             e.preventDefault();
-
                             if (self.data.nodes.length) {
                                 self.toggle();
                             }
-
                             $.publish(TreeView.NODE_SELECTED, [self.data.data]);
                         });
                     },
@@ -4576,65 +4177,48 @@ define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "..
                 }
             });
         };
-
         TreeView.prototype.dataBind = function () {
             if (!this.rootNode)
                 return;
-
             this.$tree.link($.templates.pageTemplate, this.rootNode);
             this.resize();
         };
-
         TreeView.prototype.selectPath = function (path) {
             if (!this.rootNode)
                 return;
-
             var pathArr = path.split("/");
             if (pathArr.length >= 1)
                 pathArr.shift();
             var node = this.getNodeByPath(this.rootNode, pathArr);
-
             this.selectNode(node);
         };
-
         TreeView.prototype.selectTreeNodeFromCanvasIndex = function (index) {
             if (index == -1)
                 return;
-
             this.deselectCurrentNode();
-
             var structure = this.provider.getStructureByCanvasIndex(index);
-
             if (!structure)
                 return;
-
             if (structure.treeNode)
                 this.selectNode(structure.treeNode);
         };
-
         TreeView.prototype.deselectCurrentNode = function () {
             if (this.selectedNode)
                 $.observable(this.selectedNode).setProperty("selected", false);
         };
-
         TreeView.prototype.selectNode = function (node) {
             if (!this.rootNode)
                 return;
-
             this.selectedNode = node;
             $.observable(this.selectedNode).setProperty("selected", true);
-
             this.expandParents(this.selectedNode);
         };
-
         TreeView.prototype.expandParents = function (node) {
             if (!node.parentNode)
                 return;
-
             $.observable(node.parentNode).setProperty("expanded", true);
             this.expandParents(node.parentNode);
         };
-
         TreeView.prototype.getNodeByPath = function (parentNode, path) {
             if (path.length == 0)
                 return parentNode;
@@ -4642,36 +4226,29 @@ define('modules/uv-treeviewleftpanel-module/treeView',["require", "exports", "..
             var node = parentNode.nodes[index];
             return this.getNodeByPath(node, path);
         };
-
         TreeView.prototype.show = function () {
             this.isOpen = true;
             this.$element.show();
         };
-
         TreeView.prototype.hide = function () {
             this.isOpen = false;
             this.$element.hide();
         };
-
         TreeView.prototype.elide = function ($a) {
             if (!$a.is(':visible'))
                 return;
             var elideCount = Math.floor($a.parent().width() / 7);
             $a.text(util.htmlDecode(util.ellipsis($a.attr('title'), elideCount)));
         };
-
         TreeView.prototype.elideAll = function () {
             var that = this;
-
             this.$tree.find('a').each(function () {
                 var $this = $(this);
                 that.elide($this);
             });
         };
-
         TreeView.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.elideAll();
         };
         TreeView.NODE_SELECTED = 'treeView.onNodeSelected';
@@ -4686,7 +4263,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseView"], function(require, exports, baseExtension, extension, baseView) {
+define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseView"], function (require, exports, baseExtension, extension, baseView) {
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
@@ -4696,24 +4273,17 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
         ThumbsView.prototype.create = function () {
             var _this = this;
             this.setConfig('treeViewLeftPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, index) {
                 _this.selectIndex(parseInt(index));
             });
-
             $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
                 _this.setLabel();
             });
-
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$element.append(this.$thumbs);
-
             this.$thumbs.addClass(this.provider.getViewingDirection());
-
             var that = this;
-
             $.templates({
                 thumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
                                 <div class="wrap" style="height:{{>height + ~extraHeight()}}px"></div>\
@@ -4724,16 +4294,13 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
                                  <div class="separator"></div> \
                              {{/if}}'
             });
-
             var extraHeight = this.options.thumbsExtraHeight;
-
             $.views.helpers({
                 separator: function () {
                     var viewingDirection = that.provider.getViewingDirection();
                     if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
                         return true;
                     }
-
                     return ((this.data.index - 1) % 2 == 0) ? false : true;
                 },
                 extraHeight: function () {
@@ -4741,182 +4308,141 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
                 },
                 className: function () {
                     var className = "thumb";
-
                     if (this.data.index === 0) {
                         className += " first";
                     }
-
                     if (!this.data.url) {
                         className += " placeholder";
                     }
-
                     var viewingDirection = that.provider.getViewingDirection();
                     if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
                         className += " oneCol";
-                    } else {
+                    }
+                    else {
                         className += " twoCol";
                     }
-
                     return className;
                 }
             });
-
             this.$element.on('scroll', function () {
                 _this.scrollStop();
             }, 1000);
-
             this.resize();
         };
-
         ThumbsView.prototype.dataBind = function () {
             if (!this.thumbs)
                 return;
             this.createThumbs();
         };
-
         ThumbsView.prototype.createThumbs = function () {
             var that = this;
-
             if (!this.thumbs)
                 return;
-
             this.$thumbs.link($.templates.thumbsTemplate, this.thumbs);
-
             this.$thumbs.delegate(".thumb", "click", function (e) {
                 e.preventDefault();
-
                 var data = $.view(this).data;
-
                 that.lastThumbClickedIndex = data.index;
-
                 $.publish(ThumbsView.THUMB_SELECTED, [data.index]);
             });
-
             this.selectIndex(this.provider.canvasIndex);
-
             this.setLabel();
-
             this.loadThumbs(0);
         };
-
         ThumbsView.prototype.scrollStop = function () {
             var scrollPos = 1 / ((this.$thumbs.height() - this.$element.height()) / this.$element.scrollTop());
-
             if (scrollPos > 1)
                 scrollPos = 1;
-
             var thumbRangeMid = Math.floor((this.thumbs.length - 1) * scrollPos);
-
             this.loadThumbs(thumbRangeMid);
         };
-
         ThumbsView.prototype.loadThumbs = function (index) {
             if (!this.thumbs || !this.thumbs.length)
                 return;
-
             index = parseInt(index);
-
             var thumbRangeMid = index;
             var thumbLoadRange = this.options.thumbsLoadRange;
-
             var thumbRange = {
                 start: (thumbRangeMid > thumbLoadRange) ? thumbRangeMid - thumbLoadRange : 0,
                 end: (thumbRangeMid < (this.thumbs.length - 1) - thumbLoadRange) ? thumbRangeMid + thumbLoadRange : this.thumbs.length - 1
             };
-
             var fadeDuration = this.options.thumbsImageFadeInDuration;
-
             for (var i = thumbRange.start; i <= thumbRange.end; i++) {
                 var thumbElem = $(this.$thumbs.find('.thumb')[i]);
                 var imgCont = thumbElem.find('.wrap');
-
                 if (!imgCont.hasClass('loading') && !imgCont.hasClass('loaded')) {
                     var visible = thumbElem.attr('data-visible');
-
                     if (visible !== "false") {
                         imgCont.addClass('loading');
                         var src = thumbElem.attr('data-src');
-
                         var img = $('<img src="' + src + '" />');
-
                         $(img).hide().load(function () {
                             $(this).fadeIn(fadeDuration, function () {
                                 $(this).parent().swapClass('loading', 'loaded');
                             });
                         });
                         imgCont.append(img);
-                    } else {
+                    }
+                    else {
                         imgCont.addClass('hidden');
                     }
                 }
             }
         };
-
         ThumbsView.prototype.show = function () {
             var _this = this;
             this.isOpen = true;
             this.$element.show();
-
             setTimeout(function () {
                 _this.selectIndex(_this.provider.canvasIndex);
             }, 1);
         };
-
         ThumbsView.prototype.hide = function () {
             this.isOpen = false;
             this.$element.hide();
         };
-
         ThumbsView.prototype.isPDF = function () {
             return (this.provider.getSequenceType() === "application-pdf");
         };
-
         ThumbsView.prototype.setLabel = function () {
             if (this.isPDF()) {
                 $(this.$thumbs).find('span.index').hide();
                 $(this.$thumbs).find('span.label').hide();
-            } else {
+            }
+            else {
                 if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
                     $(this.$thumbs).find('span.index').hide();
                     $(this.$thumbs).find('span.label').show();
-                } else {
+                }
+                else {
                     $(this.$thumbs).find('span.index').show();
                     $(this.$thumbs).find('span.label').hide();
                 }
             }
         };
-
         ThumbsView.prototype.selectIndex = function (index) {
             var _this = this;
             if (index == -1)
                 return;
-
             if (!this.thumbs || !this.thumbs.length)
                 return;
-
             index = parseInt(index);
-
             this.$thumbs.find('.thumb').removeClass('selected');
-
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
-
             if (this.provider.isPaged()) {
                 var indices = this.provider.getPagedIndices(index);
-
                 _.each(indices, function (index) {
                     $(_this.$thumbs.find('.thumb')[index]).addClass('selected');
                 });
-            } else {
+            }
+            else {
                 this.$selectedThumb.addClass('selected');
             }
-
             if (this.lastThumbClickedIndex != index) {
                 this.$element.scrollTop(this.$selectedThumb.position().top);
             }
-
             this.loadThumbs(index);
         };
-
         ThumbsView.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -4932,7 +4458,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", "../../utils", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseView"], function(require, exports, utils, baseExtension, extension, baseView) {
+define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", "../../utils", "../uv-shared-module/baseExtension", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseView"], function (require, exports, utils, baseExtension, extension, baseView) {
     var GalleryView = (function (_super) {
         __extends(GalleryView, _super);
         function GalleryView($element) {
@@ -4942,60 +4468,44 @@ define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", 
         GalleryView.prototype.create = function () {
             var _this = this;
             this.setConfig('treeViewLeftPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, index) {
                 _this.selectIndex(parseInt(index));
             });
-
             $.subscribe(extension.Extension.SETTINGS_CHANGED, function () {
                 _this.setLabel();
             });
-
             this.$header = $('<div class="header"></div>');
             this.$element.append(this.$header);
-
             this.$sizeDownButton = $('<input class="btn btn-default size-down" type="button" value="-" />');
             this.$header.append(this.$sizeDownButton);
-
             this.$sizeRange = $('<input type="range" name="size" min="0" max="10" value="5" />');
             this.$header.append(this.$sizeRange);
-
             this.$sizeUpButton = $('<input class="btn btn-default size-up" type="button" value="+" />');
             this.$header.append(this.$sizeUpButton);
-
             this.$main = $('<div class="main"></div>');
             this.$element.append(this.$main);
-
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$main.append(this.$thumbs);
-
             this.$thumbs.addClass(this.provider.getViewingDirection());
-
             this.$sizeDownButton.on('click', function () {
                 var val = Number(_this.$sizeRange.val()) - 1;
-
                 if (val >= Number(_this.$sizeRange.attr('min'))) {
                     _this.$sizeRange.val(val.toString());
                     _this.$sizeRange.trigger('change');
                 }
             });
-
             this.$sizeUpButton.on('click', function () {
                 var val = Number(_this.$sizeRange.val()) + 1;
-
                 if (val <= Number(_this.$sizeRange.attr('max'))) {
                     _this.$sizeRange.val(val.toString());
                     _this.$sizeRange.trigger('change');
                 }
             });
-
             this.$sizeRange.on('change', function () {
                 _this.updateThumbs();
                 _this.scrollToSelectedThumb();
             });
-
             $.templates({
                 galleryThumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}" data-width="{{>width}}" data-height="{{>height}}">\
                                 <div class="wrap"></div>\
@@ -5003,91 +4513,65 @@ define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", 
                                 <span class="label">{{>label}}&nbsp;</span>\
                              </div>'
             });
-
             $.views.helpers({
                 className: function () {
                     var className = "thumb";
-
                     if (this.data.index === 0) {
                         className += " first";
                     }
-
                     if (!this.data.url) {
                         className += " placeholder";
                     }
-
                     return className;
                 }
             });
-
             this.$main.on('scroll', function () {
                 _this.updateThumbs();
             }, 1000);
-
             if (!Modernizr.inputtypes.range) {
                 this.$sizeRange.hide();
             }
-
             this.resize();
         };
-
         GalleryView.prototype.dataBind = function () {
             if (!this.thumbs)
                 return;
             this.createThumbs();
         };
-
         GalleryView.prototype.createThumbs = function () {
             var that = this;
-
             if (!this.thumbs)
                 return;
-
             this.$thumbs.link($.templates.galleryThumbsTemplate, this.thumbs);
-
             this.$thumbs.delegate(".thumb", "click", function (e) {
                 e.preventDefault();
-
                 var data = $.view(this).data;
-
                 that.lastThumbClickedIndex = data.index;
-
                 $.publish(GalleryView.THUMB_SELECTED, [data.index]);
             });
-
             this.selectIndex(this.provider.canvasIndex);
-
             this.setLabel();
-
             this.updateThumbs();
         };
-
         GalleryView.prototype.updateThumbs = function () {
             var _this = this;
             if (!this.thumbs || !this.thumbs.length)
                 return;
-
             this.range = utils.Utils.normalise(Number(this.$sizeRange.val()), 0, 10);
             this.range = utils.Utils.clamp(this.range, 0.05, 1);
-
             var thumbs = this.$thumbs.find('.thumb');
-
             for (var i = 0; i < thumbs.length; i++) {
                 var $thumb = $(thumbs[i]);
                 this.sizeThumb($thumb);
                 this.sizeThumbImage($thumb);
             }
-
             this.equaliseHeights();
-
             var scrollTop = this.$main.scrollTop();
             var scrollHeight = this.$main.height();
-
             for (var i = 0; i < thumbs.length; i++) {
                 var $thumb = $(thumbs[i]);
                 var thumbTop = $thumb.position().top;
                 var thumbBottom = thumbTop + $thumb.height();
-
                 if (thumbBottom >= scrollTop && thumbTop <= scrollTop + scrollHeight) {
                     this.loadThumb($thumb, function () {
                         _this.sizeThumbImage($thumb);
@@ -5095,46 +4579,33 @@ define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", 
                 }
             }
         };
-
         GalleryView.prototype.equaliseHeights = function () {
             this.$thumbs.find('.thumb .wrap').equaliseHeight();
         };
-
         GalleryView.prototype.sizeThumb = function ($thumb) {
             var width = $thumb.data('width');
             var height = $thumb.data('height');
-
             var $wrap = $thumb.find('.wrap');
-
             $wrap.width(width * this.range);
             $wrap.height(height * this.range);
         };
-
         GalleryView.prototype.sizeThumbImage = function ($thumb) {
             var width = $thumb.data('width');
             var height = $thumb.data('height');
-
             var $img = $thumb.find('img');
-
             $img.width(width * this.range);
             $img.height(height * this.range);
         };
-
         GalleryView.prototype.loadThumb = function ($thumb, callback) {
             var $wrap = $thumb.find('.wrap');
-
             if ($wrap.hasClass('loading') || $wrap.hasClass('loaded'))
                 return;
-
             var visible = $thumb.attr('data-visible');
-
             var fadeDuration = this.options.thumbsImageFadeInDuration;
-
             if (visible !== "false") {
                 $wrap.addClass('loading');
                 var src = $thumb.attr('data-src');
                 var img = $('<img src="' + src + '" />');
-
                 $(img).hide().load(function () {
                     $(this).fadeIn(fadeDuration, function () {
                         $(this).parent().swapClass('loading', 'loaded');
@@ -5143,64 +4614,51 @@ define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", 
                 $wrap.append(img);
                 if (callback)
                     callback(img);
-            } else {
+            }
+            else {
                 $wrap.addClass('hidden');
             }
         };
-
         GalleryView.prototype.show = function () {
             var _this = this;
             this.isOpen = true;
             this.$element.show();
-
             setTimeout(function () {
                 _this.selectIndex(_this.provider.canvasIndex);
                 _this.scrollToSelectedThumb();
             }, 1);
         };
-
         GalleryView.prototype.hide = function () {
             this.isOpen = false;
             this.$element.hide();
         };
-
         GalleryView.prototype.setLabel = function () {
             if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
                 $(this.$thumbs).find('span.index').hide();
                 $(this.$thumbs).find('span.label').show();
-            } else {
+            }
+            else {
                 $(this.$thumbs).find('span.index').show();
                 $(this.$thumbs).find('span.label').hide();
             }
         };
-
         GalleryView.prototype.selectIndex = function (index) {
             if (index == -1)
                 return;
-
             if (!this.thumbs || !this.thumbs.length)
                 return;
-
             index = parseInt(index);
-
             this.$thumbs.find('.thumb').removeClass('selected');
-
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
-
             this.$selectedThumb.addClass('selected');
-
             this.updateThumbs();
         };
-
         GalleryView.prototype.scrollToSelectedThumb = function () {
             this.$main.scrollTop(this.$selectedThumb.position().top);
         };
-
         GalleryView.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$main.height(this.$element.height() - this.$header.height());
-
             this.updateThumbs();
         };
         GalleryView.THUMB_SELECTED = 'galleryView.onThumbSelected';
@@ -5215,7 +4673,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../uv-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseExtension"], function(require, exports, baseLeft, utils, tree, thumbs, gallery, extension, baseExtension) {
+define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "exports", "../uv-shared-module/leftPanel", "../../utils", "./treeView", "./thumbsView", "./galleryView", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseExtension"], function (require, exports, baseLeft, utils, tree, thumbs, gallery, extension, baseExtension) {
     var TreeViewLeftPanel = (function (_super) {
         __extends(TreeViewLeftPanel, _super);
         function TreeViewLeftPanel($element) {
@@ -5224,115 +4682,89 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
         TreeViewLeftPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('treeViewLeftPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(extension.Extension.RELOAD_MANIFEST, function () {
                 _this.dataBindThumbsView();
                 _this.dataBindTreeView();
                 _this.dataBindGalleryView();
             });
-
             $.subscribe(gallery.GalleryView.THUMB_SELECTED, function () {
                 _this.collapseFull();
             });
-
             $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, index) {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
             });
-
             this.$tabs = $('<div class="tabs"></div>');
             this.$main.append(this.$tabs);
-
             this.$treeButton = $('<a class="index tab first">' + this.content.index + '</a>');
             this.$treeButton.prop('title', this.content.index);
             this.$tabs.append(this.$treeButton);
-
             this.$thumbsButton = $('<a class="thumbs tab">' + this.content.thumbnails + '</a>');
             this.$thumbsButton.prop('title', this.content.thumbnails);
             this.$tabs.append(this.$thumbsButton);
-
             this.$tabsContent = $('<div class="tabsContent"></div>');
             this.$main.append(this.$tabsContent);
-
             this.$options = $('<div class="options"></div>');
             this.$tabsContent.append(this.$options);
-
             this.$views = $('<div class="views"></div>');
             this.$tabsContent.append(this.$views);
-
             this.$treeView = $('<div class="treeView"></div>');
             this.$views.append(this.$treeView);
-
             this.$thumbsView = $('<div class="thumbsView"></div>');
             this.$views.append(this.$thumbsView);
-
             this.$galleryView = $('<div class="galleryView"></div>');
             this.$views.append(this.$galleryView);
-
             this.$treeButton.onPressed(function () {
                 _this.openTreeView();
-
                 $.publish(TreeViewLeftPanel.OPEN_TREE_VIEW);
             });
-
             this.$thumbsButton.onPressed(function () {
                 _this.openThumbsView();
-
                 $.publish(TreeViewLeftPanel.OPEN_THUMBS_VIEW);
             });
-
             this.$expandButton.attr('tabindex', '7');
             this.$collapseButton.attr('tabindex', '7');
             this.$expandFullButton.attr('tabindex', '8');
-
             this.$title.text(this.content.title);
             this.$closedTitle.text(this.content.title);
         };
-
         TreeViewLeftPanel.prototype.createTreeView = function () {
             this.treeView = new tree.TreeView(this.$treeView);
             this.treeView.elideCount = this.config.options.elideCount;
             this.dataBindTreeView();
         };
-
         TreeViewLeftPanel.prototype.dataBindTreeView = function () {
             if (!this.treeView)
                 return;
             this.treeView.rootNode = this.provider.getTree();
             this.treeView.dataBind();
         };
-
         TreeViewLeftPanel.prototype.createThumbsView = function () {
             this.thumbsView = new thumbs.ThumbsView(this.$thumbsView);
             this.dataBindThumbsView();
         };
-
         TreeViewLeftPanel.prototype.dataBindThumbsView = function () {
             if (!this.thumbsView)
                 return;
             var width, height;
             var viewingDirection = this.provider.getViewingDirection();
-
             if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
                 width = this.config.options.oneColThumbWidth;
                 height = this.config.options.oneColThumbHeight;
-            } else {
+            }
+            else {
                 width = this.config.options.twoColThumbWidth;
                 height = this.config.options.twoColThumbHeight;
             }
-
             this.thumbsView.thumbs = this.provider.getThumbs(width, height);
             this.thumbsView.dataBind();
         };
-
         TreeViewLeftPanel.prototype.createGalleryView = function () {
             this.galleryView = new gallery.GalleryView(this.$galleryView);
             this.dataBindGalleryView();
         };
-
         TreeViewLeftPanel.prototype.dataBindGalleryView = function () {
             if (!this.galleryView)
                 return;
@@ -5341,123 +4773,100 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             this.galleryView.thumbs = this.provider.getThumbs(width, height);
             this.galleryView.dataBind();
         };
-
         TreeViewLeftPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
-
             if (this.isUnopened) {
                 var treeEnabled = utils.Utils.getBool(this.config.options.treeEnabled, true);
                 var thumbsEnabled = utils.Utils.getBool(this.config.options.thumbsEnabled, true);
-
                 if (!treeEnabled || !thumbsEnabled)
                     this.$tabs.hide();
-
                 if (thumbsEnabled && this.provider.defaultToThumbsView()) {
                     this.openThumbsView();
-                } else if (treeEnabled) {
+                }
+                else if (treeEnabled) {
                     this.openTreeView();
                 }
             }
-
             if (this.isExpanded) {
                 this.$treeButton.attr('tabindex', '9');
                 this.$thumbsButton.attr('tabindex', '10');
-            } else {
+            }
+            else {
                 this.$treeButton.attr('tabindex', '');
                 this.$thumbsButton.attr('tabindex', '');
             }
         };
-
         TreeViewLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
             $.publish(TreeViewLeftPanel.EXPAND_FULL_START);
         };
-
         TreeViewLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
-
             if (this.$treeButton.hasClass('on')) {
                 this.openTreeView();
-            } else if (this.$thumbsButton.hasClass('on')) {
+            }
+            else if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
-
             $.publish(TreeViewLeftPanel.EXPAND_FULL_FINISH);
         };
-
         TreeViewLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
-
             $.publish(TreeViewLeftPanel.COLLAPSE_FULL_START);
         };
-
         TreeViewLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
-
             if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
-
             $.publish(TreeViewLeftPanel.COLLAPSE_FULL_FINISH);
         };
-
         TreeViewLeftPanel.prototype.openTreeView = function () {
             var _this = this;
             if (!this.treeView) {
                 this.createTreeView();
             }
-
             this.$treeButton.addClass('on');
             this.$thumbsButton.removeClass('on');
-
             this.treeView.show();
-
             setTimeout(function () {
                 var structure = _this.provider.getStructureByCanvasIndex(_this.provider.canvasIndex);
                 if (_this.treeView && structure && structure.treeNode)
                     _this.treeView.selectNode(structure.treeNode);
             }, 1);
-
             if (this.thumbsView)
                 this.thumbsView.hide();
             if (this.galleryView)
                 this.galleryView.hide();
-
             this.treeView.resize();
         };
-
         TreeViewLeftPanel.prototype.openThumbsView = function () {
             if (!this.thumbsView) {
                 this.createThumbsView();
             }
-
             if (this.isFullyExpanded && !this.galleryView) {
                 this.createGalleryView();
             }
-
             this.$treeButton.removeClass('on');
             this.$thumbsButton.addClass('on');
-
             if (this.treeView)
                 this.treeView.hide();
-
             if (this.isFullyExpanded) {
                 this.thumbsView.hide();
                 if (this.galleryView)
                     this.galleryView.show();
                 if (this.galleryView)
                     this.galleryView.resize();
-            } else {
+            }
+            else {
                 if (this.galleryView)
                     this.galleryView.hide();
                 this.thumbsView.show();
                 this.thumbsView.resize();
             }
         };
-
         TreeViewLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$tabsContent.height(this.$main.height() - (this.$tabs.is(':visible') ? this.$tabs.height() : 0) - this.$tabsContent.verticalPadding());
             this.$views.height(this.$tabsContent.height() - this.$options.height());
         };
@@ -5478,7 +4887,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/centerPanel',["require", "exports", "./shell", "./baseView"], function(require, exports, shell, baseView) {
+define('modules/uv-shared-module/centerPanel',["require", "exports", "./shell", "./baseView"], function (require, exports, shell, baseView) {
     var CenterPanel = (function (_super) {
         __extends(CenterPanel, _super);
         function CenterPanel($element) {
@@ -5486,34 +4895,27 @@ define('modules/uv-shared-module/centerPanel',["require", "exports", "./shell", 
         }
         CenterPanel.prototype.create = function () {
             _super.prototype.create.call(this);
-
             this.$title = $('<div class="title"></div>');
             this.$element.append(this.$title);
-
             this.$content = $('<div id="content" class="content"></div>');
             this.$element.append(this.$content);
-
             if (this.options.titleEnabled === false) {
                 this.$title.hide();
             }
         };
-
         CenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$element.css({
                 'left': shell.Shell.$leftPanel.width(),
                 'width': this.$element.parent().width() - shell.Shell.$leftPanel.width() - shell.Shell.$rightPanel.width()
             });
-
             var titleHeight;
-
-            if (this.options.titleEnabled === false) {
+            if (this.options && this.options.titleEnabled === false) {
                 titleHeight = 0;
-            } else {
+            }
+            else {
                 titleHeight = this.$title.height();
             }
-
             this.$content.height(this.$element.height() - titleHeight);
             this.$content.width(this.$element.width());
         };
@@ -5528,7 +4930,8 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../uv-shared-module/baseExtension", "../uv-shared-module/baseProvider", "../uv-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, baseProvider, baseCenter, utils) {
+define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require", "exports", "../uv-shared-module/baseExtension", "../uv-shared-module/baseProvider", "../uv-shared-module/centerPanel", "../../utils"], function (require, exports, baseExtension, baseProvider, baseCenter, utils) {
+    var util = utils.Utils;
     var SeadragonCenterPanel = (function (_super) {
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
@@ -5536,20 +4939,38 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             this.prevButtonEnabled = false;
             this.nextButtonEnabled = false;
             this.isFirstLoad = true;
+            this.isLoading = false;
             this.controlsVisible = false;
+            this.isCreated = false;
         }
         SeadragonCenterPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('seadragonCenterPanel');
-
             _super.prototype.create.call(this);
-
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.append(this.$viewer);
-
+            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function () {
+                _this.tryLoad();
+            });
+        };
+        SeadragonCenterPanel.prototype.tryLoad = function () {
+            var _this = this;
+            if (this.isLoading)
+                return;
+            if (!this.isCreated) {
+                setTimeout(function () {
+                    _this.createUI();
+                    _this.loadTileSources();
+                }, 500);
+            }
+            else {
+                this.loadTileSources();
+            }
+        };
+        SeadragonCenterPanel.prototype.createUI = function () {
+            var _this = this;
             this.$spinner = $('<div class="spinner"></div>');
             this.$content.append(this.$spinner);
-
             this.$rights = $('<div class="rights">\
                                <div class="header">\
                                    <div class="title"></div>\
@@ -5561,101 +4982,14 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                                    <div class="logo"></div>\
                                </div>\
                           </div>');
-
             this.$rights.find('.header .title').text(this.content.acknowledgements);
             this.$content.append(this.$rights);
-
             this.$closeRightsBtn = this.$rights.find('.header .close');
             this.$closeRightsBtn.on('click', function (e) {
                 e.preventDefault();
                 _this.$rights.hide();
             });
-
-            $.subscribe(baseExtension.BaseExtension.OPEN_MEDIA, function (e, uri) {
-                _this.loadTileSources();
-            });
-
-            this.createSeadragonViewer();
-
-            this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
-            this.$zoomInButton.attr('tabindex', 11);
-            this.$zoomInButton.addClass('zoomIn');
-
-            this.$zoomOutButton = this.$viewer.find('div[title="Zoom out"]');
-            this.$zoomOutButton.attr('tabindex', 12);
-            this.$zoomOutButton.addClass('zoomOut');
-
-            this.$goHomeButton = this.$viewer.find('div[title="Go home"]');
-            this.$goHomeButton.attr('tabindex', 13);
-            this.$goHomeButton.addClass('goHome');
-
-            this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
-            this.$rotateButton.attr('tabindex', 14);
-            this.$rotateButton.addClass('rotate');
-
-            this.$element.on('mousemove', function (e) {
-                if (_this.controlsVisible)
-                    return;
-                _this.controlsVisible = true;
-                _this.viewer.setControlsEnabled(true);
-            });
-
-            this.$element.on('mouseleave', function (e) {
-                if (!_this.controlsVisible)
-                    return;
-                _this.controlsVisible = false;
-                _this.viewer.setControlsEnabled(false);
-            });
-
-            this.$element.on('mousemove', function (e) {
-                if (!_this.$viewer.find('.navigator').ismouseover()) {
-                    if (!_this.controlsVisible)
-                        return;
-                    _this.controlsVisible = false;
-                    _this.viewer.setControlsEnabled(false);
-                }
-            }, this.config.options.controlsFadeAfterInactive);
-
-            this.viewer.addHandler('open', function (viewer) {
-                _this.viewerOpen();
-                $.publish(SeadragonCenterPanel.SEADRAGON_OPEN, [viewer]);
-            });
-
-            this.viewer.addHandler('resize', function (viewer) {
-                $.publish(SeadragonCenterPanel.SEADRAGON_RESIZE, [viewer]);
-                _this.viewerResize(viewer);
-            });
-
-            this.viewer.addHandler('animation-start', function (viewer) {
-                $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION_START, [viewer]);
-            });
-
-            this.viewer.addHandler('animation', function (viewer) {
-                $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION, [viewer]);
-            });
-
-            this.viewer.addHandler('animation-finish', function (viewer) {
-                _this.currentBounds = _this.getBounds();
-
-                $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, [viewer]);
-            });
-
-            this.$rotateButton.on('click', function () {
-                $.publish(SeadragonCenterPanel.SEADRAGON_ROTATION, [_this.viewer.viewport.getRotation()]);
-            });
-
-            this.title = this.extension.provider.getTitle();
-
-            this.createNavigationButtons();
-
-            this.showAttribution();
-
-            this.resize();
-        };
-
-        SeadragonCenterPanel.prototype.createSeadragonViewer = function () {
             var prefixUrl = (window.DEBUG) ? 'modules/uv-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/uv-seadragoncenterpanel-module/';
-
             window.openSeadragonViewer = this.viewer = OpenSeadragon({
                 id: "viewer",
                 showNavigationControl: true,
@@ -5713,141 +5047,165 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                     }
                 }
             });
+            this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
+            this.$zoomInButton.attr('tabindex', 11);
+            this.$zoomInButton.addClass('zoomIn');
+            this.$zoomOutButton = this.$viewer.find('div[title="Zoom out"]');
+            this.$zoomOutButton.attr('tabindex', 12);
+            this.$zoomOutButton.addClass('zoomOut');
+            this.$goHomeButton = this.$viewer.find('div[title="Go home"]');
+            this.$goHomeButton.attr('tabindex', 13);
+            this.$goHomeButton.addClass('goHome');
+            this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
+            this.$rotateButton.attr('tabindex', 14);
+            this.$rotateButton.addClass('rotate');
+            this.$element.on('mousemove', function (e) {
+                if (_this.controlsVisible)
+                    return;
+                _this.controlsVisible = true;
+                _this.viewer.setControlsEnabled(true);
+            });
+            this.$element.on('mouseleave', function (e) {
+                if (!_this.controlsVisible)
+                    return;
+                _this.controlsVisible = false;
+                _this.viewer.setControlsEnabled(false);
+            });
+            this.$element.on('mousemove', function (e) {
+                if (!_this.$viewer.find('.navigator').ismouseover()) {
+                    if (!_this.controlsVisible)
+                        return;
+                    _this.controlsVisible = false;
+                    _this.viewer.setControlsEnabled(false);
+                }
+            }, this.config.options.controlsFadeAfterInactive);
+            this.viewer.addHandler('open', function (viewer) {
+                $.publish(SeadragonCenterPanel.SEADRAGON_OPEN, [viewer]);
+                _this.openTileSourcesHandler();
+            });
+            this.viewer.addHandler('resize', function (viewer) {
+                $.publish(SeadragonCenterPanel.SEADRAGON_RESIZE, [viewer]);
+                _this.viewerResize(viewer);
+            });
+            this.viewer.addHandler('animation-start', function (viewer) {
+                $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION_START, [viewer]);
+            });
+            this.viewer.addHandler('animation', function (viewer) {
+                $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION, [viewer]);
+            });
+            this.viewer.addHandler('animation-finish', function (viewer) {
+                _this.currentBounds = _this.getBounds();
+                $.publish(SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, [viewer]);
+            });
+            this.$rotateButton.on('click', function () {
+                $.publish(SeadragonCenterPanel.SEADRAGON_ROTATION, [_this.viewer.viewport.getRotation()]);
+            });
+            this.title = this.extension.provider.getTitle();
+            this.createNavigationButtons();
+            this.showAttribution();
+            this.isCreated = true;
+            this.resize();
         };
-
         SeadragonCenterPanel.prototype.createNavigationButtons = function () {
             if (!this.provider.isMultiCanvas())
                 return;
-
             this.$prevButton = $('<div class="paging btn prev"></div>');
             this.$prevButton.prop('title', this.content.previous);
             this.viewer.addControl(this.$prevButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
-
             this.$nextButton = $('<div class="paging btn next"></div>');
             this.$nextButton.prop('title', this.content.next);
             this.viewer.addControl(this.$nextButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
-
             var that = this;
-
             this.$prevButton.on('touchstart click', function (e) {
                 e.preventDefault();
                 OpenSeadragon.cancelEvent(e);
-
                 if (!that.prevButtonEnabled)
                     return;
-
                 $.publish(SeadragonCenterPanel.PREV);
             });
-
             this.$nextButton.on('touchstart click', function (e) {
                 e.preventDefault();
                 OpenSeadragon.cancelEvent(e);
-
                 if (!that.nextButtonEnabled)
                     return;
-
                 $.publish(SeadragonCenterPanel.NEXT);
             });
         };
-
-        SeadragonCenterPanel.prototype.viewerOpen = function () {
-            if (this.provider.isMultiCanvas()) {
-                $('.navigator').addClass('extraMargin');
-
-                if (!this.provider.isFirstCanvas()) {
-                    this.enablePrevButton();
-                } else {
-                    this.disablePrevButton();
-                }
-
-                if (!this.provider.isLastCanvas()) {
-                    this.enableNextButton();
-                } else {
-                    this.disableNextButton();
-                }
-            }
-        };
-
         SeadragonCenterPanel.prototype.loadTileSources = function () {
-            if (!this.viewer)
-                return;
-
+            this.isLoading = true;
             this.tileSources = this.provider.getTileSources();
-
             this.$spinner.show();
-
             var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
-
             _.each(this.tileSources, function (ts) {
                 if (!ts.tileSource) {
                     ts.tileSource = imageUnavailableUri;
                 }
             });
-
-            this.viewer.addHandler('open', this.openTileSourcesHandler, this);
-
             this.viewer.open(this.tileSources[0]);
         };
-
         SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
-            var that = this.userData;
-
-            that.viewer.removeHandler('open', that.handler);
-
-            var viewingDirection = that.provider.getViewingDirection();
-
-            if (that.tileSources.length > 1) {
+            var viewingDirection = this.provider.getViewingDirection();
+            if (this.tileSources.length > 1) {
                 if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
-                    that.tileSources[1].y = that.viewer.world.getItemAt(0).getBounds().y + that.viewer.world.getItemAt(0).getBounds().height + that.config.options.pageGap;
-                } else {
-                    that.tileSources[1].x = that.viewer.world.getItemAt(0).getBounds().x + that.viewer.world.getItemAt(0).getBounds().width + that.config.options.pageGap;
+                    this.tileSources[1].y = this.viewer.world.getItemAt(0).getBounds().y + this.viewer.world.getItemAt(0).getBounds().height + this.config.options.pageGap;
                 }
-
-                that.viewer.addTiledImage(that.tileSources[1]);
+                else {
+                    this.tileSources[1].x = this.viewer.world.getItemAt(0).getBounds().x + this.viewer.world.getItemAt(0).getBounds().width + this.config.options.pageGap;
+                }
+                this.viewer.addTiledImage(this.tileSources[1]);
             }
-
-            if (that.isFirstLoad) {
-                that.initialRotation = that.extension.getParam(3 /* rotation */);
-
-                if (that.initialRotation) {
-                    that.viewer.viewport.setRotation(parseInt(that.initialRotation));
+            if (this.isFirstLoad) {
+                this.initialRotation = this.extension.getParam(3 /* rotation */);
+                if (this.initialRotation) {
+                    this.viewer.viewport.setRotation(parseInt(this.initialRotation));
                 }
-
-                that.initialBounds = that.extension.getParam(2 /* zoom */);
-
-                if (that.initialBounds) {
-                    that.initialBounds = that.deserialiseBounds(that.initialBounds);
-                    that.currentBounds = that.initialBounds;
-                    that.fitToBounds(that.currentBounds);
+                this.initialBounds = this.extension.getParam(2 /* zoom */);
+                if (this.initialBounds) {
+                    this.initialBounds = this.deserialiseBounds(this.initialBounds);
+                    this.currentBounds = this.initialBounds;
+                    this.fitToBounds(this.currentBounds);
                 }
-            } else {
-                var settings = that.provider.getSettings();
-
+            }
+            else {
+                var settings = this.provider.getSettings();
                 if (settings.preserveViewport) {
-                    that.fitToBounds(that.currentBounds);
-                } else {
-                    that.goHome();
+                    this.fitToBounds(this.currentBounds);
+                }
+                else {
+                    this.goHome();
                 }
             }
-
-            that.lastTilesNum = that.tileSources.length;
-            that.isFirstLoad = false;
-            that.$spinner.hide();
+            if (this.provider.isMultiCanvas()) {
+                $('.navigator').addClass('extraMargin');
+                if (!this.provider.isFirstCanvas()) {
+                    this.enablePrevButton();
+                }
+                else {
+                    this.disablePrevButton();
+                }
+                if (!this.provider.isLastCanvas()) {
+                    this.enableNextButton();
+                }
+                else {
+                    this.disableNextButton();
+                }
+            }
+            this.lastTilesNum = this.tileSources.length;
+            this.isFirstLoad = false;
+            this.isLoading = false;
+            this.$spinner.hide();
+            this.overlaySearchResults();
         };
-
         SeadragonCenterPanel.prototype.showAttribution = function () {
             var _this = this;
             var attribution = this.provider.getAttribution();
-
             if (!attribution) {
                 this.$rights.hide();
                 return;
             }
-
             var $attribution = this.$rights.find('.attribution');
             var $license = this.$rights.find('.license');
             var $logo = this.$rights.find('.logo');
-
             if (attribution) {
                 $attribution.html(this.provider.sanitize(attribution));
                 $attribution.find('img').one("load", function () {
@@ -5860,18 +5218,15 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                 $attribution.toggleExpandText(this.options.trimAttributionCount, function () {
                     _this.resize();
                 });
-            } else {
+            }
+            else {
                 $attribution.hide();
             }
-
             $license.hide();
-
             $logo.hide();
         };
-
         SeadragonCenterPanel.prototype.goHome = function () {
             var viewingDirection = this.provider.getViewingDirection();
-
             switch (viewingDirection) {
                 case "top-to-bottom":
                     this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.tileSources.length), true);
@@ -5882,34 +5237,27 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                     break;
             }
         };
-
         SeadragonCenterPanel.prototype.disablePrevButton = function () {
             this.prevButtonEnabled = false;
             this.$prevButton.addClass('disabled');
         };
-
         SeadragonCenterPanel.prototype.enablePrevButton = function () {
             this.prevButtonEnabled = true;
             this.$prevButton.removeClass('disabled');
         };
-
         SeadragonCenterPanel.prototype.disableNextButton = function () {
             this.nextButtonEnabled = false;
             this.$nextButton.addClass('disabled');
         };
-
         SeadragonCenterPanel.prototype.enableNextButton = function () {
             this.nextButtonEnabled = true;
             this.$nextButton.removeClass('disabled');
         };
-
         SeadragonCenterPanel.prototype.serialiseBounds = function (bounds) {
             return bounds.x + ',' + bounds.y + ',' + bounds.width + ',' + bounds.height;
         };
-
         SeadragonCenterPanel.prototype.deserialiseBounds = function (bounds) {
             var boundsArr = bounds.split(',');
-
             return {
                 x: Number(boundsArr[0]),
                 y: Number(boundsArr[1]),
@@ -5917,63 +5265,93 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                 height: Number(boundsArr[3])
             };
         };
-
         SeadragonCenterPanel.prototype.fitToBounds = function (bounds) {
             var rect = new OpenSeadragon.Rect();
             rect.x = bounds.x;
             rect.y = bounds.y;
             rect.width = bounds.width;
             rect.height = bounds.height;
-
             this.viewer.viewport.fitBounds(rect, true);
         };
-
         SeadragonCenterPanel.prototype.getBounds = function () {
             if (!this.viewer || !this.viewer.viewport)
                 return null;
-
             var bounds = this.viewer.viewport.getBounds(true);
-
             return {
-                x: utils.Utils.roundNumber(bounds.x, 4),
-                y: utils.Utils.roundNumber(bounds.y, 4),
-                width: utils.Utils.roundNumber(bounds.width, 4),
-                height: utils.Utils.roundNumber(bounds.height, 4)
+                x: util.roundNumber(bounds.x, 4),
+                y: util.roundNumber(bounds.y, 4),
+                width: util.roundNumber(bounds.width, 4),
+                height: util.roundNumber(bounds.height, 4)
             };
         };
-
         SeadragonCenterPanel.prototype.viewerResize = function (viewer) {
             if (!viewer.viewport)
                 return;
-
             var center = viewer.viewport.getCenter(true);
             if (!center)
                 return;
-
             setTimeout(function () {
                 viewer.viewport.panTo(center, true);
             }, 1);
         };
-
+        SeadragonCenterPanel.prototype.overlaySearchResults = function () {
+            var searchResults = this.provider.searchResults;
+            if (!searchResults.length)
+                return;
+            var indices = this.provider.getPagedIndices();
+            for (var i = 0; i < indices.length; i++) {
+                var canvasIndex = indices[i];
+                var searchResult;
+                for (var j = 0; j < searchResults.length; j++) {
+                    if (searchResults[j].canvasIndex === canvasIndex) {
+                        searchResult = searchResults[j];
+                        break;
+                    }
+                }
+                if (!searchResult)
+                    continue;
+                var rects = this.getSearchOverlayRects(searchResult.rects, i);
+                for (var k = 0; k < rects.length; k++) {
+                    var rect = rects[k];
+                    var div = document.createElement("div");
+                    div.className = "searchOverlay";
+                    this.viewer.addOverlay(div, rect);
+                }
+            }
+        };
+        SeadragonCenterPanel.prototype.getSearchOverlayRects = function (rects, index) {
+            var newRects = [];
+            this.tileSources[index];
+            var offsetX = this.viewer.world.getItemAt(index).getBounds().x;
+            var width = this.viewer.world.getItemAt(index).getBounds().width;
+            for (var i = 0; i < rects.length; i++) {
+                var searchRect = rects[i];
+                var factor = 1 / width;
+                var x = (factor * searchRect.x) + (factor * offsetX);
+                var y = factor * searchRect.y;
+                var w = factor * searchRect.width;
+                var h = factor * searchRect.height;
+                var rect = new OpenSeadragon.Rect(x, y, w, h);
+                newRects.push(rect);
+            }
+            return newRects;
+        };
         SeadragonCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
-            this.$title.ellipsisFill(this.title);
-
             this.$viewer.height(this.$content.height() - this.$viewer.verticalMargins());
             this.$viewer.width(this.$content.width() - this.$viewer.horizontalMargins());
-
-            if (this.currentBounds)
+            if (!this.isCreated)
+                return;
+            if (this.currentBounds) {
                 this.fitToBounds(this.currentBounds);
-
+            }
+            this.$title.ellipsisFill(this.title);
             this.$spinner.css('top', (this.$content.height() / 2) - (this.$spinner.height() / 2));
             this.$spinner.css('left', (this.$content.width() / 2) - (this.$spinner.width() / 2));
-
             if (this.provider.isMultiCanvas() && this.$prevButton && this.$nextButton) {
                 this.$prevButton.css('top', (this.$content.height() - this.$prevButton.height()) / 2);
                 this.$nextButton.css('top', (this.$content.height() - this.$nextButton.height()) / 2);
             }
-
             if (this.$rights && this.$rights.is(':visible')) {
                 this.$rights.css('top', this.$content.height() - this.$rights.outerHeight() - this.$rights.verticalMargins());
             }
@@ -5997,7 +5375,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/rightPanel',["require", "exports", "./baseExpandPanel"], function(require, exports, baseExpandPanel) {
+define('modules/uv-shared-module/rightPanel',["require", "exports", "./baseExpandPanel"], function (require, exports, baseExpandPanel) {
     var RightPanel = (function (_super) {
         __extends(RightPanel, _super);
         function RightPanel($element) {
@@ -6005,39 +5383,31 @@ define('modules/uv-shared-module/rightPanel',["require", "exports", "./baseExpan
         }
         RightPanel.prototype.create = function () {
             _super.prototype.create.call(this);
-
             this.$element.width(this.options.panelCollapsedWidth);
         };
-
         RightPanel.prototype.init = function () {
             _super.prototype.init.call(this);
-
             if (this.options.panelOpen && this.provider.isHomeDomain) {
                 this.toggle(true);
             }
         };
-
         RightPanel.prototype.getTargetWidth = function () {
             return this.isExpanded ? this.options.panelCollapsedWidth : this.options.panelExpandedWidth;
         };
-
         RightPanel.prototype.getTargetLeft = function () {
             return this.isExpanded ? this.$element.parent().width() - this.options.panelCollapsedWidth : this.$element.parent().width() - this.options.panelExpandedWidth;
         };
-
         RightPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
-
             if (this.isExpanded) {
                 $.publish(RightPanel.OPEN_RIGHT_PANEL);
-            } else {
+            }
+            else {
                 $.publish(RightPanel.CLOSE_RIGHT_PANEL);
             }
         };
-
         RightPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$element.css({
                 'left': this.$element.parent().width() - this.$element.outerWidth()
             });
@@ -6055,7 +5425,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "exports", "../uv-shared-module/rightPanel"], function(require, exports, baseRight) {
+define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "exports", "../uv-shared-module/rightPanel"], function (require, exports, baseRight) {
     var MoreInfoRightPanel = (function (_super) {
         __extends(MoreInfoRightPanel, _super);
         function MoreInfoRightPanel($element) {
@@ -6063,90 +5433,65 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
         }
         MoreInfoRightPanel.prototype.create = function () {
             this.setConfig('moreInfoRightPanel');
-
             _super.prototype.create.call(this);
-
             this.moreInfoItemTemplate = $('<div class="item">\
                                            <div class="header"></div>\
                                            <div class="text"></div>\
                                        </div>');
-
             this.$items = $('<div class="items"></div>');
             this.$main.append(this.$items);
-
             this.$noData = $('<div class="noData">' + this.content.noData + '</div>');
             this.$main.append(this.$noData);
-
             this.$expandButton.attr('tabindex', '4');
             this.$collapseButton.attr('tabindex', '4');
-
             this.$title.text(this.content.title);
             this.$closedTitle.text(this.content.title);
         };
-
         MoreInfoRightPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
-
             if (this.isUnopened) {
                 this.getInfo();
             }
         };
-
         MoreInfoRightPanel.prototype.getInfo = function () {
             var _this = this;
             this.$main.addClass('loading');
-
             this.provider.getMetaData(function (data) {
                 _this.displayInfo(data);
             }, true);
         };
-
         MoreInfoRightPanel.prototype.displayInfo = function (data) {
             var _this = this;
             this.$main.removeClass('loading');
-
             if (!data) {
                 this.$noData.show();
                 return;
             }
-
             this.$noData.hide();
-
             _.each(data, function (item) {
                 _this.$items.append(_this.buildItem(item, 130));
             });
         };
-
         MoreInfoRightPanel.prototype.buildItem = function (item, trimChars) {
             var $elem = this.moreInfoItemTemplate.clone();
             var $header = $elem.find('.header');
             var $text = $elem.find('.text');
-
             var label = this.provider.getLocalisedValue(item.label);
             var value = this.provider.getLocalisedValue(item.value);
-
             label = this.provider.sanitize(label);
             value = this.provider.sanitize(value);
-
             value = value.replace('\n', '<br>');
-
             $header.html(label);
             $text.html(value);
             $text.targetBlank();
-
             $text.toggleExpandText(trimChars);
-
             label = label.trim();
             label = label.toLowerCase();
-
             $elem.addClass(label.toCssClass());
-
             return $elem;
         };
-
         MoreInfoRightPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$main.height(this.$element.height() - this.$top.height() - this.$main.verticalMargins());
         };
         return MoreInfoRightPanel;
@@ -6160,7 +5505,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-shared-module/footerPanel',["require", "exports", "../../utils", "./baseExtension", "./baseView"], function(require, exports, utils, baseExtension, baseView) {
+define('modules/uv-shared-module/footerPanel',["require", "exports", "../../utils", "./baseExtension", "./baseView"], function (require, exports, utils, baseExtension, baseView) {
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -6169,88 +5514,70 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
         FooterPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('footerPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(baseExtension.BaseExtension.TOGGLE_FULLSCREEN, function () {
                 _this.toggleFullScreen();
             });
-
             $.subscribe(baseExtension.BaseExtension.SETTINGS_CHANGED, function () {
                 _this.updateDownloadButton();
             });
-
             this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
-
             this.$embedButton = $('<a href="#" class="embed" title="' + this.content.embed + '">' + this.content.embed + '</a>');
             this.$options.append(this.$embedButton);
             this.$embedButton.attr('tabindex', '6');
-
             this.$downloadButton = $('<a class="download" title="' + this.content.download + '">' + this.content.download + '</a>');
             this.$options.prepend(this.$downloadButton);
-
             this.$fullScreenBtn = $('<a href="#" class="fullScreen" title="' + this.content.fullScreen + '">' + this.content.fullScreen + '</a>');
             this.$options.append(this.$fullScreenBtn);
             this.$fullScreenBtn.attr('tabindex', '5');
-
             this.$embedButton.onPressed(function () {
                 $.publish(FooterPanel.EMBED);
             });
-
             this.$downloadButton.on('click', function (e) {
                 e.preventDefault();
-
                 $.publish(FooterPanel.DOWNLOAD);
             });
-
             this.$fullScreenBtn.on('click', function (e) {
                 e.preventDefault();
                 $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
             });
-
             if (!utils.Utils.getBool(this.options.embedEnabled, true)) {
                 this.$embedButton.hide();
             }
-
             this.updateDownloadButton();
-
             if (!utils.Utils.getBool(this.options.fullscreenEnabled, true)) {
                 this.$fullScreenBtn.hide();
             }
-
             if (this.provider.isLightbox) {
                 this.$fullScreenBtn.addClass('lightbox');
             }
-
             if (utils.Utils.getBool(this.options.minimiseButtons, false)) {
                 this.$options.addClass('minimiseButtons');
             }
         };
-
         FooterPanel.prototype.toggleFullScreen = function () {
             if (this.extension.isFullScreen) {
                 this.$fullScreenBtn.swapClass('fullScreen', 'exitFullscreen');
                 this.$fullScreenBtn.text(this.content.exitFullScreen);
                 this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
-            } else {
+            }
+            else {
                 this.$fullScreenBtn.swapClass('exitFullscreen', 'fullScreen');
                 this.$fullScreenBtn.text(this.content.fullScreen);
                 this.$fullScreenBtn.attr('title', this.content.fullScreen);
             }
         };
-
         FooterPanel.prototype.updateDownloadButton = function () {
             var configEnabled = utils.Utils.getBool(this.options.downloadEnabled, true);
             var settings = this.provider.getSettings();
-
             if (configEnabled && !settings.pagingEnabled) {
                 this.$downloadButton.show();
-            } else {
+            }
+            else {
                 this.$downloadButton.hide();
             }
         };
-
         FooterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -6267,7 +5594,371 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-dialogues-module/helpDialogue',["require", "exports", "../uv-shared-module/dialogue"], function(require, exports, dialogue) {
+define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseExtension", "../uv-shared-module/footerPanel", "../../utils"], function (require, exports, extension, baseExtension, footer, utils) {
+    var util = utils.Utils;
+    var FooterPanel = (function (_super) {
+        __extends(FooterPanel, _super);
+        function FooterPanel($element) {
+            _super.call(this, $element);
+            this.placemarkerTouched = false;
+        }
+        FooterPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('searchFooterPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(baseExtension.BaseExtension.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.canvasIndexChanged();
+            });
+            $.subscribe(extension.Extension.SETTINGS_CHANGED, function (e, mode) {
+                _this.settingsChanged();
+            });
+            $.subscribe(extension.Extension.SEARCH_RESULTS, function (e, terms, results) {
+                _this.displaySearchResults(terms, results);
+            });
+            $.subscribe(extension.Extension.CREATED, function (e) {
+                _this.checkForSearchParams();
+            });
+            this.$searchContainer = $('<div class="search"></div>');
+            this.$element.prepend(this.$searchContainer);
+            this.$searchOptions = $('<div class="searchOptions"></div>');
+            this.$searchContainer.append(this.$searchOptions);
+            this.$searchLabel = $('<span class="label">' + this.content.searchWithin + '</span>');
+            this.$searchOptions.append(this.$searchLabel);
+            this.$searchTextContainer = $('<div class="searchTextContainer"></div>');
+            this.$searchOptions.append(this.$searchTextContainer);
+            this.$searchText = $('<input class="searchText" type="text" maxlength="100" value="' + this.content.enterKeyword + '" />');
+            this.$searchTextContainer.append(this.$searchText);
+            this.$searchButton = $('<a class="imageButton searchButton"></a>');
+            this.$searchTextContainer.append(this.$searchButton);
+            this.$searchPagerContainer = $('<div class="searchPager"></div>');
+            this.$element.prepend(this.$searchPagerContainer);
+            this.$searchPagerControls = $('<div class="controls"></div>');
+            this.$searchPagerContainer.prepend(this.$searchPagerControls);
+            this.$previousResultButton = $('<a class="imageButton previousResult"></a>');
+            this.$searchPagerControls.append(this.$previousResultButton);
+            this.$searchResultsInfo = $('<div class="searchResultsInfo"><span class="number">x</span> <span class="foundFor"></span> \'<span class="terms">y</span>\'</div>');
+            this.$searchPagerControls.append(this.$searchResultsInfo);
+            this.$clearSearchResultsButton = $('<a class="clearSearch">' + this.content.clearSearch + '</a>');
+            this.$searchResultsInfo.append(this.$clearSearchResultsButton);
+            this.$nextResultButton = $('<a class="imageButton nextResult"></a>');
+            this.$searchPagerControls.append(this.$nextResultButton);
+            this.$searchResultsContainer = $('<div class="searchResults"></div>');
+            this.$element.prepend(this.$searchResultsContainer);
+            this.$line = $('<div class="line"></div>');
+            this.$searchResultsContainer.append(this.$line);
+            this.$pagePositionMarker = $('<div class="positionPlacemarker"></div>');
+            this.$searchResultsContainer.append(this.$pagePositionMarker);
+            this.$pagePositionLabel = $('<div class="label"></div>');
+            this.$searchResultsContainer.append(this.$pagePositionLabel);
+            this.$placemarkerDetails = $('<div class="placeMarkerDetails"></div>');
+            this.$searchResultsContainer.append(this.$placemarkerDetails);
+            this.$placemarkerDetailsTop = $('<h1></h1>');
+            this.$placemarkerDetails.append(this.$placemarkerDetailsTop);
+            this.$placemarkerDetailsBottom = $('<p></p>');
+            this.$placemarkerDetails.append(this.$placemarkerDetailsBottom);
+            this.$searchPagerContainer.hide();
+            this.$placemarkerDetails.hide();
+            var that = this;
+            this.$searchButton.on('click', function (e) {
+                e.preventDefault();
+                _this.search(_this.$searchText.val());
+            });
+            this.$searchText.on('focus', function () {
+                if (_this.$searchText.val() == _this.content.enterKeyword)
+                    _this.$searchText.val('');
+            });
+            this.$placemarkerDetails.on('mouseleave', function () {
+                $(this).hide();
+                var placemarkers = that.getSearchResultPlacemarkers();
+                placemarkers.removeClass('hover');
+            });
+            this.$placemarkerDetails.on('click', function (e) {
+                $.publish(FooterPanel.VIEW_PAGE, [_this.currentPlacemarkerIndex]);
+            });
+            this.$previousResultButton.on('click', function (e) {
+                e.preventDefault();
+                $.publish(FooterPanel.PREV_SEARCH_RESULT);
+            });
+            this.$nextResultButton.on('click', function (e) {
+                e.preventDefault();
+                $.publish(FooterPanel.NEXT_SEARCH_RESULT);
+            });
+            this.$clearSearchResultsButton.on('click', function (e) {
+                e.preventDefault();
+                $.publish(FooterPanel.CLEAR_SEARCH);
+                _this.clearSearchResults();
+            });
+            this.$searchText.on('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    _this.$searchText.blur();
+                }
+            });
+            if (!this.provider.isSearchWithinEnabled()) {
+                this.$searchContainer.hide();
+                this.$searchPagerContainer.hide();
+                this.$searchResultsContainer.hide();
+                this.$element.addClass('min');
+            }
+        };
+        FooterPanel.prototype.checkForSearchParams = function () {
+            if (this.provider.isDeepLinkingEnabled()) {
+                var terms = util.getHashParameter('h', parent.document) || util.getHashParameter('q', parent.document);
+                if (terms) {
+                    this.terms = terms.replace(/\+/g, " ").replace(/"/g, "");
+                    this.$searchText.blur();
+                    $.publish(FooterPanel.SEARCH, [this.terms]);
+                }
+            }
+        };
+        FooterPanel.prototype.search = function (terms) {
+            this.terms = terms;
+            if (this.terms == '' || this.terms == this.content.enterKeyword) {
+                this.extension.showDialogue(this.config.modules.genericDialogue.content.emptyValue, function () {
+                    this.$searchText.focus();
+                });
+                return;
+            }
+            ;
+            this.$searchText.blur();
+            $.publish(FooterPanel.SEARCH, [this.terms]);
+        };
+        FooterPanel.prototype.getSearchResultPlacemarkers = function () {
+            return this.$searchResultsContainer.find('.searchResultPlacemarker');
+        };
+        FooterPanel.prototype.positionSearchResultPlacemarkers = function () {
+            var results = this.provider.searchResults;
+            if (!results.length)
+                return;
+            var placemarkers = this.getSearchResultPlacemarkers();
+            placemarkers.remove();
+            var pageWidth = this.getPageLineRatio();
+            var lineTop = this.$line.position().top;
+            var lineLeft = this.$line.position().left;
+            var that = this;
+            for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+                var distance = result.canvasIndex * pageWidth;
+                var $placemarker = $('<div class="searchResultPlacemarker" data-index="' + result.canvasIndex + '"></div>');
+                $placemarker[0].ontouchstart = function (e) {
+                    that.onPlacemarkerTouchStart.call(this, that);
+                };
+                $placemarker.click(function (e) {
+                    that.onPlacemarkerClick.call(this, that);
+                });
+                $placemarker.mouseenter(function (e) {
+                    that.onPlacemarkerMouseEnter.call(this, that);
+                });
+                $placemarker.mouseleave(function (e) {
+                    that.onPlacemarkerMouseLeave.call(this, e, that);
+                });
+                this.$searchResultsContainer.append($placemarker);
+                var top = lineTop - $placemarker.height();
+                var left = lineLeft + distance - ($placemarker.width() / 2);
+                $placemarker.css({
+                    top: top,
+                    left: left
+                });
+            }
+        };
+        FooterPanel.prototype.onPlacemarkerTouchStart = function (that) {
+            that.placemarkerTouched = true;
+            var $placemarker = $(this);
+            var index = parseInt($placemarker.attr('data-index'));
+            $.publish(FooterPanel.VIEW_PAGE, [index]);
+        };
+        FooterPanel.prototype.onPlacemarkerClick = function (that) {
+            if (that.placemarkerTouched)
+                return;
+            that.placemarkerTouched = false;
+            var $placemarker = $(this);
+            var index = parseInt($placemarker.attr('data-index'));
+            $.publish(FooterPanel.VIEW_PAGE, [index]);
+        };
+        FooterPanel.prototype.onPlacemarkerMouseEnter = function (that) {
+            if (that.placemarkerTouched)
+                return;
+            var $placemarker = $(this);
+            $placemarker.addClass('hover');
+            var canvasIndex = parseInt($placemarker.attr('data-index'));
+            var placemarkers = that.getSearchResultPlacemarkers();
+            var elemIndex = placemarkers.index($placemarker[0]);
+            that.currentPlacemarkerIndex = canvasIndex;
+            that.$placemarkerDetails.show();
+            var title = "{0} {1}";
+            var mode = that.extension.getMode();
+            if (mode == extension.Extension.PAGE_MODE) {
+                var canvas = that.provider.getCanvasByIndex(canvasIndex);
+                var label = canvas.label;
+                if (label == "") {
+                    label = "-";
+                }
+                title = String.prototype.format(title, that.content.pageCaps, label);
+            }
+            else {
+                title = String.prototype.format(title, that.content.imageCaps, canvasIndex + 1);
+            }
+            that.$placemarkerDetailsTop.html(title);
+            var result = that.provider.searchResults[elemIndex];
+            var terms = util.ellipsis(that.terms, 20);
+            var instancesFoundText;
+            if (result.rects.length == 1) {
+                instancesFoundText = that.content.instanceFound;
+                instancesFoundText = String.prototype.format(instancesFoundText, terms);
+            }
+            else {
+                instancesFoundText = that.content.instancesFound;
+                instancesFoundText = String.prototype.format(instancesFoundText, result.rects.length, terms);
+            }
+            that.$placemarkerDetailsBottom.html(instancesFoundText);
+            var pos = $placemarker.position();
+            var top = pos.top - that.$placemarkerDetails.height();
+            var left = pos.left;
+            if (left < that.$placemarkerDetails.width() / 2) {
+                left = 0 - ($placemarker.width() / 2);
+            }
+            else if (left > that.$line.width() - (that.$placemarkerDetails.width() / 2)) {
+                left = that.$line.width() - that.$placemarkerDetails.width() + ($placemarker.width() / 2);
+            }
+            else {
+                left -= (that.$placemarkerDetails.width() / 2);
+            }
+            that.$placemarkerDetails.css({
+                top: top,
+                left: left
+            });
+        };
+        FooterPanel.prototype.onPlacemarkerMouseLeave = function (e, that) {
+            var $placemarker = $(this);
+            var newElement = e.toElement || e.relatedTarget;
+            var isChild = $(newElement).closest(that.$placemarkerDetails).length;
+            if (newElement != that.$placemarkerDetails.get(0) && isChild == 0) {
+                that.$placemarkerDetails.hide();
+                $placemarker.removeClass('hover');
+            }
+        };
+        FooterPanel.prototype.setPageMarkerPosition = function () {
+            if (this.provider.canvasIndex == null)
+                return;
+            var pageLineRatio = this.getPageLineRatio();
+            var lineTop = this.$line.position().top;
+            var lineLeft = this.$line.position().left;
+            var position = this.provider.canvasIndex * pageLineRatio;
+            var top = lineTop;
+            var left = lineLeft + position;
+            this.$pagePositionMarker.css({
+                top: top,
+                left: left
+            });
+            var lineWidth = this.$line.width();
+            if (left + this.$pagePositionLabel.outerWidth(true) > lineWidth) {
+                left -= this.$pagePositionLabel.outerWidth(true);
+                this.$pagePositionLabel.removeClass('right');
+                this.$pagePositionLabel.addClass('left');
+            }
+            else {
+                this.$pagePositionLabel.removeClass('left');
+                this.$pagePositionLabel.addClass('right');
+            }
+            this.$pagePositionLabel.css({
+                top: top,
+                left: left
+            });
+        };
+        FooterPanel.prototype.clearSearchResults = function () {
+            this.provider.searchResults = [];
+            var placemarkers = this.getSearchResultPlacemarkers();
+            placemarkers.remove();
+            this.$searchText.val(this.content.enterKeyword);
+            this.$searchContainer.show();
+            this.$searchPagerContainer.hide();
+            this.$searchText.focus();
+        };
+        FooterPanel.prototype.getPageLineRatio = function () {
+            var lineWidth = this.$line.width();
+            if (this.provider.getTotalCanvases() == 1)
+                return 0;
+            return lineWidth / (this.provider.getTotalCanvases() - 1);
+        };
+        FooterPanel.prototype.canvasIndexChanged = function () {
+            this.setPageMarkerPosition();
+            this.setPlacemarkerLabel();
+        };
+        FooterPanel.prototype.settingsChanged = function () {
+            this.setPlacemarkerLabel();
+        };
+        FooterPanel.prototype.setPlacemarkerLabel = function () {
+            var mode = this.extension.getMode();
+            var displaying = this.content.displaying;
+            var index = this.provider.canvasIndex;
+            if (mode == extension.Extension.PAGE_MODE) {
+                var canvas = this.provider.getCanvasByIndex(index);
+                var label = canvas.label;
+                if (label == "") {
+                    label = "-";
+                }
+                var lastCanvasOrderLabel = this.provider.getLastCanvasLabel();
+                this.$pagePositionLabel.html(String.prototype.format(displaying, this.content.page, label, lastCanvasOrderLabel));
+            }
+            else {
+                this.$pagePositionLabel.html(String.prototype.format(displaying, this.content.image, index + 1, this.provider.getTotalCanvases()));
+            }
+        };
+        FooterPanel.prototype.displaySearchResults = function (terms, results) {
+            if (!results)
+                return;
+            this.positionSearchResultPlacemarkers();
+            this.$searchContainer.hide();
+            this.$searchPagerControls.css({
+                'left': 0
+            });
+            var $number = this.$searchPagerContainer.find('.number');
+            $number.text(results.length);
+            var foundFor = this.$searchResultsInfo.find('.foundFor');
+            if (results.length == 1) {
+                foundFor.html(this.content.resultFoundFor);
+            }
+            else {
+                foundFor.html(this.content.resultsFoundFor);
+            }
+            var $terms = this.$searchPagerContainer.find('.terms');
+            $terms.html(util.ellipsis(terms, 20));
+            $terms.prop('title', terms);
+            this.$searchPagerContainer.show();
+            this.resize();
+        };
+        FooterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            if (this.provider.searchResults.length) {
+                this.positionSearchResultPlacemarkers();
+            }
+            this.setPageMarkerPosition();
+            this.$searchPagerContainer.width(this.$element.width());
+            var center = this.$element.width() / 2;
+            this.$searchPagerControls.css({
+                'left': center - (this.$searchPagerControls.width() / 2)
+            });
+            this.$searchOptions.css({
+                'left': center - (this.$searchOptions.outerWidth() / 2)
+            });
+        };
+        FooterPanel.PREV_SEARCH_RESULT = 'footer.onPrevSearchResult';
+        FooterPanel.NEXT_SEARCH_RESULT = 'footer.onNextSearchResult';
+        FooterPanel.CLEAR_SEARCH = 'footer.onClearSearch';
+        FooterPanel.SEARCH = 'footer.onSearch';
+        FooterPanel.VIEW_PAGE = 'footer.onViewPage';
+        return FooterPanel;
+    })(footer.FooterPanel);
+    exports.FooterPanel = FooterPanel;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('modules/uv-dialogues-module/helpDialogue',["require", "exports", "../uv-shared-module/dialogue"], function (require, exports, dialogue) {
     var HelpDialogue = (function (_super) {
         __extends(HelpDialogue, _super);
         function HelpDialogue($element) {
@@ -6276,34 +5967,24 @@ define('modules/uv-dialogues-module/helpDialogue',["require", "exports", "../uv-
         HelpDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('helpDialogue');
-
             _super.prototype.create.call(this);
-
             $.subscribe(HelpDialogue.SHOW_HELP_DIALOGUE, function (e, params) {
                 _this.open();
             });
-
             $.subscribe(HelpDialogue.HIDE_HELP_DIALOGUE, function (e) {
                 _this.close();
             });
-
             this.$title = $('<h1></h1>');
             this.$content.append(this.$title);
-
             this.$scroll = $('<div class="scroll"></div>');
             this.$content.append(this.$scroll);
-
             this.$message = $('<p></p>');
             this.$scroll.append(this.$message);
-
             this.$title.text(this.content.title);
             this.$message.html(this.content.text);
-
             this.$message.targetBlank();
-
             this.$element.hide();
         };
-
         HelpDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -6320,7 +6001,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../../utils", "../uv-shared-module/dialogue"], function(require, exports, utils, dialogue) {
+define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../../utils", "../uv-shared-module/dialogue"], function (require, exports, utils, dialogue) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -6329,59 +6010,43 @@ define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../..
         EmbedDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('embedDialogue');
-
             _super.prototype.create.call(this);
-
             var that = this;
-
             $.subscribe(EmbedDialogue.SHOW_EMBED_DIALOGUE, function (e, params) {
                 _this.open();
                 _this.formatCode();
             });
-
             $.subscribe(EmbedDialogue.HIDE_EMBED_DIALOGUE, function (e) {
                 _this.close();
             });
-
             this.smallWidth = 560;
             this.smallHeight = 420;
-
             this.mediumWidth = 640;
             this.mediumHeight = 480;
-
             this.largeWidth = 800;
             this.largeHeight = 600;
-
             this.currentWidth = this.smallWidth;
             this.currentHeight = this.smallHeight;
-
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
-
             this.$intro = $('<p>' + this.content.instructions + '</p>');
             this.$content.append(this.$intro);
-
             this.$code = $('<textarea class="code"></textarea>');
             this.$content.append(this.$code);
-
             this.$sizes = $('<div class="sizes"></div>');
             this.$content.append(this.$sizes);
-
             this.$smallSize = $('<div class="size small"></div>');
             this.$sizes.append(this.$smallSize);
             this.$smallSize.append('<p>' + this.smallWidth + ' x ' + this.smallHeight + '</p>');
             this.$smallSize.append('<div class="box"></div>');
-
             this.$mediumSize = $('<div class="size medium"></div>');
             this.$sizes.append(this.$mediumSize);
             this.$mediumSize.append('<p>' + this.mediumWidth + ' x ' + this.mediumHeight + '</p>');
             this.$mediumSize.append('<div class="box"></div>');
-
             this.$largeSize = $('<div class="size large"></div>');
             this.$sizes.append(this.$largeSize);
             this.$largeSize.append('<p>' + this.largeWidth + ' x ' + this.largeHeight + '</p>');
             this.$largeSize.append('<div class="box"></div>');
-
             this.$customSize = $('<div class="size custom"></div>');
             this.$sizes.append(this.$customSize);
             this.$customSize.append('<p>' + this.content.customSize + '</p>');
@@ -6399,80 +6064,57 @@ define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../..
             this.$customHeight = $('<input id="height" type="text" maxlength="5"></input>');
             this.$customSizeHeightWrap.append(this.$customHeight);
             this.$customSizeHeightWrap.append('<span>px</span>');
-
             this.$code.focus(function () {
                 $(this).select();
             });
-
             this.$code.mouseup(function (e) {
                 e.preventDefault();
             });
-
             this.$smallSize.click(function (e) {
                 e.preventDefault();
-
                 _this.currentWidth = _this.smallWidth;
                 _this.currentHeight = _this.smallHeight;
-
                 _this.formatCode();
             });
-
             this.$mediumSize.click(function (e) {
                 e.preventDefault();
-
                 _this.currentWidth = _this.mediumWidth;
                 _this.currentHeight = _this.mediumHeight;
-
                 _this.formatCode();
             });
-
             this.$largeSize.click(function (e) {
                 e.preventDefault();
-
                 _this.currentWidth = _this.largeWidth;
                 _this.currentHeight = _this.largeHeight;
-
                 _this.formatCode();
             });
-
             this.$smallSize.addClass('selected');
-
             this.$sizes.find('.size').click(function (e) {
                 e.preventDefault();
-
                 that.$sizes.find('.size').removeClass('selected');
                 $(this).addClass('selected');
             });
-
             this.$customWidth.keydown(function (event) {
                 utils.Utils.numericalInput(event);
             });
-
             this.$customWidth.keyup(function (event) {
                 _this.getCustomSize();
             });
-
             this.$customHeight.keydown(function (event) {
                 utils.Utils.numericalInput(event);
             });
-
             this.$customHeight.keyup(function (event) {
                 _this.getCustomSize();
             });
-
             this.$element.hide();
         };
-
         EmbedDialogue.prototype.getCustomSize = function () {
             this.currentWidth = this.$customWidth.val();
             this.currentHeight = this.$customHeight.val();
-
             this.formatCode();
         };
-
         EmbedDialogue.prototype.formatCode = function () {
         };
-
         EmbedDialogue.prototype.resize = function () {
             this.$element.css({
                 'top': this.extension.height() - this.$element.outerHeight(true)
@@ -6491,36 +6133,29 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel"], function(require, exports, embed, baseCenter) {
+define('extensions/uv-seadragon-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel"], function (require, exports, embed, baseCenter) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
             var _this = this;
             _super.call(this, $element);
-
             $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_OPEN, function (viewer) {
                 _this.formatCode();
             });
-
             $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (viewer) {
                 _this.formatCode();
             });
         }
         EmbedDialogue.prototype.create = function () {
             this.setConfig('embedDialogue');
-
             _super.prototype.create.call(this);
         };
-
         EmbedDialogue.prototype.formatCode = function () {
             var zoom = this.extension.getViewerBounds();
             var rotation = this.extension.getViewerRotation();
-
             this.code = this.provider.getEmbedScript(this.provider.canvasIndex, zoom, this.currentWidth, this.currentHeight, rotation, this.options.embedTemplate);
-
             this.$code.val(this.code);
         };
-
         EmbedDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -6535,7 +6170,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports", "../../modules/uv-shared-module/dialogue"], function(require, exports, dialogue) {
+define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports", "../../modules/uv-shared-module/dialogue"], function (require, exports, dialogue) {
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -6545,56 +6180,40 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
         DownloadDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('downloadDialogue');
-
             _super.prototype.create.call(this);
-
             $.subscribe(DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE, function (e, params) {
                 _this.open();
                 _this.opened();
             });
-
             $.subscribe(DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE, function (e) {
                 _this.close();
             });
-
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
-
             this.$downloadOptions = $('<ol class="options"></ol>');
             this.$content.append(this.$downloadOptions);
-
             this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions" /><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$currentViewAsJpgButton);
             this.$currentViewAsJpgButton.hide();
-
             this.$wholeImageHighResAsJpgButton = $('<li><input id="wholeImageHighResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageHighResAsJpg">' + this.content.wholeImageHighResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageHighResAsJpgButton);
             this.$wholeImageHighResAsJpgButton.hide();
-
             this.$wholeImageLowResAsJpgButton = $('<li><input id="wholeImageLowResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageLowResAsJpg">' + this.content.wholeImageLowResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageLowResAsJpgButton);
             this.$wholeImageLowResAsJpgButton.hide();
-
             this.$entireDocumentAsPdfButton = $('<li><input id="entireDocumentAsPdf" type="radio" name="downloadOptions" /><label for="entireDocumentAsPdf">' + this.content.entireDocumentAsPdf + '</label></li>');
             this.$downloadOptions.append(this.$entireDocumentAsPdfButton);
             this.$entireDocumentAsPdfButton.hide();
-
             this.$buttonsContainer = $('<div class="buttons"></div>');
             this.$content.append(this.$buttonsContainer);
-
             this.$downloadButton = $('<a class="btn btn-primary" href="#">' + this.content.download + '</a>');
             this.$buttonsContainer.append(this.$downloadButton);
-
             var that = this;
-
             this.$downloadButton.on('click', function (e) {
                 e.preventDefault();
-
                 var selectedOption = that.getSelectedOption();
-
                 var id = selectedOption.attr('id');
                 var canvas = _this.provider.getCurrentCanvas();
-
                 switch (id) {
                     case 'currentViewAsJpg':
                         var viewer = that.extension.getViewer();
@@ -6614,59 +6233,44 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                         $.publish(DownloadDialogue.DOWNLOAD, ['entireDocumentAsPdf']);
                         break;
                 }
-
                 _this.close();
             });
-
             this.$element.hide();
         };
-
         DownloadDialogue.prototype.opened = function () {
             if (this.isOpened)
                 return;
-
             this.isOpened = true;
-
             if (this.isDownloadOptionAvailable("currentViewAsJpg")) {
                 this.$currentViewAsJpgButton.show();
             }
-
             if (this.isDownloadOptionAvailable("wholeImageHighResAsJpg")) {
                 this.$wholeImageHighResAsJpgButton.show();
             }
-
             if (this.isDownloadOptionAvailable("wholeImageLowResAsJpg")) {
                 this.$wholeImageLowResAsJpgButton.show();
             }
-
             if (this.isDownloadOptionAvailable("entireDocumentAsPdf")) {
                 this.$entireDocumentAsPdfButton.show();
             }
-
             this.$downloadOptions.find('input:first').prop("checked", true);
-
             this.resize();
         };
-
         DownloadDialogue.prototype.getFileExtension = function (fileUri) {
             return fileUri.split('.').pop();
         };
-
         DownloadDialogue.prototype.getSelectedOption = function () {
             return this.$downloadOptions.find("input:checked");
         };
-
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
             if (option === "entireDocumentAsPdf") {
                 if (this.provider.getManifestation("pdf")) {
                     return true;
                 }
-
                 return false;
             }
             return true;
         };
-
         DownloadDialogue.prototype.resize = function () {
             this.$element.css({
                 'top': this.extension.height() - this.$element.outerHeight(true)
@@ -6686,7 +6290,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/settingsDialogue"], function(require, exports, baseSettings) {
+define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/settingsDialogue"], function (require, exports, baseSettings) {
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -6695,66 +6299,53 @@ define('extensions/uv-seadragon-extension/settingsDialogue',["require", "exports
         SettingsDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('settingsDialogue');
-
             _super.prototype.create.call(this);
-
             this.$pagingEnabled = $('<div class="setting pagingEnabled"></div>');
             this.$scroll.append(this.$pagingEnabled);
-
             this.$pagingEnabledCheckbox = $('<input id="pagingEnabled" type="checkbox" />');
             this.$pagingEnabled.append(this.$pagingEnabledCheckbox);
-
             this.$pagingEnabledLabel = $('<label for="pagingEnabled">' + this.content.pagingEnabled + '</label>');
             this.$pagingEnabled.append(this.$pagingEnabledLabel);
-
             this.$preserveViewport = $('<div class="setting preserveViewport"></div>');
             this.$scroll.append(this.$preserveViewport);
-
             this.$preserveViewportCheckbox = $('<input id="preserveViewport" type="checkbox" />');
             this.$preserveViewport.append(this.$preserveViewportCheckbox);
-
             this.$preserveViewportLabel = $('<label for="preserveViewport">' + this.content.preserveViewport + '</label>');
             this.$preserveViewport.append(this.$preserveViewportLabel);
-
             this.$pagingEnabledCheckbox.change(function () {
                 var settings = _this.getSettings();
-
                 if (_this.$pagingEnabledCheckbox.is(":checked")) {
                     settings.pagingEnabled = true;
-                } else {
+                }
+                else {
                     settings.pagingEnabled = false;
                 }
-
                 _this.updateSettings(settings);
             });
-
             this.$preserveViewportCheckbox.change(function () {
                 var settings = _this.getSettings();
-
                 if (_this.$preserveViewportCheckbox.is(":checked")) {
                     settings.preserveViewport = true;
-                } else {
+                }
+                else {
                     settings.preserveViewport = false;
                 }
-
                 _this.updateSettings(settings);
             });
         };
-
         SettingsDialogue.prototype.open = function () {
             _super.prototype.open.call(this);
-
             var settings = this.getSettings();
-
             if (settings.pagingEnabled) {
                 this.$pagingEnabledCheckbox.attr("checked", "checked");
-            } else {
+            }
+            else {
                 this.$pagingEnabledCheckbox.removeAttr("checked");
             }
-
             if (settings.preserveViewport) {
                 this.$preserveViewportCheckbox.attr("checked", "checked");
-            } else {
+            }
+            else {
                 this.$preserveViewportCheckbox.removeAttr("checked");
             }
         };
@@ -6769,7 +6360,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-dialogues-module/externalContentDialogue',["require", "exports", "../uv-shared-module/dialogue"], function(require, exports, dialogue) {
+define('modules/uv-dialogues-module/externalContentDialogue',["require", "exports", "../uv-shared-module/dialogue"], function (require, exports, dialogue) {
     var ExternalContentDialogue = (function (_super) {
         __extends(ExternalContentDialogue, _super);
         function ExternalContentDialogue($element) {
@@ -6778,27 +6369,20 @@ define('modules/uv-dialogues-module/externalContentDialogue',["require", "export
         ExternalContentDialogue.prototype.create = function () {
             var _this = this;
             this.setConfig('externalContentDialogue');
-
             _super.prototype.create.call(this);
-
             $.subscribe(ExternalContentDialogue.SHOW_EXTERNALCONTENT_DIALOGUE, function (e, params) {
                 _this.open();
                 _this.$iframe.prop('src', params.uri);
             });
-
             $.subscribe(ExternalContentDialogue.HIDE_EXTERNALCONTENT_DIALOGUE, function (e) {
                 _this.close();
             });
-
             this.$iframe = $('<iframe></iframe>');
             this.$content.append(this.$iframe);
-
             this.$element.hide();
         };
-
         ExternalContentDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             this.$iframe.width(this.$content.width());
             this.$iframe.height(this.$content.height());
         };
@@ -6809,235 +6393,203 @@ define('modules/uv-dialogues-module/externalContentDialogue',["require", "export
     exports.ExternalContentDialogue = ExternalContentDialogue;
 });
 
-define('extensions/uv-seadragon-extension/dependencies',[],function() {
-    return {
-        'openseadragon': './js/openseadragon'
-    };
-
-    var Dependencies = (function () {
-        function Dependencies() {
-        }
-        return Dependencies;
-    })();
-    exports.Dependencies = Dependencies;
-});
-
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "./downloadDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue", "../../uv-seadragon-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, baseCenter, center, baseRight, right, footer, help, embed, download, settingsDialogue, externalContentDialogue, dependencies) {
+define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-searchfooterpanel-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "./downloadDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, center, baseRight, right, footer, help, embed, download, settingsDialogue, externalContentDialogue) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
             _super.call(this, provider);
+            this.isLoading = false;
             this.currentRotation = 0;
         }
         Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
             _super.prototype.create.call(this);
-
             var that = this;
-
             $.subscribe(header.PagingHeaderPanel.FIRST, function (e) {
                 _this.viewPage(_this.provider.getFirstPageIndex());
             });
-
             $.subscribe(Extension.HOME, function (e) {
                 _this.viewPage(_this.provider.getFirstPageIndex());
             });
-
             $.subscribe(header.PagingHeaderPanel.LAST, function (e) {
                 _this.viewPage(_this.provider.getLastPageIndex());
             });
-
             $.subscribe(Extension.END, function (e) {
                 _this.viewPage(_this.provider.getLastPageIndex());
             });
-
             $.subscribe(header.PagingHeaderPanel.PREV, function (e) {
                 _this.viewPage(_this.provider.getPrevPageIndex());
             });
-
             $.subscribe(Extension.PAGE_UP, function (e) {
                 _this.viewPage(_this.provider.getPrevPageIndex());
             });
-
             $.subscribe(header.PagingHeaderPanel.NEXT, function (e) {
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
-
             $.subscribe(Extension.PAGE_DOWN, function (e) {
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
-
             $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
                 Extension.mode = mode;
                 $.publish(Extension.SETTINGS_CHANGED, [mode]);
             });
-
             $.subscribe(header.PagingHeaderPanel.PAGE_SEARCH, function (e, value) {
                 _this.viewLabel(value);
             });
-
             $.subscribe(header.PagingHeaderPanel.IMAGE_SEARCH, function (e, index) {
                 _this.viewPage(index);
             });
-
+            $.subscribe(footer.FooterPanel.SEARCH, function (e, terms) {
+                _this.triggerSocket(footer.FooterPanel.SEARCH, terms);
+                _this.searchWithin(terms);
+            });
+            $.subscribe(footer.FooterPanel.VIEW_PAGE, function (e, index) {
+                _this.viewPage(index);
+            });
+            $.subscribe(footer.FooterPanel.NEXT_SEARCH_RESULT, function () {
+                _this.nextSearchResult();
+            });
+            $.subscribe(footer.FooterPanel.PREV_SEARCH_RESULT, function () {
+                _this.prevSearchResult();
+            });
             $.subscribe(header.PagingHeaderPanel.UPDATE_SETTINGS, function (e) {
                 _this.updateSettings();
             });
-
             $.subscribe(settingsDialogue.SettingsDialogue.UPDATE_SETTINGS, function (e) {
                 _this.updateSettings();
             });
-
             $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
                 _this.treeNodeSelected(data);
             });
-
             $.subscribe(thumbsView.ThumbsView.THUMB_SELECTED, function (e, index) {
                 _this.viewPage(index);
             });
-
             $.subscribe(galleryView.GalleryView.THUMB_SELECTED, function (e, index) {
                 _this.viewPage(index);
             });
-
             $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(left.TreeViewLeftPanel.EXPAND_FULL_START, function (e) {
                 shell.Shell.$centerPanel.hide();
                 shell.Shell.$rightPanel.hide();
             });
-
             $.subscribe(left.TreeViewLeftPanel.COLLAPSE_FULL_FINISH, function (e) {
                 shell.Shell.$centerPanel.show();
                 shell.Shell.$rightPanel.show();
                 _this.resize();
             });
-
-            $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
+            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
                 if (_this.centerPanel) {
                     _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
                 }
-
                 var canvas = _this.provider.getCurrentCanvas();
-
                 _this.triggerSocket(Extension.CURRENT_VIEW_URI, {
                     "cropUri": that.provider.getCroppedImageUri(canvas, _this.getViewer(), true),
                     "fullUri": that.provider.getConfinedImageUri(canvas, canvas.width, canvas.height)
                 });
             });
-
-            $.subscribe(baseCenter.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
+            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_OPEN, function () {
+                setTimeout(function () {
+                    _this.isLoading = false;
+                }, 500);
+            });
+            $.subscribe(center.SeadragonCenterPanel.SEADRAGON_ROTATION, function (e, rotation) {
                 _this.currentRotation = rotation;
                 _this.setParam(3 /* rotation */, rotation);
             });
-
-            $.subscribe(baseCenter.SeadragonCenterPanel.PREV, function (e) {
+            $.subscribe(center.SeadragonCenterPanel.PREV, function (e) {
                 _this.viewPage(_this.provider.getPrevPageIndex());
             });
-
-            $.subscribe(baseCenter.SeadragonCenterPanel.NEXT, function (e) {
+            $.subscribe(center.SeadragonCenterPanel.NEXT, function (e) {
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
-
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
             });
-
             $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
                 $.publish(download.DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE);
             });
-
-            var deps = overrideDependencies || dependencies;
+            if (overrideDependencies) {
+                this.loadDependencies(overrideDependencies);
+            }
+            else {
+                this.getDependencies(function (deps) {
+                    _this.loadDependencies(deps);
+                });
+            }
+        };
+        Extension.prototype.getDependencies = function (callback) {
+            require(["./dependencies"], function (deps) {
+                callback(deps);
+            });
+        };
+        Extension.prototype.loadDependencies = function (deps) {
+            var that = this;
             require(_.values(deps), function () {
                 that.createModules();
-
                 that.setParams();
-
                 var canvasIndex;
-
                 if (!that.provider.isReload) {
                     canvasIndex = parseInt(that.getParam(1 /* canvasIndex */)) || that.provider.getStartCanvasIndex();
                 }
-
                 if (that.provider.isCanvasIndexOutOfRange(canvasIndex)) {
                     that.showDialogue(that.provider.config.content.canvasIndexOutOfRange);
                     return;
                 }
-
                 that.viewPage(canvasIndex || that.provider.getStartCanvasIndex());
-
                 $.publish(baseExtension.BaseExtension.RESIZE);
-
                 that.setDefaultFocus();
-
                 $.publish(Extension.CREATED);
             });
         };
-
         Extension.prototype.createModules = function () {
             this.headerPanel = new header.PagingHeaderPanel(shell.Shell.$headerPanel);
-
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
             }
-
             this.centerPanel = new center.SeadragonCenterPanel(shell.Shell.$centerPanel);
-
             if (this.isRightPanelEnabled()) {
                 this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
             }
-
             this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
-
             this.$helpDialogue = $('<div class="overlay help"></div>');
             shell.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
-
             this.$embedDialogue = $('<div class="overlay embed"></div>');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
-
             this.$downloadDialogue = $('<div class="overlay download"></div>');
             shell.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new download.DownloadDialogue(this.$downloadDialogue);
-
             this.$settingsDialogue = $('<div class="overlay settings"></div>');
             shell.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new settingsDialogue.SettingsDialogue(this.$settingsDialogue);
-
             this.$externalContentDialogue = $('<div class="overlay externalContent"></div>');
             shell.Shell.$overlays.append(this.$externalContentDialogue);
             this.externalContentDialogue = new externalContentDialogue.ExternalContentDialogue(this.$externalContentDialogue);
-
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
-
             if (this.isRightPanelEnabled()) {
                 this.rightPanel.init();
             }
         };
-
         Extension.prototype.updateSettings = function () {
             var _this = this;
             this.provider.reloadManifest(function () {
@@ -7046,45 +6598,36 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 $.publish(Extension.SETTINGS_CHANGED);
             });
         };
-
         Extension.prototype.setDefaultFocus = function () {
             setTimeout(function () {
                 $('[tabindex=1]').focus();
             }, 1);
         };
-
         Extension.prototype.setParams = function () {
             if (!this.provider.isHomeDomain)
                 return;
-
             this.setParam(0 /* sequenceIndex */, this.provider.sequenceIndex);
         };
-
         Extension.prototype.isLeftPanelEnabled = function () {
             return utils.Utils.getBool(this.provider.config.options.leftPanelEnabled, true) && this.provider.isMultiCanvas();
         };
-
         Extension.prototype.isRightPanelEnabled = function () {
             return utils.Utils.getBool(this.provider.config.options.rightPanelEnabled, true);
         };
-
         Extension.prototype.viewPage = function (canvasIndex, isReload) {
             var _this = this;
+            this.isLoading = true;
             if (canvasIndex == -1)
                 return;
-
             if (this.provider.isPaged() && !isReload) {
                 var indices = this.provider.getPagedIndices(canvasIndex);
-
                 if (indices.contains(this.provider.canvasIndex)) {
                     this.viewCanvas(canvasIndex, function () {
                         _this.setParam(1 /* canvasIndex */, canvasIndex);
                     });
-
                     return;
                 }
             }
-
             this.viewCanvas(canvasIndex, function () {
                 var canvas = _this.provider.getCanvasByIndex(canvasIndex);
                 var uri = _this.provider.getImageUri(canvas);
@@ -7092,15 +6635,12 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                 _this.setParam(1 /* canvasIndex */, canvasIndex);
             });
         };
-
         Extension.prototype.getViewer = function () {
             return this.centerPanel.viewer;
         };
-
         Extension.prototype.getMode = function () {
             if (Extension.mode)
                 return Extension.mode;
-
             switch (this.provider.getManifestType()) {
                 case 'monograph':
                     return Extension.PAGE_MODE;
@@ -7112,898 +6652,130 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
                     return Extension.IMAGE_MODE;
             }
         };
-
         Extension.prototype.getViewerBounds = function () {
             if (!this.centerPanel)
                 return;
-
             var bounds = this.centerPanel.getBounds();
-
             if (bounds)
                 return this.centerPanel.serialiseBounds(bounds);
-
             return "";
         };
-
         Extension.prototype.getViewerRotation = function () {
             if (!this.centerPanel)
                 return;
-
             return this.currentRotation;
         };
-
         Extension.prototype.viewStructure = function (path) {
             var structure = this.provider.getStructureByPath(path);
-
             if (!structure)
                 return;
-
             var canvas = structure.canvases[0];
-
             var index = this.provider.getCanvasIndexById(canvas['@id']);
-
             this.viewPage(index);
         };
-
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
                 this.showDialogue(this.provider.config.modules.genericDialogue.content.emptyValue);
                 $.publish(Extension.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
-
             var index = this.provider.getCanvasIndexByLabel(label);
-
             if (index != -1) {
                 this.viewPage(index);
-            } else {
+            }
+            else {
                 this.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
                 $.publish(Extension.CANVAS_INDEX_CHANGE_FAILED);
             }
         };
-
         Extension.prototype.treeNodeSelected = function (data) {
             if (!data.type)
                 return;
-
             if (data.type == 'manifest') {
                 this.viewManifest(data);
-            } else {
+            }
+            else {
                 this.viewStructure(data.path);
             }
         };
+        Extension.prototype.searchWithin = function (terms) {
+            var that = this;
+            this.provider.searchWithin(terms, function (results) {
+                if (results.resources.length) {
+                    $.publish(Extension.SEARCH_RESULTS, [terms, results.resources]);
+                    that.viewPage(that.provider.canvasIndex, true);
+                }
+                else {
+                    that.showDialogue(that.provider.config.modules.genericDialogue.content.noMatches, function () {
+                        $.publish(Extension.SEARCH_RESULTS_EMPTY);
+                    });
+                }
+            });
+        };
+        Extension.prototype.clearSearch = function () {
+            this.provider.searchResults = [];
+            this.viewPage(this.provider.canvasIndex);
+        };
+        Extension.prototype.prevSearchResult = function () {
+            for (var i = this.provider.searchResults.length - 1; i >= 0; i--) {
+                var result = this.provider.searchResults[i];
+                if (result.canvasIndex < this.provider.canvasIndex) {
+                    this.viewPage(result.canvasIndex);
+                    break;
+                }
+            }
+        };
+        Extension.prototype.nextSearchResult = function () {
+            for (var i = 0; i < this.provider.searchResults.length; i++) {
+                var result = this.provider.searchResults[i];
+                if (result.canvasIndex > this.provider.canvasIndex) {
+                    this.viewPage(result.canvasIndex);
+                    break;
+                }
+            }
+        };
         Extension.CURRENT_VIEW_URI = 'onCurrentViewUri';
-
         Extension.PAGE_MODE = "pageMode";
         Extension.IMAGE_MODE = "imageMode";
+        Extension.SEARCH_RESULTS = 'onSearchResults';
+        Extension.SEARCH_RESULTS_EMPTY = 'onSearchResults';
         return Extension;
     })(baseExtension.BaseExtension);
     exports.Extension = Extension;
 });
 
-define('modules/uv-shared-module/thumb',["require", "exports"], function(require, exports) {
-    var Thumb = (function () {
-        function Thumb(index, url, label, width, height, visible) {
-            this.index = index;
-            this.url = url;
-            this.label = label;
-            this.width = width;
-            this.height = height;
-            this.visible = visible;
+define('extensions/uv-seadragon-extension/SearchResultRect',["require", "exports"], function (require, exports) {
+    var SearchResultRect = (function () {
+        function SearchResultRect(result) {
+            this.index = result.resource.resultIndex;
+            var xywh = result.on.match(/.*xywh=(\d*),(\d*),(\d*),(\d*)/);
+            this.x = xywh[1];
+            this.y = xywh[2];
+            this.width = xywh[3];
+            this.height = xywh[4];
         }
-        return Thumb;
+        return SearchResultRect;
     })();
-    
-    return Thumb;
+    return SearchResultRect;
 });
 
-define('modules/uv-shared-module/baseIIIFProvider',["require", "exports", "../../bootstrapParams", "../../utils", "./treeNode", "./thumb"], function(require, exports, BootstrapParams, utils, TreeNode, Thumb) {
-    var util = utils.Utils;
-
-    (function (params) {
-        params[params["sequenceIndex"] = 0] = "sequenceIndex";
-        params[params["canvasIndex"] = 1] = "canvasIndex";
-        params[params["zoom"] = 2] = "zoom";
-        params[params["rotation"] = 3] = "rotation";
-    })(exports.params || (exports.params = {}));
-    var params = exports.params;
-
-    var BaseProvider = (function () {
-        function BaseProvider(bootstrapper, config, manifest) {
-            this.paramMap = ['si', 'ci', 'z', 'r'];
-            this.options = {
-                thumbsUriTemplate: "{0}{1}",
-                timestampUris: false,
-                mediaUriTemplate: "{0}{1}"
-            };
-            this.bootstrapper = bootstrapper;
-            this.config = config;
-            this.manifest = manifest;
-
-            this.manifestUri = this.bootstrapper.params.manifestUri;
-            this.jsonp = this.bootstrapper.params.jsonp;
-            this.locale = this.bootstrapper.params.getLocale();
-            this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
-            this.isReload = this.bootstrapper.params.isReload;
-            this.embedDomain = this.bootstrapper.params.embedDomain;
-            this.isOnlyInstance = this.bootstrapper.params.isOnlyInstance;
-            this.embedScriptUri = this.bootstrapper.params.embedScriptUri;
-            this.domain = this.bootstrapper.params.domain;
-            this.isLightbox = this.bootstrapper.params.isLightbox;
-
-            if (this.isHomeDomain && !this.isReload) {
-                this.sequenceIndex = parseInt(util.getHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
-            }
-
-            if (!this.sequenceIndex) {
-                this.sequenceIndex = parseInt(util.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
-            }
-
-            this.load();
+define('extensions/uv-seadragon-extension/SearchResult',["require", "exports", "./SearchResultRect"], function (require, exports, SearchResultRect) {
+    var SearchResult = (function () {
+        function SearchResult(resource) {
+            this.rects = [];
+            this.canvasIndex = parseInt(resource.on.match(/.*c(\d*)#/)[1]);
+            this.addRect(resource);
         }
-        BaseProvider.prototype.load = function () {
-            this.sequence = this.manifest.sequences[this.sequenceIndex];
-
-            for (var i = 0; i < this.manifest.sequences.length; i++) {
-                if (!this.manifest.sequences[i].canvases) {
-                    this.manifest.sequences[i] = {};
-                }
-            }
-
-            this.parseStructure();
-        };
-
-        BaseProvider.prototype.reload = function (params) {
-            var p = new BootstrapParams();
-            p.isReload = true;
-
-            if (params) {
-                p = $.extend(p, params);
-            }
-
-            this.bootstrapper.bootStrap(p);
-        };
-
-        BaseProvider.prototype.corsEnabled = function () {
-            return Modernizr.cors && !this.jsonp;
-        };
-
-        BaseProvider.prototype.reloadManifest = function (callback) {
-            var _this = this;
-            this.rootStructure = null;
-            var manifestUri = this.manifestUri;
-
-            manifestUri = this.addTimestamp(manifestUri);
-
-            if (this.corsEnabled()) {
-                $.getJSON(manifestUri, function (data) {
-                    _this.manifest = data;
-
-                    _this.load();
-
-                    callback();
-                });
-            } else {
-                window.manifestCallback = function (data) {
-                    _this.manifest = data;
-
-                    _this.load();
-
-                    callback();
-                };
-
-                $.ajax({
-                    url: manifestUri,
-                    type: 'GET',
-                    dataType: 'jsonp',
-                    jsonp: 'callback',
-                    jsonpCallback: 'manifestCallback'
-                });
-            }
-        };
-
-        BaseProvider.prototype.getManifestType = function () {
-            return 'monograph';
-        };
-
-        BaseProvider.prototype.getManifestation = function (type) {
-            var service = this.sequence.service;
-
-            if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
-                if (service.format.endsWith("pdf")) {
-                    return service["@id"];
-                }
-            }
-        };
-
-        BaseProvider.prototype.getSequenceType = function () {
-            return 'seadragon-iiif';
-        };
-
-        BaseProvider.prototype.getAttribution = function () {
-            return this.getLocalisedValue(this.manifest.attribution);
-        };
-
-        BaseProvider.prototype.getLicense = function () {
-            return this.manifest.license;
-        };
-
-        BaseProvider.prototype.getLogo = function () {
-            return this.manifest.logo;
-        };
-
-        BaseProvider.prototype.getTitle = function () {
-            return this.manifest.label;
-        };
-
-        BaseProvider.prototype.getSeeAlso = function () {
-            return this.manifest.seeAlso;
-        };
-
-        BaseProvider.prototype.getLastCanvasLabel = function () {
-            for (var i = this.sequence.canvases.length - 1; i >= 0; i--) {
-                var canvas = this.sequence.canvases[i];
-
-                var regExp = /\d/;
-
-                if (regExp.test(canvas.label)) {
-                    return this.getLocalisedValue(canvas.label);
-                }
-            }
-
-            return '-';
-        };
-
-        BaseProvider.prototype.isCanvasIndexOutOfRange = function (canvasIndex) {
-            return canvasIndex > this.getTotalCanvases() - 1;
-        };
-
-        BaseProvider.prototype.isFirstCanvas = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-            return canvasIndex == 0;
-        };
-
-        BaseProvider.prototype.isLastCanvas = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-            return canvasIndex == this.getTotalCanvases() - 1;
-        };
-
-        BaseProvider.prototype.isSeeAlsoEnabled = function () {
-            return this.config.options.seeAlsoEnabled !== false;
-        };
-
-        BaseProvider.prototype.getCanvasByIndex = function (index) {
-            return this.sequence.canvases[index];
-        };
-
-        BaseProvider.prototype.getStructureByCanvasIndex = function (index) {
-            if (index == -1)
-                return null;
-            var canvas = this.getCanvasByIndex(index);
-            return this.getCanvasStructure(canvas);
-        };
-
-        BaseProvider.prototype.getCanvasStructure = function (canvas) {
-            if (canvas.structures) {
-                return canvas.structures.last();
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getCurrentCanvas = function () {
-            return this.sequence.canvases[this.canvasIndex];
-        };
-
-        BaseProvider.prototype.getTotalCanvases = function () {
-            return this.sequence.canvases.length;
-        };
-
-        BaseProvider.prototype.isMultiCanvas = function () {
-            return this.sequence.canvases.length > 1;
-        };
-
-        BaseProvider.prototype.isMultiSequence = function () {
-            return this.manifest.sequences.length > 1;
-        };
-
-        BaseProvider.prototype.isPaged = function () {
-            return this.sequence.viewingHint && (this.sequence.viewingHint == "paged") && this.getSettings().pagingEnabled;
-        };
-
-        BaseProvider.prototype.getMediaUri = function (mediaUri) {
-            var baseUri = this.options.mediaBaseUri || "";
-            var template = this.options.mediaUriTemplate;
-            var uri = String.prototype.format(template, baseUri, mediaUri);
-
-            return uri;
-        };
-
-        BaseProvider.prototype.setMediaUri = function (canvas) {
-        };
-
-        BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-
-            var indices = [];
-
-            if (this.isFirstCanvas(canvasIndex) || this.isLastCanvas(canvasIndex)) {
-                indices = [canvasIndex];
-            } else if (canvasIndex % 2) {
-                indices = [canvasIndex, canvasIndex + 1];
-            } else {
-                indices = [canvasIndex - 1, canvasIndex];
-            }
-
-            if (this.getViewingDirection() === "right-to-left") {
-                return indices.reverse();
-            } else {
-                return indices;
-            }
-        };
-
-        BaseProvider.prototype.getViewingDirection = function () {
-            return this.sequence.viewingDirection || "left-to-right";
-        };
-
-        BaseProvider.prototype.getFirstPageIndex = function () {
-            return 0;
-        };
-
-        BaseProvider.prototype.getLastPageIndex = function () {
-            return this.getTotalCanvases() - 1;
-        };
-
-        BaseProvider.prototype.getPrevPageIndex = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-
-            var index;
-
-            if (this.isPaged()) {
-                var indices = this.getPagedIndices(canvasIndex);
-
-                if (this.getViewingDirection() == "right-to-left") {
-                    index = indices.last() - 1;
-                } else {
-                    index = indices[0] - 1;
-                }
-            } else {
-                index = canvasIndex - 1;
-            }
-
-            return index;
-        };
-
-        BaseProvider.prototype.getNextPageIndex = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.canvasIndex;
-
-            var index;
-
-            if (this.isPaged()) {
-                var indices = this.getPagedIndices(canvasIndex);
-
-                if (this.getViewingDirection() == "right-to-left") {
-                    index = indices[0] + 1;
-                } else {
-                    index = indices.last() + 1;
-                }
-            } else {
-                index = canvasIndex + 1;
-            }
-
-            if (index > this.getTotalCanvases() - 1) {
-                return -1;
-            }
-
-            return index;
-        };
-
-        BaseProvider.prototype.getStartCanvasIndex = function () {
-            if (this.sequence.startCanvas) {
-                for (var i = 0; i < this.sequence.canvases.length; i++) {
-                    var canvas = this.sequence.canvases[i];
-
-                    if (canvas["@id"] == this.sequence.startCanvas)
-                        return i;
-                }
-            }
-
-            return 0;
-        };
-
-        BaseProvider.prototype.addTimestamp = function (uri) {
-            return uri + "?t=" + util.getTimeStamp();
-        };
-
-        BaseProvider.prototype.isDeepLinkingEnabled = function () {
-            return (this.isHomeDomain && this.isOnlyInstance);
-        };
-
-        BaseProvider.prototype.getThumbUri = function (canvas, width, height) {
-            var uri;
-
-            if (canvas.resources) {
-                uri = canvas.resources[0].resource.service['@id'];
-            } else if (canvas.images && canvas.images[0].resource.service) {
-                uri = canvas.images[0].resource.service['@id'];
-            } else {
-                return "";
-            }
-
-            var tile = 'full/' + width + ',' + height + '/0/default.jpg';
-
-            if (uri.endsWith('/')) {
-                uri += tile;
-            } else {
-                uri += '/' + tile;
-            }
-
-            return uri;
-        };
-
-        BaseProvider.prototype.getThumbs = function (width, height) {
-            var thumbs = [];
-
-            for (var i = 0; i < this.getTotalCanvases(); i++) {
-                var canvas = this.sequence.canvases[i];
-
-                var heightRatio = canvas.height / canvas.width;
-
-                if (heightRatio) {
-                    height = Math.floor(width * heightRatio);
-                }
-
-                var uri = this.getThumbUri(canvas, width, height);
-
-                thumbs.push(new Thumb(i, uri, this.getLocalisedValue(canvas.label), width, height, true));
-            }
-
-            return thumbs;
-        };
-
-        BaseProvider.prototype.getLocalisedValue = function (prop) {
-            if (!(prop instanceof Array)) {
-                return prop;
-            }
-
-            for (var i = 0; i < prop.length; i++) {
-                var value = prop[i];
-                var language = value['@language'];
-
-                if (this.locale === language) {
-                    return value['@value'];
-                }
-            }
-
-            for (var i = 0; i < prop.length; i++) {
-                var value = prop[i];
-                var language = value['@language'];
-
-                var match = this.locale.substr(0, this.locale.indexOf('-'));
-
-                if (language === match) {
-                    return value['@value'];
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.parseManifest = function () {
-        };
-
-        BaseProvider.prototype.getStructureIndex = function (path) {
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var canvas = this.sequence.canvases[i];
-
-                if (!canvas.structures)
-                    continue;
-
-                for (var j = 0; j < canvas.structures.length; j++) {
-                    var structure = canvas.structures[j];
-
-                    if (structure.path == path) {
-                        return i;
-                    }
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getStructureByPath = function (path) {
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var canvas = this.sequence.canvases[i];
-
-                if (!canvas.structures)
-                    continue;
-
-                for (var j = 0; j < canvas.structures.length; j++) {
-                    var structure = canvas.structures[j];
-
-                    if (structure.path == path) {
-                        return structure;
-                    }
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getCanvasById = function (id) {
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var c = this.sequence.canvases[i];
-
-                if (c['@id'] === id) {
-                    return c;
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getCanvasIndexById = function (id) {
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var c = this.sequence.canvases[i];
-
-                if (c['@id'] === id) {
-                    return i;
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getStructureByIndex = function (structure, index) {
-            return structure.structures[index];
-        };
-
-        BaseProvider.prototype.getStructureById = function (id) {
-            for (var i = 0; i < this.manifest.structures.length; i++) {
-                var s = this.manifest.structures[i];
-
-                if (s['@id'] === id) {
-                    return s;
-                }
-            }
-
-            return null;
-        };
-
-        BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
-            label = label.trim();
-
-            if ($.isNumeric(label)) {
-                label = parseInt(label, 10).toString();
-            }
-
-            var doublePageRegExp = /(\d*)\D+(\d*)/;
-            var match, regExp, regStr, labelPart1, labelPart2;
-
-            for (var i = 0; i < this.sequence.canvases.length; i++) {
-                var canvas = this.sequence.canvases[i];
-
-                if (canvas.label === label) {
-                    return i;
-                }
-
-                match = doublePageRegExp.exec(label);
-
-                if (!match)
-                    continue;
-
-                labelPart1 = match[1];
-                labelPart2 = match[2];
-
-                if (!labelPart2)
-                    continue;
-
-                regStr = "^" + labelPart1 + "\\D+" + labelPart2 + "$";
-
-                regExp = new RegExp(regStr);
-
-                if (regExp.test(canvas.label)) {
-                    return i;
-                }
-            }
-
-            return -1;
-        };
-
-        BaseProvider.prototype.getManifestSeeAlsoUri = function (manifest) {
-            return null;
-        };
-
-        BaseProvider.prototype.getRootStructure = function () {
-            if (this.manifest.structures) {
-                for (var i = 0; i < this.manifest.structures.length; i++) {
-                    var s = this.manifest.structures[i];
-                    if (s.viewingHint == "top") {
-                        this.rootStructure = s;
-                        break;
-                    }
-                }
-            }
-
-            if (!this.rootStructure) {
-                this.rootStructure = {
-                    path: "",
-                    ranges: this.manifest.structures
-                };
-            }
-
-            return this.rootStructure;
-        };
-
-        BaseProvider.prototype.parseStructure = function () {
-            if (!this.manifest.structures || !this.manifest.structures.length)
-                return;
-
-            this.parseStructures(this.getRootStructure(), '');
-        };
-
-        BaseProvider.prototype.parseStructures = function (structure, path) {
-            structure.path = path;
-
-            if (structure.canvases) {
-                for (var j = 0; j < structure.canvases.length; j++) {
-                    var canvas = structure.canvases[j];
-
-                    if (typeof (canvas) === "string") {
-                        canvas = this.getCanvasById(canvas);
-                    }
-
-                    if (!canvas) {
-                        structure.canvases[j] = null;
-                        continue;
-                    }
-
-                    if (!canvas.structures)
-                        canvas.structures = [];
-
-                    canvas.structures.push(structure);
-
-                    structure.canvases[j] = canvas;
-                }
-            }
-
-            if (structure.ranges) {
-                structure.structures = [];
-
-                for (var k = 0; k < structure.ranges.length; k++) {
-                    var s = structure.ranges[k];
-
-                    if (typeof (s) === "string") {
-                        s = this.getStructureById(s);
-                    }
-
-                    if (s.parentStructure)
-                        continue;
-
-                    s.parentStructure = structure;
-
-                    structure.structures.push(s);
-
-                    this.parseStructures(s, path + '/' + k);
-                }
-            }
-        };
-
-        BaseProvider.prototype.getTree = function () {
-            var rootStructure = this.getRootStructure();
-
-            this.treeRoot = new TreeNode('root');
-            this.treeRoot.label = "root";
-            this.treeRoot.data = rootStructure;
-            this.treeRoot.data.type = "manifest";
-            rootStructure.treeNode = this.treeRoot;
-
-            if (rootStructure.structures) {
-                for (var i = 0; i < rootStructure.structures.length; i++) {
-                    var structure = rootStructure.structures[i];
-
-                    var node = new TreeNode();
-                    this.treeRoot.addNode(node);
-
-                    this.parseTreeNode(node, structure);
-                }
-            }
-
-            return this.treeRoot;
-        };
-
-        BaseProvider.prototype.parseTreeNode = function (node, structure) {
-            node.label = this.getLocalisedValue(structure.label);
-            node.data = structure;
-            node.data.type = "structure";
-            structure.treeNode = node;
-
-            if (structure.structures) {
-                for (var i = 0; i < structure.structures.length; i++) {
-                    var childStructure = structure.structures[i];
-
-                    var childNode = new TreeNode();
-                    node.addNode(childNode);
-
-                    this.parseTreeNode(childNode, childStructure);
-                }
-            }
-        };
-
-        BaseProvider.prototype.getDomain = function () {
-            var parts = util.getUrlParts(this.manifestUri);
-            return parts.host;
-        };
-
-        BaseProvider.prototype.getEmbedDomain = function () {
-            return this.embedDomain;
-        };
-
-        BaseProvider.prototype.getMetaData = function (callback, includeRootProperties) {
-            var metaData = this.manifest.metadata;
-
-            if (metaData && includeRootProperties) {
-                if (this.manifest.description)
-                    metaData.push({ "label": "description", "value": this.manifest.description });
-                if (this.manifest.attribution)
-                    metaData.push({ "label": "attribution", "value": this.manifest.attribution });
-                if (this.manifest.license)
-                    metaData.push({ "label": "license", "value": this.manifest.license });
-                if (this.manifest.logo)
-                    metaData.push({ "label": "logo", "value": '<img src="' + this.manifest.logo + '"/>' });
-            }
-
-            callback(this.manifest.metadata);
-        };
-
-        BaseProvider.prototype.defaultToThumbsView = function () {
-            var manifestType = this.getManifestType();
-
-            switch (manifestType) {
-                case 'monograph':
-                    if (!this.isMultiSequence())
-                        return true;
-                    break;
-                case 'archive':
-                    return true;
-                    break;
-                case 'boundmanuscript':
-                    return true;
-                    break;
-                case 'artwork':
-                    return true;
-            }
-
-            var sequenceType = this.getSequenceType();
-
-            switch (sequenceType) {
-                case 'application-pdf':
-                    return true;
-                    break;
-            }
-
-            return false;
-        };
-
-        BaseProvider.prototype.getSettings = function () {
-            return this.config.options;
-        };
-
-        BaseProvider.prototype.updateSettings = function (settings) {
-            this.config.options = settings;
-        };
-
-        BaseProvider.prototype.sanitize = function (html) {
-            var elem = document.createElement('div');
-            var $elem = $(elem);
-
-            $elem.html(html);
-
-            var s = new Sanitize({
-                elements: ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
-                attributes: {
-                    a: ['href'],
-                    img: ['src', 'alt']
-                },
-                protocols: {
-                    a: { href: ['http', 'https'] }
-                }
+        SearchResult.prototype.addRect = function (resource) {
+            var rect = new SearchResultRect(resource);
+            this.rects.push(rect);
+            this.rects.sort(function (a, b) {
+                return a.index - b.index;
             });
-
-            $elem.html(s.clean_node(elem));
-
-            return $elem.html();
         };
-
-        BaseProvider.prototype.getLocales = function () {
-            if (this.locales)
-                return this.locales;
-
-            var items = this.config.localisation.locales.clone();
-            var sorting = this.bootstrapper.params.locales;
-            var result = [];
-
-            _.each(sorting, function (sortItem) {
-                var match = _.filter(items, function (item) {
-                    return item.name === sortItem.name;
-                });
-                if (match.length) {
-                    var m = match[0];
-                    if (sortItem.label)
-                        m.label = sortItem.label;
-                    m.added = true;
-                    result.push(m);
-                }
-            });
-
-            _.each(items, function (item) {
-                if (!item.added) {
-                    result.push(item);
-                }
-                delete item.added;
-            });
-
-            return this.locales = result;
-        };
-
-        BaseProvider.prototype.getAlternateLocale = function () {
-            var locales = this.getLocales();
-
-            var alternateLocale;
-
-            for (var i = 0; i < locales.length; i++) {
-                var l = locales[i];
-                if (l.name !== this.locale) {
-                    alternateLocale = l;
-                }
-            }
-
-            return l;
-        };
-
-        BaseProvider.prototype.changeLocale = function (locale) {
-            var locales = this.locales.clone();
-
-            var index = locales.indexOfTest(function (l) {
-                return l.name === locale;
-            });
-
-            locales.move(index, 0);
-
-            var str = this.serializeLocales(locales);
-
-            var p = new BootstrapParams();
-            p.setLocale(str);
-            this.reload(p);
-        };
-
-        BaseProvider.prototype.serializeLocales = function (locales) {
-            var str = '';
-
-            for (var i = 0; i < locales.length; i++) {
-                var l = locales[i];
-                if (i > 0)
-                    str += ',';
-                str += l.name;
-                if (l.label) {
-                    str += ':' + l.label;
-                }
-            }
-
-            return str;
-        };
-
-        BaseProvider.prototype.getSerializedLocales = function () {
-            return this.serializeLocales(this.locales);
-        };
-        return BaseProvider;
+        return SearchResult;
     })();
-    exports.BaseProvider = BaseProvider;
+    return SearchResult;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -8012,62 +6784,54 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "../../modules/uv-shared-module/baseIIIFProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider", "./SearchResult", "../../utils"], function (require, exports, baseProvider, SearchResult, utils) {
+    var util = utils.Utils;
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(bootstrapper, config, manifest) {
             _super.call(this, bootstrapper, config, manifest);
-
+            this.searchResults = [];
             this.config.options = $.extend(true, this.options, {
+                autoCompleteUriTemplate: '{0}{1}',
                 iiifImageUriTemplate: '{0}/{1}/{2}/{3}/{4}/{5}.jpg'
             }, config.options);
         }
+        Provider.prototype.getAutoCompleteUri = function () {
+            return "";
+        };
         Provider.prototype.getCroppedImageUri = function (canvas, viewer) {
             var bounds = viewer.viewport.getBounds(true);
             var containerSize = viewer.viewport.getContainerSize();
             var zoom = viewer.viewport.getZoom(true);
-
             var top = Math.max(0, bounds.y);
             var left = Math.max(0, bounds.x);
-
             top = 1 / (canvas.height / parseInt(String(canvas.width * top)));
-
             var viewportWidthPx = containerSize.x;
             var viewportHeightPx = containerSize.y;
-
             var imageWidthPx = parseInt(String(viewportWidthPx * zoom));
             var ratio = canvas.width / imageWidthPx;
             var imageHeightPx = parseInt(String(canvas.height / ratio));
-
             var viewportLeftPx = parseInt(String(left * imageWidthPx));
             var viewportTopPx = parseInt(String(top * imageHeightPx));
-
             var rect1Left = 0;
             var rect1Right = imageWidthPx;
             var rect1Top = 0;
             var rect1Bottom = imageHeightPx;
-
             var rect2Left = viewportLeftPx;
             var rect2Right = viewportLeftPx + viewportWidthPx;
             var rect2Top = viewportTopPx;
             var rect2Bottom = viewportTopPx + viewportHeightPx;
-
             var cropWidth = Math.max(0, Math.min(rect1Right, rect2Right) - Math.max(rect1Left, rect2Left));
             var cropHeight = Math.max(0, Math.min(rect1Bottom, rect2Bottom) - Math.max(rect1Top, rect2Top));
-
             var ratio2 = canvas.width / imageWidthPx;
-
             var widthPx = parseInt(String(cropWidth * ratio2));
             var heightPx = parseInt(String(cropHeight * ratio2));
-
             var topPx = parseInt(String(canvas.height * top));
             var leftPx = parseInt(String(canvas.width * left));
-
             if (topPx < 0)
                 topPx = 0;
             if (leftPx < 0)
                 leftPx = 0;
-
             var baseUri = this.getImageBaseUri(canvas);
             var id = this.getImageId(canvas);
             var region = leftPx + "," + topPx + "," + widthPx + "," + heightPx;
@@ -8075,35 +6839,29 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
             var rotation = 0;
             var quality = 'default';
             var uri = String.prototype.format(this.config.options.iiifImageUriTemplate, baseUri, id, region, size, rotation, quality);
-
             return uri;
         };
-
         Provider.prototype.getConfinedImageUri = function (canvas, width, height) {
             var baseUri = this.getImageBaseUri(canvas);
-
             var id = this.getImageId(canvas);
             var region = 'full';
             var size;
-
             if (typeof (height) != "undefined") {
                 size = width + ',' + height;
-            } else {
+            }
+            else {
                 size = width + ",";
             }
-
             var rotation = 0;
             var quality = 'default';
             var uri = String.prototype.format(this.config.options.iiifImageUriTemplate, baseUri, id, region, size, rotation, quality);
             return uri;
         };
-
         Provider.prototype.getImageId = function (canvas) {
             var id = this.getImageUri(canvas);
             id = id.substr(0, id.lastIndexOf("/"));
             return id.substr(id.lastIndexOf("/") + 1);
         };
-
         Provider.prototype.getImageBaseUri = function (canvas) {
             if (this.config.options.iiifImageBaseUri) {
                 return this.config.options.iiifImageBaseUri;
@@ -8113,74 +6871,129 @@ define('extensions/uv-seadragon-extension/iiifProvider',["require", "exports", "
             uri = uri.substr(0, uri.lastIndexOf("/"));
             return uri;
         };
-
         Provider.prototype.getImageUri = function (canvas) {
             var iiifUri;
-
             if (canvas.resources) {
                 iiifUri = canvas.resources[0].resource.service['@id'];
-            } else if (canvas.images && canvas.images[0].resource.service) {
+            }
+            else if (canvas.images && canvas.images[0].resource.service) {
                 iiifUri = canvas.images[0].resource.service['@id'];
-            } else {
+            }
+            else {
                 return null;
             }
-
             if (!iiifUri) {
                 console.warn('no service endpoint available');
-            } else if (iiifUri.endsWith('/')) {
+            }
+            else if (iiifUri.endsWith('/')) {
                 if (!this.corsEnabled()) {
                     iiifUri += 'info.js';
-                } else {
+                }
+                else {
                     iiifUri += 'info.json';
                 }
-            } else {
+            }
+            else {
                 if (!this.corsEnabled()) {
                     iiifUri += '/info.js';
-                } else {
+                }
+                else {
                     iiifUri += '/info.json';
                 }
             }
-
             return iiifUri;
         };
-
         Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, rotation, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
-
             var template = this.options.embedTemplate || embedTemplate;
-
             var configUri = this.config.uri || '';
-
             var script = String.prototype.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
-
             return script;
         };
-
         Provider.prototype.getTileSources = function () {
             var _this = this;
             if (!this.isPaged()) {
                 return [{
-                        tileSource: this.getImageUri(this.getCurrentCanvas())
-                    }];
-            } else {
+                    tileSource: this.getImageUri(this.getCurrentCanvas())
+                }];
+            }
+            else {
                 if (this.isFirstCanvas() || this.isLastCanvas()) {
                     return [{
-                            tileSource: this.getImageUri(this.getCurrentCanvas())
-                        }];
-                } else {
+                        tileSource: this.getImageUri(this.getCurrentCanvas())
+                    }];
+                }
+                else {
                     var indices = this.getPagedIndices();
-
                     var tileSources = [];
-
                     _.each(indices, function (index) {
                         tileSources.push({
                             tileSource: _this.getImageUri(_this.getCanvasByIndex(index))
                         });
                     });
-
                     return tileSources;
                 }
             }
+        };
+        Provider.prototype.isSearchWithinEnabled = function () {
+            if (!util.getBool(this.config.options.searchWithinEnabled, false)) {
+                return false;
+            }
+            if (!this.getSearchWithinService()) {
+                return false;
+            }
+            return true;
+        };
+        Provider.prototype.getSearchWithinService = function () {
+            if (this.manifest.service) {
+                if (this.manifest.service.profile === "http://iiif.io/api/search/1/") {
+                    return this.manifest.service;
+                }
+            }
+            return null;
+        };
+        Provider.prototype.getSearchWithinServiceUri = function () {
+            var service = this.getSearchWithinService();
+            if (!service)
+                return null;
+            var uri = service["@id"];
+            uri = uri.substr(0, uri.indexOf('{'));
+            uri = uri + "&q={0}";
+            return uri;
+        };
+        Provider.prototype.searchWithin = function (terms, callback) {
+            var that = this;
+            var searchUri = this.getSearchWithinServiceUri();
+            searchUri = String.prototype.format(searchUri, terms);
+            $.getJSON(searchUri, function (results) {
+                if (results.resources.length) {
+                    that.parseSearchWithinResults(results);
+                }
+                callback(results);
+            });
+        };
+        Provider.prototype.parseSearchWithinResults = function (results) {
+            this.searchResults = [];
+            for (var i = 0; i < results.resources.length; i++) {
+                var r = results.resources[i];
+                var sr = new SearchResult(r);
+                var match = this.getSearchResultByCanvasIndex(sr.canvasIndex);
+                if (match) {
+                    match.addRect(r);
+                }
+                else {
+                    this.searchResults.push(sr);
+                }
+            }
+        };
+        Provider.prototype.getSearchResultByCanvasIndex = function (canvasIndex) {
+            for (var i = 0; i < this.searchResults.length; i++) {
+                var r = this.searchResults[i];
+                if (r.canvasIndex === canvasIndex) {
+                    return r;
+                }
+            }
+            return null;
         };
         return Provider;
     })(baseProvider.BaseProvider);
@@ -8193,7 +7006,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-mediaelement-extension/extension", "../uv-shared-module/centerPanel", "../../utils"], function(require, exports, baseExtension, extension, baseCenter, utils) {
+define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["require", "exports", "../uv-shared-module/baseExtension", "../../extensions/uv-mediaelement-extension/extension", "../uv-shared-module/centerPanel", "../../utils"], function (require, exports, baseExtension, extension, baseCenter, utils) {
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
@@ -8201,57 +7014,44 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
         }
         MediaElementCenterPanel.prototype.create = function () {
             this.setConfig('mediaelementCenterPanel');
-
             _super.prototype.create.call(this);
-
             var that = this;
-
             if (this.provider.getSequenceType().contains('video')) {
                 $.subscribe(baseExtension.BaseExtension.TOGGLE_FULLSCREEN, function (e) {
                     if (that.extension.isFullScreen) {
                         that.$container.css('backgroundColor', '#000');
                         that.player.enterFullScreen(false);
-                    } else {
+                    }
+                    else {
                         that.$container.css('backgroundColor', 'transparent');
                         that.player.exitFullScreen(false);
                     }
                 });
             }
-
             $.subscribe(extension.Extension.OPEN_MEDIA, function (e, canvas) {
                 that.viewMedia(canvas);
             });
-
             this.$container = $('<div class="container"></div>');
             this.$content.append(this.$container);
-
             this.title = this.extension.provider.getTitle();
         };
-
         MediaElementCenterPanel.prototype.viewMedia = function (canvas) {
             var that = this;
-
             this.$container.empty();
-
             this.mediaHeight = 576;
             this.mediaWidth = 720;
-
             this.$container.height(this.mediaHeight);
             this.$container.width(this.mediaWidth);
-
             var id = utils.Utils.getTimeStamp();
-
             var poster = this.provider.getPosterImageUri();
-
             var type = this.provider.getSequenceType();
-
             if (type.contains('video')) {
                 if (!canvas.sources) {
                     this.media = this.$container.append('<video id="' + id + '" type="video/mp4" src="' + canvas.mediaUri + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
-                } else {
+                }
+                else {
                     this.media = this.$container.append('<video id="' + id + '" type="video/mp4" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
                 }
-
                 this.player = new MediaElementPlayer("#" + id, {
                     type: ['video/mp4', 'video/webm', 'video/flv'],
                     plugins: ['flash'],
@@ -8261,34 +7061,30 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
                         media.addEventListener('canplay', function (e) {
                             that.resize();
                         });
-
                         media.addEventListener('play', function (e) {
                             $.publish(extension.Extension.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                         });
-
                         media.addEventListener('pause', function (e) {
                             if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
                                 $.publish(extension.Extension.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                             }
                         });
-
                         media.addEventListener('ended', function (e) {
                             $.publish(extension.Extension.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                         });
-
                         if (canvas.sources && canvas.sources.length) {
                             media.setSrc(canvas.sources);
                         }
-
-                        try  {
+                        try {
                             media.load();
-                        } catch (e) {
+                        }
+                        catch (e) {
                         }
                     }
                 });
-            } else if (type.contains('audio')) {
+            }
+            else if (type.contains('audio')) {
                 this.media = this.$container.append('<audio id="' + id + '" type="audio/mp3" src="' + canvas.mediaUri + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></audio>');
-
                 this.player = new MediaElementPlayer("#" + id, {
                     plugins: ['flash'],
                     alwaysShowControls: false,
@@ -8299,61 +7095,50 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
                         media.addEventListener('canplay', function (e) {
                             that.resize();
                         });
-
                         media.addEventListener('play', function (e) {
                             $.publish(extension.Extension.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                         });
-
                         media.addEventListener('pause', function (e) {
                             if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
                                 $.publish(extension.Extension.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                             }
                         });
-
                         media.addEventListener('ended', function (e) {
                             $.publish(extension.Extension.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                         });
-
-                        try  {
+                        try {
                             media.load();
-                        } catch (e) {
+                        }
+                        catch (e) {
                         }
                     }
                 });
             }
-
             this.resize();
         };
-
         MediaElementCenterPanel.prototype.getPlayer = function () {
             return this.player;
         };
-
         MediaElementCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-
             if (window.browserDetect.browser == 'Firefox' && window.browserDetect.version < 13) {
                 this.$container.width(this.mediaWidth);
                 this.$container.height(this.mediaHeight);
-            } else {
+            }
+            else {
                 var size = utils.Utils.fitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
-
                 this.$container.height(size.height);
                 this.$container.width(size.width);
             }
-
             if (this.player && !this.extension.isFullScreen) {
                 this.player.resize();
             }
-
             var left = Math.floor((this.$content.width() - this.$container.width()) / 2);
             var top = Math.floor((this.$content.height() - this.$container.height()) / 2);
-
             this.$container.css({
                 'left': left,
                 'top': top
             });
-
             this.$title.ellipsisFill(this.title);
         };
         return MediaElementCenterPanel;
@@ -8367,7 +7152,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-mediaelement-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue"], function(require, exports, embed) {
+define('extensions/uv-mediaelement-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue"], function (require, exports, embed) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -8375,16 +7160,12 @@ define('extensions/uv-mediaelement-extension/embedDialogue',["require", "exports
         }
         EmbedDialogue.prototype.create = function () {
             this.setConfig('embedDialogue');
-
             _super.prototype.create.call(this);
         };
-
         EmbedDialogue.prototype.formatCode = function () {
             this.code = this.provider.getEmbedScript(this.currentWidth, this.currentHeight, this.options.embedTemplate);
-
             this.$code.val(this.code);
         };
-
         EmbedDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -8393,126 +7174,102 @@ define('extensions/uv-mediaelement-extension/embedDialogue',["require", "exports
     exports.EmbedDialogue = EmbedDialogue;
 });
 
-define('extensions/uv-mediaelement-extension/dependencies',[],function() {
-    return {
-        'mediaelement': './js/mediaelement-and-player'
-    };
-
-    var Dependencies = (function () {
-        function Dependencies() {
-        }
-        return Dependencies;
-    })();
-    exports.Dependencies = Dependencies;
-});
-
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-mediaelement-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "../../uv-mediaelement-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed, dependencies) {
+define('extensions/uv-mediaelement-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
             _super.call(this, provider);
         }
-        Extension.prototype.create = function () {
+        Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
             _super.prototype.create.call(this);
-
             var that = this;
-
             $(window).bind('enterfullscreen', function () {
                 $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
             });
-
             $(window).bind('exitfullscreen', function () {
                 $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
             });
-
             $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
                 _this.viewManifest(data);
             });
-
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
             });
-
             $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function (e) {
                 _this.resize();
             });
-
-            require(_.values(dependencies), function () {
+            if (overrideDependencies) {
+                this.loadDependencies(overrideDependencies);
+            }
+            else {
+                this.getDependencies(function (deps) {
+                    _this.loadDependencies(deps);
+                });
+            }
+        };
+        Extension.prototype.getDependencies = function (callback) {
+            require(["./dependencies"], function (deps) {
+                callback(deps);
+            });
+        };
+        Extension.prototype.loadDependencies = function (deps) {
+            var that = this;
+            require(_.values(deps), function () {
                 that.createModules();
-
                 that.setParams();
-
                 $.publish(baseExtension.BaseExtension.RESIZE);
-
                 that.viewMedia();
-
                 $.publish(Extension.CREATED);
             });
         };
-
         Extension.prototype.createModules = function () {
             this.headerPanel = new header.HeaderPanel(shell.Shell.$headerPanel);
-
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
             }
-
             this.centerPanel = new center.MediaElementCenterPanel(shell.Shell.$centerPanel);
             this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
             this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
-
             this.$helpDialogue = utils.Utils.createDiv('overlay help');
             shell.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
-
             this.$embedDialogue = utils.Utils.createDiv('overlay embed');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
-
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
         };
-
         Extension.prototype.setParams = function () {
             if (!this.provider.isHomeDomain)
                 return;
-
             this.setParam(0 /* sequenceIndex */, this.provider.sequenceIndex);
         };
-
         Extension.prototype.isLeftPanelEnabled = function () {
             return utils.Utils.getBool(this.provider.config.options.leftPanelEnabled, true) && this.provider.isMultiSequence();
         };
-
         Extension.prototype.viewMedia = function () {
             var _this = this;
             var canvas = this.provider.getCanvasByIndex(0);
-
             this.viewCanvas(0, function () {
                 _this.provider.setMediaUri(canvas);
-
                 $.publish(Extension.OPEN_MEDIA, [canvas]);
-
                 _this.setParam(1 /* canvasIndex */, 0);
             });
         };
@@ -8531,31 +7288,24 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-mediaelement-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-mediaelement-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function (require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(bootstrapper, config, manifest) {
             _super.call(this, bootstrapper, config, manifest);
-
             this.config.options = $.extend(true, this.options, {}, config.options);
         }
         Provider.prototype.getEmbedScript = function (width, height, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
-
             var template = this.options.embedTemplate || embedTemplate;
-
             var configUri = this.config.uri || '';
-
             var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, configUri, width, height, esu);
-
             return script;
         };
-
         Provider.prototype.getPosterImageUri = function () {
             var baseUri = this.options.mediaBaseUri || "";
             var template = this.options.mediaUriTemplate;
             var uri = String.prototype.format(template, baseUri, this.sequence.extensions.posterImage);
-
             return uri;
         };
         return Provider;
@@ -8569,7 +7319,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-pdfcenterpanel-module/pdfCenterPanel',["require", "exports", "../../extensions/uv-pdf-extension/extension", "../uv-shared-module/centerPanel"], function(require, exports, extension, baseCenter) {
+define('modules/uv-pdfcenterpanel-module/pdfCenterPanel',["require", "exports", "../../extensions/uv-pdf-extension/extension", "../uv-shared-module/centerPanel"], function (require, exports, extension, baseCenter) {
     var PDFCenterPanel = (function (_super) {
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
@@ -8578,49 +7328,42 @@ define('modules/uv-pdfcenterpanel-module/pdfCenterPanel',["require", "exports", 
         PDFCenterPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('pdfCenterPanel');
-
             _super.prototype.create.call(this);
-
             $.subscribe(extension.Extension.OPEN_MEDIA, function (e, canvas) {
                 _this.viewMedia(canvas);
             });
         };
-
         PDFCenterPanel.prototype.viewMedia = function (canvas) {
             var _this = this;
             var browser = window.browserDetect.browser;
             var version = window.browserDetect.version;
-
             if (browser == 'Explorer' && version < 10) {
                 var myPDF = new PDFObject({
                     url: canvas.mediaUri,
                     id: "PDF"
                 }).embed('content');
-            } else {
+            }
+            else {
                 var viewerPath;
-
                 if (window.DEBUG) {
                     viewerPath = 'modules/uv-pdfcenterpanel-module/html/viewer.html';
-                } else {
+                }
+                else {
                     viewerPath = 'html/uv-pdfcenterpanel-module/viewer.html';
                 }
-
                 this.$content.load(viewerPath, function () {
                     if (window.DEBUG) {
                         PDFJS.workerSrc = 'extensions/uv-pdf-extension/js/pdf.worker.min.js';
-                    } else {
+                    }
+                    else {
                         PDFJS.workerSrc = 'js/pdf.worker.min.js';
                     }
-
                     PDFJS.DEFAULT_URL = canvas.mediaUri;
-
                     window.webViewerLoad();
-
                     _this.resize();
                 });
             }
         };
-
         PDFCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -8635,7 +7378,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-pdf-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue"], function(require, exports, embed) {
+define('extensions/uv-pdf-extension/embedDialogue',["require", "exports", "../../modules/uv-dialogues-module/embedDialogue"], function (require, exports, embed) {
     var EmbedDialogue = (function (_super) {
         __extends(EmbedDialogue, _super);
         function EmbedDialogue($element) {
@@ -8643,16 +7386,12 @@ define('extensions/uv-pdf-extension/embedDialogue',["require", "exports", "../..
         }
         EmbedDialogue.prototype.create = function () {
             this.setConfig('embedDialogue');
-
             _super.prototype.create.call(this);
         };
-
         EmbedDialogue.prototype.formatCode = function () {
             this.code = this.provider.getEmbedScript(this.currentWidth, this.currentHeight, this.options.embedTemplate);
-
             this.$code.val(this.code);
         };
-
         EmbedDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
         };
@@ -8661,141 +7400,112 @@ define('extensions/uv-pdf-extension/embedDialogue',["require", "exports", "../..
     exports.EmbedDialogue = EmbedDialogue;
 });
 
-define('extensions/uv-pdf-extension/dependencies',[],function() {
-    var paths = {
-        'pdf': './js/pdf_combined',
-        'pdfobject': './js/pdfobject'
-    };
-
-    return paths;
-
-    var Dependencies = (function () {
-        function Dependencies() {
-        }
-        return Dependencies;
-    })();
-    exports.Dependencies = Dependencies;
-});
-
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-pdf-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-pdfcenterpanel-module/pdfCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../uv-pdf-extension-dependencies"], function(require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, center, baseRight, right, footer, help, embed, thumbsView, dependencies) {
+define('extensions/uv-pdf-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-pdfcenterpanel-module/pdfCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/uv-treeviewleftpanel-module/thumbsView"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, center, baseRight, right, footer, help, embed, thumbsView) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(provider) {
             _super.call(this, provider);
         }
-        Extension.prototype.create = function () {
+        Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
             _super.prototype.create.call(this);
-
             var that = this;
-
             $.subscribe(thumbsView.ThumbsView.THUMB_SELECTED, function (e, index) {
                 window.open(that.provider.getPDFUri());
             });
-
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
             });
-
             $.subscribe(shell.Shell.SHOW_OVERLAY, function (e, params) {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.hide();
                 }
             });
-
             $.subscribe(shell.Shell.HIDE_OVERLAY, function (e, params) {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.show();
                 }
             });
-
             $.subscribe(baseLeft.LeftPanel.OPEN_LEFT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseLeft.LeftPanel.CLOSE_LEFT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseRight.RightPanel.OPEN_RIGHT_PANEL, function (e) {
                 _this.resize();
             });
-
             $.subscribe(baseRight.RightPanel.CLOSE_RIGHT_PANEL, function (e) {
                 _this.resize();
             });
-
-            require(_.values(dependencies), function () {
+            if (overrideDependencies) {
+                this.loadDependencies(overrideDependencies);
+            }
+            else {
+                this.getDependencies(function (deps) {
+                    _this.loadDependencies(deps);
+                });
+            }
+        };
+        Extension.prototype.getDependencies = function (callback) {
+            require(["./dependencies"], function (deps) {
+                callback(deps);
+            });
+        };
+        Extension.prototype.loadDependencies = function (deps) {
+            var that = this;
+            require(_.values(deps), function () {
                 that.createModules();
-
                 $.publish(baseExtension.BaseExtension.RESIZE);
-
                 that.viewMedia();
-
                 $.publish(Extension.CREATED);
             });
         };
-
         Extension.prototype.IsOldIE = function () {
             var browser = window.browserDetect.browser;
             var version = window.browserDetect.version;
-
             if (browser == 'Explorer' && version <= 9)
                 return true;
             return false;
         };
-
         Extension.prototype.createModules = function () {
             this.headerPanel = new header.HeaderPanel(shell.Shell.$headerPanel);
-
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel = new left.TreeViewLeftPanel(shell.Shell.$leftPanel);
             }
-
             this.centerPanel = new center.PDFCenterPanel(shell.Shell.$centerPanel);
-
             if (this.isRightPanelEnabled()) {
                 this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
             }
-
             this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
-
             this.$helpDialogue = utils.Utils.createDiv('overlay help');
             shell.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
-
             this.$embedDialogue = utils.Utils.createDiv('overlay embed');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
-
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
         };
-
         Extension.prototype.isLeftPanelEnabled = function () {
             return utils.Utils.getBool(this.provider.config.options.leftPanelEnabled, true);
         };
-
         Extension.prototype.isRightPanelEnabled = function () {
             return utils.Utils.getBool(this.provider.config.options.rightPanelEnabled, true);
         };
-
         Extension.prototype.viewMedia = function () {
             var _this = this;
             var canvas = this.provider.getCanvasByIndex(0);
-
             this.viewCanvas(0, function () {
                 _this.provider.setMediaUri(canvas);
-
                 $.publish(Extension.OPEN_MEDIA, [canvas]);
-
                 _this.setParam(1 /* canvasIndex */, 0);
             });
         };
@@ -8810,28 +7520,22 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function(require, exports, baseProvider) {
+define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function (require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(bootstrapper, config, manifest) {
             _super.call(this, bootstrapper, config, manifest);
-
             this.config.options = $.extend(true, this.options, {}, config.options);
         }
         Provider.prototype.getPDFUri = function () {
             var canvas = this.getCanvasByIndex(0);
             return canvas.mediaUri;
         };
-
         Provider.prototype.getEmbedScript = function (width, height, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
-
             var template = this.options.embedTemplate || embedTemplate;
-
             var configUri = this.config.uri || '';
-
             var script = String.prototype.format(template, this.manifestUri, this.sequenceIndex, configUri, width, height, esu);
-
             return script;
         };
         return Provider;
@@ -8873,7 +7577,6 @@ require.config({
         }
     }
 });
-
 require([
     'modernizr',
     'jquery',
@@ -8887,24 +7590,20 @@ require([
     'l10n',
     'sanitize',
     'extensions/uv-seadragon-extension/extension',
-    'extensions/uv-seadragon-extension/iiifProvider',
+    'extensions/uv-seadragon-extension/provider',
     'extensions/uv-mediaelement-extension/extension',
     'extensions/uv-mediaelement-extension/provider',
     'extensions/uv-pdf-extension/extension',
     'extensions/uv-pdf-extension/provider'
-], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonIIIFProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
+], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
     
-
     var extensions = {};
-
     extensions['seadragon/iiif'] = {
         type: seadragonExtension.Extension,
-        provider: seadragonIIIFProvider.Provider,
+        provider: seadragonProvider.Provider,
         name: 'uv-seadragon-extension'
     };
-
     var bs = new bootstrapper(extensions);
-
     bs.bootStrap();
 });
 

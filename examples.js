@@ -60,31 +60,9 @@ schema = {
                     "id": "preserveViewport",
                     "type": "boolean"
                 },
-                "sectionMappings": {
-                    "id": "sectionMappings",
-                    "type": "object",
-                    "properties": {
-                        "CoverFrontOutside": {
-                            "id": "CoverFrontOutside",
-                            "type": "string"
-                        },
-                        "CoverBackOutside": {
-                            "id": "CoverBackOutside",
-                            "type": "string"
-                        },
-                        "TitlePage": {
-                            "id": "TitlePage",
-                            "type": "string"
-                        },
-                        "TableOfContents": {
-                            "id": "TableOfContents",
-                            "type": "string"
-                        },
-                        "PartOfWork": {
-                            "id": "PartOfWork",
-                            "type": "string"
-                        }
-                    }
+                "searchWithinEnabled": {
+                    "id": "searchWithinEnabled",
+                    "type": "boolean"
                 }
             }
         },
@@ -709,6 +687,75 @@ schema = {
                             }
                         }
                     }
+                },
+                "searchFooterPanel": {
+                    "id": "searchFooterPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "instanceFound": {
+                                    "id": "instanceFound",
+                                    "type": "string"
+                                },
+                                "instancesFound": {
+                                    "id": "instancesFound",
+                                    "type": "string"
+                                },
+                                "resultFoundFor": {
+                                    "id": "resultFoundFor",
+                                    "type": "string"
+                                },
+                                "resultsFoundFor": {
+                                    "id": "resultsFoundFor",
+                                    "type": "string"
+                                },
+                                "displaying": {
+                                    "id": "displaying",
+                                    "type": "string"
+                                },
+                                "page": {
+                                    "id": "page",
+                                    "type": "string"
+                                },
+                                "image": {
+                                    "id": "image",
+                                    "type": "string"
+                                },
+                                "searchWithin": {
+                                    "id": "searchWithin",
+                                    "type": "string"
+                                },
+                                "enterKeyword": {
+                                    "id": "enterKeyword",
+                                    "type": "string"
+                                },
+                                "pageCaps": {
+                                    "id": "pageCaps",
+                                    "type": "string"
+                                },
+                                "imageCaps": {
+                                    "id": "imageCaps",
+                                    "type": "string"
+                                },
+                                "clearSearch": {
+                                    "id": "clearSearch",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -722,7 +769,7 @@ $(function(){
     var config, editor, locales;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.47/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.48/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -742,7 +789,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.47/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.48/js/embed.js"><\/script>');
         }
     }
 
@@ -948,7 +995,7 @@ $(function(){
 
         if ($('#editPnl').hasClass('show')){
 
-            $.getJSON('/build/uv-1.0.47/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
+            $.getJSON('/build/uv-1.0.48/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
                 editor.setValue(config);
             });
         }
