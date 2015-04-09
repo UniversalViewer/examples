@@ -768,11 +768,14 @@ $(function(){
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
     var config, editor, locales;
 
+    // if the embed script has been included in the page for testing, don't append it.
+    var scriptIncluded = $('#embedUV').length;
+
     if (testBuild){
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.48/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
-            $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
+            if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
         } else {
             // built version
 
