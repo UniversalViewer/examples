@@ -6535,7 +6535,7 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             }
         };
         Extension.prototype.getDependencies = function (callback) {
-            require(["./dependencies"], function (deps) {
+            require(["uv-seadragon-extension-dependencies"], function (deps) {
                 callback(deps);
             });
         };
@@ -7224,7 +7224,7 @@ define('extensions/uv-mediaelement-extension/extension',["require", "exports", "
             }
         };
         Extension.prototype.getDependencies = function (callback) {
-            require(["./dependencies"], function (deps) {
+            require(["uv-mediaelement-extension-dependencies"], function (deps) {
                 callback(deps);
             });
         };
@@ -7454,7 +7454,7 @@ define('extensions/uv-pdf-extension/extension',["require", "exports", "../../mod
             }
         };
         Extension.prototype.getDependencies = function (callback) {
-            require(["./dependencies"], function (deps) {
+            require(["uv-pdf-extension-dependencies"], function (deps) {
                 callback(deps);
             });
         };
