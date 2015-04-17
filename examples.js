@@ -880,7 +880,7 @@ $(function(){
         var jsonp = $('#jsonp').is(':checked');
         var testids = $('#testids').is(':checked');
         var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
-        var locale = $('#locales').val();
+        var locale = $('#locales').val() || "en-GB";
 
         var manifest = $('#manifest option:selected').val();
 

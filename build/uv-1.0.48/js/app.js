@@ -4960,7 +4960,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             if (!this.isCreated) {
                 setTimeout(function () {
                     _this.createUI();
-                    _this.loadTileSources();
+                    _this.loadPages();
                 }, 500);
             }
             else {
@@ -5133,26 +5133,26 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.loadTileSources = function () {
             this.isLoading = true;
-            this.tileSources = this.provider.getTileSources();
+            this.pages = this.provider.getTileSources();
             this.$spinner.show();
             var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/js/imageunavailable.js' : 'js/imageunavailable.js';
-            _.each(this.tileSources, function (ts) {
+            _.each(this.pages, function (ts) {
                 if (!ts.tileSource) {
                     ts.tileSource = imageUnavailableUri;
                 }
             });
-            this.viewer.open(this.tileSources[0]);
+            this.viewer.open(this.pages[0]);
         };
         SeadragonCenterPanel.prototype.openTileSourcesHandler = function () {
             var viewingDirection = this.provider.getViewingDirection();
-            if (this.tileSources.length > 1) {
+            if (this.pages.length > 1) {
                 if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
-                    this.tileSources[1].y = this.viewer.world.getItemAt(0).getBounds().y + this.viewer.world.getItemAt(0).getBounds().height + this.config.options.pageGap;
+                    this.pages[1].y = this.viewer.world.getItemAt(0).getBounds().y + this.viewer.world.getItemAt(0).getBounds().height + this.config.options.pageGap;
                 }
                 else {
-                    this.tileSources[1].x = this.viewer.world.getItemAt(0).getBounds().x + this.viewer.world.getItemAt(0).getBounds().width + this.config.options.pageGap;
+                    this.pages[1].x = this.viewer.world.getItemAt(0).getBounds().x + this.viewer.world.getItemAt(0).getBounds().width + this.config.options.pageGap;
                 }
-                this.viewer.addTiledImage(this.tileSources[1]);
+                this.viewer.addTiledImage(this.pages[1]);
             }
             if (this.isFirstLoad) {
                 this.initialRotation = this.extension.getParam(3 /* rotation */);
@@ -5190,7 +5190,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
                     this.disableNextButton();
                 }
             }
-            this.lastTilesNum = this.tileSources.length;
+            this.lastTilesNum = this.pages.length;
             this.isFirstLoad = false;
             this.isLoading = false;
             this.$spinner.hide();
@@ -5229,11 +5229,11 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             var viewingDirection = this.provider.getViewingDirection();
             switch (viewingDirection) {
                 case "top-to-bottom":
-                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.tileSources.length), true);
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.pages.length), true);
                     break;
                 case "left-to-right":
                 case "right-to-left":
-                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.tileSources.length, this.viewer.world.getItemAt(0).normHeight), true);
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.pages.length, this.viewer.world.getItemAt(0).normHeight), true);
                     break;
             }
         };
@@ -5321,7 +5321,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.getSearchOverlayRects = function (rects, index) {
             var newRects = [];
-            this.tileSources[index];
+            this.pages[index];
             var offsetX = this.viewer.world.getItemAt(index).getBounds().x;
             var width = this.viewer.world.getItemAt(index).getBounds().width;
             for (var i = 0; i < rects.length; i++) {
