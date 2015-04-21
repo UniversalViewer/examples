@@ -1049,8 +1049,8 @@ $(function(){
         edit();
     });
 
-    $(document).bind("uv.onToggleFullScreen", function (event, isFullScreen) {
-        console.log('full screen: ' + isFullScreen);
+    $(document).bind("uv.onToggleFullScreen", function (event, obj) {
+        console.log('full screen: ' + obj.isFullScreen);
     });
 
     $(document).bind("uv.onSequenceIndexChanged", function (event, isFullScreen) {
