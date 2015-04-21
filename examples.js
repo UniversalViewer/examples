@@ -699,6 +699,14 @@ schema = {
                             "id": "options",
                             "type": "object",
                             "properties": {
+                                "elideDetailsTermsCount": {
+                                    "id": "elideDetailsTermsCount",
+                                    "type": "integer"
+                                },
+                                "elideResultsTermsCount": {
+                                    "id": "elideResultsTermsCount",
+                                    "type": "integer"
+                                }
                             }
                         },
                         "content": {
@@ -751,6 +759,14 @@ schema = {
                                 },
                                 "clearSearch": {
                                     "id": "clearSearch",
+                                    "type": "string"
+                                },
+                                "previousResult": {
+                                    "id": "previousResult",
+                                    "type": "string"
+                                },
+                                "nextResult": {
+                                    "id": "nextResult",
                                     "type": "string"
                                 }
                             }

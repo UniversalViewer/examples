@@ -765,15 +765,14 @@
   cursor: pointer;
 }
 #app .footerPanel .searchResults .placeMarkerDetails h1 {
-  color: #cc0000;
+  color: #000000;
   font-size: 11px;
   border-bottom: 1px solid #999999;
   font-weight: bold;
-  background-image: url('../../img/uv-searchfooterpanel-module/arrow.png');
   background-position: 0 1px;
   background-repeat: no-repeat;
   margin: 5px;
-  padding: 0 5px 5px 15px;
+  padding: 0 5px 5px 0;
   text-transform: none;
 }
 #app .footerPanel .searchResults .placeMarkerDetails p {
@@ -872,50 +871,76 @@
   color: #fff;
   font-weight: bold;
   padding: 0 10px 0 0;
-  margin: 5px 0 0 0;
+  margin: 4px 0 0 0;
   float: left;
 }
 #app .footerPanel .searchPager {
   position: relative;
-  background-color: #ffffff;
+  background-color: #222222;
+  border: 1px solid #333333;
   height: 32px;
   overflow: hidden;
 }
 #app .footerPanel .searchPager .controls {
   position: absolute;
-  margin: 5px 0 0 0;
   width: 585px;
 }
-#app .footerPanel .searchPager .controls a.imageButton.previousResult {
-  background: url('../../img/uv-searchfooterpanel-module/previous_result.png') no-repeat;
-  height: 22px;
-  width: 109px;
-  margin: 0 10px 0 0;
-  float: left;
+#app .footerPanel .searchPager .controls a.previousResult {
+  background-image: url('../../img/uv-searchfooterpanel-module/prev.png');
+  background-repeat: no-repeat;
+  height: 30px;
   cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 25px;
+  padding-right: 10px;
+  line-height: 30px;
+  float: left;
+  margin: 0 10px 0 0;
 }
-#app .footerPanel .searchPager .controls a.imageButton.nextResult {
-  background: url('../../img/uv-searchfooterpanel-module/next_result.png') no-repeat;
-  height: 22px;
-  width: 90px;
+#app .footerPanel .searchPager .controls a.previousResult:link,
+#app .footerPanel .searchPager .controls a.previousResult:visited,
+#app .footerPanel .searchPager .controls a.previousResult:hover,
+#app .footerPanel .searchPager .controls a.previousResult:active {
+  color: #ffffff;
+  text-decoration: none;
+}
+#app .footerPanel .searchPager .controls a.nextResult {
+  background-image: url('../../img/uv-searchfooterpanel-module/next.png');
+  background-repeat: no-repeat;
+  height: 30px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: right center;
+  padding-right: 25px;
+  padding-left: 10px;
+  line-height: 30px;
   float: right;
   margin: 0 0 0 10px;
-  cursor: pointer;
+}
+#app .footerPanel .searchPager .controls a.nextResult:link,
+#app .footerPanel .searchPager .controls a.nextResult:visited,
+#app .footerPanel .searchPager .controls a.nextResult:hover,
+#app .footerPanel .searchPager .controls a.nextResult:active {
+  color: #ffffff;
+  text-decoration: none;
 }
 #app .footerPanel .searchPager .controls a.clearSearch {
   cursor: pointer;
-  color: #cc0000;
+  color: #869f33;
   text-decoration: none;
   margin: 0 0 0 10px;
   font-size: 12px;
 }
 #app .footerPanel .searchPager .controls .searchResultsInfo {
-  margin: 2px 0 0 0;
-  color: #000;
+  margin: 4px 0 0 0;
+  color: #fff;
   text-align: center;
   font-size: 14px;
   float: left;
-  width: 360px;
+  width: 345px;
 }
 #app .footerPanel .searchPager .controls .searchResultsInfo .number {
   font-weight: bold;
