@@ -60,31 +60,9 @@ schema = {
                     "id": "preserveViewport",
                     "type": "boolean"
                 },
-                "sectionMappings": {
-                    "id": "sectionMappings",
-                    "type": "object",
-                    "properties": {
-                        "CoverFrontOutside": {
-                            "id": "CoverFrontOutside",
-                            "type": "string"
-                        },
-                        "CoverBackOutside": {
-                            "id": "CoverBackOutside",
-                            "type": "string"
-                        },
-                        "TitlePage": {
-                            "id": "TitlePage",
-                            "type": "string"
-                        },
-                        "TableOfContents": {
-                            "id": "TableOfContents",
-                            "type": "string"
-                        },
-                        "PartOfWork": {
-                            "id": "PartOfWork",
-                            "type": "string"
-                        }
-                    }
+                "searchWithinEnabled": {
+                    "id": "searchWithinEnabled",
+                    "type": "boolean"
                 }
             }
         },
@@ -709,6 +687,91 @@ schema = {
                             }
                         }
                     }
+                },
+                "searchFooterPanel": {
+                    "id": "searchFooterPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "elideDetailsTermsCount": {
+                                    "id": "elideDetailsTermsCount",
+                                    "type": "integer"
+                                },
+                                "elideResultsTermsCount": {
+                                    "id": "elideResultsTermsCount",
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "instanceFound": {
+                                    "id": "instanceFound",
+                                    "type": "string"
+                                },
+                                "instancesFound": {
+                                    "id": "instancesFound",
+                                    "type": "string"
+                                },
+                                "resultFoundFor": {
+                                    "id": "resultFoundFor",
+                                    "type": "string"
+                                },
+                                "resultsFoundFor": {
+                                    "id": "resultsFoundFor",
+                                    "type": "string"
+                                },
+                                "displaying": {
+                                    "id": "displaying",
+                                    "type": "string"
+                                },
+                                "page": {
+                                    "id": "page",
+                                    "type": "string"
+                                },
+                                "image": {
+                                    "id": "image",
+                                    "type": "string"
+                                },
+                                "searchWithin": {
+                                    "id": "searchWithin",
+                                    "type": "string"
+                                },
+                                "enterKeyword": {
+                                    "id": "enterKeyword",
+                                    "type": "string"
+                                },
+                                "pageCaps": {
+                                    "id": "pageCaps",
+                                    "type": "string"
+                                },
+                                "imageCaps": {
+                                    "id": "imageCaps",
+                                    "type": "string"
+                                },
+                                "clearSearch": {
+                                    "id": "clearSearch",
+                                    "type": "string"
+                                },
+                                "previousResult": {
+                                    "id": "previousResult",
+                                    "type": "string"
+                                },
+                                "nextResult": {
+                                    "id": "nextResult",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -725,7 +788,11 @@ $(function(){
     var scriptIncluded = $('#embedUV').length;
 
     if (testBuild){
+<<<<<<< HEAD
         if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
+=======
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
+>>>>>>> 0f4e202337e566c2e42476db994cda3b80a85365
     } else {
         if (isLocalhost){
             if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -741,21 +808,26 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $('#manifest option').each(function() {
+            $('#manifestSelect option').each(function() {
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
+<<<<<<< HEAD
             if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
+=======
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
+>>>>>>> 0f4e202337e566c2e42476db994cda3b80a85365
         }
     }
 
     setJSONPEnabled();
 
-    if ($('#manifest option').length || $('#manifest optgroup').length){
-        setSelectedManifest();
-    }
+    //if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
+    //    setSelectedManifest();
+    //}
 
     createEditor();
+    setSelectedManifest();
     setSelectedLocale();
     setDefaultToFullScreen();
     loadViewer();
@@ -803,7 +875,12 @@ $(function(){
         });
     }
 
-    $('#manifest').on('change', function(){
+    $('#manifestSelect').on('change', function(){
+        $('#manifest').val($('#manifestSelect option:selected').val());
+    });
+
+    $('#setManifestBtn').on('click', function(e){
+        e.preventDefault();
         buildQuerystring();
     });
 
@@ -811,7 +888,8 @@ $(function(){
         $('#locales').val($('#locale option:selected').val());
     });
 
-    $('#setLocalesBtn').on('click', function(){
+    $('#setLocalesBtn').on('click', function(e){
+        e.preventDefault();
         buildQuerystring();
     });
 
@@ -828,14 +906,12 @@ $(function(){
     });
 
     function buildQuerystring() {
-        $('footer').hide();
 
         var jsonp = $('#jsonp').is(':checked');
         var testids = $('#testids').is(':checked');
         var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
-        var locale = $('#locales').val();
-
-        var manifest = $('#manifest option:selected').val();
+        var manifest = $('#manifest').val();
+        var locale = $('#locales').val() || "en-GB";
 
         // clear hash params
         document.location.hash = "";
@@ -844,8 +920,8 @@ $(function(){
         qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
         qs = updateURIKeyValuePair(qs, "testids", testids);
         qs = updateURIKeyValuePair(qs, "defaultToFullScreen", defaultToFullScreen);
-        qs = updateURIKeyValuePair(qs, "locale", locale);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
+        qs = updateURIKeyValuePair(qs, "locale", locale);
 
         // reload
         window.location.search = qs;
@@ -892,10 +968,12 @@ $(function(){
         var manifest = getQuerystringParameter("manifest");
 
         if (manifest) {
-            $("#manifest").val(manifest);
+            $("#manifestSelect").val(manifest);
         } else {
-            manifest = $('#manifest option')[0].value;
+            manifest = $('#manifestSelect option')[0].value;
         }
+
+        $("#manifest").val(manifest);
 
         $('.uv').attr('data-uri', manifest);
     }
@@ -911,7 +989,7 @@ $(function(){
     }
 
     function setTestIds(){
-        var testids = $('#testids').is(':checked');
+        //var testids = $('#testids').is(':checked');
 
         var qs = getQuerystringParameter("testids");
 
@@ -986,8 +1064,8 @@ $(function(){
         edit();
     });
 
-    $(document).bind("uv.onToggleFullScreen", function (event, isFullScreen) {
-        console.log('full screen: ' + isFullScreen);
+    $(document).bind("uv.onToggleFullScreen", function (event, obj) {
+        console.log('full screen: ' + obj.isFullScreen);
     });
 
     $(document).bind("uv.onSequenceIndexChanged", function (event, isFullScreen) {
@@ -1017,6 +1095,5 @@ $(function(){
 
     $(document).bind("uv.onCreated", function (event, obj) {
         setTestIds();
-        showLightbox();
     });
 });

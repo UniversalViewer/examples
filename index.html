@@ -6,7 +6,10 @@
     <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="examples.css" />
     <!--<script type="text/javascript" id="embedUV" src="/src/js/embed.js"></script>-->
+<<<<<<< HEAD
     <!--<script type="text/javascript" id="embedUV" src="build/uv-1.0.49/js/embed.js"></script>-->
+=======
+>>>>>>> 0f4e202337e566c2e42476db994cda3b80a85365
 </head>
 <body>
 
@@ -22,6 +25,8 @@
 
         <!-- Note: in order for config changes to appear in the editor, you need to run a build -->
 
+        <hr/>
+
         <h3>Options</h3>
 
         <div>
@@ -29,19 +34,21 @@
             <p>Forces the viewer to use JSONP to load manifests and info.json. Default behaviour is to use JSONP for IE<10.</p>
         </div>
 
-        <div>
-            <input id="testids" type="checkbox"><label for="testids">Test Ids</label>
-            <p>Adds unique ids to viewer buttons for testing convenience.</p>
-        </div>
+        <!--<div>-->
+            <!--<input id="testids" type="checkbox"><label for="testids">Test Ids</label>-->
+            <!--<p>Adds unique ids to viewer buttons for testing convenience.</p>-->
+        <!--</div>-->
 
         <div>
             <input id="defaultToFullScreen" type="checkbox"><label for="defaultToFullScreen">Default to Full Screen</label>
             <p>Makes the viewer open in full screen when the page loads.</p>
         </div>
 
+        <hr/>
+
         <h3>Manifest</h3>
 
-        <select id="manifest">
+        <select id="manifestSelect">
             <optgroup label="Wellcome Library">
                 <option value="http://wellcomelibrary.org/iiif/b18035978/manifest">The Biocrats</option>
                 <option value="http://wellcomelibrary.org/iiif/b19684915/manifest">Wellcome Apocalypse</option>
@@ -102,6 +109,12 @@
             </optgroup>
         </select>
 
+        <input id="manifest" type="text" value="" />
+
+        <a id="setManifestBtn" class="button">Set</a>
+
+        <hr/>
+
         <h3>Locale</h3>
 
         <p>Test setting the data-locale attribute on the embedding div.</p>
@@ -116,9 +129,11 @@
 
         <a id="setLocalesBtn" class="button">Set</a>
 
+        <hr/>
+
         <h3>Config</h3>
 
-        <p>Changes to config made with this tool are at the session level and not persisted.</p>
+        <p>Changes to config made with this tool are at the session level and not persisted. To edit another locale's config, change the locale above and click 'Set'.</p>
 
         <ul id="edit-config" class="button-group">
             <li><a id="editBtn" href="#" class="button">Edit</a></li>

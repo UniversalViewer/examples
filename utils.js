@@ -9,7 +9,7 @@ function getQuerystringParameter(key, doc) {
 function setQuerystringParameter(key, value, doc){
     if (!doc) doc = window.document;
 
-    var kvp = updateURIKeyValuePair(doc.location.search.replace('?', ''), key, value);
+    var kvp = updateURIKeyValuePair(doc.location.searchWithin.replace('?', ''), key, value);
 
     // redirects.
     window.location.search = kvp;
