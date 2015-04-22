@@ -2390,12 +2390,6 @@ input[type=range]:focus::-ms-fill-upper {
   color: transparent;
   width: 21px;
 }
-#app .footerPanel .searchOptions {
-  width: 425px;
-}
-#app .footerPanel .searchPager .controls .searchResultsInfo {
-  width: 290px;
-}
 #app.lightbox .footerPanel .options a.imageBtn.normal {
   background: url('../../img/close_lightbox.png') no-repeat;
 }

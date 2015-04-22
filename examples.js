@@ -788,11 +788,7 @@ $(function(){
     var scriptIncluded = $('#embedUV').length;
 
     if (testBuild){
-<<<<<<< HEAD
-        if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
-=======
         $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
->>>>>>> 0f4e202337e566c2e42476db994cda3b80a85365
     } else {
         if (isLocalhost){
             if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -812,11 +808,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-<<<<<<< HEAD
-            if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
-=======
             $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.0.49/js/embed.js"><\/script>');
->>>>>>> 0f4e202337e566c2e42476db994cda3b80a85365
         }
     }
 
