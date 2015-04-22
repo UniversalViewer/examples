@@ -814,9 +814,9 @@ $(function(){
 
     setJSONPEnabled();
 
-    if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
-        setSelectedManifest();
-    }
+    //if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
+    //    setSelectedManifest();
+    //}
 
     createEditor();
     setSelectedManifest();
