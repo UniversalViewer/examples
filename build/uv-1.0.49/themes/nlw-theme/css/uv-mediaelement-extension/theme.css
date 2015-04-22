@@ -2079,14 +2079,20 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 420px;
+  width: 432px;
   position: absolute;
+}
+#app .headerPanel .options .centerOptions .prevOptions {
+  margin: 0 10px 0 0;
 }
 #app .headerPanel .options .centerOptions .mode label {
   width: 42px;
 }
 #app .headerPanel .options .centerOptions .search {
-  width: 125px;
+  width: 140px;
+}
+#app .headerPanel .options .centerOptions .nextOptions {
+  margin: 0 0 0 10px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;
@@ -2306,6 +2312,26 @@ input[type=range]:focus::-ms-fill-upper {
   color: #ffffff;
   text-decoration: none;
 }
+#app .footerPanel .options a.download {
+  background-image: url('../../img/download.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 30px;
+  padding-right: 10px;
+  line-height: 22px;
+}
+#app .footerPanel .options a.download:link,
+#app .footerPanel .options a.download:visited,
+#app .footerPanel .options a.download:hover,
+#app .footerPanel .options a.download:active {
+  color: #ffffff;
+  text-decoration: none;
+}
 #app .footerPanel .options a.fullScreen {
   background-image: url('../../img/fullscreen.png');
   background-repeat: no-repeat;
@@ -2389,6 +2415,12 @@ input[type=range]:focus::-ms-fill-upper {
   font-size: 0;
   color: transparent;
   width: 21px;
+}
+#app .footerPanel .searchOptions {
+  width: 425px;
+}
+#app .footerPanel .searchPager .controls .searchResultsInfo {
+  width: 290px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
   background: url('../../img/close_lightbox.png') no-repeat;
@@ -2474,10 +2506,8 @@ input[type=range]:focus::-ms-fill-upper {
   list-style-position: inside;
   list-style-type: none;
   margin: 0;
-  padding: 0;
 }
 #app .overlay .middle .content ol.options li {
-  background: #eeeeee;
   margin: 2px 0 0 0;
   padding: 4px;
 }
@@ -2486,10 +2516,10 @@ input[type=range]:focus::-ms-fill-upper {
   padding: 0;
   width: auto;
   height: auto;
-  display: inline-block;
+  display: inline;
 }
 #app .overlay .middle .content ol.options li label {
-  display: inline-block;
+  display: inline;
   margin: 0 0 0 5px;
   padding: 0;
   float: none;
