@@ -661,7 +661,10 @@ define('utils',["require", "exports"], function (require, exports) {
             if (text.length <= chars)
                 return text;
             var trimmedText = text.substr(0, chars);
-            trimmedText = trimmedText.substr(0, Math.min(trimmedText.length, trimmedText.lastIndexOf(" ")));
+            var lastSpaceIndex = trimmedText.lastIndexOf(" ");
+            if (lastSpaceIndex != -1) {
+                trimmedText = trimmedText.substr(0, Math.min(trimmedText.length, lastSpaceIndex));
+            }
             return trimmedText + "&hellip;";
         };
         Utils.htmlDecode = function (encoded) {
@@ -826,6 +829,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
     var util = utils.Utils;
     var BootStrapper = (function () {
         function BootStrapper(extensions) {
+            this.isFullScreen = false;
             this.extensions = extensions;
         }
         BootStrapper.prototype.getBootstrapParams = function () {
@@ -850,7 +854,6 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
                 that.params = $.extend(true, that.params, params);
             }
             $('#app').empty();
-            $('#app').addClass('loading');
             $('link[type*="text/css"]').remove();
             jQuery.support.cors = true;
             if (that.params.config) {
@@ -954,8 +957,12 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             });
         };
         BootStrapper.prototype.createExtension = function (extension, config) {
-            var provider = new extension.provider(this, config, this.manifest);
-            new extension.type(provider);
+            this.config = config;
+            var provider = new extension.provider(this);
+            provider.load();
+            this.extension = new extension.type(this);
+            this.extension.provider = provider;
+            this.extension.create();
         };
         return BootStrapper;
     })();
@@ -2270,12 +2277,13 @@ define('modules/uv-shared-module/baseView',["require", "exports", "./panel"], fu
         __extends(BaseView, _super);
         function BaseView($element, fitToParentWidth, fitToParentHeight) {
             this.modules = [];
+            this.bootstrapper = $("body > #app").data("bootstrapper");
             _super.call(this, $element, fitToParentWidth, fitToParentHeight);
         }
         BaseView.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            this.extension = window.extension;
+            this.extension = this.bootstrapper.extension;
             this.provider = this.extension.provider;
             this.config = {};
             this.config.content = {};
@@ -2522,22 +2530,20 @@ define('modules/uv-shared-module/shell',["require", "exports", "./baseExtension"
 
 define('modules/uv-shared-module/baseExtension',["require", "exports", "../../utils", "./shell", "./genericDialogue"], function (require, exports, utils, shell, genericDialogue) {
     var BaseExtension = (function () {
-        function BaseExtension(provider) {
-            this.isFullScreen = false;
+        function BaseExtension(bootstrapper) {
             this.tabbing = false;
             this.shifted = false;
-            window.extension = this;
-            this.provider = provider;
-            this.create();
+            this.bootstrapper = bootstrapper;
         }
         BaseExtension.prototype.create = function () {
             var _this = this;
             this.$element = $('#app');
+            this.$element.data("bootstrapper", this.bootstrapper);
             var $win = $(window);
             this.$element.width($win.width());
             this.$element.height($win.height());
             if (!this.provider.isReload) {
-                this.socket = new easyXDM.Socket({
+                this.bootstrapper.socket = new easyXDM.Socket({
                     onMessage: function (message, origin) {
                         message = $.parseJSON(message);
                         _this.handleParentFrameEvent(message);
@@ -2573,9 +2579,9 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
             $.subscribe(BaseExtension.TOGGLE_FULLSCREEN, function () {
                 if (!_this.isOverlayActive()) {
                     $('#top').focus();
-                    _this.isFullScreen = !_this.isFullScreen;
+                    _this.bootstrapper.isFullScreen = !_this.bootstrapper.isFullScreen;
                     _this.triggerSocket(BaseExtension.TOGGLE_FULLSCREEN, {
-                        isFullScreen: _this.isFullScreen,
+                        isFullScreen: _this.bootstrapper.isFullScreen,
                         overrideFullScreen: _this.provider.config.options.overrideFullScreen
                     });
                 }
@@ -2595,7 +2601,7 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                     $.publish(BaseExtension.HOME);
             });
             $.subscribe(BaseExtension.ESCAPE, function () {
-                if (_this.isFullScreen) {
+                if (_this.bootstrapper.isFullScreen) {
                     $.publish(BaseExtension.TOGGLE_FULLSCREEN);
                 }
             });
@@ -2612,8 +2618,8 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
             return $(window).height();
         };
         BaseExtension.prototype.triggerSocket = function (eventName, eventObject) {
-            if (this.socket) {
-                this.socket.postMessage(JSON.stringify({ eventName: eventName, eventObject: eventObject }));
+            if (this.bootstrapper.socket) {
+                this.bootstrapper.socket.postMessage(JSON.stringify({ eventName: eventName, eventObject: eventObject }));
             }
         };
         BaseExtension.prototype.redirect = function (uri) {
@@ -2678,7 +2684,7 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 window.open(seeAlsoUri, '_blank');
             }
             else {
-                if (this.isFullScreen) {
+                if (this.bootstrapper.isFullScreen) {
                     $.publish(BaseExtension.TOGGLE_FULLSCREEN);
                 }
                 this.triggerSocket(BaseExtension.SEQUENCE_INDEX_CHANGED, manifest.assetSequence);
@@ -2754,7 +2760,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
     })(exports.params || (exports.params = {}));
     var params = exports.params;
     var BaseProvider = (function () {
-        function BaseProvider(bootstrapper, config, manifest) {
+        function BaseProvider(bootstrapper) {
             this.paramMap = ['si', 'ci', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
@@ -2762,8 +2768,8 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
                 mediaUriTemplate: "{0}{1}"
             };
             this.bootstrapper = bootstrapper;
-            this.config = config;
-            this.manifest = manifest;
+            this.config = this.bootstrapper.config;
+            this.manifest = this.bootstrapper.manifest;
             this.manifestUri = this.bootstrapper.params.manifestUri;
             this.jsonp = this.bootstrapper.params.jsonp;
             this.locale = this.bootstrapper.params.getLocale();
@@ -2780,7 +2786,6 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             if (!this.sequenceIndex) {
                 this.sequenceIndex = parseInt(util.getQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
             }
-            this.load();
         }
         BaseProvider.prototype.load = function () {
             this.sequence = this.manifest.sequences[this.sequenceIndex];
@@ -3379,7 +3384,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.0.48';
+    exports.Version = '1.0.49';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5530,7 +5535,7 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
             this.setConfig('footerPanel');
             _super.prototype.create.call(this);
             $.subscribe(baseExtension.BaseExtension.TOGGLE_FULLSCREEN, function () {
-                _this.toggleFullScreen();
+                _this.updateFullScreenButton();
             });
             $.subscribe(baseExtension.BaseExtension.SETTINGS_CHANGED, function () {
                 _this.updateDownloadButton();
@@ -5560,18 +5565,19 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
                 this.$embedButton.hide();
             }
             this.updateDownloadButton();
+            this.updateFullScreenButton();
+            if (utils.Utils.getBool(this.options.minimiseButtons, false)) {
+                this.$options.addClass('minimiseButtons');
+            }
+        };
+        FooterPanel.prototype.updateFullScreenButton = function () {
             if (!utils.Utils.getBool(this.options.fullscreenEnabled, true)) {
                 this.$fullScreenBtn.hide();
             }
             if (this.provider.isLightbox) {
                 this.$fullScreenBtn.addClass('lightbox');
             }
-            if (utils.Utils.getBool(this.options.minimiseButtons, false)) {
-                this.$options.addClass('minimiseButtons');
-            }
-        };
-        FooterPanel.prototype.toggleFullScreen = function () {
-            if (this.extension.isFullScreen) {
+            if (this.bootstrapper.isFullScreen) {
                 this.$fullScreenBtn.swapClass('fullScreen', 'exitFullscreen');
                 this.$fullScreenBtn.text(this.content.exitFullScreen);
                 this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
@@ -6416,8 +6422,8 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-seadragon-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-pagingheaderpanel-module/pagingHeaderPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/thumbsView", "../../modules/uv-treeviewleftpanel-module/galleryView", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-seadragoncenterpanel-module/seadragonCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-searchfooterpanel-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "./downloadDialogue", "../../extensions/uv-seadragon-extension/settingsDialogue", "../../modules/uv-dialogues-module/externalContentDialogue"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, thumbsView, galleryView, treeView, center, baseRight, right, footer, help, embed, download, settingsDialogue, externalContentDialogue) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
-        function Extension(provider) {
-            _super.call(this, provider);
+        function Extension(bootstrapper) {
+            _super.call(this, bootstrapper);
             this.isLoading = false;
             this.currentRotation = 0;
         }
@@ -6821,13 +6827,13 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
     var util = utils.Utils;
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(bootstrapper, config, manifest) {
-            _super.call(this, bootstrapper, config, manifest);
+        function Provider(bootstrapper) {
+            _super.call(this, bootstrapper);
             this.searchResults = [];
             this.config.options = $.extend(true, this.options, {
                 autoCompleteUriTemplate: '{0}{1}',
                 iiifImageUriTemplate: '{0}/{1}/{2}/{3}/{4}/{5}.jpg'
-            }, config.options);
+            }, bootstrapper.config.options);
         }
         Provider.prototype.getAutoCompleteUri = function () {
             return "";
@@ -7064,7 +7070,7 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
             var that = this;
             if (this.provider.getSequenceType().contains('video')) {
                 $.subscribe(baseExtension.BaseExtension.TOGGLE_FULLSCREEN, function (e) {
-                    if (that.extension.isFullScreen) {
+                    if (that.bootstrapper.isFullScreen) {
                         that.$container.css('backgroundColor', '#000');
                         that.player.enterFullScreen(false);
                     }
@@ -7229,8 +7235,8 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-mediaelement-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
-        function Extension(provider) {
-            _super.call(this, provider);
+        function Extension(bootstrapper) {
+            _super.call(this, bootstrapper);
         }
         Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
@@ -7337,9 +7343,9 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-mediaelement-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function (require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(bootstrapper, config, manifest) {
-            _super.call(this, bootstrapper, config, manifest);
-            this.config.options = $.extend(true, this.options, {}, config.options);
+        function Provider(bootstrapper) {
+            _super.call(this, bootstrapper);
+            this.config.options = $.extend(true, this.options, {}, bootstrapper.config.options);
         }
         Provider.prototype.getEmbedScript = function (width, height, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
@@ -7455,8 +7461,8 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-pdf-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-pdfcenterpanel-module/pdfCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue", "../../modules/uv-treeviewleftpanel-module/thumbsView"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, center, baseRight, right, footer, help, embed, thumbsView) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
-        function Extension(provider) {
-            _super.call(this, provider);
+        function Extension(bootstrapper) {
+            _super.call(this, bootstrapper);
         }
         Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
@@ -7569,9 +7575,9 @@ var __extends = this.__extends || function (d, b) {
 define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider"], function (require, exports, baseProvider) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
-        function Provider(bootstrapper, config, manifest) {
-            _super.call(this, bootstrapper, config, manifest);
-            this.config.options = $.extend(true, this.options, {}, config.options);
+        function Provider(bootstrapper) {
+            _super.call(this, bootstrapper);
+            this.config.options = $.extend(true, this.options, {}, bootstrapper.config.options);
         }
         Provider.prototype.getPDFUri = function () {
             var canvas = this.getCanvasByIndex(0);
