@@ -804,7 +804,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $('#manifest option').each(function() {
+            $('#manifestSelect option').each(function() {
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
@@ -814,11 +814,12 @@ $(function(){
 
     setJSONPEnabled();
 
-    if ($('#manifest option').length || $('#manifest optgroup').length){
+    if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
         setSelectedManifest();
     }
 
     createEditor();
+    setSelectedManifest();
     setSelectedLocale();
     setDefaultToFullScreen();
     loadViewer();
@@ -866,7 +867,12 @@ $(function(){
         });
     }
 
-    $('#manifest').on('change', function(){
+    $('#manifestSelect').on('change', function(){
+        $('#manifest').val($('#manifestSelect option:selected').val());
+    });
+
+    $('#setManifestBtn').on('click', function(e){
+        e.preventDefault();
         buildQuerystring();
     });
 
@@ -874,7 +880,8 @@ $(function(){
         $('#locales').val($('#locale option:selected').val());
     });
 
-    $('#setLocalesBtn').on('click', function(){
+    $('#setLocalesBtn').on('click', function(e){
+        e.preventDefault();
         buildQuerystring();
     });
 
@@ -891,14 +898,12 @@ $(function(){
     });
 
     function buildQuerystring() {
-        $('footer').hide();
 
         var jsonp = $('#jsonp').is(':checked');
         var testids = $('#testids').is(':checked');
         var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
+        var manifest = $('#manifest').val();
         var locale = $('#locales').val() || "en-GB";
-
-        var manifest = $('#manifest option:selected').val();
 
         // clear hash params
         document.location.hash = "";
@@ -907,8 +912,8 @@ $(function(){
         qs = updateURIKeyValuePair(qs, "jsonp", jsonp);
         qs = updateURIKeyValuePair(qs, "testids", testids);
         qs = updateURIKeyValuePair(qs, "defaultToFullScreen", defaultToFullScreen);
-        qs = updateURIKeyValuePair(qs, "locale", locale);
         qs = updateURIKeyValuePair(qs, "manifest", manifest);
+        qs = updateURIKeyValuePair(qs, "locale", locale);
 
         // reload
         window.location.search = qs;
@@ -955,10 +960,12 @@ $(function(){
         var manifest = getQuerystringParameter("manifest");
 
         if (manifest) {
-            $("#manifest").val(manifest);
+            $("#manifestSelect").val(manifest);
         } else {
-            manifest = $('#manifest option')[0].value;
+            manifest = $('#manifestSelect option')[0].value;
         }
+
+        $("#manifest").val(manifest);
 
         $('.uv').attr('data-uri', manifest);
     }
@@ -974,7 +981,7 @@ $(function(){
     }
 
     function setTestIds(){
-        var testids = $('#testids').is(':checked');
+        //var testids = $('#testids').is(':checked');
 
         var qs = getQuerystringParameter("testids");
 
@@ -1080,6 +1087,5 @@ $(function(){
 
     $(document).bind("uv.onCreated", function (event, obj) {
         setTestIds();
-        showLightbox();
     });
 });
