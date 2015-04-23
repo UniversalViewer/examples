@@ -3159,7 +3159,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             return this.manifest.sequences.length > 1;
         };
 
-        BaseProvider.prototype.isPaged = function () {
+        BaseProvider.prototype.isPagingEnabled = function () {
             return this.sequence.viewingHint && (this.sequence.viewingHint == "paged") && this.getSettings().pagingEnabled;
         };
 
@@ -3180,7 +3180,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 
             var indices = [];
 
-            if (!this.isPaged()) {
+            if (!this.isPagingEnabled()) {
                 indices.push(this.canvasIndex);
             } else {
                 if (this.isFirstCanvas(canvasIndex) || this.isLastCanvas(canvasIndex)) {
@@ -3217,7 +3217,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 
             var index;
 
-            if (this.isPaged()) {
+            if (this.isPagingEnabled()) {
                 var indices = this.getPagedIndices(canvasIndex);
 
                 if (this.getViewingDirection() == "right-to-left") {
@@ -3238,7 +3238,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 
             var index;
 
-            if (this.isPaged()) {
+            if (this.isPagingEnabled()) {
                 var indices = this.getPagedIndices(canvasIndex);
 
                 if (this.getViewingDirection() == "right-to-left") {
@@ -5066,7 +5066,7 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
 
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
 
-            if (this.provider.isPaged()) {
+            if (this.provider.isPagingEnabled()) {
                 var indices = this.provider.getPagedIndices(index);
 
                 _.each(indices, function (index) {
@@ -7842,7 +7842,7 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             if (canvasIndex == -1)
                 return;
 
-            if (this.provider.isPaged() && !isReload) {
+            if (this.provider.isPagingEnabled() && !isReload) {
                 var indices = this.provider.getPagedIndices(canvasIndex);
 
                 if (indices.contains(this.provider.canvasIndex)) {
@@ -8226,7 +8226,7 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
             var _this = this;
             this.pages = [];
 
-            if (!this.isPaged()) {
+            if (!this.isPagingEnabled()) {
                 var p = new Page();
                 p.tileSourceUri = this.getImageUri(this.getCurrentCanvas());
                 this.pages.push(p);
