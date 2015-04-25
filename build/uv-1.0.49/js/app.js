@@ -2575,6 +2575,33 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 _this.shifted = e.shiftKey;
                 _this.tabbing = e.keyCode === 9;
             });
+            $(document).keyup(function (e) {
+                var event = null;
+                if (e.keyCode === 13)
+                    event = BaseExtension.RETURN;
+                if (e.keyCode === 27)
+                    event = BaseExtension.ESCAPE;
+                if (e.keyCode === 33)
+                    event = BaseExtension.PAGE_UP;
+                if (e.keyCode === 34)
+                    event = BaseExtension.PAGE_DOWN;
+                if (e.keyCode === 35)
+                    event = BaseExtension.END;
+                if (e.keyCode === 36)
+                    event = BaseExtension.HOME;
+                if (e.keyCode === 37)
+                    event = BaseExtension.LEFT_ARROW;
+                if (e.keyCode === 38)
+                    event = BaseExtension.UP_ARROW;
+                if (e.keyCode === 39)
+                    event = BaseExtension.RIGHT_ARROW;
+                if (e.keyCode === 40)
+                    event = BaseExtension.DOWN_ARROW;
+                if (event) {
+                    e.preventDefault();
+                    $.publish(event);
+                }
+            });
             this.$element.append('<a href="/" id="top"></a>');
             $.subscribe(BaseExtension.TOGGLE_FULLSCREEN, function () {
                 if (!_this.isOverlayActive()) {
@@ -2585,20 +2612,6 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                         overrideFullScreen: _this.provider.config.options.overrideFullScreen
                     });
                 }
-            });
-            $(document).keyup(function (e) {
-                if (e.keyCode === 13)
-                    $.publish(BaseExtension.RETURN);
-                if (e.keyCode === 27)
-                    $.publish(BaseExtension.ESCAPE);
-                if (e.keyCode === 33)
-                    $.publish(BaseExtension.PAGE_UP);
-                if (e.keyCode === 34)
-                    $.publish(BaseExtension.PAGE_DOWN);
-                if (e.keyCode === 35)
-                    $.publish(BaseExtension.END);
-                if (e.keyCode === 36)
-                    $.publish(BaseExtension.HOME);
             });
             $.subscribe(BaseExtension.ESCAPE, function () {
                 if (_this.bootstrapper.isFullScreen) {
@@ -2707,6 +2720,10 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
         BaseExtension.PAGE_DOWN = 'onPageDown';
         BaseExtension.HOME = 'onHome';
         BaseExtension.END = 'onEnd';
+        BaseExtension.LEFT_ARROW = 'onLeftArrow';
+        BaseExtension.UP_ARROW = 'onUpArrow';
+        BaseExtension.RIGHT_ARROW = 'onRightArrow';
+        BaseExtension.DOWN_ARROW = 'onDownArrow';
         BaseExtension.WINDOW_UNLOAD = 'onWindowUnload';
         BaseExtension.OPEN_MEDIA = 'onOpenMedia';
         BaseExtension.CREATED = 'onCreated';
@@ -6461,13 +6478,19 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             $.subscribe(header.PagingHeaderPanel.PREV, function (e) {
                 _this.viewPage(_this.provider.getPrevPageIndex());
             });
-            $.subscribe(Extension.PAGE_UP, function (e) {
-                _this.viewPage(_this.provider.getPrevPageIndex());
-            });
             $.subscribe(header.PagingHeaderPanel.NEXT, function (e) {
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
+            $.subscribe(Extension.PAGE_UP, function (e) {
+                _this.viewPage(_this.provider.getPrevPageIndex());
+            });
             $.subscribe(Extension.PAGE_DOWN, function (e) {
+                _this.viewPage(_this.provider.getNextPageIndex());
+            });
+            $.subscribe(Extension.LEFT_ARROW, function (e) {
+                _this.viewPage(_this.provider.getPrevPageIndex());
+            });
+            $.subscribe(Extension.RIGHT_ARROW, function (e) {
                 _this.viewPage(_this.provider.getNextPageIndex());
             });
             $.subscribe(header.PagingHeaderPanel.MODE_CHANGED, function (e, mode) {
