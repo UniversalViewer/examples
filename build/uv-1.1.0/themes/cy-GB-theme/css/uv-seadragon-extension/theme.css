@@ -210,11 +210,6 @@
 #app .rightPanel .main .items .item .text img {
   max-width: 100px;
 }
-#app.embedded .headerPanel {
-  background-image: url('../../img/uv-pagingheaderpanel-module/logo.png');
-  background-repeat: no-repeat;
-  background-position: 8px 8px;
-}
 #app .headerPanel {
   color: #000000;
 }
