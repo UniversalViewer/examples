@@ -2071,11 +2071,6 @@ input[type=range]:focus::-ms-fill-upper {
 [data-toggle="buttons"] > .btn > input[type="checkbox"] {
   display: none;
 }
-#app .headerPanel {
-  background-image: url('../../img/logo.png');
-  background-repeat: no-repeat;
-  background-position: 8px 5px;
-}
 #app .headerPanel.showMessage {
   height: 80px;
 }
