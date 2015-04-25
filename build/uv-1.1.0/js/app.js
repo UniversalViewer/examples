@@ -3410,7 +3410,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.0.49';
+    exports.Version = '1.1.0';
 });
 
 var __extends = this.__extends || function (d, b) {
