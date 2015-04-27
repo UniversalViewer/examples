@@ -2541,8 +2541,10 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
             this.$element = $('#app');
             this.$element.data("bootstrapper", this.bootstrapper);
             var $win = $(window);
-            this.$element.width($win.width());
-            this.$element.height($win.height());
+            this.embedWidth = $win.width();
+            this.embedHeight = $win.height();
+            this.$element.width(this.embedWidth);
+            this.$element.height(this.embedHeight);
             if (!this.provider.isReload) {
                 this.bootstrapper.socket = new easyXDM.Socket({
                     onMessage: function (message, origin) {
@@ -6193,10 +6195,10 @@ define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../..
         };
         EmbedDialogue.prototype.selectCustom = function () {
             if (!this.$customWidth.val()) {
-                this.$customWidth.val(this.extension.width());
+                this.$customWidth.val(this.extension.embedWidth);
             }
             if (!this.$customHeight.val()) {
-                this.$customHeight.val(this.extension.height());
+                this.$customHeight.val(this.extension.embedHeight);
             }
             this.$sizes.find('.size').removeClass('selected');
             this.$customSize.addClass('selected');
