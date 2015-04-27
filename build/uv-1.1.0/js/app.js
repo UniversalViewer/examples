@@ -4093,7 +4093,7 @@ define('modules/uv-shared-module/leftPanel',["require", "exports", "./baseExpand
         };
         LeftPanel.prototype.init = function () {
             _super.prototype.init.call(this);
-            if (this.options.panelOpen && this.provider.isHomeDomain) {
+            if (this.options.panelOpen) {
                 this.toggle(true);
             }
         };
@@ -5438,7 +5438,7 @@ define('modules/uv-shared-module/rightPanel',["require", "exports", "./baseExpan
         };
         RightPanel.prototype.init = function () {
             _super.prototype.init.call(this);
-            if (this.options.panelOpen && this.provider.isHomeDomain) {
+            if (this.options.panelOpen) {
                 this.toggle(true);
             }
         };
