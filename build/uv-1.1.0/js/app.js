@@ -491,8 +491,9 @@ define('bootstrapParams',["require", "exports"], function (require, exports) {
         function bootstrapParams() {
         }
         bootstrapParams.prototype.setLocale = function (locale) {
+            this.locale = locale;
             this.locales = [];
-            var l = locale.split(',');
+            var l = this.locale.split(',');
             for (var i = 0; i < l.length; i++) {
                 var v = l[i].split(':');
                 this.locales.push({
@@ -500,10 +501,10 @@ define('bootstrapParams',["require", "exports"], function (require, exports) {
                     label: (v[1]) ? v[1].trim() : ""
                 });
             }
-            this._locale = this.locales[0].name;
+            this.localeName = this.locales[0].name;
         };
         bootstrapParams.prototype.getLocaleName = function () {
-            return this._locale;
+            return this.localeName;
         };
         return bootstrapParams;
     })();
@@ -858,7 +859,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             jQuery.support.cors = true;
             if (that.params.config) {
                 if (that.params.config.toLowerCase() === "sessionstorage") {
-                    var config = sessionStorage.getItem("uv-config");
+                    var config = sessionStorage.getItem("uv-config-" + that.params.localeName);
                     that.configExtension = JSON.parse(config);
                     that.loadManifest();
                 }
@@ -937,7 +938,7 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             var that = this;
             var extension;
             extension = that.extensions['seadragon/iiif'];
-            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.getLocale() + '.config.js' : 'js/' + extension.name + '.' + that.params.getLocale() + '.config.js';
+            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.getLocaleName() + '.config.js' : 'js/' + extension.name + '.' + that.params.getLocaleName() + '.config.js';
             yepnope({
                 test: window.btoa && window.atob,
                 nope: 'js/base64.min.js',
@@ -2551,7 +2552,10 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 });
             }
             this.triggerSocket(BaseExtension.LOAD, {
-                config: this.provider.config
+                bootstrapper: {
+                    config: this.provider.bootstrapper.config,
+                    params: this.provider.bootstrapper.params
+                }
             });
             this.$element.empty();
             this.$element.removeClass();
@@ -2789,7 +2793,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             this.manifest = this.bootstrapper.manifest;
             this.manifestUri = this.bootstrapper.params.manifestUri;
             this.jsonp = this.bootstrapper.params.jsonp;
-            this.locale = this.bootstrapper.params.getLocale();
+            this.locale = this.bootstrapper.params.getLocaleName();
             this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
             this.isReload = this.bootstrapper.params.isReload;
             this.embedDomain = this.bootstrapper.params.embedDomain;
@@ -6124,27 +6128,19 @@ define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../..
             });
             this.$smallSize.click(function (e) {
                 e.preventDefault();
-                _this.currentWidth = _this.smallWidth;
-                _this.currentHeight = _this.smallHeight;
-                _this.formatCode();
+                _this.selectSmall();
             });
             this.$mediumSize.click(function (e) {
                 e.preventDefault();
-                _this.currentWidth = _this.mediumWidth;
-                _this.currentHeight = _this.mediumHeight;
-                _this.formatCode();
+                _this.selectMedium();
             });
             this.$largeSize.click(function (e) {
                 e.preventDefault();
-                _this.currentWidth = _this.largeWidth;
-                _this.currentHeight = _this.largeHeight;
-                _this.formatCode();
+                _this.selectLarge();
             });
-            this.$smallSize.addClass('selected');
-            this.$sizes.find('.size').click(function (e) {
+            this.$customSize.click(function (e) {
                 e.preventDefault();
-                that.$sizes.find('.size').removeClass('selected');
-                $(this).addClass('selected');
+                _this.selectCustom();
             });
             this.$customWidth.keydown(function (event) {
                 utils.Utils.numericalInput(event);
@@ -6158,7 +6154,53 @@ define('modules/uv-dialogues-module/embedDialogue',["require", "exports", "../..
             this.$customHeight.keyup(function (event) {
                 _this.getCustomSize();
             });
+            var appWidth = this.extension.width();
+            var appHeight = this.extension.height();
+            if (appWidth === this.smallWidth && appHeight === this.smallHeight) {
+                this.selectSmall();
+            }
+            else if (appWidth === this.mediumWidth && appHeight === this.mediumHeight) {
+                this.selectMedium();
+            }
+            else if (appWidth === this.largeWidth && appHeight === this.largeHeight) {
+                this.selectLarge();
+            }
+            else {
+                this.selectCustom();
+            }
             this.$element.hide();
+        };
+        EmbedDialogue.prototype.selectSmall = function () {
+            this.currentWidth = this.smallWidth;
+            this.currentHeight = this.smallHeight;
+            this.$sizes.find('.size').removeClass('selected');
+            this.$smallSize.addClass('selected');
+            this.formatCode();
+        };
+        EmbedDialogue.prototype.selectMedium = function () {
+            this.currentWidth = this.mediumWidth;
+            this.currentHeight = this.mediumHeight;
+            this.$sizes.find('.size').removeClass('selected');
+            this.$mediumSize.addClass('selected');
+            this.formatCode();
+        };
+        EmbedDialogue.prototype.selectLarge = function () {
+            this.currentWidth = this.largeWidth;
+            this.currentHeight = this.largeHeight;
+            this.$sizes.find('.size').removeClass('selected');
+            this.$largeSize.addClass('selected');
+            this.formatCode();
+        };
+        EmbedDialogue.prototype.selectCustom = function () {
+            if (!this.$customWidth.val()) {
+                this.$customWidth.val(this.extension.width());
+            }
+            if (!this.$customHeight.val()) {
+                this.$customHeight.val(this.extension.height());
+            }
+            this.$sizes.find('.size').removeClass('selected');
+            this.$customSize.addClass('selected');
+            this.getCustomSize();
         };
         EmbedDialogue.prototype.getCustomSize = function () {
             this.currentWidth = this.$customWidth.val();
