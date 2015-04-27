@@ -6,6 +6,10 @@ header {
     padding: 20px 0 20px 0;
 }
 
+.config-name{
+    font-size: 20px;
+}
+
 #editPnl #json{
     margin: 10px 0 0 0;
     width: 640px;

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="examples.css" />
     <!--<script type="text/javascript" id="embedUV" src="/src/js/embed.js"></script>-->
-    <!--<script type="text/javascript" id="embedUV" src="build/uv-1.0.49/js/embed.js"></script>-->
+    <!--<script type="text/javascript" id="embedUV" src="build/uv-1.1.0/js/embed.js"></script>-->
 </head>
 <body>
 
@@ -15,7 +15,7 @@
     </header>
 
     <main>
-        <div class="uv" data-no-load="true" style="width:640px; height:480px; background-color: #000"></div>
+        <div class="uv" data-no-load="true" style="width:800px; height:600px; background-color: #000"></div>
     </main>
 
     <footer style="display: none">
@@ -120,7 +120,7 @@
 
         </select>
 
-        <p>Set locale precedence and label e.g. en-GB:English,cy-GB:Welsh</p>
+        <p>Set locale precedence and label e.g. "cy-GB:Welsh,en-GB:English"</p>
 
         <input id="locales" type="text" value="" />
 
@@ -128,12 +128,13 @@
 
         <hr/>
 
-        <h3>Config</h3>
+        <h3>Config&nbsp;<span class="config-name"></span></h3>
 
-        <p>Changes to config made with this tool are at the session level and not persisted. To edit another locale's config, change the locale above and click 'Set'.</p>
+        <p>Changes to config made with this tool are at the session level and not persisted.</p>
 
         <ul id="edit-config" class="button-group">
             <li><a id="editBtn" href="#" class="button">Edit</a></li>
+            <li><a id="closeBtn" href="#" class="button hide">Close</a></li>
             <li><a id="saveBtn" href="#" class="button hide">Save</a></li>
             <li><a id="resetBtn" href="#" class="button hide">Reset</a></li>
         </ul>

@@ -502,7 +502,7 @@ define('bootstrapParams',["require", "exports"], function (require, exports) {
             }
             this._locale = this.locales[0].name;
         };
-        bootstrapParams.prototype.getLocale = function () {
+        bootstrapParams.prototype.getLocaleName = function () {
             return this._locale;
         };
         return bootstrapParams;

@@ -782,7 +782,7 @@ $(function(){
 
     var testBuild = getQuerystringParameter("build");
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
-    var config, editor, locales;
+    var config, editor;
 
     // if the embed script has been included in the page for testing, don't append it.
     var scriptIncluded = $('#embedUV').length;
@@ -820,7 +820,7 @@ $(function(){
 
     createEditor();
     setSelectedManifest();
-    setSelectedLocale();
+    setInitialLocale();
     setDefaultToFullScreen();
     loadViewer();
 
@@ -885,6 +885,13 @@ $(function(){
         buildQuerystring();
     });
 
+    $('#resetLocalesBtn').on('click', function(e){
+        e.preventDefault();
+        $('#locale').text("");
+        $('.uv').removeAttr('data-locale');
+        buildQuerystring();
+    });
+
     $('#jsonp').on('change', function(){
         buildQuerystring();
     });
@@ -917,6 +924,10 @@ $(function(){
 
         // reload
         window.location.search = qs;
+    }
+
+    function getLocale() {
+        return getDefaultLocale($('#locales').val());
     }
 
     function getDefaultLocale(l) {
@@ -970,14 +981,20 @@ $(function(){
         $('.uv').attr('data-uri', manifest);
     }
 
-    function setSelectedLocale() {
-        locales = getQuerystringParameter("locale") || "en-GB";
+    // called when the page loads to set the initial data-locale
+    function setInitialLocale() {
+        var locale = getQuerystringParameter("locale");
+        if (locale){
+            $('.uv').attr('data-locale', locale);
+        }
+    }
 
-        $("#locale").val(getDefaultLocale(locales));
+    // called when the UV loads to set
+    // the locale options
+    function setSelectedLocale(locale) {
+        $("#locale").val(getDefaultLocale(locale));
 
-        $("#locales").val(locales);
-
-        $('.uv').attr('data-locale', locales);
+        $("#locales").val(locale);
     }
 
     function setTestIds(){
@@ -1010,21 +1027,36 @@ $(function(){
     $('#editBtn').on('click', function(e) {
         e.preventDefault();
 
-        edit();
+        openEditor();
     });
 
-    function edit() {
-        $('#editPnl').toggleClass('show', 'hide');
-        $('#saveBtn').toggleClass('show', 'hide');
-        $('#resetBtn').toggleClass('show', 'hide')
-        $('#editBtn').toggleText('Edit', 'Close');
+    $('#closeBtn').on('click', function(e) {
+        e.preventDefault();
 
-        if ($('#editPnl').hasClass('show')){
+        closeEditor();
+    });
 
-            $.getJSON('/build/uv-1.1.0/js/' + config.name + '.' + getDefaultLocale(locales) + '.config.js', function(config){
-                editor.setValue(config);
-            });
-        }
+    function openEditor() {
+        var configName = config.name + '.' + getLocale();
+
+        $.getJSON('/build/uv-1.1.0/js/' + configName + '.config.js', function(config){
+            $('.config-name').text('(' + configName + ')');
+            $('#editPnl').swapClass('hide', 'show');
+            $('#saveBtn').swapClass('hide', 'show');
+            $('#resetBtn').swapClass('show', 'hide');
+            $('#editBtn').swapClass('show', 'hide');
+            $('#closeBtn').swapClass('hide', 'show');
+            editor.setValue(config);
+        });
+    }
+
+    function closeEditor() {
+        $('.config-name').empty();
+        $('#editPnl').swapClass('show', 'hide');
+        $('#saveBtn').swapClass('show', 'hide');
+        $('#resetBtn').swapClass('hide', 'show');
+        $('#editBtn').swapClass('hide', 'show');
+        $('#closeBtn').swapClass('show', 'hide');
     }
 
     $('#saveBtn').on('click', function(e) {
@@ -1038,7 +1070,7 @@ $(function(){
         }
 
         // save contents of #json to session storage, set data-config attribute to 'sessionstorage' and reload viewer
-        sessionStorage.setItem("uv-config", JSON.stringify(editor.getValue()));
+        sessionStorage.setItem("uv-config-" + getLocale(), JSON.stringify(editor.getValue()));
 
         $('.uv').attr('data-config', 'sessionstorage');
 
@@ -1048,12 +1080,10 @@ $(function(){
     $('#resetBtn').on('click', function(e){
         e.preventDefault();
 
-        $('.uv').removeAttr('data-config');
-        sessionStorage.removeItem("uv-config");
+        //$('.uv').removeAttr('data-config');
+        sessionStorage.clear();
 
         loadViewer();
-
-        edit();
     });
 
     $(document).bind("uv.onToggleFullScreen", function (event, obj) {
@@ -1069,18 +1099,20 @@ $(function(){
     });
 
     $(document).bind("uv.onLoad", function (event, obj) {
-        $('#locale').empty();
 
-        config = obj.config;
+        closeEditor();
 
+        config = obj.bootstrapper.config;
         var locales = config.localisation.locales;
+
+        $('#locale').empty();
 
         for (var i = 0; i < locales.length; i++){
             var l = locales[i];
             $('#locale').append('<option value="' + l.name + '">' + l.label + '</option>');
         }
 
-        setSelectedLocale();
+        setSelectedLocale(obj.bootstrapper.params.locale);
 
         $('footer').show();
     });
