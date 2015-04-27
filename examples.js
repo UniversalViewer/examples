@@ -1038,16 +1038,31 @@ $(function(){
 
     function openEditor() {
         var configName = config.name + '.' + getLocale();
+        var configDisplayName = configName;
 
-        $.getJSON('/build/uv-1.1.0/js/' + configName + '.config.js', function(config){
-            $('.config-name').text('(' + configName + ')');
-            $('#editPnl').swapClass('hide', 'show');
-            $('#saveBtn').swapClass('hide', 'show');
-            $('#resetBtn').swapClass('show', 'hide');
-            $('#editBtn').swapClass('show', 'hide');
-            $('#closeBtn').swapClass('hide', 'show');
+        var sessionConfig = sessionStorage.getItem("uv-config-" + getLocale());
+
+        if (sessionConfig){
+            config = JSON.parse(sessionConfig);
+            configDisplayName += " *";
+            $('.config-name').text('(' + configDisplayName + ')');
+            showEditor();
             editor.setValue(config);
-        });
+        } else {
+            $.getJSON('/build/uv-1.1.0/js/' + configName + '.config.js', function(config){
+                $('.config-name').text('(' + configDisplayName + ')');
+                showEditor();
+                editor.setValue(config);
+            });
+        }
+    }
+
+    function showEditor() {
+        $('#editPnl').swapClass('hide', 'show');
+        $('#saveBtn').swapClass('hide', 'show');
+        $('#resetBtn').swapClass('show', 'hide');
+        $('#editBtn').swapClass('show', 'hide');
+        $('#closeBtn').swapClass('hide', 'show');
     }
 
     function closeEditor() {
