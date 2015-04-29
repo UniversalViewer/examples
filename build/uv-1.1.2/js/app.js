@@ -3434,7 +3434,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.1.1';
+    exports.Version = '1.1.2';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5056,6 +5056,7 @@ define('modules/uv-seadragoncenterpanel-module/seadragonCenterPanel',["require",
             var prefixUrl = (window.DEBUG) ? 'modules/uv-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/uv-seadragoncenterpanel-module/';
             window.openSeadragonViewer = this.viewer = OpenSeadragon({
                 id: "viewer",
+                ajaxWithCredentials: true,
                 showNavigationControl: true,
                 showNavigator: true,
                 showRotationControl: true,

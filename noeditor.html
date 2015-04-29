@@ -22,64 +22,18 @@
 
         <div>
             <input id="jsonp" type="checkbox"><label for="jsonp">JSONP</label>
+            <p>Forces the viewer to use JSONP to load manifests and info.json. Default behaviour is to use JSONP for IE<10.</p>
         </div>
+
+        <a id="setOptionsBtn" class="button">Set</a>
 
         <h3>Manifest</h3>
 
-        <select id="manifest">
-            <optgroup label="Stanford University">
-                <option value="http://dms-data.stanford.edu/data/manifests/RomanCoins/bb853kn3021/manifest.json">Roman Coins</option>
-                <option value="http://dms-data.stanford.edu/data/manifests/McLaughlin/bc788vp3448/manifest.json">California as Island</option>
-                <option value="http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json">Japanese Songbook</option>
-            </optgroup>
-            <optgroup label="National Library of Wales">
-                <option value="http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json">Cardiganshire Constabulary</option>
-                <option value="/examples/manifest/translations.js">Translations</option>
-            </optgroup>
-            <optgroup label="British Library">
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json">Proceedings at Peebles</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100015688900.0x000002/manifest.json">Pictures of Light. Three Pieces for Pianoforte.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/or_16753/manifest.json">Sutras (Top to bottom)</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404Missing/manifest.json">missing images</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404longtitle/manifest.json">long title</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/add_ms_9405/manifest.json">right to left</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404hierarchy/manifest.json">deep hierarchy</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404deephierarchy/manifest.json">deep hierarchy 2</option>
-            </optgroup>
-            <optgroup label="British Library: local jsonp">
-                <option value="/examples/manifest/deephierarchylongtitle.js">deep hierarchy with long title</option>
-                <option value="/examples/manifest/doublepagespread.js">double page spread labels</option>
-                <option value="/examples/manifest/startcanvas.js">start canvas</option>
-                <option value="/examples/manifest/toptobottom.js">top to bottom</option>
-                <option value="/examples/manifest/attribution.js">attribution</option>
-            </optgroup>
-            <optgroup label="British Library: Europeana">
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100002273023.0x000002/manifest.json">History of the Volunteer Movement in Cheshire, 1914-1920.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022551578.0x000002/manifest.json">The Grey Brigade and others.</option>
-            </optgroup>
-            <optgroup label="British Library: Google Books">
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022570722.0x000001/manifest.json">A Syllabus of Christian Doctrines and duties in the catechetical form, etc.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022601600.0x000001/manifest.json">The Orders of the Court of Chancery for Upper Canada</option>
-            </optgroup>
-            <optgroup label="British Library: Maps">
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522756.0x000002/manifest.json">Defence of Hindenburg line. German artillery positions</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522761.0x000002/manifest.json">Diagram in perspective to illustrate control of water in water-ways area Ghent-Bruges-Ostend.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522764.0x000002/manifest.json">[Demilitarised zones in north-west Turkey], GSGS 2943.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522778.0x000002/manifest.json">Ethnographical map [Eastern Europe], GSGS 3703a.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522782.0x000002/manifest.json">Ethnographical map of Austria-Hungary, GSGS 2870.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522788.0x000002/manifest.json">[Kharitat al-dunyÄ]. A map of the world issued by the British Government</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522791.0x000002/manifest.json">Languages in Prussian Poland, NSID 15.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522794.0x000002/manifest.json">[Religion and language maps of Lublin province, Poland], NSID 16.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522797.0x000002/manifest.json">Map showing expansion of Prussia into the German Empire, GSGS 2858.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522802.0x000002/manifest.json">Partitions of Poland, GSGS 2888.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522805.0x000002/manifest.json">Poland : Language, NSID 18.</option>
-            </optgroup>
-            <optgroup label="British Library: Other">
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022558384.0x000002/manifest.json">With the German Armies in the West</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522767.0x000002/manifest.json">Turkey in Asia. Scale, 1 : 1,500,000.</option>
-                <option value="http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522771.0x000002/manifest.json">[Hongrie. S.G.A. le 20/12/19. EÌchelle de 1 : 1,000,000]</option>
-            </optgroup>
-        </select>
+        <select id="manifestSelect"></select>
+
+        <input id="manifest" type="text" value="" />
+
+        <a id="setManifestBtn" class="button">Set</a>
 
     </footer>
 

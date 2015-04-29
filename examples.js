@@ -780,49 +780,7 @@ schema = {
 
 $(function(){
 
-    var testBuild = getQuerystringParameter("build");
-    var isLocalhost = document.location.href.indexOf('localhost') != -1;
     var config, editor;
-
-    // if the embed script has been included in the page for testing, don't append it.
-    var scriptIncluded = $('#embedUV').length;
-
-    if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.1/js/embed.js"><\/script>');
-    } else {
-        if (isLocalhost){
-            if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
-        } else {
-            // built version
-
-            // remove '/examples' from paths
-            $('.uv').updateAttr('data-config', '/examples/', '/');
-
-            $('.uv').updateAttr('data-uri', '/examples/', '/');
-
-            $('#locale option').each(function() {
-                $(this).updateAttr('value', '/examples/', '/');
-            });
-
-            $('#manifestSelect option').each(function() {
-                $(this).updateAttr('value', '/examples/', '/');
-            });
-
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.1/js/embed.js"><\/script>');
-        }
-    }
-
-    setJSONPEnabled();
-
-    //if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
-    //    setSelectedManifest();
-    //}
-
-    createEditor();
-    setSelectedManifest();
-    setInitialLocale();
-    setDefaultToFullScreen();
-    loadViewer();
 
     function loadViewer() {
 
@@ -866,43 +824,6 @@ $(function(){
             }
         });
     }
-
-    $('#manifestSelect').on('change', function(){
-        $('#manifest').val($('#manifestSelect option:selected').val());
-    });
-
-    $('#setManifestBtn').on('click', function(e){
-        e.preventDefault();
-        buildQuerystring();
-    });
-
-    $('#locale').on('change', function(){
-        $('#locales').val($('#locale option:selected').val());
-    });
-
-    $('#setLocalesBtn').on('click', function(e){
-        e.preventDefault();
-        buildQuerystring();
-    });
-
-    $('#resetLocalesBtn').on('click', function(e){
-        e.preventDefault();
-        $('#locale').text("");
-        $('.uv').removeAttr('data-locale');
-        buildQuerystring();
-    });
-
-    $('#jsonp').on('change', function(){
-        buildQuerystring();
-    });
-
-    $('#testids').on('change', function(){
-        buildQuerystring();
-    });
-
-    $('#defaultToFullScreen').on('change', function(){
-        buildQuerystring();
-    });
 
     function buildQuerystring() {
 
@@ -973,7 +894,11 @@ $(function(){
         if (manifest) {
             $("#manifestSelect").val(manifest);
         } else {
-            manifest = $('#manifestSelect option')[0].value;
+            var options = $('#manifestSelect option');
+
+            if (options.length){
+                manifest = options[0].value;
+            }
         }
 
         $("#manifest").val(manifest);
@@ -1024,18 +949,6 @@ $(function(){
         }
     }
 
-    $('#editBtn').on('click', function(e) {
-        e.preventDefault();
-
-        openEditor();
-    });
-
-    $('#closeBtn').on('click', function(e) {
-        e.preventDefault();
-
-        closeEditor();
-    });
-
     function openEditor() {
         var configName = config.name + '.' + getLocale();
         var configDisplayName = configName;
@@ -1044,12 +957,12 @@ $(function(){
 
         if (sessionConfig){
             config = JSON.parse(sessionConfig);
-            configDisplayName += " *";
+            configDisplayName += "*";
             $('.config-name').text('(' + configDisplayName + ')');
             showEditor();
             editor.setValue(config);
         } else {
-            $.getJSON('/build/uv-1.1.1/js/' + configName + '.config.js', function(config){
+            $.getJSON('/build/uv-1.1.2/js/' + configName + '.config.js', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
@@ -1074,65 +987,179 @@ $(function(){
         $('#closeBtn').swapClass('show', 'hide');
     }
 
-    $('#saveBtn').on('click', function(e) {
-        e.preventDefault();
+    function init() {
+        if (isLocalhost){
+            if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
+        } else {
+            // built version
 
-        var errors = editor.validate();
+            // remove '/examples' from paths
+            $('.uv').updateAttr('data-config', '/examples/', '/');
 
-        if(errors.length) {
-            console.log(errors);
-            return;
+            $('.uv').updateAttr('data-uri', '/examples/', '/');
+
+            $('#locale option').each(function() {
+                $(this).updateAttr('value', '/examples/', '/');
+            });
+
+            $('#manifestSelect option').each(function() {
+                $(this).updateAttr('value', '/examples/', '/');
+            });
+
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.2/js/embed.js"><\/script>');
         }
 
-        // save contents of #json to session storage, set data-config attribute to 'sessionstorage' and reload viewer
-        sessionStorage.setItem("uv-config-" + getLocale(), JSON.stringify(editor.getValue()));
+        $('#setOptionsBtn').on('click', function(e){
+            e.preventDefault();
+            buildQuerystring();
+        });
 
-        $('.uv').attr('data-config', 'sessionstorage');
+        $('#manifestSelect').on('change', function(){
+            $('#manifest').val($('#manifestSelect option:selected').val());
+        });
 
-        loadViewer();
-    });
+        $('#setManifestBtn').on('click', function(e){
+            e.preventDefault();
+            buildQuerystring();
+        });
 
-    $('#resetBtn').on('click', function(e){
-        e.preventDefault();
+        $('#locale').on('change', function(){
+            $('#locales').val($('#locale option:selected').val());
+        });
 
-        //$('.uv').removeAttr('data-config');
-        sessionStorage.clear();
+        $('#setLocalesBtn').on('click', function(e){
+            e.preventDefault();
+            buildQuerystring();
+        });
 
-        loadViewer();
-    });
+        $('#resetLocalesBtn').on('click', function(e){
+            e.preventDefault();
+            $('#locale').text("");
+            $('.uv').removeAttr('data-locale');
+            buildQuerystring();
+        });
 
-    $(document).bind("uv.onToggleFullScreen", function (event, obj) {
-        console.log('full screen: ' + obj.isFullScreen);
-    });
+        $('#editBtn').on('click', function(e) {
+            e.preventDefault();
 
-    $(document).bind("uv.onSequenceIndexChanged", function (event, isFullScreen) {
+            openEditor();
+        });
 
-    });
+        $('#closeBtn').on('click', function(e) {
+            e.preventDefault();
 
-    $(document).bind("uv.onCurrentViewUri", function (event, obj) {
+            closeEditor();
+        });
 
-    });
+        $('#saveBtn').on('click', function(e) {
+            e.preventDefault();
 
-    $(document).bind("uv.onLoad", function (event, obj) {
+            var errors = editor.validate();
 
-        closeEditor();
+            if(errors.length) {
+                console.log(errors);
+                return;
+            }
 
-        config = obj.bootstrapper.config;
-        var locales = config.localisation.locales;
+            // save contents of #json to session storage, set data-config attribute to 'sessionstorage' and reload viewer
+            sessionStorage.setItem("uv-config-" + getLocale(), JSON.stringify(editor.getValue()));
 
-        $('#locale').empty();
+            $('.uv').attr('data-config', 'sessionstorage');
 
-        for (var i = 0; i < locales.length; i++){
-            var l = locales[i];
-            $('#locale').append('<option value="' + l.name + '">' + l.label + '</option>');
+            loadViewer();
+        });
+
+        $('#resetBtn').on('click', function(e){
+            e.preventDefault();
+
+            $('.uv').removeAttr('data-config');
+
+            sessionStorage.clear();
+
+            loadViewer();
+        });
+
+        $(document).bind("uv.onToggleFullScreen", function (event, obj) {
+            console.log('full screen: ' + obj.isFullScreen);
+        });
+
+        $(document).bind("uv.onSequenceIndexChanged", function (event, isFullScreen) {
+
+        });
+
+        $(document).bind("uv.onCurrentViewUri", function (event, obj) {
+
+        });
+
+        $(document).bind("uv.onLoad", function (event, obj) {
+
+            closeEditor();
+
+            config = obj.bootstrapper.config;
+            var locales = config.localisation.locales;
+
+            $('#locale').empty();
+
+            for (var i = 0; i < locales.length; i++){
+                var l = locales[i];
+                $('#locale').append('<option value="' + l.name + '">' + l.label + '</option>');
+            }
+
+            setSelectedLocale(obj.bootstrapper.params.locale);
+
+            $('footer').show();
+        });
+
+        $(document).bind("uv.onCreated", function (event, obj) {
+            setTestIds();
+        });
+
+        setJSONPEnabled();
+
+        if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
+            setSelectedManifest();
         }
 
-        setSelectedLocale(obj.bootstrapper.params.locale);
+        createEditor();
+        setInitialLocale();
+        setDefaultToFullScreen();
+        loadViewer();
+    }
 
-        $('footer').show();
+    var isLocalhost = document.location.href.indexOf('localhost') != -1;
+
+    // if the embed script has been included in the page for testing, don't append it.
+    var scriptIncluded = $('#embedUV').length;
+
+    var manifestsUri;
+
+    if (isLocalhost){
+        manifestsUri = "/examples/manifests.json";
+    } else {
+        manifestsUri = "/manifests.json";
+    }
+
+    // load manifests
+    $.getJSON(manifestsUri, function(manifests){
+
+        var $manifestSelect = $('#manifestSelect');
+
+        for (var i = 0; i < manifests.length; i++) {
+            var group = manifests[i];
+
+            $manifestSelect.append('<optgroup label="' + group.title + '">');
+
+            for (var j = 0; j < group.manifests.length; j++){
+                var manifest = group.manifests[j];
+
+                $manifestSelect.append('<option value="' + manifest.uri + '">' + manifest.title + '</option>');
+            }
+
+            $manifestSelect.append('</optgroup>');
+        }
+
+        init();
+
     });
 
-    $(document).bind("uv.onCreated", function (event, obj) {
-        setTestIds();
-    });
 });

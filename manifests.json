@@ -1,0 +1,202 @@
+[
+    {
+        "title": "Wellcome Library",
+        "manifests": [
+            {
+                "title": "Wunder der Vererbung",
+                "uri": "http://wellcomelibrary.org/iiif/b18035723/manifest"
+            },
+            {
+                "title": "The Biocrats",
+                "uri": "http://wellcomelibrary.org/iiif/b18035978/manifest"
+            },
+            {
+                "title": "Wellcome Apocalypse",
+                "uri": "http://wellcomelibrary.org/iiif/b19684915/manifest"
+            },
+            {
+                "title": "Harris's ladies",
+                "uri": "http://wellcomelibrary.org/iiif/b22674883/manifest"
+            },
+            {
+                "title": "Crick's letter",
+                "uri": "http://wellcomelibrary.org/iiif/b1948799x/manifest"
+            }
+        ]
+    },
+    {
+        "title": "Stanford University",
+        "manifests": [
+            {
+                "title": "Roman Coins",
+                "uri": "http://dms-data.stanford.edu/data/manifests/RomanCoins/bb853kn3021/manifest.json"
+            },
+            {
+                "title": "California as Island",
+                "uri": "http://dms-data.stanford.edu/data/manifests/McLaughlin/bc788vp3448/manifest.json"
+            },
+            {
+                "title": "Japanese Songbook",
+                "uri": "http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json"
+            }
+        ]
+    },
+    {
+        "title": "National Library of Wales",
+        "manifests": [
+            {
+                "title": "Cardiganshire Constabulary",
+                "uri": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json"
+            }
+        ]
+    },
+    {
+        "title": "British Library",
+        "manifests": [
+            {
+                "title": "Proceedings at Peebles",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000000144/manifest.json"
+            },
+            {
+                "title": "Pictures of Light. Three Pieces for Pianoforte.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100015688900.0x000002/manifest.json"
+            },
+            {
+                "title": "Sutras (Top to bottom)",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/or_16753/manifest.json"
+            },
+            {
+                "title": "Missing Images",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404Missing/manifest.json"
+            },
+            {
+                "title": "Long Title",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404longtitle/manifest.json"
+            },
+            {
+                "title": "Right to Left",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/add_ms_9405/manifest.json"
+            },
+            {
+                "title": "Deep Hierarchy",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404hierarchy/manifest.json"
+            },
+            {
+                "title": "Deep Hierarchy 2",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_000000028404deephierarchy/manifest.json"
+            }
+        ]
+    },
+    {
+        "title": "British Library: local jsonp",
+        "manifests": [
+            {
+                "title": "deep hierarchy with long title",
+                "uri": "/examples/manifest/deephierarchylongtitle.js"
+            },
+            {
+                "title": "double page spread labels",
+                "uri": "/examples/manifest/doublepagespread.js"
+            },
+            {
+                "title": "start canvas",
+                "uri": "/examples/manifest/startcanvas.js"
+            },
+            {
+                "title": "top to bottom",
+                "uri": "/examples/manifest/toptobottom.js"
+            },
+            {
+                "title": "attribution",
+                "uri": "/examples/manifest/attribution.js"
+            }
+        ]
+    },
+    {
+        "title": "British Library: Europeana",
+        "manifests": [
+            {
+                "title": "History of the Volunteer Movement in Cheshire, 1914-1920.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100002273023.0x000002/manifest.json"
+            },
+            {
+                "title": "The Grey Brigade and others.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022551578.0x000002/manifest.json"
+            },
+            {
+                "title": "A Syllabus of Christian Doctrines and duties in the catechetical form, etc.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022570722.0x000001/manifest.json"
+            },
+            {
+                "title": "The Orders of the Court of Chancery for Upper Canada",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022601600.0x000001/manifest.json"
+            }
+        ]
+    },
+    {
+        "title": "British Library: Maps",
+        "manifests": [
+            {
+                "title": "Defence of Hindenburg line. German artillery positions",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522756.0x000002/manifest.json"
+            },
+            {
+                "title": "Diagram in perspective to illustrate control of water in water-ways area Ghent-Bruges-Ostend.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522761.0x000002/manifest.json"
+            },
+            {
+                "title": "[Demilitarised zones in north-west Turkey], GSGS 2943.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522764.0x000002/manifest.json"
+            },
+            {
+                "title": "Ethnographical map [Eastern Europe], GSGS 3703a.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522778.0x000002/manifest.json"
+            },
+            {
+                "title": "Ethnographical map of Austria-Hungary, GSGS 2870.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522782.0x000002/manifest.json"
+            },
+            {
+                "title": "[Kharitat al-dunyÄ?]. A map of the world issued by the British Government",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522788.0x000002/manifest.json"
+            },
+            {
+                "title": "Languages in Prussian Poland, NSID 15.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522791.0x000002/manifest.json"
+            },
+            {
+                "title": "[Religion and language maps of Lublin province, Poland], NSID 16.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522794.0x000002/manifest.json"
+            },
+            {
+                "title": "Map showing expansion of Prussia into the German Empire, GSGS 2858.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522797.0x000002/manifest.json"
+            },
+            {
+                "title": "Partitions of Poland, GSGS 2888.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522802.0x000002/manifest.json"
+            },
+            {
+                "title": "Poland : Language, NSID 18.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522805.0x000002/manifest.json"
+            }
+        ]
+    },
+    {
+        "title": "British Library: Other",
+        "manifests": [
+            {
+                "title": "With the German Armies in the West",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022558384.0x000002/manifest.json"
+            },
+            {
+                "title": "Turkey in Asia. Scale, 1 : 1,500,000.",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522767.0x000002/manifest.json"
+            },
+            {
+                "title": "[Hongrie. S.G.A. le 20/12/19. EÌ?chelle de 1 : 1,000,000]",
+                "uri": "http://v8l-webtest1.bl.uk:88/IIIFMetadataService/ark:/81055/vdc_100022522771.0x000002/manifest.json"
+            }
+        ]
+    }
+]
