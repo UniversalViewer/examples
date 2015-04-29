@@ -788,7 +788,7 @@ $(function(){
     var scriptIncluded = $('#embedUV').length;
 
     if (testBuild){
-        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.0/js/embed.js"><\/script>');
+        $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.1/js/embed.js"><\/script>');
     } else {
         if (isLocalhost){
             if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
@@ -808,7 +808,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.0/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.1.1/js/embed.js"><\/script>');
         }
     }
 
@@ -1049,7 +1049,7 @@ $(function(){
             showEditor();
             editor.setValue(config);
         } else {
-            $.getJSON('/build/uv-1.1.0/js/' + configName + '.config.js', function(config){
+            $.getJSON('/build/uv-1.1.1/js/' + configName + '.config.js', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);

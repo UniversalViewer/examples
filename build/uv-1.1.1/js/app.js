@@ -2869,6 +2869,24 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
                 }
             }
         };
+        BaseProvider.prototype.getService = function (resource, profile) {
+            if (!resource.service)
+                return null;
+            if ($.isArray(resource.service)) {
+                for (var i = 0; i < resource.service.length; i++) {
+                    var service = resource.service[i];
+                    if (service.profile && service.profile === profile) {
+                        return service;
+                    }
+                }
+            }
+            else {
+                if (resource.service.profile && resource.service.profile === profile) {
+                    return resource.service;
+                }
+            }
+            return null;
+        };
         BaseProvider.prototype.getSequenceType = function () {
             return 'seadragon-iiif';
         };
@@ -3416,7 +3434,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.1.0';
+    exports.Version = '1.1.1';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5646,13 +5664,181 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
     exports.FooterPanel = FooterPanel;
 });
 
+define('modules/uv-searchfooterpanel-module/autocomplete',["require", "exports"], function (require, exports) {
+    var AutoComplete = (function () {
+        function AutoComplete(element, autoCompleteUri, delay, parseResults, onSelect) {
+            var _this = this;
+            this.$element = element;
+            this.autoCompleteUri = autoCompleteUri;
+            this.delay = delay;
+            this.parseResults = parseResults;
+            this.onSelect = onSelect;
+            this.$searchResultsList = $('<ul class="autocomplete"></ul>');
+            this.$element.parent().prepend(this.$searchResultsList);
+            this.$searchResultTemplate = $('<li class="result"><a href="#"></a></li>');
+            var typewatch = (function () {
+                var timer = 0;
+                return function (callback, ms) {
+                    clearTimeout(timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
+            var that = this;
+            this.$element.on("keydown", function (event) {
+                if (!that.isValidKey(event.keyCode)) {
+                    event.preventDefault();
+                    return false;
+                }
+                return true;
+            });
+            this.$element.on("keyup", function (event) {
+                event.preventDefault();
+                if (!that.getSelectedListItem().length && event.keyCode == 13) {
+                    that.onSelect(that.getTerms());
+                    return;
+                }
+                if (that.$searchResultsList.is(':visible') && that.results.length) {
+                    if (event.keyCode == 13) {
+                        that.searchForItem(that.getSelectedListItem());
+                    }
+                    else if (event.keyCode == 40) {
+                        that.setSelectedResultIndex(1);
+                        return;
+                    }
+                    else if (event.keyCode == 38) {
+                        that.setSelectedResultIndex(-1);
+                        return;
+                    }
+                }
+                typewatch(function () {
+                    if (!that.isValidKey(event.keyCode)) {
+                        event.preventDefault();
+                        return false;
+                    }
+                    var val = that.getTerms();
+                    if (val && val.length > 2 && val.indexOf(' ') == -1) {
+                        that.search(val);
+                    }
+                    else {
+                        that.clearResults();
+                        that.hideResults();
+                    }
+                    return true;
+                }, that.delay);
+            });
+            $(document).on('mouseup', function (e) {
+                if (_this.$searchResultsList.parent().has($(e.target)[0]).length === 0) {
+                    _this.clearResults();
+                    _this.hideResults();
+                }
+            });
+            this.hideResults();
+        }
+        AutoComplete.prototype.getTerms = function () {
+            return this.$element.val().fulltrim();
+        };
+        AutoComplete.prototype.setSelectedResultIndex = function (direction) {
+            var nextIndex;
+            if (direction == 1) {
+                nextIndex = this.selectedResultIndex + 1;
+            }
+            else {
+                nextIndex = this.selectedResultIndex - 1;
+            }
+            var $items = this.$searchResultsList.find('li');
+            if (nextIndex < 0) {
+                nextIndex = $items.length - 1;
+            }
+            else if (nextIndex > $items.length - 1) {
+                nextIndex = 0;
+            }
+            this.selectedResultIndex = nextIndex;
+            $items.removeClass('selected');
+            var selectedItem = $items.eq(this.selectedResultIndex);
+            selectedItem.addClass('selected');
+            var top = selectedItem.outerHeight(true) * this.selectedResultIndex;
+            this.$searchResultsList.scrollTop(top);
+        };
+        AutoComplete.prototype.isValidKey = function (keyCode) {
+            if (keyCode == 38 || keyCode == 40)
+                return false;
+            if (keyCode != 8 && keyCode != 32) {
+                var regex = new RegExp("^[\\w()!£$%^&*()-+=@'#~?<>|/\\\\]+$");
+                var key = String.fromCharCode(keyCode);
+                if (!regex.test(key)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        AutoComplete.prototype.search = function (term) {
+            this.results = [];
+            this.clearResults();
+            this.showResults();
+            this.$searchResultsList.append('<li class="loading"></li>');
+            this.updateListPosition();
+            var that = this;
+            $.getJSON(String.prototype.format(this.autoCompleteUri, term), function (results) {
+                that.listResults(results);
+            });
+        };
+        AutoComplete.prototype.clearResults = function () {
+            this.$searchResultsList.empty();
+        };
+        AutoComplete.prototype.hideResults = function () {
+            this.$searchResultsList.hide();
+        };
+        AutoComplete.prototype.showResults = function () {
+            this.selectedResultIndex = -1;
+            this.$searchResultsList.show();
+        };
+        AutoComplete.prototype.updateListPosition = function () {
+            this.$searchResultsList.css({
+                'top': this.$searchResultsList.outerHeight(true) * -1
+            });
+        };
+        AutoComplete.prototype.listResults = function (results) {
+            this.results = this.parseResults(results);
+            this.clearResults();
+            if (!this.results.length) {
+                this.hideResults();
+                return;
+            }
+            for (var i = 0; i < this.results.length; i++) {
+                var result = this.results[i];
+                var $resultItem = this.$searchResultTemplate.clone();
+                var $a = $resultItem.find('a');
+                $a.text(result);
+                this.$searchResultsList.append($resultItem);
+            }
+            this.updateListPosition();
+            var that = this;
+            this.$searchResultsList.find('li').on('click', function (e) {
+                e.preventDefault();
+                that.searchForItem($(this));
+            });
+        };
+        AutoComplete.prototype.searchForItem = function ($item) {
+            var term = $item.find('a').text();
+            this.onSelect(term);
+            this.clearResults();
+            this.hideResults();
+        };
+        AutoComplete.prototype.getSelectedListItem = function () {
+            return this.$searchResultsList.find('li.selected');
+        };
+        return AutoComplete;
+    })();
+    return AutoComplete;
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseExtension", "../uv-shared-module/footerPanel", "../../utils"], function (require, exports, extension, baseExtension, footer, utils) {
+define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", "../../extensions/uv-seadragon-extension/extension", "../uv-shared-module/baseExtension", "../uv-shared-module/footerPanel", "./autocomplete", "../../utils"], function (require, exports, extension, baseExtension, footer, AutoComplete, utils) {
     var util = utils.Utils;
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
@@ -5759,6 +5945,11 @@ define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", 
                 this.$searchResultsContainer.hide();
                 this.$element.addClass('min');
             }
+            new AutoComplete(this.$searchText, this.provider.getAutoCompleteUri(), 300, function (results) {
+                return results.resources[0].resource.suggestions;
+            }, function (terms) {
+                _this.search(terms);
+            });
         };
         FooterPanel.prototype.checkForSearchParams = function () {
             if (this.provider.isDeepLinkingEnabled()) {
@@ -6915,14 +7106,13 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
         function Provider(bootstrapper) {
             _super.call(this, bootstrapper);
             this.searchResults = [];
+            this.AUTOCOMPLETE_PROFILE = "http://iiif.io/api/autocomplete/1/";
+            this.SEARCH_WITHIN_PROFILE = "http://iiif.io/api/search/1/";
             this.config.options = $.extend(true, this.options, {
                 autoCompleteUriTemplate: '{0}{1}',
                 iiifImageUriTemplate: '{0}/{1}/{2}/{3}/{4}/{5}.jpg'
             }, bootstrapper.config.options);
         }
-        Provider.prototype.getAutoCompleteUri = function () {
-            return "";
-        };
         Provider.prototype.getCroppedImageUri = function (canvas, viewer) {
             if (!viewer)
                 return null;
@@ -7081,13 +7271,20 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
             }
             return true;
         };
+        Provider.prototype.getAutoCompleteService = function () {
+            return this.getService(this.manifest, this.AUTOCOMPLETE_PROFILE);
+        };
+        Provider.prototype.getAutoCompleteUri = function () {
+            var service = this.getAutoCompleteService();
+            if (!service)
+                return null;
+            var uri = service["@id"];
+            uri = uri.substr(0, uri.indexOf('{'));
+            uri = uri + "&q={0}";
+            return uri;
+        };
         Provider.prototype.getSearchWithinService = function () {
-            if (this.manifest.service) {
-                if (this.manifest.service.profile === "http://iiif.io/api/search/1/") {
-                    return this.manifest.service;
-                }
-            }
-            return null;
+            return this.getService(this.manifest, this.SEARCH_WITHIN_PROFILE);
         };
         Provider.prototype.getSearchWithinServiceUri = function () {
             var service = this.getSearchWithinService();
