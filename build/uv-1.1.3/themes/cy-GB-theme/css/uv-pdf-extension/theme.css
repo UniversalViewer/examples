@@ -115,6 +115,9 @@
   width: 250px;
   padding: 0 0 30px 8px;
 }
+#app .overlay.download .middle .noneAvailable {
+  padding: 10px 0 0 0;
+}
 #app .overlay.download .middle ol.options {
   padding: 10px 0 0 0;
 }
@@ -2945,8 +2948,20 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 385px;
+  width: 432px;
   position: absolute;
+}
+#app .headerPanel .options .centerOptions .prevOptions {
+  margin: 0 10px 0 0;
+}
+#app .headerPanel .options .centerOptions .mode label {
+  width: 42px;
+}
+#app .headerPanel .options .centerOptions .search {
+  width: 140px;
+}
+#app .headerPanel .options .centerOptions .nextOptions {
+  margin: 0 0 0 10px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;
@@ -3269,6 +3284,12 @@ input[type=range]:focus::-ms-fill-upper {
   font-size: 0;
   color: transparent;
   width: 21px;
+}
+#app .footerPanel .searchOptions {
+  width: 425px;
+}
+#app .footerPanel .searchPager .controls .searchResultsInfo {
+  width: 290px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
   background: url('../../img/close_lightbox.png') no-repeat;

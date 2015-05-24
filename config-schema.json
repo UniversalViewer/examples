@@ -1,0 +1,785 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://universalviewer.org/config",
+    "type": "object",
+    "properties": {
+        "content": {
+            "id": "content",
+            "type": "object",
+            "options": {
+                "collapsed": true
+            },
+            "properties": {
+                "canvasIndexOutOfRange": {
+                    "id": "canvasIndexOutOfRange",
+                    "type": "string"
+                }
+            }
+        },
+        "extends": {
+            "id": "extends",
+            "type": "string",
+            "options": {
+                "hidden": true
+            }
+        },
+        "localisation": {
+            "id": "localisation",
+            "type": "object",
+            "options": {
+                "hidden": true
+            },
+            "properties": {
+                "label": {
+                    "id": "label",
+                    "type": "string"
+                },
+                "locales": {
+                    "id": "locales",
+                    "type": "array"
+                }
+            }
+        },
+        "modules": {
+            "id": "modules",
+            "type": "object",
+            "options": {
+                "collapsed": true
+            },
+            "properties": {
+                "dialogue": {
+                    "id": "dialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "close": {
+                                    "id": "close",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "downloadDialogue": {
+                    "id": "downloadDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "confinedImageSize": {
+                                    "id": "confinedImageSize",
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "currentViewAsJpg": {
+                                    "id": "currentViewAsJpg",
+                                    "type": "string"
+                                },
+                                "download": {
+                                    "id": "download",
+                                    "type": "string"
+                                },
+                                "entireDocumentAsPdf": {
+                                    "id": "entireDocumentAsPdf",
+                                    "type": "string"
+                                },
+                                "entireFileAsOriginal": {
+                                    "id": "entireFileAsOriginal",
+                                    "type": "string"
+                                },
+                                "noneAvailable": {
+                                    "id": "noneAvailable",
+                                    "type": "string"
+                                },
+                                "preview": {
+                                    "id": "preview",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                },
+                                "wholeImageHighResAsJpg": {
+                                    "id": "wholeImageHighResAsJpg",
+                                    "type": "string"
+                                },
+                                "wholeImageLowResAsJpg": {
+                                    "id": "wholeImageLowResAsJpg",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "embedDialogue": {
+                    "id": "embedDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "embedTemplate": {
+                                    "id": "embedTemplate",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "customSize": {
+                                    "id": "customSize",
+                                    "type": "string"
+                                },
+                                "height": {
+                                    "id": "height",
+                                    "type": "string"
+                                },
+                                "instructions": {
+                                    "id": "instructions",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                },
+                                "width": {
+                                    "id": "width",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "footerPanel": {
+                    "id": "footerPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "downloadEnabled": {
+                                    "id": "downloadEnabled",
+                                    "type": "boolean"
+                                },
+                                "embedEnabled": {
+                                    "id": "embedEnabled",
+                                    "type": "boolean"
+                                },
+                                "fullscreenEnabled": {
+                                    "id": "fullscreenEnabled",
+                                    "type": "boolean"
+                                },
+                                "minimiseButtons": {
+                                    "id": "minimiseButtons",
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "download": {
+                                    "id": "download",
+                                    "type": "string"
+                                },
+                                "embed": {
+                                    "id": "embed",
+                                    "type": "string"
+                                },
+                                "exitFullScreen": {
+                                    "id": "exitFullScreen",
+                                    "type": "string"
+                                },
+                                "fullScreen": {
+                                    "id": "fullScreen",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "genericDialogue": {
+                    "id": "genericDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "emptyValue": {
+                                    "id": "emptyValue",
+                                    "type": "string"
+                                },
+                                "invalidNumber": {
+                                    "id": "invalidNumber",
+                                    "type": "string"
+                                },
+                                "noMatches": {
+                                    "id": "noMatches",
+                                    "type": "string"
+                                },
+                                "ok": {
+                                    "id": "ok",
+                                    "type": "string"
+                                },
+                                "pageNotFound": {
+                                    "id": "pageNotFound",
+                                    "type": "string"
+                                },
+                                "refresh": {
+                                    "id": "refresh",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "helpDialogue": {
+                    "id": "helpDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "text": {
+                                    "id": "text",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "moreInfoRightPanel": {
+                    "id": "moreInfoRightPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "panelAnimationDuration": {
+                                    "id": "panelAnimationDuration",
+                                    "type": "integer"
+                                },
+                                "panelCollapsedWidth": {
+                                    "id": "panelCollapsedWidth",
+                                    "type": "integer"
+                                },
+                                "panelExpandedWidth": {
+                                    "id": "panelExpandedWidth",
+                                    "type": "integer"
+                                },
+                                "panelOpen": {
+                                    "id": "panelOpen",
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "collapse": {
+                                    "id": "collapse",
+                                    "type": "string"
+                                },
+                                "collapseFull": {
+                                    "id": "collapseFull",
+                                    "type": "string"
+                                },
+                                "expand": {
+                                    "id": "expand",
+                                    "type": "string"
+                                },
+                                "expandFull": {
+                                    "id": "expandFull",
+                                    "type": "string"
+                                },
+                                "holdingText": {
+                                    "id": "holdingText",
+                                    "type": "string"
+                                },
+                                "noData": {
+                                    "id": "noData",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "pagingHeaderPanel": {
+                    "id": "pagingHeaderPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "localeToggleEnabled": {
+                                    "id": "localeToggleEnabled",
+                                    "type": "boolean"
+                                },
+                                "pagingToggleEnabled": {
+                                    "id": "pagingToggleEnabled",
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "close": {
+                                    "id": "close",
+                                    "type": "string"
+                                },
+                                "emptyValue": {
+                                    "id": "emptyValue",
+                                    "type": "string"
+                                },
+                                "first": {
+                                    "id": "first",
+                                    "type": "string"
+                                },
+                                "go": {
+                                    "id": "go",
+                                    "type": "string"
+                                },
+                                "help": {
+                                    "id": "help",
+                                    "type": "string"
+                                },
+                                "image": {
+                                    "id": "image",
+                                    "type": "string"
+                                },
+                                "last": {
+                                    "id": "last",
+                                    "type": "string"
+                                },
+                                "next": {
+                                    "id": "next",
+                                    "type": "string"
+                                },
+                                "of": {
+                                    "id": "of",
+                                    "type": "string"
+                                },
+                                "oneUp": {
+                                    "id": "oneUp",
+                                    "type": "string"
+                                },
+                                "page": {
+                                    "id": "page",
+                                    "type": "string",
+                                    "required": true
+                                },
+                                "previous": {
+                                    "id": "previous",
+                                    "type": "string"
+                                },
+                                "settings": {
+                                    "id": "settings",
+                                    "type": "string"
+                                },
+                                "twoUp": {
+                                    "id": "twoUp",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["page"]
+                        }
+                    }
+                },
+                "seadragonCenterPanel": {
+                    "id": "seadragonCenterPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "controlsFadeAfterInactive": {
+                                    "id": "controlsFadeAfterInactive",
+                                    "type": "integer"
+                                },
+                                "controlsFadeDelay": {
+                                    "id": "controlsFadeDelay",
+                                    "type": "integer"
+                                },
+                                "controlsFadeLength": {
+                                    "id": "controlsFadeLength",
+                                    "type": "integer"
+                                },
+                                "defaultZoomLevel": {
+                                    "id": "defaultZoomLevel",
+                                    "type": "integer"
+                                },
+                                "navigatorPosition": {
+                                    "id": "navigatorPosition",
+                                    "type": "string",
+                                    "enum": ["BOTTOM_RIGHT", "BOTTOM_LEFT", "TOP_LEFT", "TOP_RIGHT"]
+                                },
+                                "pageGap": {
+                                    "id": "pageGap",
+                                    "type": "number"
+                                },
+                                "trimAttributionCount": {
+                                    "id": "trimAttributionCount",
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "acknowledgements": {
+                                    "id": "acknowledgements",
+                                    "type": "string"
+                                },
+                                "imageUnavailable": {
+                                    "id": "imageUnavailable",
+                                    "type": "string"
+                                },
+                                "next": {
+                                    "id": "next",
+                                    "type": "string"
+                                },
+                                "previous": {
+                                    "id": "previous",
+                                    "type": "string"
+                                },
+                                "zoomIn": {
+                                    "id": "zoomIn",
+                                    "type": "string"
+                                },
+                                "zoomOut": {
+                                    "id": "zoomOut",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "searchFooterPanel": {
+                    "id": "searchFooterPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "elideDetailsTermsCount": {
+                                    "id": "elideDetailsTermsCount",
+                                    "type": "integer"
+                                },
+                                "elideResultsTermsCount": {
+                                    "id": "elideResultsTermsCount",
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "clearSearch": {
+                                    "id": "clearSearch",
+                                    "type": "string"
+                                },
+                                "displaying": {
+                                    "id": "displaying",
+                                    "type": "string"
+                                },
+                                "enterKeyword": {
+                                    "id": "enterKeyword",
+                                    "type": "string"
+                                },
+                                "instanceFound": {
+                                    "id": "instanceFound",
+                                    "type": "string"
+                                },
+                                "image": {
+                                    "id": "image",
+                                    "type": "string"
+                                },
+                                "imageCaps": {
+                                    "id": "imageCaps",
+                                    "type": "string"
+                                },
+                                "instancesFound": {
+                                    "id": "instancesFound",
+                                    "type": "string"
+                                },
+                                "nextResult": {
+                                    "id": "nextResult",
+                                    "type": "string"
+                                },
+                                "page": {
+                                    "id": "page",
+                                    "type": "string"
+                                },
+                                "pageCaps": {
+                                    "id": "pageCaps",
+                                    "type": "string"
+                                },
+                                "previousResult": {
+                                    "id": "previousResult",
+                                    "type": "string"
+                                },
+                                "resultFoundFor": {
+                                    "id": "resultFoundFor",
+                                    "type": "string"
+                                },
+                                "resultsFoundFor": {
+                                    "id": "resultsFoundFor",
+                                    "type": "string"
+                                },
+                                "searchWithin": {
+                                    "id": "searchWithin",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "settingsDialogue": {
+                    "id": "settingsDialogue",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "locale": {
+                                    "id": "locale",
+                                    "type": "string"
+                                },
+                                "pagingEnabled": {
+                                    "id": "pagingEnabled",
+                                    "type": "string"
+                                },
+                                "preserveViewport": {
+                                    "id": "preserveViewport",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "treeViewLeftPanel": {
+                    "id": "treeViewLeftPanel",
+                    "type": "object",
+                    "options": {
+                        "collapsed": true
+                    },
+                    "properties": {
+                        "options": {
+                            "id": "options",
+                            "type": "object",
+                            "properties": {
+                                "elideCount": {
+                                    "id": "ellideCount",
+                                    "type": "integer"
+                                },
+                                "galleryThumbHeight": {
+                                    "id": "galleryThumbHeight",
+                                    "type": "integer"
+                                },
+                                "galleryThumbWidth": {
+                                    "id": "galleryThumbWidth",
+                                    "type": "integer"
+                                },
+                                "oneColThumbHeight": {
+                                    "id": "oneColThumbHeight",
+                                    "type": "integer"
+                                },
+                                "oneColThumbWidth": {
+                                    "id": "oneColThumbWidth",
+                                    "type": "integer"
+                                },
+                                "panelAnimationDuration": {
+                                    "id": "panelAnimationDuration",
+                                    "type": "integer"
+                                },
+                                "panelCollapsedWidth": {
+                                    "id": "panelCollapsedWidth",
+                                    "type": "integer"
+                                },
+                                "panelExpandedWidth": {
+                                    "id": "panelExpandedWidth",
+                                    "type": "integer"
+                                },
+                                "panelOpen": {
+                                    "id": "panelOpen",
+                                    "type": "boolean"
+                                },
+                                "thumbsEnabled": {
+                                    "id": "thumbsEnabled",
+                                    "type": "boolean"
+                                },
+                                "thumbsExtraHeight": {
+                                    "id": "thumbsExtraHeight",
+                                    "type": "integer"
+                                },
+                                "thumbsImageFadeInDuration": {
+                                    "id": "thumbsImageFadeInDuration",
+                                    "type": "integer"
+                                },
+                                "thumbsLoadRange": {
+                                    "id": "thumbsLoadRange",
+                                    "type": "integer"
+                                },
+                                "treeEnabled": {
+                                    "id": "treeEnabled",
+                                    "type": "boolean"
+                                },
+                                "twoColThumbHeight": {
+                                    "id": "twoColThumbHeight",
+                                    "type": "integer"
+                                },
+                                "twoColThumbWidth": {
+                                    "id": "twoColThumbWidth",
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "id": "content",
+                            "type": "object",
+                            "properties": {
+                                "collapse": {
+                                    "id": "collapse",
+                                    "type": "string"
+                                },
+                                "collapseFull": {
+                                    "id": "collapseFull",
+                                    "type": "string"
+                                },
+                                "expand": {
+                                    "id": "expand",
+                                    "type": "string"
+                                },
+                                "expandFull": {
+                                    "id": "expandFull",
+                                    "type": "string"
+                                },
+                                "index": {
+                                    "id": "index",
+                                    "type": "string"
+                                },
+                                "thumbnails": {
+                                    "id": "thumbnails",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "id": "title",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "options": {
+            "id": "options",
+            "type": "object",
+            "options": {
+                "collapsed": true
+            },
+            "properties": {
+                "leftPanelEnabled": {
+                    "id": "leftPanelEnabled",
+                    "type": "boolean"
+                },
+                "overrideFullScreen": {
+                    "id": "overrideFullScreen",
+                    "type": "boolean"
+                },
+                "pagingEnabled": {
+                    "id": "pagingEnabled",
+                    "type": "boolean"
+                },
+                "preserveViewport": {
+                    "id": "preserveViewport",
+                    "type": "boolean"
+                },
+                "rightPanelEnabled": {
+                    "id": "rightPanelEnabled",
+                    "type": "boolean"
+                },
+                "searchWithinEnabled": {
+                    "id": "searchWithinEnabled",
+                    "type": "boolean"
+                },
+                "theme": {
+                    "id": "theme",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

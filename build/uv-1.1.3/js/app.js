@@ -2324,6 +2324,7 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
             _super.call(this, $element, false, false);
             this.isActive = false;
             this.allowClose = true;
+            this.isUnopened = true;
         }
         Dialogue.prototype.create = function () {
             var _this = this;
@@ -2383,7 +2384,13 @@ define('modules/uv-shared-module/dialogue',["require", "exports", "./baseExtensi
                 _this.$element.find('.btn.default').focus();
             }, 1);
             $.publish(shell.Shell.SHOW_OVERLAY);
+            if (this.isUnopened) {
+                this.isUnopened = false;
+                this.afterFirstOpen();
+            }
             this.resize();
+        };
+        Dialogue.prototype.afterFirstOpen = function () {
         };
         Dialogue.prototype.close = function () {
             if (this.isActive) {
@@ -2861,28 +2868,32 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
         BaseProvider.prototype.getManifestType = function () {
             return 'monograph';
         };
-        BaseProvider.prototype.getManifestation = function (type) {
-            var service = this.sequence.service;
-            if (service && service["profile"] === "http://iiif.io/api/otherManifestations.json") {
-                if (service.format.endsWith("pdf")) {
-                    return service["@id"];
-                }
-            }
-        };
         BaseProvider.prototype.getService = function (resource, profile) {
             if (!resource.service)
                 return null;
-            if ($.isArray(resource.service)) {
-                for (var i = 0; i < resource.service.length; i++) {
-                    var service = resource.service[i];
-                    if (service.profile && service.profile === profile) {
-                        return service;
-                    }
+            var services = resource.service;
+            if (!$.isArray(services)) {
+                services = [services];
+            }
+            for (var i = 0; i < services.length; i++) {
+                var service = services[i];
+                if (service.profile && service.profile === profile.toString()) {
+                    return service;
                 }
             }
-            else {
-                if (resource.service.profile && resource.service.profile === profile) {
-                    return resource.service;
+            return null;
+        };
+        BaseProvider.prototype.getRendering = function (resource, format) {
+            if (!resource.rendering)
+                return null;
+            var renderings = resource.rendering;
+            if (!$.isArray(renderings)) {
+                renderings = [renderings];
+            }
+            for (var i = 0; i < renderings.length; i++) {
+                var rendering = renderings[i];
+                if (rendering.format && rendering.format === format.toString()) {
+                    return rendering;
                 }
             }
             return null;
@@ -3434,7 +3445,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.1.2';
+    exports.Version = '1.1.3';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5647,8 +5658,7 @@ define('modules/uv-shared-module/footerPanel',["require", "exports", "../../util
         };
         FooterPanel.prototype.updateDownloadButton = function () {
             var configEnabled = utils.Utils.getBool(this.options.downloadEnabled, true);
-            var settings = this.provider.getSettings();
-            if (configEnabled && !settings.pagingEnabled) {
+            if (configEnabled) {
                 this.$downloadButton.show();
             }
             else {
@@ -5947,7 +5957,7 @@ define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", 
                 this.$element.addClass('min');
             }
             new AutoComplete(this.$searchText, this.provider.getAutoCompleteUri(), 300, function (results) {
-                return results.resources[0].resource.suggestions;
+                return results;
             }, function (terms) {
                 _this.search(terms);
             });
@@ -6452,18 +6462,42 @@ define('extensions/uv-seadragon-extension/embedDialogue',["require", "exports", 
     exports.EmbedDialogue = EmbedDialogue;
 });
 
+define('extensions/uv-seadragon-extension/DownloadOption',["require", "exports"], function (require, exports) {
+    var DownloadOption;
+    (function (DownloadOption) {
+        DownloadOption[DownloadOption["CurrentViewAsJpg"] = 0] = "CurrentViewAsJpg";
+        DownloadOption[DownloadOption["EntireDocumentAsPDF"] = 1] = "EntireDocumentAsPDF";
+        DownloadOption[DownloadOption["WholeImageHighResAsJpg"] = 2] = "WholeImageHighResAsJpg";
+        DownloadOption[DownloadOption["WholeImageLowResAsJpg"] = 3] = "WholeImageLowResAsJpg";
+    })(DownloadOption || (DownloadOption = {}));
+    return DownloadOption;
+});
+
+define('modules/uv-shared-module/RenderingFormat',["require", "exports"], function (require, exports) {
+    var RenderingFormat = (function () {
+        function RenderingFormat(value) {
+            this.value = value;
+        }
+        RenderingFormat.prototype.toString = function () {
+            return this.value;
+        };
+        RenderingFormat.pdf = new RenderingFormat("application/pdf");
+        return RenderingFormat;
+    })();
+    return RenderingFormat;
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports", "../../modules/uv-shared-module/dialogue"], function (require, exports, dialogue) {
+define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports", "../../modules/uv-shared-module/dialogue", "./DownloadOption", "../../modules/uv-shared-module/RenderingFormat"], function (require, exports, dialogue, DownloadOption, RenderingFormat) {
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
             _super.call(this, $element);
-            this.isOpened = false;
         }
         DownloadDialogue.prototype.create = function () {
             var _this = this;
@@ -6471,13 +6505,14 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             _super.prototype.create.call(this);
             $.subscribe(DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE, function (e, params) {
                 _this.open();
-                _this.opened();
             });
             $.subscribe(DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE, function (e) {
                 _this.close();
             });
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
+            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
+            this.$content.append(this.$noneAvailable);
             this.$downloadOptions = $('<ol class="options"></ol>');
             this.$content.append(this.$downloadOptions);
             this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions" /><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
@@ -6517,7 +6552,7 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                         $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageLowResAsJpg']);
                         break;
                     case 'entireDocumentAsPdf':
-                        window.open(that.provider.getManifestation("pdf"));
+                        window.open(_this.getPdfUri());
                         $.publish(DownloadDialogue.DOWNLOAD, ['entireDocumentAsPdf']);
                         break;
                 }
@@ -6525,23 +6560,41 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             });
             this.$element.hide();
         };
-        DownloadDialogue.prototype.opened = function () {
-            if (this.isOpened)
-                return;
-            this.isOpened = true;
-            if (this.isDownloadOptionAvailable("currentViewAsJpg")) {
+        DownloadDialogue.prototype.open = function () {
+            _super.prototype.open.call(this);
+            if (this.isDownloadOptionAvailable(0 /* CurrentViewAsJpg */)) {
                 this.$currentViewAsJpgButton.show();
             }
-            if (this.isDownloadOptionAvailable("wholeImageHighResAsJpg")) {
-                this.$wholeImageHighResAsJpgButton.show();
+            else {
+                this.$currentViewAsJpgButton.hide();
             }
-            if (this.isDownloadOptionAvailable("wholeImageLowResAsJpg")) {
-                this.$wholeImageLowResAsJpgButton.show();
-            }
-            if (this.isDownloadOptionAvailable("entireDocumentAsPdf")) {
+            if (this.isDownloadOptionAvailable(1 /* EntireDocumentAsPDF */)) {
                 this.$entireDocumentAsPdfButton.show();
             }
-            this.$downloadOptions.find('input:first').prop("checked", true);
+            else {
+                this.$entireDocumentAsPdfButton.hide();
+            }
+            if (this.isDownloadOptionAvailable(2 /* WholeImageHighResAsJpg */)) {
+                this.$wholeImageHighResAsJpgButton.show();
+            }
+            else {
+                this.$wholeImageHighResAsJpgButton.hide();
+            }
+            if (this.isDownloadOptionAvailable(3 /* WholeImageLowResAsJpg */)) {
+                this.$wholeImageLowResAsJpgButton.show();
+            }
+            else {
+                this.$wholeImageLowResAsJpgButton.hide();
+            }
+            if (!this.$downloadOptions.find('input:visible').length) {
+                this.$noneAvailable.show();
+                this.$downloadButton.hide();
+            }
+            else {
+                this.$downloadOptions.find('input:visible:first').prop("checked", true);
+                this.$noneAvailable.hide();
+                this.$downloadButton.show();
+            }
             this.resize();
         };
         DownloadDialogue.prototype.getFileExtension = function (fileUri) {
@@ -6551,13 +6604,36 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             return this.$downloadOptions.find("input:checked");
         };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            if (option === "entireDocumentAsPdf") {
-                if (this.provider.getManifestation("pdf")) {
+            var settings = this.provider.getSettings();
+            switch (option) {
+                case 0 /* CurrentViewAsJpg */:
+                    if (settings.pagingEnabled) {
+                        return false;
+                    }
                     return true;
-                }
-                return false;
+                case 1 /* EntireDocumentAsPDF */:
+                    if (this.getPdfUri()) {
+                        return true;
+                    }
+                    return false;
+                case 2 /* WholeImageHighResAsJpg */:
+                    if (settings.pagingEnabled) {
+                        return false;
+                    }
+                    return true;
+                case 3 /* WholeImageLowResAsJpg */:
+                    if (settings.pagingEnabled) {
+                        return false;
+                    }
+                    return true;
             }
-            return true;
+        };
+        DownloadDialogue.prototype.getPdfUri = function () {
+            var rendering = this.provider.getRendering(this.provider.sequence, RenderingFormat.pdf);
+            if (rendering) {
+                return rendering['@id'];
+            }
+            return null;
         };
         DownloadDialogue.prototype.resize = function () {
             this.$element.css({
@@ -7094,21 +7170,35 @@ define('extensions/uv-seadragon-extension/Page',["require", "exports"], function
     return Page;
 });
 
+define('modules/uv-shared-module/serviceProfile',["require", "exports"], function (require, exports) {
+    var ServiceProfile = (function () {
+        function ServiceProfile(value) {
+            this.value = value;
+        }
+        ServiceProfile.prototype.toString = function () {
+            return this.value;
+        };
+        ServiceProfile.autoComplete = new ServiceProfile("http://iiif.io/api/autocomplete/1/");
+        ServiceProfile.otherManifestations = new ServiceProfile("http://iiif.io/api/otherManifestations.json");
+        ServiceProfile.searchWithin = new ServiceProfile("http://iiif.io/api/search/1/");
+        return ServiceProfile;
+    })();
+    return ServiceProfile;
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider", "./SearchResult", "./Page", "../../utils"], function (require, exports, baseProvider, SearchResult, Page, utils) {
+define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider", "./SearchResult", "./Page", "../../modules/uv-shared-module/serviceProfile", "../../utils"], function (require, exports, baseProvider, SearchResult, Page, ServiceProfile, utils) {
     var util = utils.Utils;
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(bootstrapper) {
             _super.call(this, bootstrapper);
             this.searchResults = [];
-            this.AUTOCOMPLETE_PROFILE = "http://iiif.io/api/autocomplete/1/";
-            this.SEARCH_WITHIN_PROFILE = "http://iiif.io/api/search/1/";
             this.config.options = $.extend(true, this.options, {
                 autoCompleteUriTemplate: '{0}{1}',
                 iiifImageUriTemplate: '{0}/{1}/{2}/{3}/{4}/{5}.jpg'
@@ -7273,27 +7363,25 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
             return true;
         };
         Provider.prototype.getAutoCompleteService = function () {
-            return this.getService(this.manifest, this.AUTOCOMPLETE_PROFILE);
+            return this.getService(this.manifest, ServiceProfile.autoComplete);
         };
         Provider.prototype.getAutoCompleteUri = function () {
             var service = this.getAutoCompleteService();
             if (!service)
                 return null;
             var uri = service["@id"];
-            uri = uri.substr(0, uri.indexOf('{'));
-            uri = uri + "&q={0}";
+            uri = uri + "{0}";
             return uri;
         };
         Provider.prototype.getSearchWithinService = function () {
-            return this.getService(this.manifest, this.SEARCH_WITHIN_PROFILE);
+            return this.getService(this.manifest, ServiceProfile.searchWithin);
         };
         Provider.prototype.getSearchWithinServiceUri = function () {
             var service = this.getSearchWithinService();
             if (!service)
                 return null;
             var uri = service["@id"];
-            uri = uri.substr(0, uri.indexOf('{'));
-            uri = uri + "&q={0}";
+            uri = uri + "{0}";
             return uri;
         };
         Provider.prototype.searchWithin = function (terms, callback) {
