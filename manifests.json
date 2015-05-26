@@ -21,6 +21,14 @@
             {
                 "title": "Crick's letter",
                 "uri": "http://wellcomelibrary.org/iiif/b1948799x/manifest"
+            },
+            {
+                "title": "The story of the Wellcome Foundation Ltd (video)",
+                "uri": "http://wellcomelibrary.org/iiif/b16659090/manifest"
+            },
+            {
+                "title": "Florence Nightingale (audio)",
+                "uri": "http://wellcomelibrary.org/iiif/b17307922/manifest"
             }
         ]
     },
