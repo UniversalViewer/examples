@@ -906,6 +906,14 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             if (!this.sequenceIndex) {
                 this.sequenceIndex = parseInt(util.getQuerystringParameter("si")) || 0;
             }
+            if (this.manifest.manifests) {
+                this.params.manifestUri = this.manifest.manifests[0].service['@id'];
+                this.loadManifest();
+                return;
+            }
+            if (this.manifest.xsequences) {
+                this.manifest.sequences = this.manifest.xsequences;
+            }
             this.sequences = this.manifest.sequences;
             if (!this.sequences) {
                 this.notFound();
@@ -937,7 +945,21 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
         BootStrapper.prototype.loadDependencies = function () {
             var that = this;
             var extension;
-            extension = that.extensions['seadragon/iiif'];
+            var canvasType = that.sequence.canvases[0]['@type'];
+            switch (canvasType.toLowerCase()) {
+                case 'sc:canvas':
+                    extension = that.extensions['seadragon/iiif'];
+                    break;
+                case 'ixif:audio':
+                    extension = that.extensions['audio/iiif'];
+                    break;
+                case 'ixif:video':
+                    extension = that.extensions['video/iiif'];
+                    break;
+                case 'ixif:pdf':
+                    extension = that.extensions['pdf/iiif'];
+                    break;
+            }
             var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.getLocaleName() + '.config.js' : 'js/' + extension.name + '.' + that.params.getLocaleName() + '.config.js';
             yepnope({
                 test: window.btoa && window.atob,
@@ -2574,7 +2596,6 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                 this.$element.addClass('embedded');
             if (this.provider.isLightbox)
                 this.$element.addClass('lightbox');
-            this.$element.addClass(this.provider.getSequenceType());
             window.onresize = function () {
                 var $win = $(window);
                 $('body').height($win.height());
@@ -2901,6 +2922,11 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
         BaseProvider.prototype.getSequenceType = function () {
             return 'seadragon-iiif';
         };
+        BaseProvider.prototype.getCanvasType = function (canvas) {
+            if (!canvas)
+                canvas = this.getCurrentCanvas();
+            return canvas['@type'].toLowerCase();
+        };
         BaseProvider.prototype.getAttribution = function () {
             return this.getLocalisedValue(this.manifest.attribution);
         };
@@ -2986,8 +3012,6 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             var template = this.options.mediaUriTemplate;
             var uri = String.prototype.format(template, baseUri, mediaUri);
             return uri;
-        };
-        BaseProvider.prototype.setMediaUri = function (canvas) {
         };
         BaseProvider.prototype.getPagedIndices = function (canvasIndex) {
             if (typeof (canvasIndex) === 'undefined')
@@ -3445,7 +3469,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.1.3';
+    exports.Version = '1.2.0';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4480,7 +4504,7 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
             this.$element.hide();
         };
         ThumbsView.prototype.isPDF = function () {
-            return (this.provider.getSequenceType() === "application-pdf");
+            return (this.provider.getCanvasType().contains("pdf"));
         };
         ThumbsView.prototype.setLabel = function () {
             if (this.isPDF()) {
@@ -6463,13 +6487,19 @@ define('extensions/uv-seadragon-extension/embedDialogue',["require", "exports", 
 });
 
 define('extensions/uv-seadragon-extension/DownloadOption',["require", "exports"], function (require, exports) {
-    var DownloadOption;
-    (function (DownloadOption) {
-        DownloadOption[DownloadOption["CurrentViewAsJpg"] = 0] = "CurrentViewAsJpg";
-        DownloadOption[DownloadOption["EntireDocumentAsPDF"] = 1] = "EntireDocumentAsPDF";
-        DownloadOption[DownloadOption["WholeImageHighResAsJpg"] = 2] = "WholeImageHighResAsJpg";
-        DownloadOption[DownloadOption["WholeImageLowResAsJpg"] = 3] = "WholeImageLowResAsJpg";
-    })(DownloadOption || (DownloadOption = {}));
+    var DownloadOption = (function () {
+        function DownloadOption(value) {
+            this.value = value;
+        }
+        DownloadOption.prototype.toString = function () {
+            return this.value;
+        };
+        DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
+        DownloadOption.entireDocumentAsPDF = new DownloadOption("entireDocumentAsPDF");
+        DownloadOption.wholeImageHighResAsJpg = new DownloadOption("wholeImageHighResAsJpg");
+        DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
+        return DownloadOption;
+    })();
     return DownloadOption;
 });
 
@@ -6515,16 +6545,16 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             this.$content.append(this.$noneAvailable);
             this.$downloadOptions = $('<ol class="options"></ol>');
             this.$content.append(this.$downloadOptions);
-            this.$currentViewAsJpgButton = $('<li><input id="currentViewAsJpg" type="radio" name="downloadOptions" /><label for="currentViewAsJpg">' + this.content.currentViewAsJpg + '</label></li>');
+            this.$currentViewAsJpgButton = $('<li><input id="' + DownloadOption.currentViewAsJpg.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.currentViewAsJpg.toString() + '">' + this.content.currentViewAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$currentViewAsJpgButton);
             this.$currentViewAsJpgButton.hide();
-            this.$wholeImageHighResAsJpgButton = $('<li><input id="wholeImageHighResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageHighResAsJpg">' + this.content.wholeImageHighResAsJpg + '</label></li>');
+            this.$wholeImageHighResAsJpgButton = $('<li><input id="' + DownloadOption.wholeImageHighResAsJpg.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.wholeImageHighResAsJpg.toString() + '">' + this.content.wholeImageHighResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageHighResAsJpgButton);
             this.$wholeImageHighResAsJpgButton.hide();
-            this.$wholeImageLowResAsJpgButton = $('<li><input id="wholeImageLowResAsJpg" type="radio" name="downloadOptions" /><label for="wholeImageLowResAsJpg">' + this.content.wholeImageLowResAsJpg + '</label></li>');
+            this.$wholeImageLowResAsJpgButton = $('<li><input id="' + DownloadOption.wholeImageLowResAsJpg.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.wholeImageLowResAsJpg.toString() + '">' + this.content.wholeImageLowResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageLowResAsJpgButton);
             this.$wholeImageLowResAsJpgButton.hide();
-            this.$entireDocumentAsPdfButton = $('<li><input id="entireDocumentAsPdf" type="radio" name="downloadOptions" /><label for="entireDocumentAsPdf">' + this.content.entireDocumentAsPdf + '</label></li>');
+            this.$entireDocumentAsPdfButton = $('<li><input id="' + DownloadOption.entireDocumentAsPDF.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.entireDocumentAsPDF.toString() + '">' + this.content.entireDocumentAsPdf + '</label></li>');
             this.$downloadOptions.append(this.$entireDocumentAsPdfButton);
             this.$entireDocumentAsPdfButton.hide();
             this.$buttonsContainer = $('<div class="buttons"></div>');
@@ -6538,55 +6568,52 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                 var id = selectedOption.attr('id');
                 var canvas = _this.provider.getCurrentCanvas();
                 switch (id) {
-                    case 'currentViewAsJpg':
+                    case DownloadOption.currentViewAsJpg.toString():
                         var viewer = that.extension.getViewer();
                         window.open(that.provider.getCroppedImageUri(canvas, viewer, true));
-                        $.publish(DownloadDialogue.DOWNLOAD, ['currentViewAsJpg']);
                         break;
-                    case 'wholeImageHighResAsJpg':
+                    case DownloadOption.wholeImageHighResAsJpg.toString():
                         window.open(that.provider.getConfinedImageUri(canvas, canvas.width, canvas.height));
-                        $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageHighResAsJpg']);
                         break;
-                    case 'wholeImageLowResAsJpg':
+                    case DownloadOption.wholeImageLowResAsJpg.toString():
                         window.open(that.provider.getConfinedImageUri(canvas, that.options.confinedImageSize));
-                        $.publish(DownloadDialogue.DOWNLOAD, ['wholeImageLowResAsJpg']);
                         break;
-                    case 'entireDocumentAsPdf':
+                    case DownloadOption.entireDocumentAsPDF.toString():
                         window.open(_this.getPdfUri());
-                        $.publish(DownloadDialogue.DOWNLOAD, ['entireDocumentAsPdf']);
                         break;
                 }
+                $.publish(DownloadDialogue.DOWNLOAD, [id]);
                 _this.close();
             });
             this.$element.hide();
         };
         DownloadDialogue.prototype.open = function () {
             _super.prototype.open.call(this);
-            if (this.isDownloadOptionAvailable(0 /* CurrentViewAsJpg */)) {
+            if (this.isDownloadOptionAvailable(DownloadOption.currentViewAsJpg)) {
                 this.$currentViewAsJpgButton.show();
             }
             else {
                 this.$currentViewAsJpgButton.hide();
             }
-            if (this.isDownloadOptionAvailable(1 /* EntireDocumentAsPDF */)) {
+            if (this.isDownloadOptionAvailable(DownloadOption.entireDocumentAsPDF)) {
                 this.$entireDocumentAsPdfButton.show();
             }
             else {
                 this.$entireDocumentAsPdfButton.hide();
             }
-            if (this.isDownloadOptionAvailable(2 /* WholeImageHighResAsJpg */)) {
+            if (this.isDownloadOptionAvailable(DownloadOption.wholeImageHighResAsJpg)) {
                 this.$wholeImageHighResAsJpgButton.show();
             }
             else {
                 this.$wholeImageHighResAsJpgButton.hide();
             }
-            if (this.isDownloadOptionAvailable(3 /* WholeImageLowResAsJpg */)) {
+            if (this.isDownloadOptionAvailable(DownloadOption.wholeImageLowResAsJpg)) {
                 this.$wholeImageLowResAsJpgButton.show();
             }
             else {
                 this.$wholeImageLowResAsJpgButton.hide();
             }
-            if (!this.$downloadOptions.find('input:visible').length) {
+            if (!this.$downloadOptions.find('li:visible').length) {
                 this.$noneAvailable.show();
                 this.$downloadButton.hide();
             }
@@ -6597,31 +6624,28 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             }
             this.resize();
         };
-        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
-            return fileUri.split('.').pop();
-        };
         DownloadDialogue.prototype.getSelectedOption = function () {
             return this.$downloadOptions.find("input:checked");
         };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
             var settings = this.provider.getSettings();
             switch (option) {
-                case 0 /* CurrentViewAsJpg */:
+                case DownloadOption.currentViewAsJpg:
                     if (settings.pagingEnabled) {
                         return false;
                     }
                     return true;
-                case 1 /* EntireDocumentAsPDF */:
+                case DownloadOption.entireDocumentAsPDF:
                     if (this.getPdfUri()) {
                         return true;
                     }
                     return false;
-                case 2 /* WholeImageHighResAsJpg */:
+                case DownloadOption.wholeImageHighResAsJpg:
                     if (settings.pagingEnabled) {
                         return false;
                     }
                     return true;
-                case 3 /* WholeImageLowResAsJpg */:
+                case DownloadOption.wholeImageLowResAsJpg:
                     if (settings.pagingEnabled) {
                         return false;
                     }
@@ -6912,8 +6936,7 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             require(_.values(deps), function () {
                 that.createModules();
                 that.setParams();
-                var canvasIndex;
-                canvasIndex = parseInt(that.getParam(1 /* canvasIndex */)) || that.provider.getStartCanvasIndex();
+                var canvasIndex = parseInt(that.getParam(1 /* canvasIndex */)) || that.provider.getStartCanvasIndex();
                 if (that.provider.isCanvasIndexOutOfRange(canvasIndex)) {
                     that.showDialogue(that.provider.config.content.canvasIndexOutOfRange);
                     return;
@@ -7439,7 +7462,7 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
             this.setConfig('mediaelementCenterPanel');
             _super.prototype.create.call(this);
             var that = this;
-            if (this.provider.getSequenceType().contains('video')) {
+            if (this.provider.getCanvasType(this.provider.getCanvasByIndex(0)).contains('video')) {
                 $.subscribe(baseExtension.BaseExtension.TOGGLE_FULLSCREEN, function (e) {
                     if (that.bootstrapper.isFullScreen) {
                         that.$container.css('backgroundColor', '#000');
@@ -7467,14 +7490,17 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
             this.$container.width(this.mediaWidth);
             var id = utils.Utils.getTimeStamp();
             var poster = this.provider.getPosterImageUri();
-            var type = this.provider.getSequenceType();
-            if (type.contains('video')) {
-                if (!canvas.sources) {
-                    this.media = this.$container.append('<video id="' + id + '" type="video/mp4" src="' + canvas.mediaUri + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
-                }
-                else {
-                    this.media = this.$container.append('<video id="' + id + '" type="video/mp4" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
-                }
+            var canvasType = this.provider.getCanvasType(this.provider.getCanvasByIndex(0));
+            var sources = [];
+            _.each(canvas.media, function (annotation) {
+                var resource = annotation.resource;
+                sources.push({
+                    type: resource.format.substr(resource.format.indexOf(':') + 1),
+                    src: resource['@id']
+                });
+            });
+            if (canvasType.contains('video')) {
+                this.media = this.$container.append('<video id="' + id + '" type="video/mp4" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
                 this.player = new MediaElementPlayer("#" + id, {
                     type: ['video/mp4', 'video/webm', 'video/flv'],
                     plugins: ['flash'],
@@ -7495,9 +7521,7 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
                         media.addEventListener('ended', function (e) {
                             $.publish(extension.Extension.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                         });
-                        if (canvas.sources && canvas.sources.length) {
-                            media.setSrc(canvas.sources);
-                        }
+                        media.setSrc(sources);
                         try {
                             media.load();
                         }
@@ -7506,8 +7530,8 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
                     }
                 });
             }
-            else if (type.contains('audio')) {
-                this.media = this.$container.append('<audio id="' + id + '" type="audio/mp3" src="' + canvas.mediaUri + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></audio>');
+            else if (canvasType.contains('audio')) {
+                this.media = this.$container.append('<audio id="' + id + '" type="audio/mp3" src="' + sources[0].src + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></audio>');
                 this.player = new MediaElementPlayer("#" + id, {
                     plugins: ['flash'],
                     alwaysShowControls: false,
@@ -7539,12 +7563,9 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
             }
             this.resize();
         };
-        MediaElementCenterPanel.prototype.getPlayer = function () {
-            return this.player;
-        };
         MediaElementCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            if (window.browserDetect.browser == 'Firefox' && window.browserDetect.version < 13) {
+            if (window.browserDetect.browser === 'Firefox' && window.browserDetect.version < 13) {
                 this.$container.width(this.mediaWidth);
                 this.$container.height(this.mediaHeight);
             }
@@ -7567,6 +7588,94 @@ define('modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel',["req
         return MediaElementCenterPanel;
     })(baseCenter.CenterPanel);
     exports.MediaElementCenterPanel = MediaElementCenterPanel;
+});
+
+define('extensions/uv-mediaelement-extension/DownloadOption',["require", "exports"], function (require, exports) {
+    var DownloadOption = (function () {
+        function DownloadOption(value) {
+            this.value = value;
+        }
+        DownloadOption.prototype.toString = function () {
+            return this.value;
+        };
+        DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
+        return DownloadOption;
+    })();
+    return DownloadOption;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/uv-mediaelement-extension/downloadDialogue',["require", "exports", "../../modules/uv-shared-module/dialogue", "./DownloadOption"], function (require, exports, dialogue, DownloadOption) {
+    var DownloadDialogue = (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            _super.call(this, $element);
+        }
+        DownloadDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('downloadDialogue');
+            _super.prototype.create.call(this);
+            $.subscribe(DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+            $.subscribe(DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE, function (e) {
+                _this.close();
+            });
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
+            this.$content.append(this.$noneAvailable);
+            this.$downloadOptions = $('<ol class="options"></ol>');
+            this.$content.append(this.$downloadOptions);
+            this.$element.hide();
+        };
+        DownloadDialogue.prototype.open = function () {
+            var _this = this;
+            _super.prototype.open.call(this);
+            if (this.isDownloadOptionAvailable(DownloadOption.entireFileAsOriginal)) {
+                this.$downloadOptions.empty();
+                var canvas = this.provider.getCurrentCanvas();
+                _.each(canvas.media, function (annotation) {
+                    var resource = annotation.resource;
+                    _this.addEntireFileDownloadOption(resource['@id']);
+                });
+            }
+            if (!this.$downloadOptions.find('li:visible').length) {
+                this.$noneAvailable.show();
+            }
+            else {
+                this.$noneAvailable.hide();
+            }
+            this.resize();
+        };
+        DownloadDialogue.prototype.addEntireFileDownloadOption = function (fileUri) {
+            this.$downloadOptions.append('<li><a href="' + fileUri + '" target="_blank" download>' + String.prototype.format(this.content.entireFileAsOriginal, this.getFileExtension(fileUri)) + '</li>');
+        };
+        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
+            return fileUri.split('.').pop();
+        };
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            switch (option) {
+                case DownloadOption.entireFileAsOriginal:
+                    return true;
+            }
+        };
+        DownloadDialogue.prototype.resize = function () {
+            this.$element.css({
+                'top': this.extension.height() - this.$element.outerHeight(true)
+            });
+        };
+        DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE = 'onShowDownloadDialogue';
+        DownloadDialogue.HIDE_DOWNLOAD_DIALOGUE = 'onHideDownloadDialogue';
+        DownloadDialogue.DOWNLOAD = 'onDownload';
+        return DownloadDialogue;
+    })(dialogue.Dialogue);
+    exports.DownloadDialogue = DownloadDialogue;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -7603,7 +7712,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-mediaelement-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./embedDialogue"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, embed) {
+define('extensions/uv-mediaelement-extension/extension',["require", "exports", "../../modules/uv-shared-module/baseExtension", "../../utils", "../../modules/uv-shared-module/baseProvider", "../../modules/uv-shared-module/shell", "../../modules/uv-shared-module/headerPanel", "../../modules/uv-shared-module/leftPanel", "../../modules/uv-treeviewleftpanel-module/treeViewLeftPanel", "../../modules/uv-treeviewleftpanel-module/treeView", "../../modules/uv-mediaelementcenterpanel-module/mediaelementCenterPanel", "../../modules/uv-shared-module/rightPanel", "../../modules/uv-moreinforightpanel-module/moreInfoRightPanel", "../../modules/uv-shared-module/footerPanel", "../../modules/uv-dialogues-module/helpDialogue", "./downloadDialogue", "./embedDialogue"], function (require, exports, baseExtension, utils, baseProvider, shell, header, baseLeft, left, treeView, center, baseRight, right, footer, help, download, embed) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -7612,7 +7721,6 @@ define('extensions/uv-mediaelement-extension/extension',["require", "exports", "
         Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
             _super.prototype.create.call(this);
-            var that = this;
             $(window).bind('enterfullscreen', function () {
                 $.publish(baseExtension.BaseExtension.TOGGLE_FULLSCREEN);
             });
@@ -7621,6 +7729,9 @@ define('extensions/uv-mediaelement-extension/extension',["require", "exports", "
             });
             $.subscribe(treeView.TreeView.NODE_SELECTED, function (e, data) {
                 _this.viewManifest(data);
+            });
+            $.subscribe(footer.FooterPanel.DOWNLOAD, function (e) {
+                $.publish(download.DownloadDialogue.SHOW_DOWNLOAD_DIALOGUE);
             });
             $.subscribe(footer.FooterPanel.EMBED, function (e) {
                 $.publish(embed.EmbedDialogue.SHOW_EMBED_DIALOGUE);
@@ -7669,10 +7780,13 @@ define('extensions/uv-mediaelement-extension/extension',["require", "exports", "
             this.centerPanel = new center.MediaElementCenterPanel(shell.Shell.$centerPanel);
             this.rightPanel = new right.MoreInfoRightPanel(shell.Shell.$rightPanel);
             this.footerPanel = new footer.FooterPanel(shell.Shell.$footerPanel);
-            this.$helpDialogue = utils.Utils.createDiv('overlay help');
+            this.$helpDialogue = $('<div class="overlay help"></div>');
             shell.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new help.HelpDialogue(this.$helpDialogue);
-            this.$embedDialogue = utils.Utils.createDiv('overlay embed');
+            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            shell.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new download.DownloadDialogue(this.$downloadDialogue);
+            this.$embedDialogue = $('<div class="overlay embed"></div>');
             shell.Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new embed.EmbedDialogue(this.$embedDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -7691,7 +7805,6 @@ define('extensions/uv-mediaelement-extension/extension',["require", "exports", "
             var _this = this;
             var canvas = this.provider.getCanvasByIndex(0);
             this.viewCanvas(0, function () {
-                _this.provider.setMediaUri(canvas);
                 $.publish(Extension.OPEN_MEDIA, [canvas]);
                 _this.setParam(1 /* canvasIndex */, 0);
             });
@@ -7726,10 +7839,7 @@ define('extensions/uv-mediaelement-extension/provider',["require", "exports", ".
             return script;
         };
         Provider.prototype.getPosterImageUri = function () {
-            var baseUri = this.options.mediaBaseUri || "";
-            var template = this.options.mediaUriTemplate;
-            var uri = String.prototype.format(template, baseUri, this.sequence.extensions.posterImage);
-            return uri;
+            return "";
         };
         return Provider;
     })(baseProvider.BaseProvider);
@@ -7927,7 +8037,6 @@ define('extensions/uv-pdf-extension/extension',["require", "exports", "../../mod
             var _this = this;
             var canvas = this.provider.getCanvasByIndex(0);
             this.viewCanvas(0, function () {
-                _this.provider.setMediaUri(canvas);
                 $.publish(Extension.OPEN_MEDIA, [canvas]);
                 _this.setParam(1 /* canvasIndex */, 0);
             });
@@ -8025,6 +8134,21 @@ require([
         type: seadragonExtension.Extension,
         provider: seadragonProvider.Provider,
         name: 'uv-seadragon-extension'
+    };
+    extensions['video/iiif'] = {
+        type: mediaelementExtension.Extension,
+        provider: mediaelementProvider.Provider,
+        name: 'uv-mediaelement-extension'
+    };
+    extensions['audio/iiif'] = {
+        type: mediaelementExtension.Extension,
+        provider: mediaelementProvider.Provider,
+        name: 'uv-mediaelement-extension'
+    };
+    extensions['pdf/iiif'] = {
+        type: pdfExtension.Extension,
+        provider: pdfProvider.Provider,
+        name: 'uv-pdf-extension'
     };
     var bs = new bootstrapper(extensions);
     bs.bootStrap();
