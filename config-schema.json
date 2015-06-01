@@ -367,6 +367,10 @@
                                     "id": "localeToggleEnabled",
                                     "type": "boolean"
                                 },
+                                "pageModeEnabled": {
+                                    "id": "useLabelsEnabled",
+                                    "type": "boolean"
+                                },
                                 "pagingToggleEnabled": {
                                     "id": "pagingToggleEnabled",
                                     "type": "boolean"
@@ -531,6 +535,10 @@
                                 "elideResultsTermsCount": {
                                     "id": "elideResultsTermsCount",
                                     "type": "integer"
+                                },
+                                "pageModeEnabled": {
+                                    "id": "useLabelsEnabled",
+                                    "type": "boolean"
                                 }
                             }
                         },
@@ -659,6 +667,10 @@
                                 "oneColThumbWidth": {
                                     "id": "oneColThumbWidth",
                                     "type": "integer"
+                                },
+                                "pageModeEnabled": {
+                                    "id": "useLabelsEnabled",
+                                    "type": "boolean"
                                 },
                                 "panelAnimationDuration": {
                                     "id": "panelAnimationDuration",
