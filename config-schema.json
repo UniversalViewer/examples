@@ -368,7 +368,7 @@
                                     "type": "boolean"
                                 },
                                 "pageModeEnabled": {
-                                    "id": "useLabelsEnabled",
+                                    "id": "pageModeEnabled",
                                     "type": "boolean"
                                 },
                                 "pagingToggleEnabled": {
@@ -537,7 +537,7 @@
                                     "type": "integer"
                                 },
                                 "pageModeEnabled": {
-                                    "id": "useLabelsEnabled",
+                                    "id": "pageModeEnabled",
                                     "type": "boolean"
                                 }
                             }
@@ -548,6 +548,10 @@
                             "properties": {
                                 "clearSearch": {
                                     "id": "clearSearch",
+                                    "type": "string"
+                                },
+                                "defaultLabel": {
+                                    "id": "defaultLabel",
                                     "type": "string"
                                 },
                                 "displaying": {
@@ -669,7 +673,7 @@
                                     "type": "integer"
                                 },
                                 "pageModeEnabled": {
-                                    "id": "useLabelsEnabled",
+                                    "id": "pageModeEnabled",
                                     "type": "boolean"
                                 },
                                 "panelAnimationDuration": {
