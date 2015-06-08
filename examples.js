@@ -223,9 +223,6 @@ $(function(){
             editor.setValue(config);
         } else {
             $.getJSON('/build/uv-1.2.1/js/' + configName + '.config.js', function(config){
-                // merge config.json
-
-
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
@@ -335,15 +332,7 @@ $(function(){
         $('#resetBtn').on('click', function(e){
             e.preventDefault();
 
-            var configUri;
-
-            if (isLocalhost){
-                configUri = '/examples/config.json';
-            } else {
-                configUri = "/manifests.json";
-            }
-
-            $('.uv').prop('data-config', configUri);
+            $('.uv').removeAttr('data-config');
 
             sessionStorage.clear();
 
