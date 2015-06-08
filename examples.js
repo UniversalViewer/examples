@@ -222,7 +222,7 @@ $(function(){
             showEditor();
             editor.setValue(config);
         } else {
-            $.getJSON('/build/uv-1.2.0/js/' + configName + '.config.js', function(config){
+            $.getJSON('/build/uv-1.2.1/js/' + configName + '.config.js', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
@@ -266,7 +266,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.2.0/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.2.1/js/embed.js"><\/script>');
         }
 
         $('#setOptionsBtn').on('click', function(e){

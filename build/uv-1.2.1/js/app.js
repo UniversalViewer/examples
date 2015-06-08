@@ -2574,7 +2574,7 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
             this.embedHeight = $win.height();
             this.$element.width(this.embedWidth);
             this.$element.height(this.embedHeight);
-            if (!this.provider.isReload) {
+            if (!this.provider.isReload && this.inIframe()) {
                 this.bootstrapper.socket = new easyXDM.Socket({
                     onMessage: function (message, origin) {
                         message = $.parseJSON(message);
@@ -2735,6 +2735,14 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
                     $.publish(BaseExtension.TOGGLE_FULLSCREEN);
                 }
                 this.triggerSocket(BaseExtension.SEQUENCE_INDEX_CHANGED, manifest.assetSequence);
+            }
+        };
+        BaseExtension.prototype.inIframe = function () {
+            try {
+                return window.self !== window.top;
+            }
+            catch (e) {
+                return true;
             }
         };
         BaseExtension.SETTINGS_CHANGED = 'onSettingsChanged';
@@ -2999,7 +3007,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             return this.manifest.sequences.length > 1;
         };
         BaseProvider.prototype.isPagingEnabled = function () {
-            return this.sequence.viewingHint && (this.sequence.viewingHint == "paged") && this.isTotalCanvasesEven();
+            return this.sequence.viewingHint && (this.sequence.viewingHint == "paged");
         };
         BaseProvider.prototype.isPagingSettingEnabled = function () {
             if (this.isPagingEnabled()) {
@@ -3469,7 +3477,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.0';
+    exports.Version = '1.2.1';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3757,7 +3765,7 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
             this.$nextOptions.append(this.$nextButton);
             this.$lastButton = $('<a class="imageBtn last" tabindex="2"></a>');
             this.$nextOptions.append(this.$lastButton);
-            if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 this.$pageModeOption.attr('checked', 'checked');
                 this.$pageModeOption.removeAttr('disabled');
                 this.$pageModeLabel.removeClass('disabled');
@@ -3781,12 +3789,19 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
             this.$nextButton.onPressed(function () {
                 $.publish(PagingHeaderPanel.NEXT);
             });
-            this.$imageModeOption.on('click', function (e) {
-                $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.IMAGE_MODE]);
-            });
-            this.$pageModeOption.on('click', function (e) {
-                $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.PAGE_MODE]);
-            });
+            if (!this.config.options.pageModeEnabled) {
+                this.$imageModeOption.hide();
+                this.$pageModeLabel.hide();
+                this.$pageModeOption.hide();
+            }
+            else {
+                this.$imageModeOption.on('click', function (e) {
+                    $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.IMAGE_MODE]);
+                });
+                this.$pageModeOption.on('click', function (e) {
+                    $.publish(PagingHeaderPanel.MODE_CHANGED, [extension.Extension.PAGE_MODE]);
+                });
+            }
             this.$searchText.onEnter(function () {
                 _this.$searchText.blur();
                 _this.search();
@@ -3813,9 +3828,12 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
                 }
             });
         };
+        PagingHeaderPanel.prototype.isPageModeEnabled = function () {
+            return this.config.options.pageModeEnabled && this.extension.getMode() === extension.Extension.PAGE_MODE;
+        };
         PagingHeaderPanel.prototype.setTitles = function () {
             var mode;
-            if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 mode = this.content.page;
             }
             else {
@@ -3829,7 +3847,7 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
         };
         PagingHeaderPanel.prototype.setTotal = function () {
             var of = this.content.of;
-            if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 this.$total.html(String.prototype.format(of, this.provider.getLastCanvasLabel()));
             }
             else {
@@ -3838,7 +3856,7 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
         };
         PagingHeaderPanel.prototype.setSearchFieldValue = function (index) {
             var canvas = this.provider.getCanvasByIndex(index);
-            if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 var orderLabel = this.provider.getLocalisedValue(canvas.label);
                 if (orderLabel === "-") {
                     this.$searchText.val("");
@@ -3859,7 +3877,7 @@ define('modules/uv-pagingheaderpanel-module/pagingHeaderPanel',["require", "expo
                 $.publish(baseExtension.BaseExtension.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
-            if (this.extension.getMode() === extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 $.publish(PagingHeaderPanel.PAGE_SEARCH, [value]);
             }
             else {
@@ -4512,7 +4530,7 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
                 $(this.$thumbs).find('span.label').hide();
             }
             else {
-                if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
+                if (this.isPageModeEnabled()) {
                     $(this.$thumbs).find('span.index').hide();
                     $(this.$thumbs).find('span.label').show();
                 }
@@ -4521,6 +4539,9 @@ define('modules/uv-treeviewleftpanel-module/thumbsView',["require", "exports", "
                     $(this.$thumbs).find('span.label').hide();
                 }
             }
+        };
+        ThumbsView.prototype.isPageModeEnabled = function () {
+            return this.config.options.pageModeEnabled && this.extension.getMode() === extension.Extension.PAGE_MODE;
         };
         ThumbsView.prototype.selectIndex = function (index) {
             var _this = this;
@@ -4735,7 +4756,7 @@ define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", 
             this.$element.hide();
         };
         GalleryView.prototype.setLabel = function () {
-            if (this.extension.getMode() == extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 $(this.$thumbs).find('span.index').hide();
                 $(this.$thumbs).find('span.label').show();
             }
@@ -4743,6 +4764,9 @@ define('modules/uv-treeviewleftpanel-module/galleryView',["require", "exports", 
                 $(this.$thumbs).find('span.index').show();
                 $(this.$thumbs).find('span.label').hide();
             }
+        };
+        GalleryView.prototype.isPageModeEnabled = function () {
+            return this.config.options.pageModeEnabled && this.extension.getMode() === extension.Extension.PAGE_MODE;
         };
         GalleryView.prototype.selectIndex = function (index) {
             if (index == -1)
@@ -4840,7 +4864,7 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
         TreeViewLeftPanel.prototype.dataBindTreeView = function () {
             if (!this.treeView)
                 return;
-            this.treeView.rootNode = this.provider.getTree();
+            this.treeView.rootNode = this.treeData;
             this.treeView.dataBind();
         };
         TreeViewLeftPanel.prototype.createThumbsView = function () {
@@ -4880,6 +4904,10 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             if (this.isUnopened) {
                 var treeEnabled = utils.Utils.getBool(this.config.options.treeEnabled, true);
                 var thumbsEnabled = utils.Utils.getBool(this.config.options.thumbsEnabled, true);
+                this.treeData = this.provider.getTree();
+                if (!this.treeData.nodes.length) {
+                    treeEnabled = false;
+                }
                 if (!treeEnabled || !thumbsEnabled)
                     this.$tabs.hide();
                 if (thumbsEnabled && this.provider.defaultToThumbsView()) {
@@ -6172,14 +6200,13 @@ define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", 
             this.setPlacemarkerLabel();
         };
         FooterPanel.prototype.setPlacemarkerLabel = function () {
-            var mode = this.extension.getMode();
             var displaying = this.content.displaying;
             var index = this.provider.canvasIndex;
-            if (mode == extension.Extension.PAGE_MODE) {
+            if (this.isPageModeEnabled()) {
                 var canvas = this.provider.getCanvasByIndex(index);
                 var label = canvas.label;
                 if (label == "") {
-                    label = "-";
+                    label = this.content.defaultLabel;
                 }
                 var lastCanvasOrderLabel = this.provider.getLastCanvasLabel();
                 this.$pagePositionLabel.html(String.prototype.format(displaying, this.content.page, label, lastCanvasOrderLabel));
@@ -6187,6 +6214,9 @@ define('modules/uv-searchfooterpanel-module/footerPanel',["require", "exports", 
             else {
                 this.$pagePositionLabel.html(String.prototype.format(displaying, this.content.image, index + 1, this.provider.getTotalCanvases()));
             }
+        };
+        FooterPanel.prototype.isPageModeEnabled = function () {
+            return this.config.options.pageModeEnabled && this.extension.getMode() === extension.Extension.PAGE_MODE;
         };
         FooterPanel.prototype.displaySearchResults = function (terms, results) {
             if (!results)
@@ -7008,9 +7038,9 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             if (this.isLoading) {
                 return;
             }
-            this.isLoading = true;
             if (canvasIndex == -1)
                 return;
+            this.isLoading = true;
             if (this.provider.isPagingSettingEnabled() && !isReload) {
                 var indices = this.provider.getPagedIndices(canvasIndex);
                 if (indices.contains(this.provider.canvasIndex)) {
@@ -7193,7 +7223,7 @@ define('extensions/uv-seadragon-extension/Page',["require", "exports"], function
     return Page;
 });
 
-define('modules/uv-shared-module/serviceProfile',["require", "exports"], function (require, exports) {
+define('modules/uv-shared-module/ServiceProfile',["require", "exports"], function (require, exports) {
     var ServiceProfile = (function () {
         function ServiceProfile(value) {
             this.value = value;
@@ -7215,7 +7245,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider", "./SearchResult", "./Page", "../../modules/uv-shared-module/serviceProfile", "../../utils"], function (require, exports, baseProvider, SearchResult, Page, ServiceProfile, utils) {
+define('extensions/uv-seadragon-extension/provider',["require", "exports", "../../modules/uv-shared-module/baseProvider", "./SearchResult", "./Page", "../../modules/uv-shared-module/ServiceProfile", "../../utils"], function (require, exports, baseProvider, SearchResult, Page, ServiceProfile, utils) {
     var util = utils.Utils;
     var Provider = (function (_super) {
         __extends(Provider, _super);
@@ -7317,21 +7347,11 @@ define('extensions/uv-seadragon-extension/provider',["require", "exports", "../.
             if (!iiifUri) {
                 console.warn('no service endpoint available');
             }
-            else if (iiifUri.endsWith('/')) {
-                if (!this.corsEnabled()) {
-                    iiifUri += 'info.js';
-                }
-                else {
-                    iiifUri += 'info.json';
-                }
-            }
             else {
-                if (!this.corsEnabled()) {
-                    iiifUri += '/info.js';
+                if (!iiifUri.endsWith('/')) {
+                    iiifUri += '/';
                 }
-                else {
-                    iiifUri += '/info.json';
-                }
+                iiifUri += this.corsEnabled() ? 'info.json' : 'info.js';
             }
             return iiifUri;
         };
