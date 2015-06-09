@@ -313,6 +313,14 @@
                                 "panelOpen": {
                                     "id": "panelOpen",
                                     "type": "boolean"
+                                },
+                                "textLimit": {
+                                    "id": "textLimit",
+                                    "type": "integer"
+                                },
+                                "textLimitType": {
+                                    "id": "textLimitType",
+                                    "type": "string"
                                 }
                             }
                         },
