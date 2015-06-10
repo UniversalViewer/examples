@@ -255,6 +255,190 @@ define("modernizr", function(){});
         return this;
     };
 
+    // Recursively removes the last empty element (img, audio, etc) or word in an element
+    $.fn.removeLastWord = function (chars) {
+
+        if ('undefined' === typeof chars) chars = 8;
+
+        return this.each(function () {
+
+            var $self = $(this);
+
+            if ($self.contents().length > 0) {
+                var $lastElement = $self.contents().last();
+                if ($lastElement[0].nodeType === 3) { // Text node
+                    var words = $lastElement.text().trim().split(' ');
+
+                    if (words.length > 1) {
+                        words.splice(words.length-1, 1);
+                        $lastElement[0].data = words.join(' '); // textnode.data
+                        return;
+                    } else if ('undefined' !== typeof chars && words.length === 1 && words[0].length > chars) {
+                        $lastElement[0].data = words.join(' ').substring(0, chars);
+                        return;
+                    }
+                }
+
+                $lastElement.removeLastWord(chars); // Element
+            } else {
+                // Empty element
+                $self.remove();
+            }
+        });
+    };
+
+    // Truncates to a certain number of letters, while ignoring and preserving HTML
+    $.fn.ellipsisHtmlFixed = function (chars, callback) {
+
+        return this.each(function () {
+
+            var $self = $(this);
+
+            var expandedText = $self.html();
+
+            $trunc = $('<span></span>');
+            $trunc.html($self.html().replace(/\s[\s]*/g, ' ').trim());
+
+            while ($trunc.text().trim().length > chars) {
+                $trunc.removeLastWord(chars);
+            }
+
+            var collapsedText = $trunc.html();
+
+            // Toggle function
+            var expanded = false;
+
+            $self.toggle = function() {
+                $self.empty();
+
+                var $toggleButton = $('<a href="#" class="toggle"></a>');
+
+                if (expanded) {
+                    $self.html(expandedText + " ");
+                    $toggleButton.text("less");
+                    $toggleButton.toggleClass("less", "more");
+                } else {
+                    $self.html(collapsedText + "&hellip; ");
+                    $toggleButton.text("more");
+                    $toggleButton.toggleClass("more", "less");
+                }
+
+                $toggleButton.one('click', function(e) {
+                    e.preventDefault();
+
+                    $self.toggle();
+                });
+
+                expanded = !expanded;
+
+                $self.append($toggleButton);
+
+                if (callback) callback();
+            };
+
+            $self.toggle();
+        });
+    };
+
+    // Toggle expansion by number of lines
+    $.fn.toggleExpandTextByLines = function (lines, callback) {
+
+        return this.each(function () {
+
+            var $self = $(this);
+
+            // Calculate line height to get target height
+            var lineHeight = parseFloat($self.css('line-height'));
+            var cssunit = $self.css('line-height').replace(/[\d\.]/g, '');
+            var fontSize = parseFloat($self.css('font-size'));
+            if(!lineHeight) {
+                cssunit = $self.css('font-size').replace(/[\d\.]/g, '');
+            }
+
+            if (!lineHeight) {
+                var $current = $self.parent();
+
+                // See if we have a set line height or font size
+                while (!lineHeight && $current.prop('tagName') !== "BODY") {
+                    $current = $current.parent();
+
+                    lineHeight = parseFloat($current.css('line-height'));
+                    cssunit = $current.css('line-height').replace(/[\d\.]/g, '');
+                    if (!(lineHeight && fontSize)) {
+                        fontSize = parseFloat($self.css('font-size'));
+                        cssunit = $current.css('font-size').replace(/[\d\.]/g, '');
+                    }
+                }
+            }
+
+            // Default line-height is 'normal' (1.2 * font size)
+            if (!lineHeight) {
+                if (!fontSize) {
+                    lineHeight = 16 * 1.2; // CSS default font size
+                    cssunit = 'px';
+                } else {
+                    lineHeight = fontSize * 1.2;
+                }
+            }
+
+            var targetHeight = Length.toPx(this, ((lineHeight + 1) * lines) + cssunit);
+
+            // Collapse
+            if ($self.outerHeight() <= targetHeight) return;
+
+            var expandedText = $self.html();
+
+            // add 'pad' to account for the right margin in the sidebar
+            var $buttonPad = $('<span>&hellip; <a href="#" class="toggle more">morepad</a></span>');
+
+            $self.append($buttonPad);
+
+            while ($self.height() > targetHeight) {
+                $buttonPad.remove();
+
+                $self.removeLastWord();
+
+                $self.append($buttonPad);
+            }
+            $buttonPad.remove();
+
+            var collapsedText = $self.html();
+
+            // Toggle function
+            var expanded = false;
+
+            $self.toggle = function() {
+                $self.empty();
+
+                var $toggleButton = $('<a href="#" class="toggle"></a>');
+
+                if (expanded) {
+                    $self.html(expandedText + " ");
+                    $toggleButton.text("less");
+                    $toggleButton.toggleClass("less", "more");
+                } else {
+                    $self.html(collapsedText + "&hellip; ");
+                    $toggleButton.text("more");
+                    $toggleButton.toggleClass("more", "less");
+                }
+
+                $toggleButton.one('click', function(e) {
+                    e.preventDefault();
+
+                    $self.toggle();
+                });
+
+                expanded = !expanded;
+
+                $self.append($toggleButton);
+
+                if (callback) callback();
+            };
+
+            $self.toggle();
+        });
+    };
+
     $.fn.horizontalMargins = function () {
         var $self = $(this);
         return parseInt($self.css('marginLeft')) + parseInt($self.css('marginRight'));
@@ -402,6 +586,7 @@ define("modernizr", function(){});
         return result;
     };
 })(jQuery);
+
 define("plugins", ["jquery"], function(){});
 
 //     Underscore.js 1.6.0
@@ -837,7 +1022,8 @@ define('bootstrapper',["require", "exports", "bootstrapParams", "utils"], functi
             var p = new BootstrapParams();
             p.manifestUri = util.getQuerystringParameter('manifestUri');
             p.config = util.getQuerystringParameter('config');
-            p.jsonp = util.getBool(util.getQuerystringParameter('jsonp'), false);
+            var jsonpParam = util.getQuerystringParameter('jsonp');
+            p.jsonp = jsonpParam === null ? null : !(jsonpParam === "false" || jsonpParam === "0");
             p.isHomeDomain = util.getQuerystringParameter('isHomeDomain') === "true";
             p.isReload = util.getQuerystringParameter('isReload') === "true";
             p.setLocale(util.getQuerystringParameter('locale'));
@@ -2755,7 +2941,6 @@ define('modules/uv-shared-module/baseExtension',["require", "exports", "../../ut
         BaseExtension.SEQUENCE_INDEX_CHANGED = 'onSequenceIndexChanged';
         BaseExtension.REDIRECT = 'onRedirect';
         BaseExtension.REFRESH = 'onRefresh';
-        BaseExtension.RELOAD_MANIFEST = 'onReloadManifest';
         BaseExtension.ESCAPE = 'onEscape';
         BaseExtension.RETURN = 'onReturn';
         BaseExtension.PAGE_UP = 'onPageUp';
@@ -2865,34 +3050,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             this.bootstrapper.bootStrap(p);
         };
         BaseProvider.prototype.corsEnabled = function () {
-            return Modernizr.cors && !this.jsonp;
-        };
-        BaseProvider.prototype.reloadManifest = function (callback) {
-            var _this = this;
-            this.rootStructure = null;
-            var manifestUri = this.manifestUri;
-            manifestUri = this.addTimestamp(manifestUri);
-            if (this.corsEnabled()) {
-                $.getJSON(manifestUri, function (data) {
-                    _this.manifest = data;
-                    _this.load();
-                    callback();
-                });
-            }
-            else {
-                window.manifestCallback = function (data) {
-                    _this.manifest = data;
-                    _this.load();
-                    callback();
-                };
-                $.ajax({
-                    url: manifestUri,
-                    type: 'GET',
-                    dataType: 'jsonp',
-                    jsonp: 'callback',
-                    jsonpCallback: 'manifestCallback'
-                });
-            }
+            return (null === this.jsonp) ? Modernizr.cors : !this.jsonp;
         };
         BaseProvider.prototype.getManifestType = function () {
             return 'monograph';
@@ -3007,7 +3165,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
             return this.manifest.sequences.length > 1;
         };
         BaseProvider.prototype.isPagingEnabled = function () {
-            return this.sequence.viewingHint && (this.sequence.viewingHint == "paged");
+            return this.sequence.viewingHint && (this.sequence.viewingHint === "paged");
         };
         BaseProvider.prototype.isPagingSettingEnabled = function () {
             if (this.isPagingEnabled()) {
@@ -3477,7 +3635,7 @@ define('modules/uv-shared-module/baseProvider',["require", "exports", "../../boo
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.1';
+    exports.Version = '1.2.2';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -4809,7 +4967,7 @@ define('modules/uv-treeviewleftpanel-module/treeViewLeftPanel',["require", "expo
             var _this = this;
             this.setConfig('treeViewLeftPanel');
             _super.prototype.create.call(this);
-            $.subscribe(extension.Extension.RELOAD_MANIFEST, function () {
+            $.subscribe(extension.Extension.SETTINGS_CHANGED, function () {
                 _this.dataBindThumbsView();
                 _this.dataBindTreeView();
                 _this.dataBindGalleryView();
@@ -5607,11 +5765,29 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
                 return;
             }
             this.$noData.hide();
+            var limitType = "lines";
+            if (this.config.options.textLimitType) {
+                limitType = this.config.options.textLimitType;
+            }
+            var limit;
+            if (limitType === "lines") {
+                limit = this.config.options.textLimit ? this.config.options.textLimit : 4;
+            }
+            else if (limitType === "chars") {
+                limit = this.config.options.textLimit ? this.config.options.textLimit : 130;
+            }
             _.each(data, function (item) {
-                _this.$items.append(_this.buildItem(item, 130));
+                var built = _this.buildItem(item);
+                _this.$items.append(built);
+                if (limitType === "lines") {
+                    built.find('.text').toggleExpandTextByLines(limit, null);
+                }
+                else if (limitType === "chars") {
+                    built.find('.text').ellipsisHtmlFixed(limit, null);
+                }
             });
         };
-        MoreInfoRightPanel.prototype.buildItem = function (item, trimChars) {
+        MoreInfoRightPanel.prototype.buildItem = function (item) {
             var $elem = this.moreInfoItemTemplate.clone();
             var $header = $elem.find('.header');
             var $text = $elem.find('.text');
@@ -5623,7 +5799,6 @@ define('modules/uv-moreinforightpanel-module/moreInfoRightPanel',["require", "ex
             $header.html(label);
             $text.html(value);
             $text.targetBlank();
-            $text.toggleExpandText(trimChars);
             label = label.trim();
             label = label.toLowerCase();
             $elem.addClass(label.toCssClass());
@@ -6525,6 +6700,8 @@ define('extensions/uv-seadragon-extension/DownloadOption',["require", "exports"]
             return this.value;
         };
         DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
+        DownloadOption.entireDocumentAsDoc = new DownloadOption("entireDocumentAsDoc");
+        DownloadOption.entireDocumentAsDocx = new DownloadOption("entireDocumentAsDocx");
         DownloadOption.entireDocumentAsPDF = new DownloadOption("entireDocumentAsPDF");
         DownloadOption.wholeImageHighResAsJpg = new DownloadOption("wholeImageHighResAsJpg");
         DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
@@ -6542,6 +6719,8 @@ define('modules/uv-shared-module/RenderingFormat',["require", "exports"], functi
             return this.value;
         };
         RenderingFormat.pdf = new RenderingFormat("application/pdf");
+        RenderingFormat.doc = new RenderingFormat("application/msword");
+        RenderingFormat.docx = new RenderingFormat("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
         return RenderingFormat;
     })();
     return RenderingFormat;
@@ -6584,6 +6763,12 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             this.$wholeImageLowResAsJpgButton = $('<li><input id="' + DownloadOption.wholeImageLowResAsJpg.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.wholeImageLowResAsJpg.toString() + '">' + this.content.wholeImageLowResAsJpg + '</label></li>');
             this.$downloadOptions.append(this.$wholeImageLowResAsJpgButton);
             this.$wholeImageLowResAsJpgButton.hide();
+            this.$entireDocumentAsDocButton = $('<li><input id="' + DownloadOption.entireDocumentAsDoc.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.entireDocumentAsDoc.toString() + '">' + this.content.entireDocumentAsDoc + '</label></li>');
+            this.$downloadOptions.append(this.$entireDocumentAsDocButton);
+            this.$entireDocumentAsDocButton.hide();
+            this.$entireDocumentAsDocxButton = $('<li><input id="' + DownloadOption.entireDocumentAsDocx.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.entireDocumentAsDocx.toString() + '">' + this.content.entireDocumentAsDocx + '</label></li>');
+            this.$downloadOptions.append(this.$entireDocumentAsDocxButton);
+            this.$entireDocumentAsDocxButton.hide();
             this.$entireDocumentAsPdfButton = $('<li><input id="' + DownloadOption.entireDocumentAsPDF.toString() + '" type="radio" name="downloadOptions" /><label for="' + DownloadOption.entireDocumentAsPDF.toString() + '">' + this.content.entireDocumentAsPdf + '</label></li>');
             this.$downloadOptions.append(this.$entireDocumentAsPdfButton);
             this.$entireDocumentAsPdfButton.hide();
@@ -6608,6 +6793,12 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                     case DownloadOption.wholeImageLowResAsJpg.toString():
                         window.open(that.provider.getConfinedImageUri(canvas, that.options.confinedImageSize));
                         break;
+                    case DownloadOption.entireDocumentAsDoc.toString():
+                        window.open(_this.getDocUri());
+                        break;
+                    case DownloadOption.entireDocumentAsDocx.toString():
+                        window.open(_this.getDocxUri());
+                        break;
                     case DownloadOption.entireDocumentAsPDF.toString():
                         window.open(_this.getPdfUri());
                         break;
@@ -6624,6 +6815,18 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
             }
             else {
                 this.$currentViewAsJpgButton.hide();
+            }
+            if (this.isDownloadOptionAvailable(DownloadOption.entireDocumentAsDoc)) {
+                this.$entireDocumentAsDocButton.show();
+            }
+            else {
+                this.$entireDocumentAsDocButton.hide();
+            }
+            if (this.isDownloadOptionAvailable(DownloadOption.entireDocumentAsDocx)) {
+                this.$entireDocumentAsDocxButton.show();
+            }
+            else {
+                this.$entireDocumentAsDocxButton.hide();
             }
             if (this.isDownloadOptionAvailable(DownloadOption.entireDocumentAsPDF)) {
                 this.$entireDocumentAsPdfButton.show();
@@ -6665,6 +6868,16 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                         return false;
                     }
                     return true;
+                case DownloadOption.entireDocumentAsDoc:
+                    if (this.getDocUri()) {
+                        return true;
+                    }
+                    return false;
+                case DownloadOption.entireDocumentAsDocx:
+                    if (this.getDocxUri()) {
+                        return true;
+                    }
+                    return false;
                 case DownloadOption.entireDocumentAsPDF:
                     if (this.getPdfUri()) {
                         return true;
@@ -6682,12 +6895,21 @@ define('extensions/uv-seadragon-extension/downloadDialogue',["require", "exports
                     return true;
             }
         };
-        DownloadDialogue.prototype.getPdfUri = function () {
-            var rendering = this.provider.getRendering(this.provider.sequence, RenderingFormat.pdf);
+        DownloadDialogue.prototype.getUriByRenderingFormat = function (format) {
+            var rendering = this.provider.getRendering(this.provider.sequence, format);
             if (rendering) {
                 return rendering['@id'];
             }
             return null;
+        };
+        DownloadDialogue.prototype.getDocUri = function () {
+            return this.getUriByRenderingFormat(RenderingFormat.doc);
+        };
+        DownloadDialogue.prototype.getDocxUri = function () {
+            return this.getUriByRenderingFormat(RenderingFormat.docx);
+        };
+        DownloadDialogue.prototype.getPdfUri = function () {
+            return this.getUriByRenderingFormat(RenderingFormat.pdf);
         };
         DownloadDialogue.prototype.resize = function () {
             this.$element.css({
@@ -7010,12 +7232,8 @@ define('extensions/uv-seadragon-extension/extension',["require", "exports", "../
             }
         };
         Extension.prototype.updateSettings = function () {
-            var _this = this;
-            this.provider.reloadManifest(function () {
-                $.publish(baseExtension.BaseExtension.RELOAD_MANIFEST);
-                _this.viewPage(_this.provider.canvasIndex, true);
-                $.publish(Extension.SETTINGS_CHANGED);
-            });
+            this.viewPage(this.provider.canvasIndex, true);
+            $.publish(Extension.SETTINGS_CHANGED);
         };
         Extension.prototype.setDefaultFocus = function () {
             setTimeout(function () {
@@ -8095,6 +8313,12 @@ define('extensions/uv-pdf-extension/provider',["require", "exports", "../../modu
     exports.Provider = Provider;
 });
 
+//     Length (from https://github.com/heygrady/Units)
+//     Copyright (c) 2013 Grady Kuhnline
+//     MIT License (https://raw.githubusercontent.com/heygrady/Units/master/LICENSE)
+(function(t,e,o){function r(t,e,r,p){r=r||"width";var n,l,m,c=(e.match(s)||[])[2],f="px"===c?1:d[c+"toPx"],u=/r?em/i;if(f||u.test(c)&&!p)t=f?t:"rem"===c?i:"fontSize"===r?t.parentNode||t:t,f=f||parseFloat(a(t,"fontSize")),m=parseFloat(e)*f;else{n=t.style,l=n[r];try{n[r]=e}catch(x){return 0}m=n[r]?parseFloat(a(t,r)):0,n[r]=l!==o?l:null}return m}function a(t,e){var o,n,i,l,d,c=/^top|bottom/,f=["paddingTop","paddingBottom","borderTop","borderBottom"],u=4;if(o=m?m(t)[e]:(n=t.style["pixel"+e.charAt(0).toUpperCase()+e.slice(1)])?n+"px":"fontSize"===e?r(t,"1em","left",1)+"px":t.currentStyle[e],i=(o.match(s)||[])[2],"%"===i&&p)if(c.test(e)){for(l=(d=t.parentNode||t).offsetHeight;u--;)l-=parseFloat(a(d,f[u]));o=parseFloat(o)/100*l+"px"}else o=r(t,o);else("auto"===o||i&&"px"!==i)&&m?o=0:i&&"px"!==i&&!m&&(o=r(t,o)+"px");return o}var p,n=e.createElement("test"),i=e.documentElement,l=e.defaultView,m=l&&l.getComputedStyle,s=/^(-?[\d+\.\-]+)([a-z]+|%)$/i,d={},c=[1/25.4,1/2.54,1/72,1/6],f=["mm","cm","pt","pc","in","mozmm"],u=6;for(i.appendChild(n),m&&(n.style.marginTop="1%",p="1%"===m(n).marginTop);u--;)d[f[u]+"toPx"]=c[u]?c[u]*d.inToPx:r(n,"1"+f[u]);i.removeChild(n),n=o,t.Length={toPx:r}})(this,this.document);
+define("length", function(){});
+
 require.config({
     paths: {
         'modernizr': 'js/modernizr',
@@ -8106,7 +8330,8 @@ require.config({
         'yepnope': 'js/yepnope.1.5.4-min',
         'yepnopecss': 'js/yepnope.css',
         'l10n': 'js/l10n',
-        'sanitize': 'js/sanitize'
+        'sanitize': 'js/sanitize',
+        'length': 'js/Length.min'
     },
     shim: {
         jquery: {
@@ -8146,8 +8371,9 @@ require([
     'extensions/uv-mediaelement-extension/extension',
     'extensions/uv-mediaelement-extension/provider',
     'extensions/uv-pdf-extension/extension',
-    'extensions/uv-pdf-extension/provider'
-], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider) {
+    'extensions/uv-pdf-extension/provider',
+    'length'
+], function (modernizr, $, plugins, _, pubsub, jsviews, yepnope, yepnopecss, bootstrapper, l10n, sanitize, seadragonExtension, seadragonProvider, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, Length) {
     
     var extensions = {};
     extensions['seadragon/iiif'] = {
