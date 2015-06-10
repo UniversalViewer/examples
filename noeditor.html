@@ -21,8 +21,10 @@
         <h3>Options</h3>
 
         <div>
-            <input id="jsonp" type="checkbox"><label for="jsonp">JSONP</label>
-            <p>Forces the viewer to use JSONP to load manifests and info.json. Default behaviour is to use JSONP for IE<10.</p>
+            <input id="cors-or-jsonp-auto" checked="checked" name="cors-or-jsonp" type="radio"><label for="cors-or-jsonp-auto">Autodetect CORS/JSONP</label>
+            <input id="cors" name="cors-or-jsonp" type="radio"><label for="cors">Force CORS</label>
+            <input id="jsonp" name="cors-or-jsonp" type="radio"><label for="jsonp">Force JSONP</label>
+            <p>Controls whether the viewer uses CORS or JSONP to load manifests and info.json. Default automatic behaviour is to use JSONP for IE<10, CORS otherwise.</p>
         </div>
 
         <a id="setOptionsBtn" class="button">Set</a>

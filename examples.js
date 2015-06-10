@@ -87,7 +87,7 @@ $(function(){
 
     function buildQuerystring() {
 
-        var jsonp = $('#jsonp').is(':checked');
+        var jsonp = getJSONPSetting();
         var testids = $('#testids').is(':checked');
         var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
         var manifest = $('#manifest').val();
@@ -126,9 +126,19 @@ $(function(){
         return parsed[0].name;
     }
 
+    function getJSONPSetting() {
+        if ($('#jsonp').is(':checked')) {
+            return true;
+        };
+        if ($('#cors').is(':checked')) {
+            return false;
+        };
+        return null;
+    }
+
     function setJSONPEnabled() {
 
-        var jsonp = $('#jsonp').is(':checked');
+        var jsonp = getJSONPSetting();
 
         var qs = getQuerystringParameter("jsonp");
 
@@ -138,12 +148,15 @@ $(function(){
             jsonp = true;
         }
 
-        if (jsonp){
+        if (jsonp === true){
             $('.uv').attr('data-jsonp', 'true');
             $('#jsonp').attr('checked', 'true');
+        } else if (jsonp === false){
+            $('.uv').attr('data-jsonp', 'false');
+            $('#cors').attr('checked', 'true');
         } else {
             $('.uv').removeAttr('data-jsonp');
-            $('#jsonp').removeAttr('checked');
+            $('#cors-or-jsonp-auto').attr('checked', 'true');
         }
     }
 
