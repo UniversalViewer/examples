@@ -235,7 +235,7 @@ $(function(){
             showEditor();
             editor.setValue(config);
         } else {
-            $.getJSON('/build/uv-1.2.2/js/' + configName + '.config.js', function(config){
+            $.getJSON('/build/uv-1.2.3/lib/' + configName + '.config.js', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
@@ -262,7 +262,7 @@ $(function(){
 
     function init() {
         if (isLocalhost){
-            if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/js/embed.js"><\/script>');
+            if (!scriptIncluded) $("body").append('<script type="text/javascript" id="embedUV" src="/src/lib/embed.js"><\/script>');
         } else {
             // built version
 
@@ -279,7 +279,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.2.2/js/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.2.3/lib/embed.js"><\/script>');
         }
 
         $('#setOptionsBtn').on('click', function(e){
