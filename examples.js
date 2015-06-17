@@ -17,14 +17,14 @@ $(function(){
 
     }
 
-    function loadConfigSchema(callback) {
+    function loadConfigSchema(cb) {
         $.getJSON('config-schema.json', function(data){
             schema = data;
-            callback();
+            cb();
         });
     }
 
-    function loadManifests(callback) {
+    function loadManifests(cb) {
         if (isLocalhost){
             manifestsUri = "/examples/manifests.json";
         } else {
@@ -50,7 +50,7 @@ $(function(){
                 $manifestSelect.append('</optgroup>');
             }
 
-            callback();
+            cb();
         });
     }
 
@@ -236,7 +236,14 @@ $(function(){
             showEditor();
             editor.setValue(config);
         } else {
-            $.getJSON('/examples/' + uvVersion + '/lib/' + configName + '.config.js', function(config){
+
+            var root = '';
+
+            if (isLocalhost){
+                root = '/examples/';
+            }
+
+            $.getJSON(root + uvVersion + '/lib/' + configName + '.config.js', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
