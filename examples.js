@@ -4,6 +4,7 @@
 $(function(){
 
     var config, editor;
+    var uvVersion = 'uv-1.2.4';
 
     function loadViewer() {
 
@@ -235,7 +236,7 @@ $(function(){
             showEditor();
             editor.setValue(config);
         } else {
-            $.getJSON('/build/uv-1.2.3/lib/' + configName + '.config.js', function(config){
+            $.getJSON('/examples/' + uvVersion + '/lib/' + configName + '.config.js', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
@@ -279,7 +280,7 @@ $(function(){
                 $(this).updateAttr('value', '/examples/', '/');
             });
 
-            $("body").append('<script type="text/javascript" id="embedUV" src="/build/uv-1.2.3/lib/embed.js"><\/script>');
+            $("body").append('<script type="text/javascript" id="embedUV" src="' + uvVersion + '/lib/embed.js"><\/script>');
         }
 
         $('#setOptionsBtn').on('click', function(e){
