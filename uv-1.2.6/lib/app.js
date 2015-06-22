@@ -4299,35 +4299,35 @@ define('modules/uv-searchfooterpanel-module/Autocomplete',["require", "exports"]
                 };
             })();
             var that = this;
-            this.$element.on("keydown", function (event) {
-                if (!that.isValidKey(event.keyCode)) {
-                    event.preventDefault();
+            this.$element.on("keydown", function (e) {
+                if (!that.isValidKey(e.keyCode)) {
+                    e.preventDefault();
                     return false;
                 }
                 return true;
             });
-            this.$element.on("keyup", function (event) {
-                event.preventDefault();
-                if (!that.getSelectedListItem().length && event.keyCode == 13) {
+            this.$element.on("keyup", function (e) {
+                e.preventDefault();
+                if (!that.getSelectedListItem().length && e.keyCode === 13) {
                     that.onSelect(that.getTerms());
                     return;
                 }
                 if (that.$searchResultsList.is(':visible') && that.results.length) {
-                    if (event.keyCode == 13) {
+                    if (e.keyCode === 13) {
                         that.searchForItem(that.getSelectedListItem());
                     }
-                    else if (event.keyCode == 40) {
+                    else if (e.keyCode === 40) {
                         that.setSelectedResultIndex(1);
                         return;
                     }
-                    else if (event.keyCode == 38) {
+                    else if (e.keyCode === 38) {
                         that.setSelectedResultIndex(-1);
                         return;
                     }
                 }
                 typewatch(function () {
-                    if (!that.isValidKey(event.keyCode)) {
-                        event.preventDefault();
+                    if (!that.isValidKey(e.keyCode)) {
+                        e.preventDefault();
                         return false;
                     }
                     var val = that.getTerms();
@@ -4375,7 +4375,7 @@ define('modules/uv-searchfooterpanel-module/Autocomplete',["require", "exports"]
             this.$searchResultsList.scrollTop(top);
         };
         AutoComplete.prototype.isValidKey = function (keyCode) {
-            if (keyCode == 38 || keyCode == 40)
+            if (keyCode === 38 || keyCode === 40)
                 return false;
             if (keyCode != 8 && keyCode != 32) {
                 var regex = new RegExp("^[\\w()!£$%^&*()-+=@'#~?<>|/\\\\]+$");
@@ -4546,13 +4546,6 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 $.publish(Commands.CLEAR_SEARCH);
                 _this.clearSearchResults();
             });
-            this.$searchText.on('keyup', function (e) {
-                if (e.keyCode == 13) {
-                    e.preventDefault();
-                    _this.$searchText.blur();
-                    _this.search(_this.$searchText.val());
-                }
-            });
             if (!this.provider.isSearchWithinEnabled()) {
                 this.$searchContainer.hide();
                 this.$searchPagerContainer.hide();
@@ -4577,7 +4570,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         };
         FooterPanel.prototype.search = function (terms) {
             this.terms = terms;
-            if (this.terms == '' || this.terms == this.content.enterKeyword) {
+            if (this.terms === '' || this.terms === this.content.enterKeyword) {
                 this.extension.showDialogue(this.config.modules.genericDialogue.content.emptyValue, function () {
                     this.$searchText.focus();
                 });
@@ -5513,7 +5506,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.5';
+    exports.Version = '1.2.6';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -8492,7 +8485,7 @@ require([
     'utils',
     'yepnope',
     'yepnopecss',
-], function (bootstrapper, browserdetect, ext, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, seadragonExtension, seadragonProvider, $, jsviews, l10n, length, modernizr, plugins, pubsub, sanitize, _, yepnope, yepnopecss) {
+], function (bootstrapper, browserdetect, ext, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, seadragonExtension, seadragonProvider) {
     
     var extensions = {};
     extensions['seadragon/iiif'] = {

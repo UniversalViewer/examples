@@ -4,7 +4,7 @@
 $(function(){
 
     var config, editor;
-    var uvVersion = 'uv-1.2.5';
+    var uvVersion = 'uv-1.2.6';
 
     function loadViewer() {
 
