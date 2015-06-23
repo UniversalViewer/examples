@@ -2943,6 +2943,14 @@ input[type=range]:focus::-ms-fill-upper {
 [data-toggle="buttons"] > .btn > input[type="checkbox"] {
   display: none;
 }
+#app .headerPanel {
+  color: #000000;
+}
+#app .headerPanel a.imageBtn {
+  height: 30px;
+  width: 30px;
+  float: left;
+}
 #app .headerPanel.showMessage {
   height: 80px;
 }
@@ -3131,6 +3139,11 @@ input[type=range]:focus::-ms-fill-upper {
 #app .rightPanel .main {
   margin-right: 10px;
   margin-bottom: 10px;
+}
+#app a.toggle.more,
+#app a.toggle.less {
+  color: #cc0000 !important;
+  font-variant: small-caps;
 }
 #app.browser-Explorer.browser-version-8 .rightPanel .closed .title {
   writing-mode: tb-lr;

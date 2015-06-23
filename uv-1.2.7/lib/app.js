@@ -23,7 +23,7 @@ define('BootstrapParams',["require", "exports"], function (require, exports) {
     return BootstrapParams;
 });
 
-define('bootstrapper',["require", "exports", "BootstrapParams"], function (require, exports, BootstrapParams) {
+define('Bootstrapper',["require", "exports", "BootstrapParams"], function (require, exports, BootstrapParams) {
     var Bootstrapper = (function () {
         function Bootstrapper(extensions) {
             this.isFullScreen = false;
@@ -153,7 +153,7 @@ define('bootstrapper',["require", "exports", "BootstrapParams"], function (requi
                 case 'ixif:video':
                     extension = that.extensions['video/iiif'];
                     break;
-                case 'ixif:pdf':
+                case 'ixif:borndigital':
                     extension = that.extensions['pdf/iiif'];
                     break;
             }
@@ -1095,7 +1095,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-mediaelementcenterpanel-module/MediaelementCenterPanel',["require", "exports", "../uv-shared-module/Commands", "../../extensions/uv-mediaelement-extension/Commands", "../uv-shared-module/CenterPanel"], function (require, exports, BaseCommands, Commands, CenterPanel) {
+define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/Commands", "../../extensions/uv-mediaelement-extension/Commands", "../uv-shared-module/CenterPanel"], function (require, exports, BaseCommands, Commands, CenterPanel) {
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
@@ -3021,13 +3021,106 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
     return MoreInfoRightPanel;
 });
 
+define('_Version',["require", "exports"], function (require, exports) {
+    exports.Version = '1.2.7';
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Commands", "./Commands", "../../modules/uv-mediaelementcenterpanel-module/MediaelementCenterPanel", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseExtension, BaseCommands, Commands, MediaElementCenterPanel, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, HelpDialogue, TreeViewLeftPanel, MoreInfoRightPanel, Shell) {
+define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/Commands", "../uv-shared-module/Dialogue", "../../_Version"], function (require, exports, Commands, Dialogue, Version) {
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            _super.call(this, $element);
+        }
+        SettingsDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+            $.subscribe(Commands.SHOW_SETTINGS_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+            $.subscribe(Commands.HIDE_SETTINGS_DIALOGUE, function (e) {
+                _this.close();
+            });
+            this.$title = $('<h1></h1>');
+            this.$content.append(this.$title);
+            this.$scroll = $('<div class="scroll"></div>');
+            this.$content.append(this.$scroll);
+            this.$version = $('<div class="version"></div>');
+            this.$content.append(this.$version);
+            this.$locale = $('<div class="setting locale"></div>');
+            this.$scroll.append(this.$locale);
+            this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
+            this.$locale.append(this.$localeLabel);
+            this.$localeDropDown = $('<select id="locale"></select>');
+            this.$locale.append(this.$localeDropDown);
+            this.$title.text(this.content.title);
+            this.$version.text("v" + Version.Version);
+            var locales = this.provider.getLocales();
+            for (var i = 0; i < locales.length; i++) {
+                var locale = locales[i];
+                this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
+            }
+            this.$localeDropDown.val(this.provider.locale);
+            this.$localeDropDown.change(function () {
+                _this.provider.changeLocale(_this.$localeDropDown.val());
+            });
+            if (this.provider.getLocales().length < 2) {
+                this.$locale.hide();
+            }
+            this.$element.hide();
+        };
+        SettingsDialogue.prototype.getSettings = function () {
+            return this.provider.getSettings();
+        };
+        SettingsDialogue.prototype.updateSettings = function (settings) {
+            this.provider.updateSettings(settings);
+            $.publish(Commands.UPDATE_SETTINGS, [settings]);
+        };
+        SettingsDialogue.prototype.open = function () {
+            _super.prototype.open.call(this);
+        };
+        SettingsDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return SettingsDialogue;
+    })(Dialogue);
+    return SettingsDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/uv-mediaelement-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, BaseSettingsDialogue) {
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            _super.call(this, $element);
+        }
+        SettingsDialogue.prototype.create = function () {
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+        };
+        return SettingsDialogue;
+    })(BaseSettingsDialogue);
+    return SettingsDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Commands", "./Commands", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseExtension, BaseCommands, Commands, MediaElementCenterPanel, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, HelpDialogue, TreeViewLeftPanel, MoreInfoRightPanel, SettingsDialogue, Shell) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -3069,6 +3162,9 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             this.$embedDialogue = $('<div class="overlay embed"></div>');
             Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new EmbedDialogue(this.$embedDialogue);
+            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
@@ -3785,6 +3881,91 @@ define('extensions/uv-pdf-extension/Commands',["require", "exports"], function (
     return Commands;
 });
 
+define('extensions/uv-pdf-extension/DownloadOption',["require", "exports"], function (require, exports) {
+    var DownloadOption = (function () {
+        function DownloadOption(value) {
+            this.value = value;
+        }
+        DownloadOption.prototype.toString = function () {
+            return this.value;
+        };
+        DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
+        return DownloadOption;
+    })();
+    return DownloadOption;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/Dialogue", "./DownloadOption"], function (require, exports, BaseCommands, Dialogue, DownloadOption) {
+    var DownloadDialogue = (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            _super.call(this, $element);
+        }
+        DownloadDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('downloadDialogue');
+            _super.prototype.create.call(this);
+            $.subscribe(BaseCommands.SHOW_DOWNLOAD_DIALOGUE, function (e, params) {
+                _this.open();
+            });
+            $.subscribe(BaseCommands.HIDE_DOWNLOAD_DIALOGUE, function (e) {
+                _this.close();
+            });
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
+            this.$content.append(this.$noneAvailable);
+            this.$downloadOptions = $('<ol class="options"></ol>');
+            this.$content.append(this.$downloadOptions);
+            this.$element.hide();
+        };
+        DownloadDialogue.prototype.open = function () {
+            var _this = this;
+            _super.prototype.open.call(this);
+            if (this.isDownloadOptionAvailable(DownloadOption.entireFileAsOriginal)) {
+                this.$downloadOptions.empty();
+                var canvas = this.provider.getCurrentCanvas();
+                _.each(canvas.media, function (annotation) {
+                    var resource = annotation.resource;
+                    _this.addEntireFileDownloadOption(resource['@id']);
+                });
+            }
+            if (!this.$downloadOptions.find('li:visible').length) {
+                this.$noneAvailable.show();
+            }
+            else {
+                this.$noneAvailable.hide();
+            }
+            this.resize();
+        };
+        DownloadDialogue.prototype.addEntireFileDownloadOption = function (fileUri) {
+            this.$downloadOptions.append('<li><a href="' + fileUri + '" target="_blank" download>' + String.format(this.content.entireFileAsOriginal, this.getFileExtension(fileUri)) + '</li>');
+        };
+        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
+            return fileUri.split('.').pop();
+        };
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            switch (option) {
+                case DownloadOption.entireFileAsOriginal:
+                    return true;
+            }
+        };
+        DownloadDialogue.prototype.resize = function () {
+            this.$element.css({
+                'top': this.extension.height() - this.$element.outerHeight(true)
+            });
+        };
+        return DownloadDialogue;
+    })(Dialogue);
+    return DownloadDialogue;
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -3853,12 +4034,12 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 }
                 this.$content.load(viewerPath, function () {
                     if (window.DEBUG) {
-                        PDFJS.workerSrc = 'extensions/uv-pdf-extension/js/pdf.worker.min.js';
+                        PDFJS.workerSrc = 'extensions/uv-pdf-extension/lib/pdf.worker.min.js';
                     }
                     else {
-                        PDFJS.workerSrc = 'js/pdf.worker.min.js';
+                        PDFJS.workerSrc = 'lib/pdf.worker.min.js';
                     }
-                    PDFJS.DEFAULT_URL = canvas.mediaUri;
+                    PDFJS.DEFAULT_URL = canvas.media[0].resource['@id'];
                     window.webViewerLoad();
                     _this.resize();
                 });
@@ -3878,7 +4059,28 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, PDFCenterPanel, Shell, TreeViewLeftPanel) {
+define('extensions/uv-pdf-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, BaseSettingsDialogue) {
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            _super.call(this, $element);
+        }
+        SettingsDialogue.prototype.create = function () {
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+        };
+        return SettingsDialogue;
+    })(BaseSettingsDialogue);
+    return SettingsDialogue;
+});
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, PDFCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -3890,6 +4092,9 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             var that = this;
             $.subscribe(Commands.THUMB_SELECTED, function (e, index) {
                 window.open(that.provider.getPDFUri());
+            });
+            $.subscribe(BaseCommands.DOWNLOAD, function (e) {
+                $.publish(BaseCommands.SHOW_DOWNLOAD_DIALOGUE);
             });
             $.subscribe(BaseCommands.EMBED, function (e) {
                 $.publish(BaseCommands.SHOW_EMBED_DIALOGUE);
@@ -3922,9 +4127,15 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
                 this.rightPanel = new MoreInfoRightPanel(Shell.$rightPanel);
             }
             this.footerPanel = new FooterPanel(Shell.$footerPanel);
+            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new DownloadDialogue(this.$downloadDialogue);
             this.$embedDialogue = $('<div class="overlay embed"></div>');
             Shell.$overlays.append(this.$embedDialogue);
             this.embedDialogue = new EmbedDialogue(this.$embedDialogue);
+            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
@@ -4279,7 +4490,7 @@ define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "export
     return ExternalContentDialogue;
 });
 
-define('modules/uv-searchfooterpanel-module/Autocomplete',["require", "exports"], function (require, exports) {
+define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"], function (require, exports) {
     var AutoComplete = (function () {
         function AutoComplete(element, autoCompleteUri, delay, parseResults, onSelect) {
             var _this = this;
@@ -4453,7 +4664,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", "../uv-shared-module/Commands", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Commands", "./Autocomplete", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseFooterPanel, Commands, AutoComplete, Mode) {
+define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", "../uv-shared-module/Commands", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Commands", "./AutoComplete", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseFooterPanel, Commands, AutoComplete, Mode) {
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -5505,78 +5716,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
     return SeadragonCenterPanel;
 });
 
-define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.6';
-});
-
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/Commands", "../uv-shared-module/Dialogue", "../../_Version"], function (require, exports, Commands, Dialogue, Version) {
-    var SettingsDialogue = (function (_super) {
-        __extends(SettingsDialogue, _super);
-        function SettingsDialogue($element) {
-            _super.call(this, $element);
-        }
-        SettingsDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('settingsDialogue');
-            _super.prototype.create.call(this);
-            $.subscribe(Commands.SHOW_SETTINGS_DIALOGUE, function (e, params) {
-                _this.open();
-            });
-            $.subscribe(Commands.HIDE_SETTINGS_DIALOGUE, function (e) {
-                _this.close();
-            });
-            this.$title = $('<h1></h1>');
-            this.$content.append(this.$title);
-            this.$scroll = $('<div class="scroll"></div>');
-            this.$content.append(this.$scroll);
-            this.$version = $('<div class="version"></div>');
-            this.$content.append(this.$version);
-            this.$locale = $('<div class="setting locale"></div>');
-            this.$scroll.append(this.$locale);
-            this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
-            this.$locale.append(this.$localeLabel);
-            this.$localeDropDown = $('<select id="locale"></select>');
-            this.$locale.append(this.$localeDropDown);
-            this.$title.text(this.content.title);
-            this.$version.text("v" + Version.Version);
-            var locales = this.provider.getLocales();
-            for (var i = 0; i < locales.length; i++) {
-                var locale = locales[i];
-                this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
-            }
-            this.$localeDropDown.val(this.provider.locale);
-            this.$localeDropDown.change(function () {
-                _this.provider.changeLocale(_this.$localeDropDown.val());
-            });
-            if (this.provider.getLocales().length < 2) {
-                this.$locale.hide();
-            }
-            this.$element.hide();
-        };
-        SettingsDialogue.prototype.getSettings = function () {
-            return this.provider.getSettings();
-        };
-        SettingsDialogue.prototype.updateSettings = function (settings) {
-            this.provider.updateSettings(settings);
-            $.publish(Commands.UPDATE_SETTINGS, [settings]);
-        };
-        SettingsDialogue.prototype.open = function () {
-            _super.prototype.open.call(this);
-        };
-        SettingsDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return SettingsDialogue;
-    })(Dialogue);
-    return SettingsDialogue;
-});
-
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5653,7 +5792,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Params", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "../../extensions/uv-seadragon-extension/SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, DownloadDialogue, EmbedDialogue, ExternalContentDialogue, FooterPanel, HelpDialogue, Mode, MoreInfoRightPanel, PagingHeaderPanel, Params, SeadragonCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
+define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Params", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, DownloadDialogue, EmbedDialogue, ExternalContentDialogue, FooterPanel, HelpDialogue, Mode, MoreInfoRightPanel, PagingHeaderPanel, Params, SeadragonCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -7558,6 +7697,10 @@ define("modernizr", function(){});
             $trunc = $('<span></span>');
             $trunc.html($self.html().replace(/\s[\s]*/g, ' ').trim());
 
+            if ($trunc.text().trim().length <= chars) {
+                return; // do nothing if we're under the limit!
+            }
+
             while ($trunc.text().trim().length > chars) {
                 $trunc.removeLastWord(chars);
             }
@@ -8464,7 +8607,7 @@ require.config({
     }
 });
 require([
-    'bootstrapper',
+    'Bootstrapper',
     'browserdetect',
     'ext',
     'extensions/uv-mediaelement-extension/Extension',

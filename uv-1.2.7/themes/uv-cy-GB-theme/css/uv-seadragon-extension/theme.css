@@ -219,11 +219,6 @@
 #app .headerPanel {
   color: #000000;
 }
-#app .headerPanel a.imageBtn {
-  height: 30px;
-  width: 30px;
-  float: left;
-}
 #app .headerPanel a.imageBtn.first {
   background-color: #555555;
   background-image: url('../../img/uv-pagingheaderpanel-module/first.png');
@@ -1755,6 +1750,14 @@ input[type=range]:focus::-ms-fill-upper {
 [data-toggle="buttons"] > .btn > input[type="checkbox"] {
   display: none;
 }
+#app .headerPanel {
+  color: #000000;
+}
+#app .headerPanel a.imageBtn {
+  height: 30px;
+  width: 30px;
+  float: left;
+}
 #app .headerPanel.showMessage {
   height: 80px;
 }
@@ -1763,8 +1766,20 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 385px;
+  width: 432px;
   position: absolute;
+}
+#app .headerPanel .options .centerOptions .prevOptions {
+  margin: 0 10px 0 0;
+}
+#app .headerPanel .options .centerOptions .mode label {
+  width: 42px;
+}
+#app .headerPanel .options .centerOptions .search {
+  width: 140px;
+}
+#app .headerPanel .options .centerOptions .nextOptions {
+  margin: 0 0 0 10px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;
@@ -1944,6 +1959,11 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 10px;
   margin-bottom: 10px;
 }
+#app a.toggle.more,
+#app a.toggle.less {
+  color: #cc0000 !important;
+  font-variant: small-caps;
+}
 #app.browser-Explorer.browser-version-8 .rightPanel .closed .title {
   writing-mode: tb-lr;
 }
@@ -2087,6 +2107,12 @@ input[type=range]:focus::-ms-fill-upper {
   font-size: 0;
   color: transparent;
   width: 21px;
+}
+#app .footerPanel .searchOptions {
+  width: 425px;
+}
+#app .footerPanel .searchPager .controls .searchResultsInfo {
+  width: 290px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
   background: url('../../img/close_lightbox.png') no-repeat;
