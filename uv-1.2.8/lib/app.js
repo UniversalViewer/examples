@@ -157,7 +157,7 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
                     extension = that.extensions['pdf/iiif'];
                     break;
             }
-            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/config/' + that.params.getLocaleName() + '.config.js' : 'lib/' + extension.name + '.' + that.params.getLocaleName() + '.config.js';
+            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + that.params.getLocaleName() + '.config.json' : 'lib/' + extension.name + '.' + that.params.getLocaleName() + '.config.json';
             yepnope({
                 test: window.btoa && window.atob,
                 nope: 'lib/base64.min.js',
@@ -168,7 +168,7 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
                             config.uri = that.params.config;
                             $.extend(true, config, that.configExtension);
                         }
-                        var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/theme/' + config.options.theme + '.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
+                        var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + config.options.theme + '.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
                         yepnope.injectCss(cssPath, function () {
                             that.createExtension(extension, config);
                         });
@@ -3022,7 +3022,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.7';
+    exports.Version = '1.2.8';
 });
 
 var __extends = this.__extends || function (d, b) {

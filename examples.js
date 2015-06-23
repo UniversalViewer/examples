@@ -1,10 +1,7 @@
-// schema generated with http://jsonschema.net
-// todo: look at using typson to generate schema from a ts definition file: https://github.com/lbovet/typson
-
 $(function(){
 
     var config, editor;
-    var uvVersion = 'uv-1.2.7';
+    var uvVersion = 'uv-1.2.8';
 
     function loadViewer() {
 
