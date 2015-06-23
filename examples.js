@@ -14,8 +14,8 @@ $(function(){
 
     }
 
-    function loadConfigSchema(cb) {
-        $.getJSON('config-schema.json', function(data){
+    function loadConfigSchema(path, cb) {
+        $.getJSON(path, function(data){
             schema = data;
             cb();
         });
@@ -240,7 +240,7 @@ $(function(){
                 root = '/examples/';
             }
 
-            $.getJSON(root + uvVersion + '/lib/' + configName + '.config.js', function(config){
+            $.getJSON(root + uvVersion + '/lib/' + configName + '.config.json', function(config){
                 $('.config-name').text('(' + configDisplayName + ')');
                 showEditor();
                 editor.setValue(config);
@@ -385,7 +385,12 @@ $(function(){
 
             setSelectedLocale(obj.bootstrapper.params.locale);
 
-            $('footer').show();
+            var schemaPath = 'schema/' + config.name + '.' + getLocale() + '.schema.json';
+
+            loadConfigSchema(schemaPath, function() {
+                createEditor();
+                $('footer').show();
+            });
         });
 
         $(document).bind("uv.onCreated", function (event, obj) {
@@ -398,7 +403,6 @@ $(function(){
             setSelectedManifest();
         }
 
-        createEditor();
         setInitialLocale();
         setDefaultToFullScreen();
         loadViewer();
@@ -411,9 +415,7 @@ $(function(){
 
     var manifestsUri, schema;
 
-    loadConfigSchema(function() {
-        loadManifests(function() {
-            init();
-        });
+    loadManifests(function() {
+        init();
     });
 });
