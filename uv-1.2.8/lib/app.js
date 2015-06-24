@@ -54,22 +54,7 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             $('#app').empty();
             $('link[type*="text/css"]').remove();
             jQuery.support.cors = true;
-            if (that.params.config) {
-                if (that.params.config.toLowerCase() === "sessionstorage") {
-                    var config = sessionStorage.getItem("uv-config-" + that.params.localeName);
-                    that.configExtension = JSON.parse(config);
-                    that.loadManifest();
-                }
-                else {
-                    $.getJSON(that.params.config, function (configExtension) {
-                        that.configExtension = configExtension;
-                        that.loadManifest();
-                    });
-                }
-            }
-            else {
-                that.loadManifest();
-            }
+            that.loadManifest();
         };
         Bootstrapper.prototype.corsEnabled = function () {
             return (null === this.params.jsonp) ? Modernizr.cors : !this.params.jsonp;
@@ -121,13 +106,13 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             var that = this;
             if (that.sequences[that.sequenceIndex].canvases) {
                 that.sequence = that.sequences[that.sequenceIndex];
-                that.loadDependencies();
+                that.parseExtension();
             }
             else {
                 var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
                 $.getJSON(sequenceUri, function (sequenceData) {
                     that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
-                    that.loadDependencies();
+                    that.parseExtension();
                 });
             }
         };
@@ -139,7 +124,7 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             catch (e) {
             }
         };
-        Bootstrapper.prototype.loadDependencies = function () {
+        Bootstrapper.prototype.parseExtension = function () {
             var that = this;
             var extension;
             var canvasType = that.sequence.canvases[0]['@type'];
@@ -157,23 +142,57 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
                     extension = that.extensions['pdf/iiif'];
                     break;
             }
-            var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + that.params.getLocaleName() + '.config.json' : 'lib/' + extension.name + '.' + that.params.getLocaleName() + '.config.json';
+            that.featureDetect(function () {
+                that.configure(extension, function (config) {
+                    that.injectCss(extension, config, function () {
+                        that.createExtension(extension, config);
+                    });
+                });
+            });
+        };
+        Bootstrapper.prototype.featureDetect = function (cb) {
             yepnope({
                 test: window.btoa && window.atob,
                 nope: 'lib/base64.min.js',
                 complete: function () {
-                    $.getJSON(configPath, function (config) {
-                        config.name = extension.name;
-                        if (that.configExtension) {
-                            config.uri = that.params.config;
-                            $.extend(true, config, that.configExtension);
-                        }
-                        var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + config.options.theme + '.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
-                        yepnope.injectCss(cssPath, function () {
-                            that.createExtension(extension, config);
-                        });
+                    cb();
+                }
+            });
+        };
+        Bootstrapper.prototype.configure = function (extension, cb) {
+            var that = this;
+            this.getConfigExtension(extension, function (configExtension) {
+                var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + that.params.getLocaleName() + '.config.json' : 'lib/' + extension.name + '.' + that.params.getLocaleName() + '.config.json';
+                $.getJSON(configPath, function (config) {
+                    config.name = extension.name;
+                    if (configExtension) {
+                        config.uri = that.params.config;
+                        $.extend(true, config, configExtension);
+                    }
+                    cb(config);
+                });
+            });
+        };
+        Bootstrapper.prototype.getConfigExtension = function (extension, cb) {
+            if (this.params.config) {
+                if (this.params.config.toLowerCase() === 'sessionstorage') {
+                    var config = sessionStorage.getItem(extension.name + '.' + this.params.localeName);
+                    cb(JSON.parse(config));
+                }
+                else {
+                    $.getJSON(this.params.config, function (configExtension) {
+                        cb(configExtension);
                     });
                 }
+            }
+            else {
+                cb(null);
+            }
+        };
+        Bootstrapper.prototype.injectCss = function (extension, config, cb) {
+            var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + config.options.theme + '.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
+            yepnope.injectCss(cssPath, function () {
+                cb();
             });
         };
         Bootstrapper.prototype.createExtension = function (extension, config) {
@@ -3151,7 +3170,9 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
                 this.leftPanel = new TreeViewLeftPanel(Shell.$leftPanel);
             }
             this.centerPanel = new MediaElementCenterPanel(Shell.$centerPanel);
-            this.rightPanel = new MoreInfoRightPanel(Shell.$rightPanel);
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel = new MoreInfoRightPanel(Shell.$rightPanel);
+            }
             this.footerPanel = new FooterPanel(Shell.$footerPanel);
             this.$helpDialogue = $('<div class="overlay help"></div>');
             Shell.$overlays.append(this.$helpDialogue);
@@ -3167,6 +3188,9 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
+            }
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel.init();
             }
         };
         Extension.prototype.isLeftPanelEnabled = function () {
@@ -3395,7 +3419,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                 indices.push(this.canvasIndex);
             }
             else {
-                if (this.isFirstCanvas(canvasIndex) || this.isLastCanvas(canvasIndex)) {
+                if (this.isFirstCanvas(canvasIndex) || (this.isLastCanvas(canvasIndex) && this.isTotalCanvasesEven())) {
                     indices = [canvasIndex];
                 }
                 else if (canvasIndex % 2) {
@@ -4113,7 +4137,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.IsOldIE = function () {
             var browser = window.browserDetect.browser;
             var version = window.browserDetect.version;
-            if (browser == 'Explorer' && version <= 9)
+            if (browser === 'Explorer' && version <= 9)
                 return true;
             return false;
         };
@@ -4138,6 +4162,9 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             this.settingsDialogue = new SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
+            }
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel.init();
             }
         };
         return Extension;
@@ -6272,26 +6299,12 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
         Provider.prototype.getPages = function () {
             var _this = this;
             this.pages = [];
-            if (!this.isPagingSettingEnabled()) {
+            var indices = this.getPagedIndices();
+            _.each(indices, function (index) {
                 var p = new Page();
-                p.tileSourceUri = this.getImageUri(this.getCurrentCanvas());
-                this.pages.push(p);
-            }
-            else {
-                if (this.isFirstCanvas() || this.isLastCanvas()) {
-                    var p = new Page();
-                    p.tileSourceUri = this.getImageUri(this.getCurrentCanvas());
-                    this.pages.push(p);
-                }
-                else {
-                    var indices = this.getPagedIndices();
-                    _.each(indices, function (index) {
-                        var p = new Page();
-                        p.tileSourceUri = _this.getImageUri(_this.getCanvasByIndex(index));
-                        _this.pages.push(p);
-                    });
-                }
-            }
+                p.tileSourceUri = _this.getImageUri(_this.getCanvasByIndex(index));
+                _this.pages.push(p);
+            });
             var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/lib/imageunavailable.json' : 'js/imageunavailable.json';
             _.each(this.pages, function (page) {
                 if (!page.tileSourceUri) {
@@ -8655,5 +8668,5 @@ require([
     bs.bootStrap();
 });
 
-define("app", function(){});
+define("App", function(){});
 

@@ -1,6 +1,6 @@
 {
   "name": "json-editor",
-  "version": "0.7.13",
+  "version": "0.7.20",
   "authors": [
     "Jeremy Dorn <jeremy@jeremydorn.com>"
   ],
@@ -25,11 +25,11 @@
     "src"
   ],
   "homepage": "https://github.com/jdorn/json-editor",
-  "_release": "0.7.13",
+  "_release": "0.7.20",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.13",
-    "commit": "f56263e908fc93edbfb9064dac05e7e948a0d915"
+    "tag": "v0.7.20",
+    "commit": "92857220697d0e4265a1945b9a469962c340921e"
   },
   "_source": "git://github.com/jdorn/json-editor.git",
   "_target": "~0.7.13",
