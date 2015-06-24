@@ -17,7 +17,8 @@
     "json-editor": "~0.7.13",
     "foundation": "~5.5.0",
     "fontawesome": "~4.2.0",
-    "jmespath.js": "~0.12.0"
+    "jmespath.js": "~0.12.0",
+    "utils": "edsilv/utils#~0.0.14"
   },
   "devDependencies": {},
   "resolutions": {

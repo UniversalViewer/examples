@@ -130,11 +130,11 @@ $(function() {
         document.location.hash = '';
 
         var qs = document.location.search.replace('?', '');
-        qs = updateURIKeyValuePair(qs, 'jsonp', jsonp);
-        qs = updateURIKeyValuePair(qs, 'testids', testids);
-        qs = updateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
-        qs = updateURIKeyValuePair(qs, 'manifest', manifest);
-        qs = updateURIKeyValuePair(qs, 'locale', locale);
+        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'jsonp', jsonp);
+        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'testids', testids);
+        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
+        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'manifest', manifest);
+        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'locale', locale);
 
         if (window.location.search === '?' + qs){
             window.location.reload();
@@ -165,10 +165,10 @@ $(function() {
     function getJSONPSetting() {
         if ($('#jsonp').is(':checked')) {
             return true;
-        };
+        }
         if ($('#cors').is(':checked')) {
             return false;
-        };
+        }
         return null;
     }
 
@@ -176,7 +176,7 @@ $(function() {
 
         var jsonp = getJSONPSetting();
 
-        var qs = getQuerystringParameter('jsonp');
+        var qs = Utils.Urls.GetQuerystringParameter('jsonp');
 
         if (qs === 'false'){
             jsonp = false;
@@ -198,7 +198,7 @@ $(function() {
 
     function setSelectedManifest(){
 
-        var manifest = getQuerystringParameter('manifest');
+        var manifest = Utils.Urls.GetQuerystringParameter('manifest');
 
         if (manifest) {
             $('#manifestSelect').val(manifest);
@@ -217,7 +217,7 @@ $(function() {
 
     // called when the page loads to set the initial data-locale
     function setInitialLocale() {
-        var locale = getQuerystringParameter('locale');
+        var locale = Utils.Urls.GetQuerystringParameter('locale');
         if (locale){
             $('.uv').attr('data-locale', locale);
         }
@@ -234,7 +234,7 @@ $(function() {
     function setTestIds(){
         //var testids = $('#testids').is(':checked');
 
-        var qs = getQuerystringParameter('testids');
+        var qs = Utils.Urls.GetQuerystringParameter('testids');
 
         if (qs === 'true') {
             createTestIds();
@@ -247,7 +247,7 @@ $(function() {
     function setDefaultToFullScreen(){
         var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
 
-        var qs = getQuerystringParameter('defaultToFullScreen');
+        var qs = Utils.Urls.GetQuerystringParameter('defaultToFullScreen');
 
         if (qs === 'true') {
             $('.uv').attr('data-fullscreen', true);
