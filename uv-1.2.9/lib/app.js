@@ -174,16 +174,14 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             });
         };
         Bootstrapper.prototype.getConfigExtension = function (extension, cb) {
-            if (this.params.config) {
-                if (this.params.config.toLowerCase() === 'sessionstorage') {
-                    var config = sessionStorage.getItem(extension.name + '.' + this.params.localeName);
-                    cb(JSON.parse(config));
-                }
-                else {
-                    $.getJSON(this.params.config, function (configExtension) {
-                        cb(configExtension);
-                    });
-                }
+            var sessionConfig = sessionStorage.getItem(extension.name + '.' + this.params.localeName);
+            if (sessionConfig) {
+                cb(JSON.parse(sessionConfig));
+            }
+            else if (this.params.config) {
+                $.getJSON(this.params.config, function (configExtension) {
+                    cb(configExtension);
+                });
             }
             else {
                 cb(null);
@@ -3041,7 +3039,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.8';
+    exports.Version = '1.2.9';
 });
 
 var __extends = this.__extends || function (d, b) {
