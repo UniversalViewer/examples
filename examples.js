@@ -224,7 +224,7 @@ $(function(){
         var configName = config.name + '.' + getLocale();
         var configDisplayName = configName;
 
-        var sessionConfig = sessionStorage.getItem("uv-config-" + getLocale());
+        var sessionConfig = sessionStorage.getItem(configName);
 
         if (sessionConfig){
             config = JSON.parse(sessionConfig);
@@ -340,7 +340,8 @@ $(function(){
             }
 
             // save contents of #json to session storage, set data-config attribute to 'sessionstorage' and reload viewer
-            sessionStorage.setItem("uv-config-" + getLocale(), JSON.stringify(editor.getValue()));
+            var configName = config.name + '.' + getLocale();
+            sessionStorage.setItem(configName, JSON.stringify(editor.getValue()));
 
             $('.uv').attr('data-config', 'sessionstorage');
 
