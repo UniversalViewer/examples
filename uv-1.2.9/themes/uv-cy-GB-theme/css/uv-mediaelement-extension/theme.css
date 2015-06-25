@@ -442,6 +442,10 @@
 #app .rightPanel .main .items .item .text a.toggle:hover {
   color: #a5c342;
 }
+#app .rightPanel .main .items .item .text a.toggle.more,
+#app .rightPanel .main .items .item .text a.toggle.less {
+  font-variant: small-caps;
+}
 #app .rightPanel .main .items .item .text img {
   max-width: 100px;
 }
@@ -2285,11 +2289,6 @@ input[type=range]:focus::-ms-fill-upper {
 #app .rightPanel .main {
   margin-right: 10px;
   margin-bottom: 10px;
-}
-#app a.toggle.more,
-#app a.toggle.less {
-  color: #cc0000 !important;
-  font-variant: small-caps;
 }
 #app.browser-Explorer.browser-version-8 .rightPanel .closed .title {
   writing-mode: tb-lr;
