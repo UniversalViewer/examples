@@ -1968,8 +1968,8 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             var _this = this;
             if (!this.thumbs || !this.thumbs.length)
                 return;
-            this.range = Math.normalise(Number(this.$sizeRange.val()), 0, 10);
-            this.range = Math.clamp(this.range, 0.05, 1);
+            var norm = Math.normalise(Number(this.$sizeRange.val()), 0, 10);
+            this.range = Math.clamp(norm, 0.05, 1);
             var thumbs = this.$thumbs.find('.thumb');
             for (var i = 0; i < thumbs.length; i++) {
                 var $thumb = $(thumbs[i]);
@@ -1991,7 +1991,6 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             }
         };
         GalleryView.prototype.equaliseHeights = function () {
-            this.$thumbs.find('.thumb .wrap').equaliseHeight();
         };
         GalleryView.prototype.sizeThumb = function ($thumb) {
             var width = $thumb.data('width');
@@ -3039,7 +3038,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.9';
+    exports.Version = '1.2.10';
 });
 
 var __extends = this.__extends || function (d, b) {
