@@ -468,6 +468,7 @@ define('modules/uv-shared-module/Commands',["require", "exports"], function (req
         Commands.SHOW_MESSAGE = Commands.namespace + '.onShowMessage';
         Commands.SHOW_OVERLAY = Commands.namespace + '.onShowOverlay';
         Commands.SHOW_SETTINGS_DIALOGUE = Commands.namespace + '.onShowSettingsDialogue';
+        Commands.THUMB_SELECTED = Commands.namespace + '.onThumbSelected';
         Commands.TOGGLE_FULLSCREEN = Commands.namespace + '.onToggleFullScreen';
         Commands.UP_ARROW = Commands.namespace + '.onUpArrow';
         Commands.UPDATE_SETTINGS = Commands.namespace + '.onUpdateSettings';
@@ -1840,7 +1841,6 @@ define('extensions/uv-seadragon-extension/Commands',["require", "exports"], func
         Commands.SEARCH = Commands.namespace + '.onSearch';
         Commands.SEARCH_RESULTS = Commands.namespace + '.onSearchResults';
         Commands.SEARCH_RESULTS_EMPTY = Commands.namespace + '.onSearchResultsEmpty';
-        Commands.THUMB_SELECTED = Commands.namespace + '.onThumbSelected';
         Commands.TREE_NODE_SELECTED = Commands.namespace + '.onTreeNodeSelected';
         Commands.VIEW_PAGE = Commands.namespace + '.onViewPage';
         return Commands;
@@ -1869,7 +1869,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/Commands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseView, Commands, Mode) {
+define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/Commands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseView, Mode) {
     var GalleryView = (function (_super) {
         __extends(GalleryView, _super);
         function GalleryView($element) {
@@ -1958,7 +1958,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
                 e.preventDefault();
                 var data = $.view(this).data;
                 that.lastThumbClickedIndex = data.index;
-                $.publish(Commands.THUMB_SELECTED, [data.index]);
+                $.publish(BaseCommands.THUMB_SELECTED, [data.index]);
             });
             this.selectIndex(this.provider.canvasIndex);
             this.setLabel();
@@ -2405,7 +2405,7 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
                 e.preventDefault();
                 var data = $.view(this).data;
                 that.lastThumbClickedIndex = data.index;
-                $.publish(Commands.THUMB_SELECTED, [data.index]);
+                $.publish(BaseCommands.THUMB_SELECTED, [data.index]);
             });
             this.selectIndex(this.provider.canvasIndex);
             this.setLabel();
@@ -3891,17 +3891,6 @@ define('extensions/uv-mediaelement-extension/Provider',["require", "exports", ".
     return Provider;
 });
 
-define('extensions/uv-pdf-extension/Commands',["require", "exports"], function (require, exports) {
-    var Commands = (function () {
-        function Commands() {
-        }
-        Commands.namespace = 'pdfExtension';
-        Commands.THUMB_SELECTED = Commands.namespace + '.onThumbSelected';
-        return Commands;
-    })();
-    return Commands;
-});
-
 define('extensions/uv-pdf-extension/DownloadOption',["require", "exports"], function (require, exports) {
     var DownloadOption = (function () {
         function DownloadOption(value) {
@@ -4037,11 +4026,12 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.viewMedia = function (canvas) {
             var _this = this;
+            var pdfUri = canvas.media[0].resource['@id'];
             var browser = window.browserDetect.browser;
             var version = window.browserDetect.version;
             if (browser == 'Explorer' && version < 10) {
                 var myPDF = new PDFObject({
-                    url: canvas.mediaUri,
+                    url: pdfUri,
                     id: "PDF"
                 }).embed('content');
             }
@@ -4060,7 +4050,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     else {
                         PDFJS.workerSrc = 'lib/pdf.worker.min.js';
                     }
-                    PDFJS.DEFAULT_URL = canvas.media[0].resource['@id'];
+                    PDFJS.DEFAULT_URL = pdfUri;
                     window.webViewerLoad();
                     _this.resize();
                 });
@@ -4101,7 +4091,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, PDFCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-shared-module/Params", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, Params, PDFCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -4111,8 +4101,8 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             var _this = this;
             _super.prototype.create.call(this);
             var that = this;
-            $.subscribe(Commands.THUMB_SELECTED, function (e, index) {
-                window.open(that.provider.getPDFUri());
+            $.subscribe(BaseCommands.THUMB_SELECTED, function (e, index) {
+                _this.viewFile(index);
             });
             $.subscribe(BaseCommands.DOWNLOAD, function (e) {
                 $.publish(BaseCommands.SHOW_DOWNLOAD_DIALOGUE);
@@ -4164,6 +4154,16 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
                 this.rightPanel.init();
             }
         };
+        Extension.prototype.viewFile = function (canvasIndex) {
+            var _this = this;
+            if (canvasIndex == -1)
+                return;
+            this.viewCanvas(canvasIndex, function () {
+                var canvas = _this.provider.getCanvasByIndex(canvasIndex);
+                $.publish(BaseCommands.OPEN_MEDIA, [canvas]);
+                _this.setParam(1 /* canvasIndex */, canvasIndex);
+            });
+        };
         return Extension;
     })(BaseExtension);
     return Extension;
@@ -4182,10 +4182,6 @@ define('extensions/uv-pdf-extension/Provider',["require", "exports", "../../modu
             _super.call(this, bootstrapper);
             this.config.options = $.extend(true, this.options, {}, bootstrapper.config.options);
         }
-        Provider.prototype.getPDFUri = function () {
-            var canvas = this.getCanvasByIndex(0);
-            return canvas.mediaUri;
-        };
         Provider.prototype.getEmbedScript = function (width, height, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
             var template = this.options.embedTemplate || embedTemplate;
@@ -5890,7 +5886,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(Commands.TREE_NODE_SELECTED, function (e, data) {
                 _this.treeNodeSelected(data);
             });
-            $.subscribe(Commands.THUMB_SELECTED, function (e, index) {
+            $.subscribe(BaseCommands.THUMB_SELECTED, function (e, index) {
                 _this.viewPage(index);
             });
             $.subscribe(BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
