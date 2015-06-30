@@ -2053,7 +2053,10 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             }
         };
         GalleryView.prototype.isPageModeEnabled = function () {
-            return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode.page.toString();
+            if (typeof this.extension.getMode === "function") {
+                return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode.page.toString();
+            }
+            return this.config.options.pageModeEnabled;
         };
         GalleryView.prototype.selectIndex = function (index) {
             if (index == -1)
@@ -2484,7 +2487,10 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             }
         };
         ThumbsView.prototype.isPageModeEnabled = function () {
-            return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode.page.toString();
+            if (typeof this.extension.getMode === "function") {
+                return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode.page.toString();
+            }
+            return this.config.options.pageModeEnabled;
         };
         ThumbsView.prototype.selectIndex = function (index) {
             var _this = this;
@@ -3038,7 +3044,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.11';
+    exports.Version = '1.2.12';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3136,7 +3142,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Commands", "./Commands", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseExtension, BaseCommands, Commands, MediaElementCenterPanel, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, HelpDialogue, TreeViewLeftPanel, MoreInfoRightPanel, SettingsDialogue, Shell) {
+define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Commands", "./Commands", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel", "../../modules/uv-shared-module/Params", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseExtension, BaseCommands, Commands, MediaElementCenterPanel, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, HelpDialogue, TreeViewLeftPanel, Params, MoreInfoRightPanel, SettingsDialogue, Shell) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -3159,6 +3165,18 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             });
             $.subscribe(BaseCommands.EMBED, function (e) {
                 $.publish(BaseCommands.SHOW_EMBED_DIALOGUE);
+            });
+            $.subscribe(BaseCommands.THUMB_SELECTED, function (e, index) {
+                _this.viewFile(index);
+            });
+            $.subscribe(BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
+                Shell.$centerPanel.hide();
+                Shell.$rightPanel.hide();
+            });
+            $.subscribe(BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function (e) {
+                Shell.$centerPanel.show();
+                Shell.$rightPanel.show();
+                _this.resize();
             });
         };
         Extension.prototype.createModules = function () {
@@ -3191,7 +3209,17 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             }
         };
         Extension.prototype.isLeftPanelEnabled = function () {
-            return Utils.Bools.GetBool(this.provider.config.options.leftPanelEnabled, true) && this.provider.isMultiSequence();
+            return Utils.Bools.GetBool(this.provider.config.options.leftPanelEnabled, true) && (this.provider.isMultiCanvas() || this.provider.isMultiSequence());
+        };
+        Extension.prototype.viewFile = function (canvasIndex) {
+            var _this = this;
+            if (canvasIndex == -1)
+                return;
+            this.viewCanvas(canvasIndex, function () {
+                var canvas = _this.provider.getCanvasByIndex(canvasIndex);
+                $.publish(BaseCommands.OPEN_MEDIA, [canvas]);
+                _this.setParam(1 /* canvasIndex */, canvasIndex);
+            });
         };
         return Extension;
     })(BaseExtension);
@@ -4103,6 +4131,15 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             var that = this;
             $.subscribe(BaseCommands.THUMB_SELECTED, function (e, index) {
                 _this.viewFile(index);
+            });
+            $.subscribe(BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
+                Shell.$centerPanel.hide();
+                Shell.$rightPanel.hide();
+            });
+            $.subscribe(BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function (e) {
+                Shell.$centerPanel.show();
+                Shell.$rightPanel.show();
+                _this.resize();
             });
             $.subscribe(BaseCommands.DOWNLOAD, function (e) {
                 $.publish(BaseCommands.SHOW_DOWNLOAD_DIALOGUE);
