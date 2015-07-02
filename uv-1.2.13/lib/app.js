@@ -93,8 +93,11 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
                 this.loadManifest();
                 return;
             }
-            if (this.manifest.xsequences) {
-                this.manifest.sequences = this.manifest.xsequences;
+            if (this.manifest.mediaSequences) {
+                this.manifest.sequences = this.manifest.mediaSequences;
+                _.each(this.manifest.sequences, function (sequence) {
+                    sequence.canvases = sequence.elements;
+                });
             }
             this.sequences = this.manifest.sequences;
             if (!this.sequences) {
@@ -104,16 +107,16 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
         };
         Bootstrapper.prototype.loadSequence = function () {
             var that = this;
-            if (that.sequences[that.sequenceIndex].canvases) {
-                that.sequence = that.sequences[that.sequenceIndex];
-                that.parseExtension();
-            }
-            else {
+            if (_.isUndefined(that.sequences[that.sequenceIndex].canvases)) {
                 var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
                 $.getJSON(sequenceUri, function (sequenceData) {
                     that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
                     that.parseExtension();
                 });
+            }
+            else {
+                that.sequence = that.sequences[that.sequenceIndex];
+                that.parseExtension();
             }
         };
         Bootstrapper.prototype.notFound = function () {
@@ -128,18 +131,23 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             var that = this;
             var extension;
             var canvasType = that.sequence.canvases[0]['@type'];
+            var format = that.sequence.canvases[0].format;
             switch (canvasType.toLowerCase()) {
                 case 'sc:canvas':
                     extension = that.extensions['seadragon/iiif'];
                     break;
-                case 'ixif:audio':
-                    extension = that.extensions['audio/iiif'];
+                case 'dctypes:sound':
+                    extension = that.extensions['audio/ixif'];
                     break;
-                case 'ixif:video':
-                    extension = that.extensions['video/iiif'];
+                case 'dctypes:movingimage':
+                    extension = that.extensions['video/ixif'];
                     break;
-                case 'ixif:borndigital':
-                    extension = that.extensions['pdf/iiif'];
+                case 'foaf:document':
+                    switch (format.toLowerCase()) {
+                        case 'application/pdf':
+                            extension = that.extensions['pdf/ixif'];
+                            break;
+                    }
                     break;
             }
             that.featureDetect(function () {
@@ -1153,14 +1161,13 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             var poster = this.provider.getPosterImageUri();
             var canvasType = this.provider.getCanvasType(this.provider.getCanvasByIndex(0));
             var sources = [];
-            _.each(canvas.media, function (annotation) {
-                var resource = annotation.resource;
+            _.each(this.provider.getRenderings(canvas), function (rendering) {
                 sources.push({
-                    type: resource.format.substr(resource.format.indexOf(':') + 1),
-                    src: resource['@id']
+                    type: rendering.format,
+                    src: rendering['@id']
                 });
             });
-            if (canvasType.contains('video')) {
+            if (canvasType.contains('movingimage')) {
                 this.media = this.$container.append('<video id="' + id + '" type="video/mp4" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
                 this.player = new MediaElementPlayer("#" + id, {
                     type: ['video/mp4', 'video/webm', 'video/flv'],
@@ -1191,7 +1198,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                     }
                 });
             }
-            else if (canvasType.contains('audio')) {
+            else if (canvasType.contains('sound')) {
                 this.media = this.$container.append('<audio id="' + id + '" type="audio/mp3" src="' + sources[0].src + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></audio>');
                 this.player = new MediaElementPlayer("#" + id, {
                     plugins: ['flash'],
@@ -1301,9 +1308,8 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
             if (this.isDownloadOptionAvailable(DownloadOption.entireFileAsOriginal)) {
                 this.$downloadOptions.empty();
                 var canvas = this.provider.getCurrentCanvas();
-                _.each(canvas.media, function (annotation) {
-                    var resource = annotation.resource;
-                    _this.addEntireFileDownloadOption(resource['@id']);
+                _.each(this.provider.getRenderings(canvas), function (rendering) {
+                    _this.addEntireFileDownloadOption(rendering['@id']);
                 });
             }
             if (!this.$downloadOptions.find('li:visible').length) {
@@ -3044,7 +3050,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.12';
+    exports.Version = '1.2.13';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3341,6 +3347,16 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                 }
             }
             return null;
+        };
+        BaseProvider.prototype.getRenderings = function (element) {
+            if (element.rendering) {
+                var renderings = element.rendering;
+                if (!$.isArray(renderings)) {
+                    renderings = [renderings];
+                }
+                return renderings;
+            }
+            return [element];
         };
         BaseProvider.prototype.getSequenceType = function () {
             return 'seadragon-iiif';
@@ -3912,7 +3928,7 @@ define('extensions/uv-mediaelement-extension/Provider',["require", "exports", ".
             return script;
         };
         Provider.prototype.getPosterImageUri = function () {
-            return "";
+            return this.getCurrentCanvas().thumbnail;
         };
         return Provider;
     })(BaseProvider);
@@ -4054,10 +4070,10 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.viewMedia = function (canvas) {
             var _this = this;
-            var pdfUri = canvas.media[0].resource['@id'];
+            var pdfUri = this.provider.getRenderings(canvas)[0]['@id'];
             var browser = window.browserDetect.browser;
             var version = window.browserDetect.version;
-            if (browser == 'Explorer' && version < 10) {
+            if (browser === 'Explorer' && version < 10) {
                 var myPDF = new PDFObject({
                     url: pdfUri,
                     id: "PDF"
@@ -8679,17 +8695,17 @@ require([
         provider: seadragonProvider,
         name: 'uv-seadragon-extension'
     };
-    extensions['video/iiif'] = {
+    extensions['video/ixif'] = {
         type: mediaelementExtension,
         provider: mediaelementProvider,
         name: 'uv-mediaelement-extension'
     };
-    extensions['audio/iiif'] = {
+    extensions['audio/ixif'] = {
         type: mediaelementExtension,
         provider: mediaelementProvider,
         name: 'uv-mediaelement-extension'
     };
-    extensions['pdf/iiif'] = {
+    extensions['pdf/ixif'] = {
         type: pdfExtension,
         provider: pdfProvider,
         name: 'uv-pdf-extension'
