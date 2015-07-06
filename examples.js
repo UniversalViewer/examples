@@ -1,7 +1,7 @@
 $(function() {
 
     var bootstrapper, editor;
-    var uvVersion = 'uv-1.2.13';
+    var uvVersion = 'uv-1.2.14';
 
     function loadViewer() {
 
@@ -16,11 +16,13 @@ $(function() {
 
     function loadConfigSchema(cb) {
 
-        var path = 'schema/' + getConfigName() + '.schema.json';
+        var path = uvVersion + '/schema/' + getConfigName() + '.schema.json';
 
         $.getJSON(path, function (schema) {
             formatSchema(schema);
             cb(schema);
+        }).error(function() {
+            cb(null);
         });
     }
 
@@ -420,7 +422,10 @@ $(function() {
             setSelectedLocale(bootstrapper.params.locale);
 
             loadConfigSchema(function(schema) {
-                createEditor(schema);
+                if (schema){
+                    createEditor(schema);
+                    $('#configEditor').show();
+                }
                 $('footer').show();
             });
         });

@@ -3050,7 +3050,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.13';
+    exports.Version = '1.2.14';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -7463,10 +7463,10 @@ document.webL10n = (function(window, document, undefined) {
 }) (window, document);
 define("l10n", function(){});
 
-//     Length (from https://github.com/heygrady/Units)
-//     Copyright (c) 2013 Grady Kuhnline
-//     MIT License (https://raw.githubusercontent.com/heygrady/Units/master/LICENSE)
 (function(t,e,o){"use strict";function r(t,e,r,p){r=r||"width";var n,l,m,c=(e.match(s)||[])[2],f="px"===c?1:d[c+"toPx"],u=/r?em/i;if(f||u.test(c)&&!p)t=f?t:"rem"===c?i:"fontSize"===r?t.parentNode||t:t,f=f||parseFloat(a(t,"fontSize")),m=parseFloat(e)*f;else{n=t.style,l=n[r];try{n[r]=e}catch(x){return 0}m=n[r]?parseFloat(a(t,r)):0,n[r]=l!==o?l:null}return m}function a(t,e){var o,n,i,l,d,c=/^top|bottom/,f=["paddingTop","paddingBottom","borderTop","borderBottom"],u=4;if(o=m?m(t)[e]:(n=t.style["pixel"+e.charAt(0).toUpperCase()+e.slice(1)])?n+"px":"fontSize"===e?r(t,"1em","left",1)+"px":t.currentStyle[e],i=(o.match(s)||[])[2],"%"===i&&p)if(c.test(e)){for(l=(d=t.parentNode||t).offsetHeight;u--;)l-=parseFloat(a(d,f[u]));o=parseFloat(o)/100*l+"px"}else o=r(t,o);else("auto"===o||i&&"px"!==i)&&m?o=0:i&&"px"!==i&&!m&&(o=r(t,o)+"px");return o}var p,n=e.createElement("test"),i=e.documentElement,l=e.defaultView,m=l&&l.getComputedStyle,s=/^(-?[\d+\.\-]+)([a-z]+|%)$/i,d={},c=[1/25.4,1/2.54,1/72,1/6],f=["mm","cm","pt","pc","in","mozmm"],u=6;for(i.appendChild(n),m&&(n.style.marginTop="1%",p="1%"===m(n).marginTop);u--;)d[f[u]+"toPx"]=c[u]?c[u]*d.inToPx:r(n,"1"+f[u]);i.removeChild(n),n=o,t.Length={toPx:r}})(this,this.document);
+/*
+//@ sourceMappingURL=Length.min.js.map
+*/;
 define("length", function(){});
 
 /* Modernizr 2.8.3 (Custom Build) | MIT & BSD
@@ -7479,9 +7479,7 @@ define("length", function(){});
 ;window.Modernizr=function(a,b,c){function v(a){j.cssText=a}function w(a,b){return v(prefixes.join(a+";")+(b||""))}function x(a,b){return typeof a===b}function y(a,b){return!!~(""+a).indexOf(b)}function z(a,b,d){for(var e in a){var f=b[a[e]];if(f!==c)return d===!1?a[e]:x(f,"function")?f.bind(d||b):f}return!1}function A(){e.input=function(c){for(var d=0,e=c.length;d<e;d++)p[c[d]]=c[d]in k;return p.list&&(p.list=!!b.createElement("datalist")&&!!a.HTMLDataListElement),p}("autocomplete autofocus list placeholder max min multiple pattern required step".split(" ")),e.inputtypes=function(a){for(var d=0,e,f,h,i=a.length;d<i;d++)k.setAttribute("type",f=a[d]),e=k.type!=="text",e&&(k.value=l,k.style.cssText="position:absolute;visibility:hidden;",/^range$/.test(f)&&k.style.WebkitAppearance!==c?(g.appendChild(k),h=b.defaultView,e=h.getComputedStyle&&h.getComputedStyle(k,null).WebkitAppearance!=="textfield"&&k.offsetHeight!==0,g.removeChild(k)):/^(search|tel)$/.test(f)||(/^(url|email)$/.test(f)?e=k.checkValidity&&k.checkValidity()===!1:e=k.value!=l)),o[a[d]]=!!e;return o}("search tel url email datetime date month week time datetime-local number range color".split(" "))}var d="2.8.3",e={},f=!0,g=b.documentElement,h="modernizr",i=b.createElement(h),j=i.style,k=b.createElement("input"),l=":)",m={}.toString,n={},o={},p={},q=[],r=q.slice,s,t={}.hasOwnProperty,u;!x(t,"undefined")&&!x(t.call,"undefined")?u=function(a,b){return t.call(a,b)}:u=function(a,b){return b in a&&x(a.constructor.prototype[b],"undefined")},Function.prototype.bind||(Function.prototype.bind=function(b){var c=this;if(typeof c!="function")throw new TypeError;var d=r.call(arguments,1),e=function(){if(this instanceof e){var a=function(){};a.prototype=c.prototype;var f=new a,g=c.apply(f,d.concat(r.call(arguments)));return Object(g)===g?g:f}return c.apply(b,d.concat(r.call(arguments)))};return e});for(var B in n)u(n,B)&&(s=B.toLowerCase(),e[s]=n[B](),q.push((e[s]?"":"no-")+s));return e.input||A(),e.addTest=function(a,b){if(typeof a=="object")for(var d in a)u(a,d)&&e.addTest(d,a[d]);else{a=a.toLowerCase();if(e[a]!==c)return e;b=typeof b=="function"?b():b,typeof f!="undefined"&&f&&(g.className+=" "+(b?"":"no-")+a),e[a]=b}return e},v(""),i=k=null,e._version=d,g.className=g.className.replace(/(^|\s)no-js(\s|$)/,"$1$2")+(f?" js "+q.join(" "):""),e}(this,this.document),function(a,b,c){function d(a){return"[object Function]"==o.call(a)}function e(a){return"string"==typeof a}function f(){}function g(a){return!a||"loaded"==a||"complete"==a||"uninitialized"==a}function h(){var a=p.shift();q=1,a?a.t?m(function(){("c"==a.t?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){"img"!=a&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l=b.createElement(a),o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};1===y[c]&&(r=1,y[c]=[]),"object"==a?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),"img"!=a&&(r||2===y[c]?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i("c"==b?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),1==p.length&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&"[object Opera]"==o.call(a.opera),l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return"[object Array]"==o.call(a)},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,h){var i=b(a),j=i.autoCallback;i.url.split(".").pop().split("?").shift(),i.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]),i.instead?i.instead(a,e,f,g,h):(y[i.url]?i.noexec=!0:y[i.url]=1,f.load(i.url,i.forceCSS||!i.forceJS&&"css"==i.url.split(".").pop().split("?").shift()?"c":c,i.noexec,i.attrs,i.timeout),(d(e)||d(j))&&f.load(function(){k(),e&&e(i.origUrl,h,g),j&&j(i.origUrl,h,g),y[i.url]=2})))}function h(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var i,j,l=this.yepnope.loader;if(e(a))g(a,0,l,0);else if(w(a))for(i=0;i<a.length;i++)j=a[i],e(j)?g(j,0,l,0):w(j)?B(j):Object(j)===j&&h(j,l);else Object(a)===a&&h(a,l)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,null==b.readyState&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}}(this,document),Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0))},Modernizr.addTest("cors",!!(window.XMLHttpRequest&&"withCredentials"in new XMLHttpRequest));
 define("modernizr", function(){});
 
-
 (function ($) {
-
     $.fn.disable = function () {
         return this.each(function () {
             var $this = $(this);
@@ -7490,7 +7488,6 @@ define("modernizr", function(){});
             $this.removeAttr('tabindex');
         });
     };
-
     $.fn.enable = function () {
         return this.each(function () {
             var $this = $(this);
@@ -7498,331 +7495,243 @@ define("modernizr", function(){});
             $this.attr('tabindex', $this.data('tabindex'));
         });
     };
-
     $.fn.targetBlank = function () {
         return this.each(function () {
             $(this).find('a').prop('target', '_blank');
         });
     };
-
     $.fn.swapClass = function (removeClass, addClass) {
         return this.each(function () {
             $(this).removeClass(removeClass).addClass(addClass);
         });
     };
-
     $.fn.toggleClass = function (class1, class2) {
         return this.each(function () {
             var $this = $(this);
-
-            if ($this.hasClass(class1)){
+            if ($this.hasClass(class1)) {
                 $(this).removeClass(class1).addClass(class2);
-            } else {
+            }
+            else {
                 $(this).removeClass(class2).addClass(class1);
             }
-
         });
     };
-
     $.fn.toggleText = function (text1, text2) {
         return this.each(function () {
             var $this = $(this);
-
-            if ($this.text() == text1){
+            if ($this.text() === text1) {
                 $(this).text(text2);
-            } else {
+            }
+            else {
                 $(this).text(text1);
             }
-
         });
     };
-
     $.fn.ellipsisFill = function (text) {
-
         var textPassed = true;
-        if (!text) textPassed = false;
-
+        if (!text)
+            textPassed = false;
         return this.each(function () {
-
             var $self = $(this);
-
-            if (!textPassed) text = $self.text();
-
+            if (!textPassed)
+                text = $self.text();
             $self.empty();
-
             $self.spanElem = $('<span title="' + text + '"></span>');
             $self.append($self.spanElem);
-
             $self.css('overflow', 'hidden');
             $self.spanElem.css('white-space', 'nowrap');
-
             $self.spanElem.html(text);
-
             // get the width of the span.
             // if it's wider than the container, remove a word until it's not.
             if ($self.spanElem.width() > $self.width()) {
                 var lastText;
-
                 while ($self.spanElem.width() > $self.width()) {
                     var t = $self.spanElem.html();
-
                     t = t.substring(0, t.lastIndexOf(' ')) + '&hellip;';
-
-                    if (t == lastText) break;
-
+                    if (t === lastText)
+                        break;
                     $self.spanElem.html(t);
-
                     lastText = t;
                 }
             }
         });
     };
-
     $.fn.ellipsisFixed = function (chars, buttonText) {
-
         return this.each(function () {
-
             var $self = $(this);
-
             var text = $self.text();
-
             $self.empty();
-
             var $span = $('<span></span>');
-
             var $ellipsis = $('<a href="#" title="more" class="ellipsis"></a>');
-
             if (buttonText) {
                 $ellipsis.html(buttonText);
-            } else {
+            }
+            else {
                 $ellipsis.html('&hellip;');
             }
-
             $ellipsis.click(function (e) {
                 e.preventDefault();
-
                 var $this = $(this);
-
                 $span.html(text);
-
                 $this.remove();
             });
-
             if (text.length > chars) {
                 var trimmedText = text.substr(0, chars);
                 trimmedText = trimmedText.substr(0, Math.min(trimmedText.length, trimmedText.lastIndexOf(" ")));
-
                 $span.html(trimmedText + "&nbsp;");
-
                 $span.append($ellipsis);
-            } else {
+            }
+            else {
                 $span.html(text);
             }
-
             $self.append($span);
         });
-
     };
-
     $.fn.toggleExpandText = function (chars, callback) {
-
         return this.each(function () {
-
             var $self = $(this);
-
             var expandedText = $self.html();
-
-            if (chars > expandedText.length) return;
-
+            if (chars > expandedText.length)
+                return;
             var expanded = false;
-
             var collapsedText = expandedText.substr(0, chars);
             collapsedText = collapsedText.substr(0, Math.min(collapsedText.length, collapsedText.lastIndexOf(" ")));
-
-            $self.toggle = function() {
+            $self.toggle = function () {
                 $self.empty();
-
                 var $toggleButton = $('<a href="#" class="toggle"></a>');
-
                 if (expanded) {
                     $self.html(expandedText + "&nbsp;");
                     $toggleButton.text("less");
                     $toggleButton.toggleClass("less", "more");
-                } else {
+                }
+                else {
                     $self.html(collapsedText + "&nbsp;");
                     $toggleButton.text("more");
                     $toggleButton.toggleClass("more", "less");
                 }
-
-                $toggleButton.one('click', function(e) {
+                $toggleButton.one('click', function (e) {
                     e.preventDefault();
-
                     $self.toggle();
                 });
-
                 expanded = !expanded;
-
                 $self.append($toggleButton);
-
-                if (callback) callback();
+                if (callback)
+                    callback();
             };
-
             $self.toggle();
         });
-
     };
-
     $.fn.ellipsis = function (chars) {
-
         return this.each(function () {
-
             var $self = $(this);
-
             var text = $self.text();
-
             if (text.length > chars) {
                 var trimmedText = text.substr(0, chars);
-                trimmedText = trimmedText.substr(0, Math.min(trimmedText.length, trimmedText.lastIndexOf(" ")))
-
+                trimmedText = trimmedText.substr(0, Math.min(trimmedText.length, trimmedText.lastIndexOf(" ")));
                 $self.empty().html(trimmedText + "&hellip;");
             }
         });
-
     };
-
     $.fn.equaliseHeight = function (reset) {
-
         var maxHeight = -1;
-
         // reset all heights to auto first so they can be re-measured.
-        if (reset){
+        if (reset) {
             this.each(function () {
                 $(this).height('auto');
             });
         }
-
         this.each(function () {
             maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
         });
-
         this.each(function () {
             $(this).height(maxHeight);
         });
-
         return this;
     };
-
     // Recursively removes the last empty element (img, audio, etc) or word in an element
     $.fn.removeLastWord = function (chars) {
-
-        if ('undefined' === typeof chars) chars = 8;
-
+        if ('undefined' === typeof chars)
+            chars = 8;
         return this.each(function () {
-
             var $self = $(this);
-
             if ($self.contents().length > 0) {
                 var $lastElement = $self.contents().last();
-                if ($lastElement[0].nodeType === 3) { // Text node
+                if ($lastElement[0].nodeType === 3) {
                     var words = $lastElement.text().trim().split(' ');
-
                     if (words.length > 1) {
-                        words.splice(words.length-1, 1);
+                        words.splice(words.length - 1, 1);
                         $lastElement[0].data = words.join(' '); // textnode.data
                         return;
-                    } else if ('undefined' !== typeof chars && words.length === 1 && words[0].length > chars) {
+                    }
+                    else if ('undefined' !== typeof chars && words.length === 1 && words[0].length > chars) {
                         $lastElement[0].data = words.join(' ').substring(0, chars);
                         return;
                     }
                 }
-
                 $lastElement.removeLastWord(chars); // Element
-            } else {
+            }
+            else {
                 // Empty element
                 $self.remove();
             }
         });
     };
-
     // Truncates to a certain number of letters, while ignoring and preserving HTML
     $.fn.ellipsisHtmlFixed = function (chars, callback) {
-
         return this.each(function () {
-
             var $self = $(this);
-
             var expandedText = $self.html();
-
-            $trunc = $('<span></span>');
+            var $trunc = $('<span></span>');
             $trunc.html($self.html().replace(/\s[\s]*/g, ' ').trim());
-
             if ($trunc.text().trim().length <= chars) {
                 return; // do nothing if we're under the limit!
             }
-
             while ($trunc.text().trim().length > chars) {
                 $trunc.removeLastWord(chars);
             }
-
             var collapsedText = $trunc.html();
-
             // Toggle function
             var expanded = false;
-
-            $self.toggle = function() {
+            $self.toggle = function () {
                 $self.empty();
-
                 var $toggleButton = $('<a href="#" class="toggle"></a>');
-
                 if (expanded) {
                     $self.html(expandedText + " ");
                     $toggleButton.text("less");
                     $toggleButton.toggleClass("less", "more");
-                } else {
+                }
+                else {
                     $self.html(collapsedText + "&hellip; ");
                     $toggleButton.text("more");
                     $toggleButton.toggleClass("more", "less");
                 }
-
-                $toggleButton.one('click', function(e) {
+                $toggleButton.one('click', function (e) {
                     e.preventDefault();
-
                     $self.toggle();
                 });
-
                 expanded = !expanded;
-
                 $self.append($toggleButton);
-
-                if (callback) callback();
+                if (callback)
+                    callback();
             };
-
             $self.toggle();
         });
     };
-
     // Toggle expansion by number of lines
     $.fn.toggleExpandTextByLines = function (lines, callback) {
-
         return this.each(function () {
-
             var $self = $(this);
-
             // Calculate line height to get target height
             var lineHeight = parseFloat($self.css('line-height'));
             var cssunit = $self.css('line-height').replace(/[\d\.]/g, '');
             var fontSize = parseFloat($self.css('font-size'));
-            if(!lineHeight) {
+            if (!lineHeight) {
                 cssunit = $self.css('font-size').replace(/[\d\.]/g, '');
             }
-
             if (!lineHeight) {
                 var $current = $self.parent();
-
-                // See if we have a set line height or font size
                 while (!lineHeight && $current.prop('tagName') !== "BODY") {
                     $current = $current.parent();
-
                     lineHeight = parseFloat($current.css('line-height'));
                     cssunit = $current.css('line-height').replace(/[\d\.]/g, '');
                     if (!(lineHeight && fontSize)) {
@@ -7831,143 +7740,108 @@ define("modernizr", function(){});
                     }
                 }
             }
-
             // Default line-height is 'normal' (1.2 * font size)
             if (!lineHeight) {
                 if (!fontSize) {
                     lineHeight = 16 * 1.2; // CSS default font size
                     cssunit = 'px';
-                } else {
+                }
+                else {
                     lineHeight = fontSize * 1.2;
                 }
             }
-
             var targetHeight = Length.toPx(this, ((lineHeight + 1) * lines) + cssunit);
-
             // Collapse
-            if ($self.outerHeight() <= targetHeight) return;
-
+            if ($self.outerHeight() <= targetHeight)
+                return;
             var expandedText = $self.html();
-
             // add 'pad' to account for the right margin in the sidebar
             var $buttonPad = $('<span>&hellip; <a href="#" class="toggle more">morepad</a></span>');
-
             $self.append($buttonPad);
-
             while ($self.height() > targetHeight) {
                 $buttonPad.remove();
-
                 $self.removeLastWord();
-
                 $self.append($buttonPad);
             }
             $buttonPad.remove();
-
             var collapsedText = $self.html();
-
             // Toggle function
             var expanded = false;
-
-            $self.toggle = function() {
+            $self.toggle = function () {
                 $self.empty();
-
                 var $toggleButton = $('<a href="#" class="toggle"></a>');
-
                 if (expanded) {
                     $self.html(expandedText + " ");
                     $toggleButton.text("less");
                     $toggleButton.toggleClass("less", "more");
-                } else {
+                }
+                else {
                     $self.html(collapsedText + "&hellip; ");
                     $toggleButton.text("more");
                     $toggleButton.toggleClass("more", "less");
                 }
-
-                $toggleButton.one('click', function(e) {
+                $toggleButton.one('click', function (e) {
                     e.preventDefault();
-
                     $self.toggle();
                 });
-
                 expanded = !expanded;
-
                 $self.append($toggleButton);
-
-                if (callback) callback();
+                if (callback)
+                    callback();
             };
-
             $self.toggle();
         });
     };
-
     $.fn.horizontalMargins = function () {
         var $self = $(this);
         return parseInt($self.css('marginLeft')) + parseInt($self.css('marginRight'));
     };
-
     $.fn.verticalMargins = function () {
         var $self = $(this);
         return parseInt($self.css('marginTop')) + parseInt($self.css('marginBottom'));
     };
-
     $.fn.horizontalPadding = function () {
         var $self = $(this);
         return parseInt($self.css('paddingLeft')) + parseInt($self.css('paddingRight'));
     };
-
     $.fn.verticalPadding = function () {
         var $self = $(this);
         return parseInt($self.css('paddingTop')) + parseInt($self.css('paddingBottom'));
     };
-
     $.fn.onPressed = function (callback) {
-
-        return this.each(function() {
-
+        return this.each(function () {
             var $this = $(this);
-
-            $this.on('click', function(e) {
+            $this.on('click', function (e) {
                 e.preventDefault();
                 callback();
             });
-
-            $this.on('keyup', function(e) {
-                if (e.keyCode == 13) {
+            $this.on('keyup', function (e) {
+                if (e.keyCode === 13) {
                     e.preventDefault();
                     callback();
                 }
             });
         });
     };
-
     $.fn.onEnter = function (callback) {
-
-        return this.each(function() {
-
+        return this.each(function () {
             var $this = $(this);
-
-            $this.on('keyup', function(e) {
-                if (e.keyCode == 13) {
+            $this.on('keyup', function (e) {
+                if (e.keyCode === 13) {
                     e.preventDefault();
                     callback();
                 }
             });
         });
     };
-
-})(jQuery);
-
-(function ($) {
     var on = $.fn.on, timer;
     $.fn.on = function () {
         var args = Array.apply(null, arguments);
         var last = args[args.length - 1];
-
-        if (isNaN(last) || (last === 1 && args.pop())) return on.apply(this, args);
-
+        if (isNaN(last) || (last === 1 && args.pop()))
+            return on.apply(this, args);
         var delay = args.pop();
         var fn = args.pop();
-
         args.push(function () {
             var self = this, params = arguments;
             clearTimeout(timer);
@@ -7975,76 +7849,7 @@ define("modernizr", function(){});
                 fn.apply(self, params);
             }, delay);
         });
-
         return on.apply(this, args);
-    };
-})(jQuery);
-
-/*!
- * jQuery Cookie Plugin
- * https://github.com/carhartl/jquery-cookie
- *
- * Copyright 2011, Klaus Hartl
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://www.opensource.org/licenses/mit-license.php
- * http://www.opensource.org/licenses/GPL-2.0
- */
-(function($) {
-    $.cookie = function(key, value, options) {
-
-        // key and at least value given, set cookie...
-        if (arguments.length > 1 && (!/Object/.test(Object.prototype.toString.call(value)) || value === null || value === undefined)) {
-            options = $.extend({}, options);
-
-            if (value === null || value === undefined) {
-                options.expires = -1;
-            }
-
-            if (typeof options.expires === 'number') {
-                var days = options.expires, t = options.expires = new Date();
-                t.setDate(t.getDate() + days);
-            }
-
-            value = String(value);
-
-            return (document.cookie = [
-                encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value),
-                options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
-                options.path    ? '; path=' + options.path : '',
-                options.domain  ? '; domain=' + options.domain : '',
-                options.secure  ? '; secure' : ''
-            ].join(''));
-        }
-
-        // key and possibly options given, get cookie...
-        options = value || {};
-        var decode = options.raw ? function(s) { return s; } : decodeURIComponent;
-
-        var pairs = document.cookie.split('; ');
-        for (var i = 0, pair; pair = pairs[i] && pairs[i].split('='); i++) {
-            if (decode(pair[0]) === key) return decode(pair[1] || ''); // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB, thus pair[1] may be undefined
-        }
-        return null;
-    };
-})(jQuery);
-
-(function($){
-    $.mlp = {x:0,y:0}; // Mouse Last Position
-    function documentHandler(){
-        var $current = this === document ? $(this) : $(this).contents();
-        $current.mousemove(function(e){jQuery.mlp = {x:e.pageX,y:e.pageY}});
-        $current.find("iframe").load(documentHandler);
-    }
-    $(documentHandler);
-    $.fn.ismouseover = function(overThis) {
-        var result = false;
-        this.eq(0).each(function() {
-            var $current = $(this).is("iframe") ? $(this).contents().find("body") : $(this);
-            var offset = $current.offset();
-            result =    offset.left<=$.mlp.x && offset.left + $current.outerWidth() > $.mlp.x &&
-            offset.top<=$.mlp.y && offset.top + $current.outerHeight() > $.mlp.y;
-        });
-        return result;
     };
 })(jQuery);
 
@@ -8636,7 +8441,7 @@ require.config({
         'l10n': 'lib/l10n',
         'length': 'lib/Length.min',
         'modernizr': 'lib/modernizr',
-        'plugins': 'lib/jquery.plugins',
+        'plugins': 'lib/jquery-plugins',
         'pubsub': 'lib/pubsub',
         'sanitize': 'lib/sanitize',
         'underscore': 'lib/underscore-min',

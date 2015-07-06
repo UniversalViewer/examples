@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="examples.css" />
     <!--<script type="text/javascript" id="embedUV" src="/src/lib/embed.js"></script>-->
-    <!--<script type="text/javascript" id="embedUV" src="uv-1.2.13/lib/embed.js"></script>-->
+    <!--<script type="text/javascript" id="embedUV" src="uv-1.2.14/lib/embed.js"></script>-->
 </head>
 <body>
 
@@ -71,21 +71,23 @@
 
         <a id="setLocalesBtn" class="button">Set</a>
 
-        <hr/>
+        <div id="configEditor" style="display: none">
+            <hr/>
 
-        <h3>Config&nbsp;<span class="config-name"></span></h3>
+            <h3>Config&nbsp;<span class="config-name"></span></h3>
 
-        <p>Changes to config made with this tool are at the session level and not persisted.</p>
+            <p>Changes to config made with this tool are at the session level and not persisted.</p>
 
-        <ul id="edit-config" class="button-group">
-            <li><a id="editBtn" href="#" class="button">Edit</a></li>
-            <li><a id="closeBtn" href="#" class="button hide">Close</a></li>
-            <li><a id="saveBtn" href="#" class="button hide">Save</a></li>
-            <li><a id="resetBtn" href="#" class="button hide">Reset</a></li>
-        </ul>
+            <ul id="edit-config" class="button-group">
+                <li><a id="editBtn" href="#" class="button">Edit</a></li>
+                <li><a id="closeBtn" href="#" class="button hide">Close</a></li>
+                <li><a id="saveBtn" href="#" class="button hide">Save</a></li>
+                <li><a id="resetBtn" href="#" class="button hide">Reset</a></li>
+            </ul>
 
-        <div id="editPnl" class="hide">
-            <div id="editor"></div>
+            <div id="editPnl" class="hide">
+                <div id="editor"></div>
+            </div>
         </div>
 
     </footer>
