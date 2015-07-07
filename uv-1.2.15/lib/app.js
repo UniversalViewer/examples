@@ -3063,7 +3063,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.14';
+    exports.Version = '1.2.15';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5228,17 +5228,18 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode.page.toString();
         };
         PagingHeaderPanel.prototype.setTitles = function () {
-            var mode;
             if (this.isPageModeEnabled()) {
-                mode = this.content.page;
+                this.$firstButton.prop('title', this.content.firstPage);
+                this.$prevButton.prop('title', this.content.previousPage);
+                this.$nextButton.prop('title', this.content.nextPage);
+                this.$lastButton.prop('title', this.content.lastPage);
             }
             else {
-                mode = this.content.image;
+                this.$firstButton.prop('title', this.content.firstImage);
+                this.$prevButton.prop('title', this.content.previousImage);
+                this.$nextButton.prop('title', this.content.nextImage);
+                this.$lastButton.prop('title', this.content.lastImage);
             }
-            this.$firstButton.prop('title', this.content.first + " " + mode);
-            this.$prevButton.prop('title', this.content.previous + " " + mode);
-            this.$nextButton.prop('title', this.content.next + " " + mode);
-            this.$lastButton.prop('title', this.content.last + " " + mode);
             this.$searchButton.prop('title', this.content.go);
         };
         PagingHeaderPanel.prototype.setTotal = function () {
