@@ -1,0 +1,1 @@
+Number.prototype.isInt = function(){ return this % 1 === 0; };
