@@ -2,6 +2,7 @@ define('BootstrapParams',["require", "exports"], function (require, exports) {
     var BootstrapParams = (function () {
         function BootstrapParams() {
         }
+        // parse string 'en-GB' or 'en-GB:English,cy-GB:Welsh' into array
         BootstrapParams.prototype.setLocale = function (locale) {
             this.locale = locale;
             this.locales = [];
@@ -25,8 +26,9 @@ define('BootstrapParams',["require", "exports"], function (require, exports) {
 
 define('Bootstrapper',["require", "exports", "BootstrapParams"], function (require, exports, BootstrapParams) {
     var Bootstrapper = (function () {
+        // this loads the manifest, determines what kind of extension and provider to use, and instantiates them.
         function Bootstrapper(extensions) {
-            this.isFullScreen = false;
+            this.isFullScreen = false; // persist full screen between reloads
             this.extensions = extensions;
         }
         Bootstrapper.prototype.getBootstrapParams = function () {
@@ -48,25 +50,34 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
         Bootstrapper.prototype.bootStrap = function (params) {
             var that = this;
             that.params = this.getBootstrapParams();
+            // merge new params
             if (params) {
                 that.params = $.extend(true, that.params, params);
             }
+            // empty app div
             $('#app').empty();
+            //// add loading class
+            //$('#app').addClass('loading');
+            // remove any existing css
             $('link[type*="text/css"]').remove();
             jQuery.support.cors = true;
             that.loadManifest();
         };
         Bootstrapper.prototype.corsEnabled = function () {
+            // No jsonp setting? Then use autodetection. Otherwise, use explicit setting.
             return (null === this.params.jsonp) ? Modernizr.cors : !this.params.jsonp;
         };
         Bootstrapper.prototype.loadManifest = function () {
             var that = this;
             if (this.corsEnabled()) {
+                //console.log('CORS Enabled');
                 $.getJSON(that.params.manifestUri, function (manifest) {
                     that.parseManifest(manifest);
                 });
             }
             else {
+                //console.log('JSONP Enabled');
+                // use jsonp
                 var settings = {
                     url: that.params.manifestUri,
                     type: 'GET',
@@ -88,11 +99,15 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             if (!this.sequenceIndex) {
                 this.sequenceIndex = parseInt(Utils.Urls.GetQuerystringParameter("si")) || 0;
             }
+            // is it a collection?
             if (this.manifest.manifests) {
+                // for now, default to the first manifest in the collection.
+                // todo: improve collections handling - should a new "mi" param be introduced?
                 this.params.manifestUri = this.manifest.manifests[0].service['@id'];
                 this.loadManifest();
                 return;
             }
+            // normalise IxIF to sequence and canvas objects
             if (this.manifest.mediaSequences) {
                 this.manifest.sequences = this.manifest.mediaSequences;
                 _.each(this.manifest.sequences, function (sequence) {
@@ -107,7 +122,9 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
         };
         Bootstrapper.prototype.loadSequence = function () {
             var that = this;
+            // if it's a reference
             if (_.isUndefined(that.sequences[that.sequenceIndex].canvases)) {
+                // load referenced sequence.
                 var sequenceUri = String(that.sequences[that.sequenceIndex]['@id']);
                 $.getJSON(sequenceUri, function (sequenceData) {
                     that.sequence = that.sequences[that.sequenceIndex] = sequenceData;
@@ -124,12 +141,15 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
                 parent.$(parent.document).trigger("onNotFound");
                 return;
             }
-            catch (e) {
-            }
+            catch (e) { }
         };
         Bootstrapper.prototype.parseExtension = function () {
             var that = this;
             var extension;
+            // look at the first canvas type in the sequence and use that
+            // to establish which extension to use.
+            // todo: should viewinghint="time-based" be added to the manifest/sequence?
+            // The UV should probably be able to load different extensions on a per-canvas-basis.
             var canvasType = that.sequence.canvases[0]['@type'];
             var format = that.sequence.canvases[0].format;
             switch (canvasType.toLowerCase()) {
@@ -170,10 +190,13 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
         Bootstrapper.prototype.configure = function (extension, cb) {
             var that = this;
             this.getConfigExtension(extension, function (configExtension) {
+                // todo: use a compiler flag when available
                 var configPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + that.params.getLocaleName() + '.config.json' : 'lib/' + extension.name + '.' + that.params.getLocaleName() + '.config.json';
                 $.getJSON(configPath, function (config) {
                     config.name = extension.name;
+                    // if data-config has been set, extend the existing config object.
                     if (configExtension) {
+                        // save a reference to the config extension uri.
                         config.uri = that.params.config;
                         $.extend(true, config, configExtension);
                     }
@@ -196,6 +219,7 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
             }
         };
         Bootstrapper.prototype.injectCss = function (extension, config, cb) {
+            // todo: use a compiler flag when available
             var cssPath = (window.DEBUG) ? 'extensions/' + extension.name + '/build/' + config.options.theme + '.css' : 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
             yepnope.injectCss(cssPath, function () {
                 cb();
@@ -214,224 +238,6 @@ define('Bootstrapper',["require", "exports", "BootstrapParams"], function (requi
     })();
     return Bootstrapper;
 });
-
-window.browserDetect = {
-    init: function () {
-        this.browser = this.searchString(this.dataBrowser) || "Other";
-        this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
-        // detect IE 11
-        if (this.browser == 'Explorer' && this.version == '7' && navigator.userAgent.match(/Trident/i)) {
-            this.version = this.searchVersionIE();
-        }
-    },
-
-    searchString: function (data) {
-        for (var i = 0 ; i < data.length ; i++) {
-            var dataString = data[i].string;
-            this.versionSearchString = data[i].subString;
-
-            if (dataString.indexOf(data[i].subString) != -1) {
-                return data[i].identity;
-            }
-        }
-    },
-
-    searchVersion: function (dataString) {
-        var index = dataString.indexOf(this.versionSearchString);
-        if (index == -1) return;
-        return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
-    },
-
-    searchVersionIE: function() {
-        var ua = navigator.userAgent.toString().toLowerCase(),
-            match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ['', null, -1],
-            ver;
-        try {
-            ver = (match[2]).split('.')[0]; // version
-        }
-        catch (err) {
-            ver = 'unknown'; //
-        }
-        return ver;
-    },
-
-    dataBrowser:
-        [
-            { string: navigator.userAgent, subString: "Chrome", identity: "Chrome" },
-            { string: navigator.userAgent, subString: "MSIE", identity: "Explorer" },
-            { string: navigator.userAgent, subString: "Trident", identity: "Explorer" },
-            { string: navigator.userAgent, subString: "Firefox", identity: "Firefox" },
-            { string: navigator.userAgent, subString: "Safari", identity: "Safari" },
-            { string: navigator.userAgent, subString: "Opera", identity: "Opera" }
-        ]
-
-};
-
-window.browserDetect.init();
-define("browserdetect", function(){});
-
-if (!Array.prototype.clone) {
-    Array.prototype.clone = function () {
-        return this.slice(0);
-    };
-}
-if (!Array.prototype.contains) {
-    Array.prototype.contains = function (val) {
-        return this.indexOf(val) !== -1;
-    };
-}
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (searchElement, fromIndex) {
-        var i = (fromIndex || 0);
-        var j = this.length;
-        for (i; i < j; i++) {
-            if (this[i] === searchElement) {
-                return i;
-            }
-        }
-        return -1;
-    };
-}
-Array.prototype.indexOfTest = function (test, fromIndex) {
-    var i = (fromIndex || 0);
-    var j = this.length;
-    for (i; i < j; i++) {
-        if (test(this[i]))
-            return i;
-    }
-    return -1;
-};
-Array.prototype.insert = function (item, index) {
-    this.splice(index, 0, item);
-};
-if (!Array.prototype.last) {
-    Array.prototype.last = function () {
-        return this[this.length - 1];
-    };
-}
-Array.prototype.move = function (fromIndex, toIndex) {
-    this.splice(toIndex, 0, this.splice(fromIndex, 1)[0]);
-};
-Array.prototype.remove = function (item) {
-    var index = this.indexOf(item);
-    if (index > -1) {
-        this.splice(index, 1);
-    }
-};
-Array.prototype.removeAt = function (index) {
-    this.splice(index, 1);
-};
-Math.clamp = function (value, min, max) {
-    return Math.min(Math.max(value, min), max);
-};
-Math.constrain = function (value, low, high) {
-    return Math.clamp(value, low, high);
-};
-Math.degreesToRadians = function (degrees) {
-    return Math.TAU * (degrees / 360);
-};
-Math.distanceBetween = function (x1, y1, x2, y2) {
-    return Math.sqrt(Math.sq(x2 - x1) + Math.sq(y2 - y1));
-};
-Math.lerp = function (start, stop, amount) {
-    return start + (stop - start) * amount;
-};
-Math.mag = function (a, b, c) {
-    return Math.sqrt(a * a + b * b + c * c);
-};
-Math.map = function (value, start1, stop1, start2, stop2) {
-    return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
-};
-Math.median = function (values) {
-    values.sort(function (a, b) {
-        return a - b;
-    });
-    var half = Math.floor(values.length / 2);
-    if (values.length % 2) {
-        return values[half];
-    }
-    else {
-        return (values[half - 1] + values[half]) / 2.0;
-    }
-};
-Math.normalise = function (num, min, max) {
-    return (num - min) / (max - min);
-};
-Math.radiansToDegrees = function (radians) {
-    return (radians * 360) / Math.TAU;
-};
-/**
- * Get a random number between two numbers.
- * If 'high' isn't passed, get a number from 0 to 'low'.
- * @param {Number} low The low number.
- * @param {Number} [high] The high number.
- */
-Math.randomBetween = function (low, high) {
-    if (!high) {
-        high = low;
-        low = 0;
-    }
-    if (low >= high)
-        return low;
-    return low + (high - low) * Math.random();
-};
-Math.roundToDecimalPlace = function (num, dec) {
-    return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-};
-Math.sq = function (n) {
-    return n * n;
-};
-Math.TAU = Math.PI * 2;
-Number.prototype.isInt = function () {
-    return this % 1 === 0;
-};
-String.prototype.b64_to_utf8 = function () {
-    return decodeURIComponent(escape(window.atob(this)));
-};
-String.prototype.contains = function (str) {
-    return this.indexOf(str) !== -1;
-};
-String.prototype.endsWith = function (str) {
-    return this.indexOf(str, this.length - str.length) !== -1;
-};
-String.format = function () {
-    var s = arguments[0];
-    for (var i = 0; i < arguments.length - 1; i++) {
-        var reg = new RegExp("\\{" + i + "\\}", "gm");
-        s = s.replace(reg, arguments[i + 1]);
-    }
-    return s;
-};
-String.prototype.ltrim = function () {
-    return this.replace(/^\s+/, '');
-};
-String.prototype.rtrim = function () {
-    return this.replace(/\s+$/, '');
-};
-String.prototype.startsWith = function (str) {
-    return this.indexOf(str) == 0;
-};
-String.prototype.toCssClass = function () {
-    return this.replace(/[^a-z0-9]/g, function (s) {
-        var c = s.charCodeAt(0);
-        if (c == 32)
-            return '-';
-        if (c >= 65 && c <= 90)
-            return '_' + s.toLowerCase();
-        return '__' + ('000' + c.toString(16)).slice(-4);
-    });
-};
-String.prototype.toFileName = function () {
-    return this.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-};
-String.prototype.trim = function () {
-    return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-};
-String.prototype.utf8_to_b64 = function () {
-    return window.btoa(unescape(encodeURIComponent(this)));
-};
-
-define("ext", function(){});
 
 define('modules/uv-shared-module/Commands',["require", "exports"], function (require, exports) {
     var Commands = (function () {
@@ -499,6 +305,7 @@ define('modules/uv-shared-module/Commands',["require", "exports"], function (req
 });
 
 define('modules/uv-shared-module/Params',["require", "exports"], function (require, exports) {
+    // todo: zoom and rotation are not generic
     var Params;
     (function (Params) {
         Params[Params["sequenceIndex"] = 0] = "sequenceIndex";
@@ -561,6 +368,7 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
             this.config.options = {};
             this.content = this.config.content;
             this.options = this.config.options;
+            // build config inheritance chain
             if (this.modules.length) {
                 this.modules = this.modules.reverse();
                 _.each(this.modules, function (moduleName) {
@@ -600,6 +408,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             var _this = this;
             this.setConfig('dialogue');
             _super.prototype.create.call(this);
+            // events.
             $.subscribe(Commands.CLOSE_ACTIVE_DIALOGUE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
@@ -639,8 +448,9 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             this.$closeButton.hide();
         };
         Dialogue.prototype.setArrowPosition = function () {
+            // set bottom background position to mouse x.
             var paddingLeft = parseInt(this.$element.css("padding-left"));
-            var pos = this.extension.mouseX - paddingLeft - 10;
+            var pos = this.extension.mouseX - paddingLeft - 10; // 10 = 1/2 arrow width.
             if (pos < 0)
                 pos = 0;
             this.$bottom.css('backgroundPosition', pos + 'px 0px');
@@ -650,6 +460,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             this.$element.show();
             this.setArrowPosition();
             this.isActive = true;
+            // set the focus to the default button.
             setTimeout(function () {
                 _this.$element.find('.btn.default').focus();
             }, 1);
@@ -788,6 +599,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./Commands", "./
                     $.publish(BaseCommands.CLOSE_ACTIVE_DIALOGUE);
                 }
             });
+            // create shared views.
             new GenericDialogue(Shell.$genericDialogue);
         };
         Shell.prototype.resize = function () {
@@ -813,12 +625,14 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             var _this = this;
             this.$element = $('#app');
             this.$element.data("bootstrapper", this.bootstrapper);
+            // initial sizing.
             var $win = $(window);
             this.embedWidth = $win.width();
             this.embedHeight = $win.height();
             this.$element.width(this.embedWidth);
             this.$element.height(this.embedHeight);
             if (!this.provider.isReload && this.inIframe()) {
+                // communication with parent frame (if it exists).
                 this.bootstrapper.socket = new easyXDM.Socket({
                     onMessage: function (message, origin) {
                         message = $.parseJSON(message);
@@ -832,6 +646,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                     params: this.provider.bootstrapper.params
                 }
             });
+            // add/remove classes.
             this.$element.empty();
             this.$element.removeClass();
             this.$element.addClass('browser-' + window.browserDetect.browser);
@@ -840,6 +655,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                 this.$element.addClass('embedded');
             if (this.provider.isLightbox)
                 this.$element.addClass('lightbox');
+            //this.$element.addClass(this.provider.getSequenceType()); // todo: add media mime type class?
+            // events.
             window.onresize = function () {
                 var $win = $(window);
                 $('body').height($win.height());
@@ -849,6 +666,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                 _this.mouseX = e.pageX;
                 _this.mouseY = e.pageY;
             });
+            // keyboard events.
             $(document).on('keyup keydown', function (e) {
                 _this.shifted = e.shiftKey;
                 _this.tabbing = e.keyCode === 9;
@@ -911,8 +729,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             $.subscribe(BaseCommands.CREATED, function () {
                 _this.triggerSocket(BaseCommands.CREATED);
             });
+            // create shell and shared views.
             this.shell = new Shell(this.$element);
+            // set canvasIndex to -1 (nothing selected yet).
             this.canvasIndex = -1;
+            // dependencies
             if (overrideDependencies) {
                 this.loadDependencies(overrideDependencies);
             }
@@ -928,11 +749,17 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
         };
         BaseExtension.prototype.getDependencies = function (cb) {
             var that = this;
+            // todo: use compiler flag (when available)
             var depsUri = (window.DEBUG) ? '../../extensions/' + this.name + '/dependencies' : this.name + '-dependencies';
             require([depsUri], function (deps) {
+                // if debugging, set the base uri to the extension's directory.
+                // otherwise set it to the current directory (where app.js is hosted).
                 if (!that.provider.isReload) {
+                    // todo: use compiler flag (when available)
                     var baseUri = (window.DEBUG) ? '../../extensions/' + that.name + '/lib/' : '';
+                    // for each dependency, prepend baseUri.
                     for (var i = 0; i < deps.dependencies.length; i++) {
+                        // todo: would be nice to use path.join. use browserify?
                         deps.dependencies[i] = baseUri + deps.dependencies[i];
                     }
                 }
@@ -948,7 +775,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
         BaseExtension.prototype.dependenciesLoaded = function () {
             this.createModules();
             this.modulesCreated();
-            $.publish(BaseCommands.RESIZE);
+            $.publish(BaseCommands.RESIZE); // initial sizing
             $.publish(BaseCommands.CREATED);
             this.setParams();
             this.setDefaultFocus();
@@ -957,7 +784,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
         BaseExtension.prototype.setParams = function () {
             if (!this.provider.isHomeDomain)
                 return;
-            this.setParam(0 /* sequenceIndex */, this.provider.sequenceIndex);
+            // set sequenceIndex hash param.
+            this.setParam(Params.sequenceIndex, this.provider.sequenceIndex);
         };
         BaseExtension.prototype.setDefaultFocus = function () {
             setTimeout(function () {
@@ -969,7 +797,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             var canvas = this.provider.getCanvasByIndex(0);
             this.viewCanvas(0, function () {
                 $.publish(BaseCommands.OPEN_MEDIA, [canvas]);
-                _this.setParam(1 /* canvasIndex */, 0);
+                _this.setParam(Params.canvasIndex, 0);
             });
         };
         BaseExtension.prototype.width = function () {
@@ -993,6 +821,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             $.publish(BaseCommands.RESIZE);
         };
         BaseExtension.prototype.handleParentFrameEvent = function (message) {
+            // todo: come up with better way of postponing this until viewer is fully created
             setTimeout(function () {
                 switch (message.eventName) {
                     case BaseCommands.TOGGLE_FULLSCREEN:
@@ -1001,8 +830,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                 }
             }, 1000);
         };
+        // get hash or data-attribute params depending on whether the UV is embedded.
         BaseExtension.prototype.getParam = function (key) {
             var value;
+            // deep linking is only allowed when hosted on home domain.
             if (this.provider.isDeepLinkingEnabled()) {
                 value = Utils.Urls.GetHashParameter(this.provider.paramMap[key], parent.document);
             }
@@ -1011,6 +842,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             }
             return value;
         };
+        // set hash params depending on whether the UV is embedded.
         BaseExtension.prototype.setParam = function (key, value) {
             if (this.provider.isDeepLinkingEnabled()) {
                 Utils.Urls.SetHashParameter(this.provider.paramMap[key], value, parent.document);
@@ -1022,7 +854,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             if (callback)
                 callback(canvasIndex);
         };
-        BaseExtension.prototype.showDialogue = function (message, acceptCallback, buttonText, allowClose) {
+        BaseExtension.prototype.showMessage = function (message, acceptCallback, buttonText, allowClose) {
             this.closeActiveDialogue();
             $.publish(BaseCommands.SHOW_GENERIC_DIALOGUE, [
                 {
@@ -1030,8 +862,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                     acceptCallback: acceptCallback,
                     buttonText: buttonText,
                     allowClose: allowClose
-                }
-            ]);
+                }]);
         };
         BaseExtension.prototype.closeActiveDialogue = function () {
             $.publish(BaseCommands.CLOSE_ACTIVE_DIALOGUE);
@@ -1048,10 +879,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                 if (this.bootstrapper.isFullScreen) {
                     $.publish(BaseCommands.TOGGLE_FULLSCREEN);
                 }
+                // todo: manifest.assetSequence doesn't exist in IIIF
                 this.triggerSocket(BaseCommands.SEQUENCE_INDEX_CHANGED, manifest.assetSequence);
             }
         };
         BaseExtension.prototype.inIframe = function () {
+            // see http://stackoverflow.com/questions/326069/how-to-identify-if-a-webpage-is-being-loaded-inside-an-iframe-or-directly-into-t
             try {
                 return window.self !== window.top;
             }
@@ -1060,7 +893,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
             }
         };
         BaseExtension.prototype.isLeftPanelEnabled = function () {
-            return Utils.Bools.GetBool(this.provider.config.options.leftPanelEnabled, true) && this.provider.isMultiCanvas();
+            return Utils.Bools.GetBool(this.provider.config.options.leftPanelEnabled, true)
+                && this.provider.isMultiCanvas();
         };
         BaseExtension.prototype.isRightPanelEnabled = function () {
             return Utils.Bools.GetBool(this.provider.config.options.rightPanelEnabled, true);
@@ -1143,6 +977,8 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             this.setConfig('mediaelementCenterPanel');
             _super.prototype.create.call(this);
             var that = this;
+            // events.
+            // only full screen video
             if (this.provider.getCanvasType(this.provider.getCanvasByIndex(0)).contains('video')) {
                 $.subscribe(BaseCommands.TOGGLE_FULLSCREEN, function (e) {
                     if (that.bootstrapper.isFullScreen) {
@@ -1180,7 +1016,11 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                 });
             });
             if (canvasType.contains('movingimage')) {
+                //if (!canvas.sources){
+                //    this.media = this.$container.append('<video id="' + id + '" type="video/mp4" src="' + canvas.mediaUri + '" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
+                //} else {
                 this.media = this.$container.append('<video id="' + id + '" type="video/mp4" class="mejs-uv" controls="controls" preload="none" poster="' + poster + '"></video>');
+                //}
                 this.player = new MediaElementPlayer("#" + id, {
                     type: ['video/mp4', 'video/webm', 'video/flv'],
                     plugins: ['flash'],
@@ -1194,6 +1034,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                             $.publish(Commands.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                         });
                         media.addEventListener('pause', function (e) {
+                            // mediaelement creates a pause event before the ended event. ignore this.
                             if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
                                 $.publish(Commands.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                             }
@@ -1226,6 +1067,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                             $.publish(Commands.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                         });
                         media.addEventListener('pause', function (e) {
+                            // mediaelement creates a pause event before the ended event. ignore this.
                             if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
                                 $.publish(Commands.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                             }
@@ -1233,6 +1075,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                         media.addEventListener('ended', function (e) {
                             $.publish(Commands.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                         });
+                        //media.setSrc(sources);
                         try {
                             media.load();
                         }
@@ -1245,11 +1088,13 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
         };
         MediaElementCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+            // if in Firefox < v13 don't resize the media container.
             if (window.browserDetect.browser === 'Firefox' && window.browserDetect.version < 13) {
                 this.$container.width(this.mediaWidth);
                 this.$container.height(this.mediaHeight);
             }
             else {
+                // fit media to available space.
                 var size = Utils.Measurement.Dimensions.FitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
                 this.$container.height(size.height);
                 this.$container.width(size.width);
@@ -1306,12 +1151,14 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
             $.subscribe(BaseCommands.HIDE_DOWNLOAD_DIALOGUE, function (e) {
                 _this.close();
             });
+            // create ui.
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
             this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
             this.$content.append(this.$noneAvailable);
             this.$downloadOptions = $('<ol class="options"></ol>');
             this.$content.append(this.$downloadOptions);
+            // hide
             this.$element.hide();
         };
         DownloadDialogue.prototype.open = function () {
@@ -1319,6 +1166,7 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
             _super.prototype.open.call(this);
             if (this.isDownloadOptionAvailable(DownloadOption.entireFileAsOriginal)) {
                 this.$downloadOptions.empty();
+                // add each file src
                 var canvas = this.provider.getCurrentCanvas();
                 _.each(this.provider.getRenderings(canvas), function (rendering) {
                     _this.addEntireFileDownloadOption(rendering['@id']);
@@ -1328,6 +1176,7 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
                 this.$noneAvailable.show();
             }
             else {
+                // select first option.
                 this.$noneAvailable.hide();
             }
             this.resize();
@@ -1385,6 +1234,7 @@ define('modules/uv-dialogues-module/EmbedDialogue',["require", "exports", "../uv
             this.largeHeight = 600;
             this.currentWidth = this.smallWidth;
             this.currentHeight = this.smallHeight;
+            // create ui.
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
             this.$intro = $('<p>' + this.content.instructions + '</p>');
@@ -1422,6 +1272,8 @@ define('modules/uv-dialogues-module/EmbedDialogue',["require", "exports", "../uv
             this.$customHeight = $('<input id="height" type="text" maxlength="5"></input>');
             this.$customSizeHeightWrap.append(this.$customHeight);
             this.$customSizeHeightWrap.append('<span>px</span>');
+            // initialise ui.
+            // ui event handlers.
             this.$code.focus(function () {
                 $(this).select();
             });
@@ -1667,6 +1519,8 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./Commands
             this.$options.append(this.$centerOptions);
             this.$rightOptions = $('<div class="rightOptions"></div>');
             this.$options.append(this.$rightOptions);
+            //this.$helpButton = $('<a href="#" class="action help">' + this.content.help + '</a>');
+            //this.$rightOptions.append(this.$helpButton);
             this.$pagingToggleButton = $('<a class="imageBtn pagingToggle"></a>');
             this.$rightOptions.append(this.$pagingToggleButton);
             this.$localeToggleButton = $('<a class="localeToggle"></a>');
@@ -1769,9 +1623,11 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./Commands
             });
             if (this.$messageBox.is(':visible')) {
                 var $text = this.$messageBox.find('.text');
+                //$text.actualWidth(this.$element.width() - this.$messageBox.find('.close').outerWidth(true));
                 $text.width(this.$element.width() - this.$messageBox.find('.close').outerWidth(true));
                 $text.ellipsisFill(this.message);
             }
+            // hide toggle buttons below minimum width
             if (this.extension.width() < 610) {
                 if (this.pagingToggleIsVisible())
                     this.$pagingToggleButton.hide();
@@ -1818,8 +1674,10 @@ define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-
             this.$content.append(this.$scroll);
             this.$message = $('<p></p>');
             this.$scroll.append(this.$message);
+            // initialise ui.
             this.$title.text(this.content.title);
             this.$message.html(this.content.text);
+            // ensure anchor tags link to _blank.
             this.$message.targetBlank();
             this.$element.hide();
         };
@@ -1916,7 +1774,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             this.$element.append(this.$main);
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$main.append(this.$thumbs);
-            this.$thumbs.addClass(this.provider.getViewingDirection());
+            this.$thumbs.addClass(this.provider.getViewingDirection()); // defaults to "left-to-right"
             this.$sizeDownButton.on('click', function () {
                 var val = Number(_this.$sizeRange.val()) - 1;
                 if (val >= Number(_this.$sizeRange.attr('min'))) {
@@ -1954,6 +1812,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
                     return className;
                 }
             });
+            // use unevent to detect scroll stop.
             this.$main.on('scroll', function () {
                 _this.updateThumbs();
             }, 1000);
@@ -1986,8 +1845,10 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             var _this = this;
             if (!this.thumbs || !this.thumbs.length)
                 return;
+            // cache range size
             var norm = Math.normalise(Number(this.$sizeRange.val()), 0, 10);
             this.range = Math.clamp(norm, 0.05, 1);
+            // test which thumbs are scrolled into view
             var thumbs = this.$thumbs.find('.thumb');
             for (var i = 0; i < thumbs.length; i++) {
                 var $thumb = $(thumbs[i]);
@@ -2029,12 +1890,14 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             var $wrap = $thumb.find('.wrap');
             if ($wrap.hasClass('loading') || $wrap.hasClass('loaded'))
                 return;
+            // if no img has been added yet
             var visible = $thumb.attr('data-visible');
             var fadeDuration = this.options.thumbsImageFadeInDuration;
             if (visible !== "false") {
                 $wrap.addClass('loading');
                 var src = $thumb.attr('data-src');
                 var img = $('<img src="' + src + '" />');
+                // fade in on load.
                 $(img).hide().load(function () {
                     $(this).fadeIn(fadeDuration, function () {
                         $(this).parent().swapClass('loading', 'loaded');
@@ -2078,6 +1941,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             return this.config.options.pageModeEnabled;
         };
         GalleryView.prototype.selectIndex = function (index) {
+            // may be authenticating
             if (index == -1)
                 return;
             if (!this.thumbs || !this.thumbs.length)
@@ -2086,6 +1950,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             this.$thumbs.find('.thumb').removeClass('selected');
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
             this.$selectedThumb.addClass('selected');
+            // make sure visible images are loaded.
             this.updateThumbs();
         };
         GalleryView.prototype.scrollToSelectedThumb = function () {
@@ -2175,6 +2040,7 @@ define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./Base
         BaseExpandPanel.prototype.toggle = function (autoToggled) {
             var _this = this;
             (autoToggled) ? this.autoToggled = true : this.autoToggled = false;
+            // if collapsing, hide contents immediately.
             if (this.isExpanded) {
                 this.$top.hide();
                 this.$main.hide();
@@ -2190,6 +2056,7 @@ define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./Base
         BaseExpandPanel.prototype.toggled = function () {
             this.toggleStart();
             this.isExpanded = !this.isExpanded;
+            // if expanded show content when animation finished.
             if (this.isExpanded) {
                 this.$closed.hide();
                 this.$top.show();
@@ -2359,12 +2226,13 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             $.subscribe(BaseCommands.CANVAS_INDEX_CHANGED, function (e, index) {
                 _this.selectIndex(parseInt(index));
             });
+            // todo: this should be a setting
             $.subscribe(Commands.MODE_CHANGED, function (e, mode) {
                 _this.setLabel();
             });
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$element.append(this.$thumbs);
-            this.$thumbs.addClass(this.provider.getViewingDirection());
+            this.$thumbs.addClass(this.provider.getViewingDirection()); // defaults to "left-to-right"
             var that = this;
             $.templates({
                 thumbsTemplate: '<div class="{{:~className()}}" data-src="{{>url}}" data-visible="{{>visible}}">\
@@ -2381,8 +2249,9 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
                 separator: function () {
                     var viewingDirection = that.provider.getViewingDirection();
                     if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
-                        return true;
+                        return true; // one thumb per line
                     }
+                    // two thumbs per line
                     return ((this.data.index - 1) % 2 == 0) ? false : true;
                 },
                 extraHeight: function () {
@@ -2406,6 +2275,7 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
                     return className;
                 }
             });
+            // use unevent to detect scroll stop.
             this.$element.on('scroll', function () {
                 _this.scrollStop();
             }, 1000);
@@ -2431,6 +2301,7 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             });
             this.selectIndex(this.provider.canvasIndex);
             this.setLabel();
+            // do initial load to show padlocks
             this.loadThumbs(0);
             this.isCreated = true;
         };
@@ -2451,16 +2322,20 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
                 start: (thumbRangeMid > thumbLoadRange) ? thumbRangeMid - thumbLoadRange : 0,
                 end: (thumbRangeMid < (this.thumbs.length - 1) - thumbLoadRange) ? thumbRangeMid + thumbLoadRange : this.thumbs.length - 1
             };
+            //console.log('start: ' + thumbRange.start + ' end: ' + thumbRange.end);
             var fadeDuration = this.options.thumbsImageFadeInDuration;
             for (var i = thumbRange.start; i <= thumbRange.end; i++) {
                 var thumbElem = $(this.$thumbs.find('.thumb')[i]);
                 var imgCont = thumbElem.find('.wrap');
+                // if no img has been added yet
                 if (!imgCont.hasClass('loading') && !imgCont.hasClass('loaded')) {
                     var visible = thumbElem.attr('data-visible');
                     if (visible !== "false") {
                         imgCont.addClass('loading');
                         var src = thumbElem.attr('data-src');
+                        //console.log(i, src);
                         var img = $('<img src="' + src + '" />');
+                        // fade in on load.
                         $(img).hide().load(function () {
                             $(this).fadeIn(fadeDuration, function () {
                                 $(this).parent().swapClass('loading', 'loaded');
@@ -2513,6 +2388,7 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
         };
         ThumbsView.prototype.selectIndex = function (index) {
             var _this = this;
+            // may be authenticating
             if (index == -1)
                 return;
             if (!this.thumbs || !this.thumbs.length)
@@ -2529,9 +2405,12 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             else {
                 this.$selectedThumb.addClass('selected');
             }
+            // scroll to thumb if the index change didn't originate
+            // within the thumbs view.
             if (this.lastThumbClickedIndex != index) {
                 this.$element.scrollTop(this.$selectedThumb.position().top);
             }
+            // make sure visible images are loaded.
             this.loadThumbs(index);
         };
         ThumbsView.prototype.resize = function () {
@@ -2598,21 +2477,26 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
                     var $a = $(this.linkCtx.elem);
                     var elideCount = Math.floor($a.parent().width() / 7);
                     return Utils.Strings.HtmlDecode(Utils.Strings.Ellipsis(text, elideCount));
+                    //https://github.com/BorisMoore/jsviews/issues/296
                 }
             });
             $.views.tags({
                 tree: {
                     toggle: function () {
                         $.observable(this.data).setProperty("expanded", !this.data.expanded);
+                        //this.contents().find('a').each(function() {
+                        //    that.elide($(this));
+                        //});
                     },
                     init: function (tagCtx, linkCtx, ctx) {
                         var data = tagCtx.view.data;
-                        data.text = data.label;
+                        data.text = data.label; //Utils.Strings.htmlDecode(Utils.Strings.ellipsis(data.label, that.elideCount));
                         this.data = tagCtx.view.data;
                     },
                     onAfterLink: function () {
                         var self = this;
-                        self.contents("li").first().on("click", ".toggle", function () {
+                        self.contents("li").first()
+                            .on("click", ".toggle", function () {
                             self.toggle();
                         }).on("click", "a", function (e) {
                             e.preventDefault();
@@ -2642,6 +2526,7 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
             this.selectNode(node);
         };
         TreeView.prototype.selectTreeNodeFromCanvasIndex = function (index) {
+            // may be authenticating
             if (index == -1)
                 return;
             this.deselectCurrentNode();
@@ -2662,12 +2547,14 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
             $.observable(this.selectedNode).setProperty("selected", true);
             this.expandParents(this.selectedNode);
         };
+        // walk up the tree expanding parent nodes.
         TreeView.prototype.expandParents = function (node) {
             if (!node.parentNode)
                 return;
             $.observable(node.parentNode).setProperty("expanded", true);
             this.expandParents(node.parentNode);
         };
+        // walks down the tree using the specified path e.g. [2,2,0]
         TreeView.prototype.getNodeByPath = function (parentNode, path) {
             if (path.length == 0)
                 return parentNode;
@@ -2698,6 +2585,7 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
         };
         TreeView.prototype.resize = function () {
             _super.prototype.resize.call(this);
+            // elide links
             this.elideAll();
         };
         return TreeView;
@@ -2820,6 +2708,7 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                 if (!this.treeData.nodes.length) {
                     treeEnabled = false;
                 }
+                // hide the tabs if either tree or thumbs are disabled.
                 if (!treeEnabled || !thumbsEnabled)
                     this.$tabs.hide();
                 if (thumbsEnabled && this.provider.defaultToThumbsView()) {
@@ -2858,6 +2747,9 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
         };
         TreeViewLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
+            // todo: write a more generic tabs system with base tab class.
+            // thumbsView may not necessarily have been created yet.
+            // replace thumbsView with galleryView.
             if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
@@ -3001,6 +2893,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
         };
         MoreInfoRightPanel.prototype.getInfo = function () {
             var _this = this;
+            // show loading icon.
             this.$main.addClass('loading');
             this.provider.getMetaData(function (data) {
                 _this.displayInfo(data);
@@ -3044,6 +2937,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             var value = this.provider.getLocalisedValue(item.value);
             label = this.provider.sanitize(label);
             value = this.provider.sanitize(value);
+            // replace \n with <br>
             value = value.replace('\n', '<br>');
             $header.html(label);
             $text.html(value);
@@ -3063,7 +2957,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.2.15';
+    exports.Version = '1.2.16';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3100,6 +2994,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             this.$locale.append(this.$localeLabel);
             this.$localeDropDown = $('<select id="locale"></select>');
             this.$locale.append(this.$localeDropDown);
+            // initialise ui.
             this.$title.text(this.content.title);
             this.$version.text("v" + Version.Version);
             var locales = this.provider.getLocales();
@@ -3170,6 +3065,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
         Extension.prototype.create = function (overrideDependencies) {
             var _this = this;
             _super.prototype.create.call(this, overrideDependencies);
+            // listen for mediaelement enter/exit fullscreen events.
             $(window).bind('enterfullscreen', function () {
                 $.publish(BaseCommands.TOGGLE_FULLSCREEN);
             });
@@ -3228,21 +3124,50 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             }
         };
         Extension.prototype.isLeftPanelEnabled = function () {
-            return Utils.Bools.GetBool(this.provider.config.options.leftPanelEnabled, true) && (this.provider.isMultiCanvas() || this.provider.isMultiSequence());
+            return Utils.Bools.GetBool(this.provider.config.options.leftPanelEnabled, true)
+                && (this.provider.isMultiCanvas() || this.provider.isMultiSequence());
         };
         Extension.prototype.viewFile = function (canvasIndex) {
             var _this = this;
+            // if it's a valid canvas index.
             if (canvasIndex == -1)
                 return;
             this.viewCanvas(canvasIndex, function () {
                 var canvas = _this.provider.getCanvasByIndex(canvasIndex);
                 $.publish(BaseCommands.OPEN_MEDIA, [canvas]);
-                _this.setParam(1 /* canvasIndex */, canvasIndex);
+                _this.setParam(Params.canvasIndex, canvasIndex);
             });
         };
         return Extension;
     })(BaseExtension);
     return Extension;
+});
+
+define('modules/uv-shared-module/Session',["require", "exports"], function (require, exports) {
+    // todo: add indexer? http://stackoverflow.com/questions/14841598/implementing-an-indexer-in-a-class-in-typescript
+    var Session = (function () {
+        function Session() {
+        }
+        Session.set = function (key, data, expirationSecs) {
+            var expirationMS = expirationSecs * 1000;
+            var record = {
+                value: JSON.stringify(data),
+                timestamp: new Date().getTime() + expirationMS
+            };
+            sessionStorage.setItem(key, JSON.stringify(record));
+            return data;
+        };
+        Session.get = function (key) {
+            var data = sessionStorage.getItem(key);
+            if (!data) {
+                return false;
+            }
+            data = JSON.parse(data);
+            return (new Date().getTime() < data.timestamp && JSON.parse(data.value));
+        };
+        return Session;
+    })();
+    return Session;
 });
 
 define('modules/uv-shared-module/Thumb',["require", "exports"], function (require, exports) {
@@ -3278,9 +3203,14 @@ define('modules/uv-shared-module/TreeNode',["require", "exports"], function (req
     return TreeNode;
 });
 
-define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../BootstrapParams", "./Params", "./Thumb", "./TreeNode"], function (require, exports, BootstrapParams, Params, Thumb, TreeNode) {
+define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../BootstrapParams", "./Params", "./Session", "./Thumb", "./TreeNode"], function (require, exports, BootstrapParams, Params, Session, Thumb, TreeNode) {
+    // providers contain methods that could be implemented differently according
+    // to factors like varying back end data provision systems.
+    // they provide a consistent interface and set of data structures
+    // for extensions to operate against.
     var BaseProvider = (function () {
         function BaseProvider(bootstrapper) {
+            // map param names to enum indices.
             this.paramMap = ['si', 'ci', 'z', 'r'];
             this.options = {
                 thumbsUriTemplate: "{0}{1}",
@@ -3290,6 +3220,9 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             this.bootstrapper = bootstrapper;
             this.config = this.bootstrapper.config;
             this.manifest = this.bootstrapper.manifest;
+            // get data-attributes that can't be overridden by hash params.
+            // other data-attributes are retrieved through app.getParam.
+            // todo: make these getters when ES5 target is available
             this.manifestUri = this.bootstrapper.params.manifestUri;
             this.jsonp = this.bootstrapper.params.jsonp;
             this.locale = this.bootstrapper.params.getLocaleName();
@@ -3301,21 +3234,28 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             this.domain = this.bootstrapper.params.domain;
             this.isLightbox = this.bootstrapper.params.isLightbox;
             if (this.isHomeDomain && !this.isReload) {
-                this.sequenceIndex = parseInt(Utils.Urls.GetHashParameter(this.paramMap[0 /* sequenceIndex */], parent.document));
+                this.sequenceIndex = parseInt(Utils.Urls.GetHashParameter(this.paramMap[Params.sequenceIndex], parent.document));
             }
             if (!this.sequenceIndex) {
-                this.sequenceIndex = parseInt(Utils.Urls.GetQuerystringParameter(this.paramMap[0 /* sequenceIndex */])) || 0;
+                this.sequenceIndex = parseInt(Utils.Urls.GetQuerystringParameter(this.paramMap[Params.sequenceIndex])) || 0;
             }
         }
         BaseProvider.prototype.load = function () {
+            // we know that this sequence exists because the bootstrapper
+            // will have loaded it already.
             this.sequence = this.manifest.sequences[this.sequenceIndex];
+            // replace all ref sequences with an object that can store
+            // its path and sub structures. they won't get used for anything
+            // else without a reload.
             for (var i = 0; i < this.manifest.sequences.length; i++) {
                 if (!this.manifest.sequences[i].canvases) {
                     this.manifest.sequences[i] = {};
                 }
             }
+            //this.parseManifest();
             this.parseStructure();
         };
+        // re-bootstraps the application with new querystring params
         BaseProvider.prototype.reload = function (params) {
             var p = new BootstrapParams();
             p.isReload = true;
@@ -3326,8 +3266,10 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             this.bootstrapper.bootStrap(p);
         };
         BaseProvider.prototype.corsEnabled = function () {
+            // No jsonp setting? Then use autodetection. Otherwise, use explicit setting.
             return (null === this.jsonp) ? Modernizr.cors : !this.jsonp;
         };
+        // todo
         BaseProvider.prototype.getManifestType = function () {
             return 'monograph';
         };
@@ -3369,9 +3311,12 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                 }
                 return renderings;
             }
+            // no renderings provided, default to element.
             return [element];
         };
         BaseProvider.prototype.getSequenceType = function () {
+            // todo: perhaps use viewingHint attribute
+            // default to 'seadragon-iiif'
             return 'seadragon-iiif';
         };
         BaseProvider.prototype.getCanvasType = function (canvas) {
@@ -3395,6 +3340,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             return this.manifest.seeAlso;
         };
         BaseProvider.prototype.getLastCanvasLabel = function () {
+            // get the last label that isn't empty or '-'.
             for (var i = this.sequence.canvases.length - 1; i >= 0; i--) {
                 var canvas = this.sequence.canvases[i];
                 var regExp = /\d/;
@@ -3402,11 +3348,13 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                     return this.getLocalisedValue(canvas.label);
                 }
             }
+            // none exists, so return '-'.
             return '-';
         };
         BaseProvider.prototype.isCanvasIndexOutOfRange = function (canvasIndex) {
             return canvasIndex > this.getTotalCanvases() - 1;
         };
+        // checks if the number of canvases is even - therefore has a front and back cover
         BaseProvider.prototype.isTotalCanvasesEven = function () {
             return this.getTotalCanvases() % 2 === 0;
         };
@@ -3433,6 +3381,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             return this.getCanvasStructure(canvas);
         };
         BaseProvider.prototype.getCanvasStructure = function (canvas) {
+            // get the deepest structure that this asset belongs to.
             if (canvas.structures) {
                 return canvas.structures.last();
             }
@@ -3538,12 +3487,14 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.getStartCanvasIndex = function () {
             if (this.sequence.startCanvas) {
+                // if there's a startCanvas attribute, loop through the canvases and return the matching index.
                 for (var i = 0; i < this.sequence.canvases.length; i++) {
                     var canvas = this.sequence.canvases[i];
                     if (canvas["@id"] == this.sequence.startCanvas)
                         return i;
                 }
             }
+            // default to first canvas.
             return 0;
         };
         BaseProvider.prototype.addTimestamp = function (uri) {
@@ -3589,6 +3540,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             if (!(prop instanceof Array)) {
                 return prop;
             }
+            // test for exact match
             for (var i = 0; i < prop.length; i++) {
                 var value = prop[i];
                 var language = value['@language'];
@@ -3596,6 +3548,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                     return value['@value'];
                 }
             }
+            // test for inexact match
             for (var i = 0; i < prop.length; i++) {
                 var value = prop[i];
                 var language = value['@language'];
@@ -3668,6 +3621,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
             label = label.trim();
+            // trim any preceding zeros.
             if ($.isNumeric(label)) {
                 label = parseInt(label, 10).toString();
             }
@@ -3675,9 +3629,11 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             var match, regExp, regStr, labelPart1, labelPart2;
             for (var i = 0; i < this.sequence.canvases.length; i++) {
                 var canvas = this.sequence.canvases[i];
+                // check if there's a literal match
                 if (canvas.label === label) {
                     return i;
                 }
+                // check if there's a match for double-page spreads e.g. 100-101, 100_101, 100 101
                 match = doublePageRegExp.exec(label);
                 if (!match)
                     continue;
@@ -3693,10 +3649,12 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             }
             return -1;
         };
+        // todo
         BaseProvider.prototype.getManifestSeeAlsoUri = function (manifest) {
             return null;
         };
         BaseProvider.prototype.getRootStructure = function () {
+            // loop through structures looking for viewingHint="top"
             if (this.manifest.structures) {
                 for (var i = 0; i < this.manifest.structures.length; i++) {
                     var s = this.manifest.structures[i];
@@ -3719,21 +3677,29 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                 return;
             this.parseStructures(this.getRootStructure(), '');
         };
+        // the purpose of this is to give each canvas in sequence.canvases
+        // a collection of structures it belongs to.
+        // it also builds a path string property for each structure
+        // that can be used when a node is clicked in the tree view
         BaseProvider.prototype.parseStructures = function (structure, path) {
             structure.path = path;
             if (structure.canvases) {
+                // loop through canvases and associate with matching @id
                 for (var j = 0; j < structure.canvases.length; j++) {
+                    //console.log("canvas");
                     var canvas = structure.canvases[j];
                     if (typeof (canvas) === "string") {
                         canvas = this.getCanvasById(canvas);
                     }
                     if (!canvas) {
+                        // canvas not found - json invalid.
                         structure.canvases[j] = null;
                         continue;
                     }
                     if (!canvas.structures)
                         canvas.structures = [];
                     canvas.structures.push(structure);
+                    // create two-way relationship
                     structure.canvases[j] = canvas;
                 }
             }
@@ -3741,9 +3707,12 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                 structure.structures = [];
                 for (var k = 0; k < structure.ranges.length; k++) {
                     var s = structure.ranges[k];
+                    //console.log("range: ", s);
+                    // if it's a url ref
                     if (typeof (s) === "string") {
                         s = this.getStructureById(s);
                     }
+                    // if this structure already has a parent, continue.
                     if (s.parentStructure)
                         continue;
                     s.parentStructure = structure;
@@ -3854,13 +3823,17 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.getLocales = function () {
             if (this.locales)
                 return this.locales;
+            // use data-locales to prioritise
             var items = this.config.localisation.locales.clone();
             var sorting = this.bootstrapper.params.locales;
             var result = [];
+            // loop through sorting array
+            // if items contains sort item, add it to results.
+            // if sort item has a label, substitute it
+            // mark item as added.
+            // loop through remaining items and add to results.
             _.each(sorting, function (sortItem) {
-                var match = _.filter(items, function (item) {
-                    return item.name === sortItem.name;
-                });
+                var match = _.filter(items, function (item) { return item.name === sortItem.name; });
                 if (match.length) {
                     var m = match[0];
                     if (sortItem.label)
@@ -3889,11 +3862,15 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             return l;
         };
         BaseProvider.prototype.changeLocale = function (locale) {
+            // if the current locale is "en-GB:English,cy-GB:Welsh"
+            // and "cy-GB" is passed, it becomes "cy-GB:Welsh,en-GB:English"
+            // re-order locales so the passed locale is first
             var locales = this.locales.clone();
             var index = locales.indexOfTest(function (l) {
                 return l.name === locale;
             });
             locales.move(index, 0);
+            // convert to comma-separated string
             var str = this.serializeLocales(locales);
             var p = new BootstrapParams();
             p.setLocale(str);
@@ -3914,6 +3891,80 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.getSerializedLocales = function () {
             return this.serializeLocales(this.locales);
+        };
+        // http://image-auth.iiif.io/api/image/2.1/authentication.html
+        BaseProvider.prototype.loadResource = function (resource) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                resource.getData().then(function () {
+                    if (resource.status === 200) {
+                        resolve(resource);
+                    }
+                    else if (resource.status === 401) {
+                        Promise.resolve(_this.authorize(resource));
+                    }
+                    else if (resource.status === 403) {
+                        // todo: use config content
+                        reject("You do not have permission to view this item.");
+                    }
+                    else {
+                        reject(resource.error.statusText);
+                    }
+                });
+            });
+        };
+        BaseProvider.prototype.authorize = function (resource) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                if (!resource.getAccessToken()) {
+                    _this.login(resource.loginService).then(function () {
+                        _this.getAuthToken(resource.tokenService).then(function (token) {
+                            Session.set(resource.tokenService, token, token.expiresIn);
+                            // fetch the info.json again
+                            Promise.resolve(_this.loadResource(resource));
+                        })['catch'](function () {
+                            // todo: use config content
+                            reject("Failed to get access token.");
+                        });
+                    });
+                }
+                else {
+                    // the resource already has an access token
+                    resolve(resource);
+                }
+            });
+        };
+        BaseProvider.prototype.login = function (loginServiceUrl) {
+            return new Promise(function (resolve) {
+                var win = window.open(loginServiceUrl, 'loginwindow', "height=600,width=600");
+                var pollTimer = window.setInterval(function () {
+                    if (win.closed) {
+                        window.clearInterval(pollTimer);
+                        resolve();
+                    }
+                }, 500);
+            });
+        };
+        BaseProvider.prototype.getAuthToken = function (tokenServiceUrl) {
+            return new Promise(function (resolve, reject) {
+                $.getJSON(tokenServiceUrl + "?callback=?", function (token) {
+                    resolve(token);
+                }).fail(function (error) {
+                    reject(error);
+                });
+            });
+        };
+        BaseProvider.prototype.loadResources = function (resources) {
+            var that = this;
+            return new Promise(function (resolve) {
+                var promises = _.map(resources, function (resource) {
+                    return that.loadResource(resource);
+                });
+                Promise.all(promises)
+                    .then(function () {
+                    resolve(resources);
+                });
+            });
         };
         return BaseProvider;
     })();
@@ -3984,12 +4035,14 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
             $.subscribe(BaseCommands.HIDE_DOWNLOAD_DIALOGUE, function (e) {
                 _this.close();
             });
+            // create ui.
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
             this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
             this.$content.append(this.$noneAvailable);
             this.$downloadOptions = $('<ol class="options"></ol>');
             this.$content.append(this.$downloadOptions);
+            // hide
             this.$element.hide();
         };
         DownloadDialogue.prototype.open = function () {
@@ -3997,6 +4050,7 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
             _super.prototype.open.call(this);
             if (this.isDownloadOptionAvailable(DownloadOption.entireFileAsOriginal)) {
                 this.$downloadOptions.empty();
+                // add each file src
                 var canvas = this.provider.getCurrentCanvas();
                 _.each(canvas.media, function (annotation) {
                     var resource = annotation.resource;
@@ -4007,6 +4061,7 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
                 this.$noneAvailable.show();
             }
             else {
+                // select first option.
                 this.$noneAvailable.hide();
             }
             this.resize();
@@ -4087,6 +4142,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             var browser = window.browserDetect.browser;
             var version = window.browserDetect.version;
             if (browser === 'Explorer' && version < 10) {
+                // create pdf object
                 var myPDF = new PDFObject({
                     url: pdfUri,
                     id: "PDF"
@@ -4094,12 +4150,14 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             }
             else {
                 var viewerPath;
+                // todo: use compiler conditional
                 if (window.DEBUG) {
                     viewerPath = 'modules/uv-pdfcenterpanel-module/html/viewer.html';
                 }
                 else {
                     viewerPath = 'html/uv-pdfcenterpanel-module/viewer.html';
                 }
+                // load viewer.html
                 this.$content.load(viewerPath, function () {
                     if (window.DEBUG) {
                         PDFJS.workerSrc = 'extensions/uv-pdf-extension/lib/pdf.worker.min.js';
@@ -4222,12 +4280,13 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         };
         Extension.prototype.viewFile = function (canvasIndex) {
             var _this = this;
+            // if it's a valid canvas index.
             if (canvasIndex == -1)
                 return;
             this.viewCanvas(canvasIndex, function () {
                 var canvas = _this.provider.getCanvasByIndex(canvasIndex);
                 $.publish(BaseCommands.OPEN_MEDIA, [canvas]);
-                _this.setParam(1 /* canvasIndex */, canvasIndex);
+                _this.setParam(Params.canvasIndex, canvasIndex);
             });
         };
         return Extension;
@@ -4301,6 +4360,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             $.subscribe(BaseCommands.HIDE_DOWNLOAD_DIALOGUE, function (e) {
                 _this.close();
             });
+            // create ui.
             this.$title = $('<h1>' + this.content.title + '</h1>');
             this.$content.append(this.$title);
             this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
@@ -4354,6 +4414,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 _this.close();
                 $.publish(BaseCommands.SHOW_SETTINGS_DIALOGUE);
             });
+            // hide
             this.$element.hide();
         };
         DownloadDialogue.prototype.open = function () {
@@ -4397,6 +4458,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 this.$downloadButton.hide();
             }
             else {
+                // select first option.
                 this.$downloadOptions.find('input:visible:first').prop("checked", true);
                 this.$noneAvailable.hide();
                 this.$downloadButton.show();
@@ -4486,6 +4548,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 case DownloadOption.wholeImageHighRes:
                     return settings.pagingEnabled ? false : true;
                 case DownloadOption.wholeImageLowResAsJpg:
+                    // hide low-res option if hi-res width is smaller than constraint
                     var dimensions = this.getDimensionsForCurrentCanvas();
                     return (!settings.pagingEnabled && (dimensions[0] > this.options.confinedImageSize));
                 default:
@@ -4585,9 +4648,12 @@ define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"]
             this.delay = delay;
             this.parseResults = parseResults;
             this.onSelect = onSelect;
+            // create ui.
             this.$searchResultsList = $('<ul class="autocomplete"></ul>');
             this.$element.parent().prepend(this.$searchResultsList);
             this.$searchResultTemplate = $('<li class="result"><a href="#"></a></li>');
+            // init ui.
+            // callback after set period.
             var typewatch = (function () {
                 var timer = 0;
                 return function (callback, ms) {
@@ -4596,6 +4662,8 @@ define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"]
                 };
             })();
             var that = this;
+            // validate
+            // prevent invalid characters being entered
             this.$element.on("keydown", function (e) {
                 if (!that.isValidKey(e.keyCode)) {
                     e.preventDefault();
@@ -4603,14 +4671,18 @@ define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"]
                 }
                 return true;
             });
+            // auto complete
             this.$element.on("keyup", function (e) {
                 e.preventDefault();
+                // if pressing enter without a list item selected
                 if (!that.getSelectedListItem().length && e.keyCode === 13) {
                     that.onSelect(that.getTerms());
                     return;
                 }
+                // If there are search results
                 if (that.$searchResultsList.is(':visible') && that.results.length) {
                     if (e.keyCode === 13) {
+                        // enter
                         that.searchForItem(that.getSelectedListItem());
                     }
                     else if (e.keyCode === 40) {
@@ -4622,22 +4694,28 @@ define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"]
                         return;
                     }
                 }
+                // after a delay, show autocomplete list.
                 typewatch(function () {
+                    // don't do anything if not a valid key.
                     if (!that.isValidKey(e.keyCode)) {
                         e.preventDefault();
                         return false;
                     }
                     var val = that.getTerms();
+                    // if there are more than 2 chars and no spaces
+                    // update the autocomplete list.
                     if (val && val.length > 2 && val.indexOf(' ') == -1) {
                         that.search(val);
                     }
                     else {
+                        // otherwise, hide the autocomplete list.
                         that.clearResults();
                         that.hideResults();
                     }
                     return true;
                 }, that.delay);
             });
+            // hide results if clicked outside.
             $(document).on('mouseup', function (e) {
                 if (_this.$searchResultsList.parent().has($(e.target)[0]).length === 0) {
                     _this.clearResults();
@@ -4668,14 +4746,22 @@ define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"]
             $items.removeClass('selected');
             var selectedItem = $items.eq(this.selectedResultIndex);
             selectedItem.addClass('selected');
+            //var top = selectedItem.offset().top;
             var top = selectedItem.outerHeight(true) * this.selectedResultIndex;
             this.$searchResultsList.scrollTop(top);
         };
         AutoComplete.prototype.isValidKey = function (keyCode) {
+            // up and down are invalid. otherwise get converted to
+            // '&'' and '(' respectively.
             if (keyCode === 38 || keyCode === 40)
                 return false;
+            // ignore if it's a backspace or space.
             if (keyCode != 8 && keyCode != 32) {
+                // prev:  new RegExp("^[a-zA-Z]+$");
+                // standard keyboard non-control characters
                 var regex = new RegExp("^[\\w()!£$%^&*()-+=@'#~?<>|/\\\\]+$");
+                //var regex = new RegExp("^[\\w]+$");
+                //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
                 var key = String.fromCharCode(keyCode);
                 if (!regex.test(key)) {
                     return false;
@@ -4713,6 +4799,9 @@ define('modules/uv-searchfooterpanel-module/AutoComplete',["require", "exports"]
             this.results = this.parseResults(results);
             this.clearResults();
             if (!this.results.length) {
+                // don't do this, because there still may be results for the PHRASE but not the word.
+                // they won't know until they do the search.
+                //this.searchResultsList.append('<li>no results</li>');
                 this.hideResults();
                 return;
             }
@@ -4764,6 +4853,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             $.subscribe(BaseCommands.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.canvasIndexChanged();
             });
+            // todo: this should be a setting
             $.subscribe(Commands.MODE_CHANGED, function (e, mode) {
                 _this.settingsChanged();
             });
@@ -4773,6 +4863,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             $.subscribe(BaseCommands.CREATED, function (e) {
                 _this.checkForSearchParams();
             });
+            // search input.
             this.$searchContainer = $('<div class="search"></div>');
             this.$element.prepend(this.$searchContainer);
             this.$searchOptions = $('<div class="searchOptions"></div>');
@@ -4785,6 +4876,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             this.$searchTextContainer.append(this.$searchText);
             this.$searchButton = $('<a class="imageButton searchButton"></a>');
             this.$searchTextContainer.append(this.$searchButton);
+            // search results.
             this.$searchPagerContainer = $('<div class="searchPager"></div>');
             this.$element.prepend(this.$searchPagerContainer);
             this.$searchPagerControls = $('<div class="controls"></div>');
@@ -4797,6 +4889,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             this.$searchResultsInfo.append(this.$clearSearchResultsButton);
             this.$nextResultButton = $('<a class="nextResult" title="' + this.content.nextResult + '">' + this.content.nextResult + '</a>');
             this.$searchPagerControls.append(this.$nextResultButton);
+            // placemarker line.
             this.$searchResultsContainer = $('<div class="searchResults"></div>');
             this.$element.prepend(this.$searchResultsContainer);
             this.$line = $('<div class="line"></div>');
@@ -4811,19 +4904,23 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             this.$placemarkerDetails.append(this.$placemarkerDetailsTop);
             this.$placemarkerDetailsBottom = $('<p></p>');
             this.$placemarkerDetails.append(this.$placemarkerDetailsBottom);
+            // initialise ui.
             this.$searchPagerContainer.hide();
             this.$placemarkerDetails.hide();
+            // ui event handlers.
             var that = this;
             this.$searchButton.on('click', function (e) {
                 e.preventDefault();
                 _this.search(_this.$searchText.val());
             });
             this.$searchText.on('focus', function () {
+                // clear initial text.
                 if (_this.$searchText.val() === _this.content.enterKeyword)
                     _this.$searchText.val('');
             });
             this.$placemarkerDetails.on('mouseleave', function () {
                 $(this).hide();
+                // reset all placemarkers.
                 var placemarkers = that.getSearchResultPlacemarkers();
                 placemarkers.removeClass('hover');
             });
@@ -4843,6 +4940,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 $.publish(Commands.CLEAR_SEARCH);
                 _this.clearSearchResults();
             });
+            // hide search options if not enabled/supported.
             if (!this.provider.isSearchWithinEnabled()) {
                 this.$searchContainer.hide();
                 this.$searchPagerContainer.hide();
@@ -4856,10 +4954,13 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             });
         };
         FooterPanel.prototype.checkForSearchParams = function () {
+            // if a h or q value is in the hash params, do a search.
             if (this.provider.isDeepLinkingEnabled()) {
-                var terms = Utils.Urls.GetHashParameter('h', parent.document) || Utils.Urls.GetHashParameter('q', parent.document);
+                var terms = Utils.Urls.GetHashParameter('h', parent.document)
+                    || Utils.Urls.GetHashParameter('q', parent.document);
                 if (terms) {
                     this.terms = terms.replace(/\+/g, " ").replace(/"/g, "");
+                    // blur search field
                     this.$searchText.blur();
                     $.publish(Commands.SEARCH, [this.terms]);
                 }
@@ -4868,11 +4969,12 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         FooterPanel.prototype.search = function (terms) {
             this.terms = terms;
             if (this.terms === '' || this.terms === this.content.enterKeyword) {
-                this.extension.showDialogue(this.config.modules.genericDialogue.content.emptyValue, function () {
+                this.extension.showMessage(this.config.modules.genericDialogue.content.emptyValue, function () {
                     this.$searchText.focus();
                 });
                 return;
             }
+            // blur search field
             this.$searchText.blur();
             $.publish(Commands.SEARCH, [this.terms]);
         };
@@ -4883,28 +4985,22 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var results = this.provider.searchResults;
             if (!results.length)
                 return;
+            // clear all existing placemarkers
             var placemarkers = this.getSearchResultPlacemarkers();
             placemarkers.remove();
             var pageWidth = this.getPageLineRatio();
             var lineTop = this.$line.position().top;
             var lineLeft = this.$line.position().left;
             var that = this;
+            // for each page with a result, place a marker along the line.
             for (var i = 0; i < results.length; i++) {
                 var result = results[i];
                 var distance = result.canvasIndex * pageWidth;
                 var $placemarker = $('<div class="searchResultPlacemarker" data-index="' + result.canvasIndex + '"></div>');
-                $placemarker[0].ontouchstart = function (e) {
-                    that.onPlacemarkerTouchStart.call(this, that);
-                };
-                $placemarker.click(function (e) {
-                    that.onPlacemarkerClick.call(this, that);
-                });
-                $placemarker.mouseenter(function (e) {
-                    that.onPlacemarkerMouseEnter.call(this, that);
-                });
-                $placemarker.mouseleave(function (e) {
-                    that.onPlacemarkerMouseLeave.call(this, e, that);
-                });
+                $placemarker[0].ontouchstart = function (e) { that.onPlacemarkerTouchStart.call(this, that); };
+                $placemarker.click(function (e) { that.onPlacemarkerClick.call(this, that); });
+                $placemarker.mouseenter(function (e) { that.onPlacemarkerMouseEnter.call(this, that); });
+                $placemarker.mouseleave(function (e) { that.onPlacemarkerMouseLeave.call(this, e, that); });
                 this.$searchResultsContainer.append($placemarker);
                 var top = lineTop - $placemarker.height();
                 var left = lineLeft + distance - ($placemarker.width() / 2);
@@ -4993,6 +5089,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         FooterPanel.prototype.setPageMarkerPosition = function () {
             if (this.provider.canvasIndex == null)
                 return;
+            // position placemarker showing current page.
             var pageLineRatio = this.getPageLineRatio();
             var lineTop = this.$line.position().top;
             var lineLeft = this.$line.position().left;
@@ -5003,6 +5100,8 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 top: top,
                 left: left
             });
+            // if the remaining distance to the right is less than the width of the label
+            // shift it to the left.
             var lineWidth = this.$line.width();
             if (left + this.$pagePositionLabel.outerWidth(true) > lineWidth) {
                 left -= this.$pagePositionLabel.outerWidth(true);
@@ -5020,15 +5119,20 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         };
         FooterPanel.prototype.clearSearchResults = function () {
             this.provider.searchResults = [];
+            // clear all existing placemarkers
             var placemarkers = this.getSearchResultPlacemarkers();
             placemarkers.remove();
+            // clear search input field.
             this.$searchText.val(this.content.enterKeyword);
+            // hide pager.
             this.$searchContainer.show();
             this.$searchPagerContainer.hide();
+            // set focus to search box.
             this.$searchText.focus();
         };
         FooterPanel.prototype.getPageLineRatio = function () {
             var lineWidth = this.$line.width();
+            // find page/width ratio by dividing the line width by the number of pages in the book.
             if (this.provider.getTotalCanvases() == 1)
                 return 0;
             return lineWidth / (this.provider.getTotalCanvases() - 1);
@@ -5063,6 +5167,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             if (!results)
                 return;
             this.positionSearchResultPlacemarkers();
+            // show pager.
             this.$searchContainer.hide();
             this.$searchPagerControls.css({
                 'left': 0
@@ -5090,9 +5195,11 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             this.setPageMarkerPosition();
             this.$searchPagerContainer.width(this.$element.width());
             var center = this.$element.width() / 2;
+            // position search pager controls.
             this.$searchPagerControls.css({
                 'left': center - (this.$searchPagerControls.width() / 2)
             });
+            // position search input.
             this.$searchOptions.css({
                 'left': center - (this.$searchOptions.outerWidth() / 2)
             });
@@ -5168,14 +5275,17 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             }
             else {
                 this.$imageModeOption.attr('checked', 'checked');
+                // disable page mode option.
                 this.$pageModeOption.attr('disabled', 'disabled');
                 this.$pageModeLabel.addClass('disabled');
             }
             this.setTitles();
             this.setTotal();
+            // check if the book has more than one page, otherwise hide prev/next options.
             if (this.provider.getTotalCanvases() == 1) {
                 this.$centerOptions.hide();
             }
+            // ui event handlers.
             this.$firstButton.onPressed(function () {
                 $.publish(Commands.FIRST);
             });
@@ -5185,12 +5295,17 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$nextButton.onPressed(function () {
                 $.publish(Commands.NEXT);
             });
+            // If page mode is disabled, we don't need to show radio buttons since
+            // there is only one option:
             if (!this.config.options.pageModeEnabled) {
                 this.$imageModeOption.hide();
                 this.$pageModeLabel.hide();
                 this.$pageModeOption.hide();
             }
             else {
+                // Only activate click actions for mode buttons when controls are
+                // visible, since otherwise, clicking on the "Image" label can
+                // trigger unexpected/undesired side effects.
                 this.$imageModeOption.on('click', function (e) {
                     $.publish(Commands.MODE_CHANGED, [Mode.image.toString()]);
                 });
@@ -5218,11 +5333,20 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             if (this.options.helpEnabled === false) {
                 this.$helpButton.hide();
             }
+            // cycle focus back to start.
+            // todo: design a more generic system that finds the element with the highest tabindex and attaches this listener
             this.$searchButton.blur(function () {
                 if (_this.extension.tabbing && !_this.extension.shifted) {
                     _this.$nextButton.focus();
                 }
             });
+            //this.$nextButton.blur(() => {
+            //    if (this.extension.shifted) {
+            //        setTimeout(() => {
+            //            this.$searchButton.focus();
+            //        }, 100);
+            //    }
+            //});
         };
         PagingHeaderPanel.prototype.isPageModeEnabled = function () {
             return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode.page.toString();
@@ -5281,13 +5405,13 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 var index = parseInt(this.$searchText.val(), 10);
                 index -= 1;
                 if (isNaN(index)) {
-                    this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.invalidNumber);
+                    this.extension.showMessage(this.provider.config.modules.genericDialogue.content.invalidNumber);
                     $.publish(BaseCommands.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
                 var asset = this.provider.getCanvasByIndex(index);
                 if (!asset) {
-                    this.extension.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
+                    this.extension.showMessage(this.provider.config.modules.genericDialogue.content.pageNotFound);
                     $.publish(BaseCommands.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
@@ -5385,13 +5509,16 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 _this.tryLoad();
             });
         };
+        // delay viewer creation to ensure it happens after initial resize
+        // todo: implement a listener for an onResized event
         SeadragonCenterPanel.prototype.tryLoad = function () {
             var _this = this;
+            //console.log("try load");
             if (!this.isCreated) {
                 setTimeout(function () {
                     _this.createUI();
                     _this.loadPages();
-                }, 500);
+                }, 500); // allow time for panel open animations to complete.
             }
             else {
                 this.loadPages();
@@ -5399,6 +5526,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.createUI = function () {
             var _this = this;
+            //console.log("create ui");
             this.$spinner = $('<div class="spinner"></div>');
             this.$content.append(this.$spinner);
             this.$rights = $('<div class="rights">\
@@ -5419,7 +5547,9 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 e.preventDefault();
                 _this.$rights.hide();
             });
+            // todo: use compiler flag (when available)
             var prefixUrl = (window.DEBUG) ? 'modules/uv-seadragoncenterpanel-module/img/' : 'themes/' + this.provider.config.options.theme + '/img/uv-seadragoncenterpanel-module/';
+            // add to window object for testing automation purposes.
             window.openSeadragonViewer = this.viewer = OpenSeadragon({
                 id: "viewer",
                 ajaxWithCredentials: false,
@@ -5490,6 +5620,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
             this.$rotateButton.attr('tabindex', 14);
             this.$rotateButton.addClass('rotate');
+            // events
             this.$element.on('mousemove', function (e) {
                 if (_this.controlsVisible)
                     return;
@@ -5502,7 +5633,9 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 _this.controlsVisible = false;
                 _this.viewer.setControlsEnabled(false);
             });
+            // when mouse move stopped
             this.$element.on('mousemove', function (e) {
+                // if over element, hide controls.
                 if (!_this.$viewer.find('.navigator').ismouseover()) {
                     if (!_this.controlsVisible)
                         return;
@@ -5517,6 +5650,8 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.viewer.addHandler('tile-drawn', function () {
                 _this.$spinner.hide();
             });
+            //this.viewer.addHandler("open-failed", () => {
+            //});
             this.viewer.addHandler('resize', function (viewer) {
                 $.publish(Commands.SEADRAGON_RESIZE, [viewer]);
                 _this.viewerResize(viewer);
@@ -5536,6 +5671,15 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             });
             this.title = this.extension.provider.getTitle();
             this.createNavigationButtons();
+            // if firefox, hide rotation and prev/next until this is resolved
+            //var browser = window.browserDetect.browser;
+            //if (browser == 'Firefox') {
+            //    if (this.provider.isMultiCanvas()){
+            //        this.$prevButton.hide();
+            //        this.$nextButton.hide();
+            //    }
+            //    this.$rotateButton.hide();
+            //}
             this.showAttribution();
             this.isCreated = true;
             this.resize();
@@ -5568,14 +5712,19 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.loadPages = function () {
             var _this = this;
             this.$spinner.show();
-            this.provider.getPages().then(function () {
-                _this.viewer.open(Utils.Objects.ConvertToPlainObject(_this.provider.pages));
+            this.provider.getPages().then(function (pages) {
+                _this.viewer.open(Utils.Objects.ConvertToPlainObject(pages));
+            })['catch'](function (errorMessage) {
+                _this.extension.showMessage(errorMessage);
             });
         };
         SeadragonCenterPanel.prototype.positionPages = function () {
             var viewingDirection = this.provider.getViewingDirection();
+            // if there's more than one page, align them next to each other.
             if (this.provider.pages.length > 1) {
-                if (viewingDirection == "top-to-bottom" || viewingDirection == "bottom-to-top") {
+                // check if tilesources should be aligned horizontally or vertically
+                if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
+                    // vertical
                     var topPage = this.viewer.world.getItemAt(0);
                     var topPageBounds = topPage.getBounds(true);
                     var y = topPageBounds.y + topPageBounds.height;
@@ -5585,6 +5734,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     bottomPage.setPosition(bottomPagePos, true);
                 }
                 else {
+                    // horizontal
                     var leftPage = this.viewer.world.getItemAt(0);
                     var leftPageBounds = leftPage.getBounds(true);
                     var x = leftPageBounds.x + leftPageBounds.width;
@@ -5597,12 +5747,13 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.openPagesHandler = function () {
             this.positionPages();
+            // check for initial zoom/rotation params.
             if (this.isFirstLoad) {
-                this.initialRotation = this.extension.getParam(3 /* rotation */);
+                this.initialRotation = this.extension.getParam(Params.rotation);
                 if (this.initialRotation) {
                     this.viewer.viewport.setRotation(parseInt(this.initialRotation));
                 }
-                this.initialBounds = this.extension.getParam(2 /* zoom */);
+                this.initialBounds = this.extension.getParam(Params.zoom);
                 if (this.initialBounds) {
                     this.initialBounds = this.deserialiseBounds(this.initialBounds);
                     this.currentBounds = this.initialBounds;
@@ -5610,7 +5761,9 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 }
             }
             else {
+                // it's not the first load
                 var settings = this.provider.getSettings();
+                // zoom to bounds unless setting disabled
                 if (settings.preserveViewport) {
                     this.fitToBounds(this.currentBounds);
                 }
@@ -5639,6 +5792,8 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.showAttribution = function () {
             var _this = this;
             var attribution = this.provider.getAttribution();
+            //var license = this.provider.getLicense();
+            //var logo = this.provider.getLogo();
             if (!attribution) {
                 this.$rights.hide();
                 return;
@@ -5662,8 +5817,17 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             else {
                 $attribution.hide();
             }
+            //if (license){
+            //    $license.append('<a href="' + license + '">' + license + '</a>');
+            //} else {
             $license.hide();
+            //}
+            //
+            //if (logo){
+            //    $logo.append('<img src="' + logo + '"/>');
+            //} else {
             $logo.hide();
+            //}
         };
         SeadragonCenterPanel.prototype.goHome = function () {
             var viewingDirection = this.provider.getViewingDirection();
@@ -5730,6 +5894,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var center = viewer.viewport.getCenter(true);
             if (!center)
                 return;
+            // postpone pan for a millisecond - fixes iPad image stretching/squashing issue.
             setTimeout(function () {
                 viewer.viewport.panTo(center, true);
             }, 1);
@@ -5779,6 +5944,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             return newRects;
         };
         SeadragonCenterPanel.prototype.resize = function () {
+            //console.log("resize");
             _super.prototype.resize.call(this);
             this.$viewer.height(this.$content.height() - this.$viewer.verticalMargins());
             this.$viewer.width(this.$content.width() - this.$viewer.horizontalMargins());
@@ -5891,6 +6057,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var _this = this;
             _super.prototype.create.call(this, overrideDependencies);
             var that = this;
+            // events.
             $.subscribe(Commands.FIRST, function (e) {
                 _this.viewPage(_this.provider.getFirstPageIndex());
             });
@@ -5967,7 +6134,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             });
             $.subscribe(Commands.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
                 if (_this.centerPanel && _this.centerPanel.currentBounds) {
-                    _this.setParam(2 /* zoom */, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
+                    _this.setParam(Params.zoom, _this.centerPanel.serialiseBounds(_this.centerPanel.currentBounds));
                 }
                 var canvas = _this.provider.getCurrentCanvas();
                 _this.triggerSocket(Commands.CURRENT_VIEW_URI, {
@@ -5980,7 +6147,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             });
             $.subscribe(Commands.SEADRAGON_ROTATION, function (e, rotation) {
                 _this.currentRotation = rotation;
-                _this.setParam(3 /* rotation */, rotation);
+                _this.setParam(Params.rotation, rotation);
             });
             $.subscribe(BaseCommands.EMBED, function (e) {
                 $.publish(BaseCommands.SHOW_EMBED_DIALOGUE);
@@ -6022,9 +6189,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
         };
         Extension.prototype.viewMedia = function () {
-            var canvasIndex = parseInt(this.getParam(1 /* canvasIndex */)) || this.provider.getStartCanvasIndex();
+            var canvasIndex = parseInt(this.getParam(Params.canvasIndex)) || this.provider.getStartCanvasIndex();
             if (this.provider.isCanvasIndexOutOfRange(canvasIndex)) {
-                this.showDialogue(this.provider.config.content.canvasIndexOutOfRange);
+                this.showMessage(this.provider.config.content.canvasIndexOutOfRange);
                 return;
             }
             this.viewPage(canvasIndex || this.provider.getStartCanvasIndex());
@@ -6035,17 +6202,20 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.viewPage = function (canvasIndex, isReload) {
             var _this = this;
+            // todo: stopgap until this issue is resolved: https://github.com/openseadragon/openseadragon/issues/629
             if (this.isLoading) {
                 return;
             }
+            // if it's a valid canvas index.
             if (canvasIndex == -1)
                 return;
             this.isLoading = true;
             if (this.provider.isPagingSettingEnabled() && !isReload) {
                 var indices = this.provider.getPagedIndices(canvasIndex);
+                // if the page is already displayed, only advance canvasIndex.
                 if (indices.contains(this.provider.canvasIndex)) {
                     this.viewCanvas(canvasIndex, function () {
-                        _this.setParam(1 /* canvasIndex */, canvasIndex);
+                        _this.setParam(Params.canvasIndex, canvasIndex);
                     });
                     this.isLoading = false;
                     return;
@@ -6055,7 +6225,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var canvas = _this.provider.getCanvasByIndex(canvasIndex);
                 var uri = _this.provider.getImageUri(canvas);
                 $.publish(BaseCommands.OPEN_MEDIA, [uri]);
-                _this.setParam(1 /* canvasIndex */, canvasIndex);
+                _this.setParam(Params.canvasIndex, canvasIndex);
             });
         };
         Extension.prototype.getViewer = function () {
@@ -6068,7 +6238,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 case 'monograph':
                     return Mode.page;
                     break;
-                case 'archive', 'boundmanuscript':
+                case 'archive',
+                    'boundmanuscript':
                     return Mode.image;
                     break;
                 default:
@@ -6098,7 +6269,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
-                this.showDialogue(this.provider.config.modules.genericDialogue.content.emptyValue);
+                this.showMessage(this.provider.config.modules.genericDialogue.content.emptyValue);
                 $.publish(BaseCommands.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
@@ -6107,7 +6278,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 this.viewPage(index);
             }
             else {
-                this.showDialogue(this.provider.config.modules.genericDialogue.content.pageNotFound);
+                this.showMessage(this.provider.config.modules.genericDialogue.content.pageNotFound);
                 $.publish(BaseCommands.CANVAS_INDEX_CHANGE_FAILED);
             }
         };
@@ -6126,10 +6297,11 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             this.provider.searchWithin(terms, function (results) {
                 if (results.resources.length) {
                     $.publish(Commands.SEARCH_RESULTS, [terms, results.resources]);
+                    // reload current index as it may contain results.
                     that.viewPage(that.provider.canvasIndex, true);
                 }
                 else {
-                    that.showDialogue(that.provider.config.modules.genericDialogue.content.noMatches, function () {
+                    that.showMessage(that.provider.config.modules.genericDialogue.content.noMatches, function () {
                         $.publish(Commands.SEARCH_RESULTS_EMPTY);
                     });
                 }
@@ -6137,9 +6309,11 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.clearSearch = function () {
             this.provider.searchResults = [];
+            // reload current index as it may contain results.
             this.viewPage(this.provider.canvasIndex);
         };
         Extension.prototype.prevSearchResult = function () {
+            // get the first result with a canvasIndex less than the current index.
             for (var i = this.provider.searchResults.length - 1; i >= 0; i--) {
                 var result = this.provider.searchResults[i];
                 if (result.canvasIndex < this.provider.canvasIndex) {
@@ -6149,6 +6323,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
         };
         Extension.prototype.nextSearchResult = function () {
+            // get the first result with an index greater than the current index.
             for (var i = 0; i < this.provider.searchResults.length; i++) {
                 var result = this.provider.searchResults[i];
                 if (result.canvasIndex > this.provider.canvasIndex) {
@@ -6187,6 +6362,7 @@ define('extensions/uv-seadragon-extension/SearchResult',["require", "exports", "
         SearchResult.prototype.addRect = function (resource) {
             var rect = new SearchResultRect(resource);
             this.rects.push(rect);
+            // sort ascending
             this.rects.sort(function (a, b) {
                 return a.index - b.index;
             });
@@ -6194,28 +6370,6 @@ define('extensions/uv-seadragon-extension/SearchResult',["require", "exports", "
         return SearchResult;
     })();
     return SearchResult;
-});
-
-define('extensions/uv-seadragon-extension/Page',["require", "exports"], function (require, exports) {
-    var Page = (function () {
-        function Page() {
-        }
-        Page.prototype.GetTileSource = function () {
-            var _this = this;
-            return $.ajax({
-                dataType: "json",
-                url: this.tileSourceUri,
-                success: function (data) {
-                    _this.tileSource = data;
-                },
-                error: function (error, message) {
-                    console.error(message);
-                }
-            });
-        };
-        return Page;
-    })();
-    return Page;
 });
 
 define('modules/uv-shared-module/ServiceProfile',["require", "exports"], function (require, exports) {
@@ -6227,11 +6381,56 @@ define('modules/uv-shared-module/ServiceProfile',["require", "exports"], functio
             return this.value;
         };
         ServiceProfile.autoComplete = new ServiceProfile("http://iiif.io/api/autocomplete/1/");
+        ServiceProfile.login = new ServiceProfile("http://iiif.io/api/image/2/auth/login");
+        ServiceProfile.logout = new ServiceProfile("http://iiif.io/api/image/2/auth/logout");
         ServiceProfile.otherManifestations = new ServiceProfile("http://iiif.io/api/otherManifestations.json");
         ServiceProfile.searchWithin = new ServiceProfile("http://iiif.io/api/search/1/");
+        ServiceProfile.token = new ServiceProfile("http://iiif.io/api/image/2/auth/token");
         return ServiceProfile;
     })();
     return ServiceProfile;
+});
+
+define('modules/uv-shared-module/Resource',["require", "exports", "../../modules/uv-shared-module/ServiceProfile", "./Session"], function (require, exports, ServiceProfile, Session) {
+    var Resource = (function () {
+        function Resource(provider) {
+            this.provider = provider;
+        }
+        Resource.prototype.getAccessToken = function () {
+            return Session.get(this.tokenService);
+        };
+        Resource.prototype.getData = function () {
+            var that = this;
+            var accessToken = that.getAccessToken();
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: that.dataUri,
+                    type: 'GET',
+                    dataType: 'json',
+                    beforeSend: function (xhr) {
+                        if (accessToken) {
+                            xhr.setRequestHeader("Authorization", "Bearer " + accessToken.accessToken);
+                        }
+                    }
+                }).done(function (data) {
+                    that.status = 200;
+                    that.data = data;
+                    resolve(that);
+                }).fail(function (error) {
+                    that.status = error.status;
+                    that.error = error;
+                    if (error.responseJSON) {
+                        that.loginService = that.provider.getService(error.responseJSON, ServiceProfile.login)['@id'];
+                        that.logoutService = that.provider.getService(error.responseJSON, ServiceProfile.logout)['@id'];
+                        that.tokenService = that.provider.getService(error.responseJSON, ServiceProfile.token)['@id'];
+                    }
+                    resolve(that);
+                });
+            });
+        };
+        return Resource;
+    })();
+    return Resource;
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -6240,13 +6439,16 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../../modules/uv-shared-module/BaseProvider", "./SearchResult", "./Page", "../../modules/uv-shared-module/ServiceProfile"], function (require, exports, BaseProvider, SearchResult, Page, ServiceProfile) {
+define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../../modules/uv-shared-module/BaseProvider", "./SearchResult", "../../modules/uv-shared-module/Resource", "../../modules/uv-shared-module/ServiceProfile"], function (require, exports, BaseProvider, SearchResult, Resource, ServiceProfile) {
     var Provider = (function (_super) {
         __extends(Provider, _super);
         function Provider(bootstrapper) {
             _super.call(this, bootstrapper);
             this.searchResults = [];
             this.config.options = $.extend(true, this.options, {
+                // override or extend BaseProvider options.
+                // these are in turn overridden by the root options object in this extension's config.js.
+                //{baseuri}/{id}/{region}/{size}/{rotation}/{quality}.jpg
                 autoCompleteUriTemplate: '{0}{1}',
                 iiifImageUriTemplate: '{0}/{1}/{2}/{3}/{4}/{5}.jpg'
             }, bootstrapper.config.options);
@@ -6261,7 +6463,9 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             var zoom = viewer.viewport.getZoom(true);
             var top = Math.max(0, bounds.y);
             var left = Math.max(0, bounds.x);
+            // change top to be normalised value proportional to height of image, not width (as per OSD).
             top = 1 / (canvas.height / parseInt(String(canvas.width * top)));
+            // get on-screen pixel sizes.
             var viewportWidthPx = containerSize.x;
             var viewportHeightPx = containerSize.y;
             var imageWidthPx = parseInt(String(viewportWidthPx * zoom));
@@ -6279,6 +6483,7 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             var rect2Bottom = viewportTopPx + viewportHeightPx;
             var cropWidth = Math.max(0, Math.min(rect1Right, rect2Right) - Math.max(rect1Left, rect2Left));
             var cropHeight = Math.max(0, Math.min(rect1Bottom, rect2Bottom) - Math.max(rect1Top, rect2Top));
+            // get original image pixel sizes.
             var ratio2 = canvas.width / imageWidthPx;
             var widthPx = parseInt(String(cropWidth * ratio2));
             var heightPx = parseInt(String(cropHeight * ratio2));
@@ -6288,6 +6493,8 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
                 topPx = 0;
             if (leftPx < 0)
                 leftPx = 0;
+            // construct uri
+            // {baseuri}/{id}/{region}/{size}/{rotation}/{quality}.jpg
             var baseUri = this.getImageBaseUri(canvas);
             var id = this.getImageId(canvas);
             var region = leftPx + "," + topPx + "," + widthPx + "," + heightPx;
@@ -6299,6 +6506,7 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
         };
         Provider.prototype.getConfinedImageUri = function (canvas, width, height) {
             var baseUri = this.getImageBaseUri(canvas);
+            // {baseuri}/{id}/{region}/{size}/{rotation}/{quality}.jpg
             var id = this.getImageId(canvas);
             var region = 'full';
             var size;
@@ -6319,35 +6527,31 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             return id.substr(id.lastIndexOf("/") + 1);
         };
         Provider.prototype.getImageBaseUri = function (canvas) {
-            if (this.config.options.iiifImageBaseUri) {
-                return this.config.options.iiifImageBaseUri;
-            }
             var uri = this.getImageUri(canvas);
-            uri = uri.substr(0, uri.lastIndexOf("/"));
             uri = uri.substr(0, uri.lastIndexOf("/"));
             return uri;
         };
         Provider.prototype.getImageUri = function (canvas) {
-            var iiifUri;
+            var imageUri;
             if (canvas.resources) {
-                iiifUri = canvas.resources[0].resource.service['@id'];
+                imageUri = canvas.resources[0].resource.service['@id'];
             }
             else if (canvas.images && canvas.images[0].resource.service) {
-                iiifUri = canvas.images[0].resource.service['@id'];
+                imageUri = canvas.images[0].resource.service['@id'];
+            }
+            if (!imageUri) {
+                // todo: use compiler flag (when available)
+                imageUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/lib/imageunavailable.json' : 'lib/imageunavailable.json';
             }
             else {
-                return "";
-            }
-            if (!iiifUri) {
-                console.warn('no service endpoint available');
-            }
-            else {
-                if (!iiifUri.endsWith('/')) {
-                    iiifUri += '/';
+                if (!imageUri.endsWith('/')) {
+                    imageUri += '/';
                 }
-                iiifUri += this.corsEnabled() ? 'info.json' : 'info.js';
+                // no longer necessary as OSD isn't handling info.json requests
+                //imageUri += this.corsEnabled() ? 'info.json' : 'info.js';
+                imageUri += 'info.json';
             }
-            return iiifUri;
+            return imageUri;
         };
         Provider.prototype.getEmbedScript = function (canvasIndex, zoom, width, height, rotation, embedTemplate) {
             var esu = this.options.embedScriptUri || this.embedScriptUri;
@@ -6358,23 +6562,21 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
         };
         Provider.prototype.getPages = function () {
             var _this = this;
-            this.pages = [];
             var indices = this.getPagedIndices();
+            var pages = [];
             _.each(indices, function (index) {
-                var p = new Page();
-                p.tileSourceUri = _this.getImageUri(_this.getCanvasByIndex(index));
-                _this.pages.push(p);
+                var r = new Resource(_this);
+                r.dataUri = _this.getImageUri(_this.getCanvasByIndex(index));
+                pages.push(r);
             });
-            var imageUnavailableUri = (window.DEBUG) ? '/src/extensions/uv-seadragon-extension/lib/imageunavailable.json' : 'js/imageunavailable.json';
-            _.each(this.pages, function (page) {
-                if (!page.tileSourceUri) {
-                    page.tileSourceUri = imageUnavailableUri;
-                }
+            return new Promise(function (resolve) {
+                _this.loadResources(pages).then(function (resources) {
+                    _this.pages = _.map(resources, function (resource) {
+                        return resource.data;
+                    });
+                    resolve(_this.pages);
+                });
             });
-            var promises = _.map(this.pages, function (page) {
-                return page.GetTileSource();
-            });
-            return $.when.apply($, promises);
         };
         Provider.prototype.isSearchWithinEnabled = function () {
             if (!Utils.Bools.GetBool(this.config.options.searchWithinEnabled, false)) {
@@ -6445,6 +6647,224 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
     })(BaseProvider);
     return Provider;
 });
+
+window.browserDetect = {
+    init: function () {
+        this.browser = this.searchString(this.dataBrowser) || "Other";
+        this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
+        // detect IE 11
+        if (this.browser == 'Explorer' && this.version == '7' && navigator.userAgent.match(/Trident/i)) {
+            this.version = this.searchVersionIE();
+        }
+    },
+
+    searchString: function (data) {
+        for (var i = 0 ; i < data.length ; i++) {
+            var dataString = data[i].string;
+            this.versionSearchString = data[i].subString;
+
+            if (dataString.indexOf(data[i].subString) != -1) {
+                return data[i].identity;
+            }
+        }
+    },
+
+    searchVersion: function (dataString) {
+        var index = dataString.indexOf(this.versionSearchString);
+        if (index == -1) return;
+        return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+    },
+
+    searchVersionIE: function() {
+        var ua = navigator.userAgent.toString().toLowerCase(),
+            match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ['', null, -1],
+            ver;
+        try {
+            ver = (match[2]).split('.')[0]; // version
+        }
+        catch (err) {
+            ver = 'unknown'; //
+        }
+        return ver;
+    },
+
+    dataBrowser:
+        [
+            { string: navigator.userAgent, subString: "Chrome", identity: "Chrome" },
+            { string: navigator.userAgent, subString: "MSIE", identity: "Explorer" },
+            { string: navigator.userAgent, subString: "Trident", identity: "Explorer" },
+            { string: navigator.userAgent, subString: "Firefox", identity: "Firefox" },
+            { string: navigator.userAgent, subString: "Safari", identity: "Safari" },
+            { string: navigator.userAgent, subString: "Opera", identity: "Opera" }
+        ]
+
+};
+
+window.browserDetect.init();
+define("browserdetect", function(){});
+
+if (!Array.prototype.clone) {
+    Array.prototype.clone = function () {
+        return this.slice(0);
+    };
+}
+if (!Array.prototype.contains) {
+    Array.prototype.contains = function (val) {
+        return this.indexOf(val) !== -1;
+    };
+}
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function (searchElement, fromIndex) {
+        var i = (fromIndex || 0);
+        var j = this.length;
+        for (i; i < j; i++) {
+            if (this[i] === searchElement) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+Array.prototype.indexOfTest = function (test, fromIndex) {
+    var i = (fromIndex || 0);
+    var j = this.length;
+    for (i; i < j; i++) {
+        if (test(this[i]))
+            return i;
+    }
+    return -1;
+};
+Array.prototype.insert = function (item, index) {
+    this.splice(index, 0, item);
+};
+if (!Array.prototype.last) {
+    Array.prototype.last = function () {
+        return this[this.length - 1];
+    };
+}
+Array.prototype.move = function (fromIndex, toIndex) {
+    this.splice(toIndex, 0, this.splice(fromIndex, 1)[0]);
+};
+Array.prototype.remove = function (item) {
+    var index = this.indexOf(item);
+    if (index > -1) {
+        this.splice(index, 1);
+    }
+};
+Array.prototype.removeAt = function (index) {
+    this.splice(index, 1);
+};
+Math.clamp = function (value, min, max) {
+    return Math.min(Math.max(value, min), max);
+};
+Math.constrain = function (value, low, high) {
+    return Math.clamp(value, low, high);
+};
+Math.degreesToRadians = function (degrees) {
+    return Math.TAU * (degrees / 360);
+};
+Math.distanceBetween = function (x1, y1, x2, y2) {
+    return Math.sqrt(Math.sq(x2 - x1) + Math.sq(y2 - y1));
+};
+Math.lerp = function (start, stop, amount) {
+    return start + (stop - start) * amount;
+};
+Math.mag = function (a, b, c) {
+    return Math.sqrt(a * a + b * b + c * c);
+};
+Math.map = function (value, start1, stop1, start2, stop2) {
+    return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+};
+Math.median = function (values) {
+    values.sort(function (a, b) {
+        return a - b;
+    });
+    var half = Math.floor(values.length / 2);
+    if (values.length % 2) {
+        return values[half];
+    }
+    else {
+        return (values[half - 1] + values[half]) / 2.0;
+    }
+};
+Math.normalise = function (num, min, max) {
+    return (num - min) / (max - min);
+};
+Math.radiansToDegrees = function (radians) {
+    return (radians * 360) / Math.TAU;
+};
+/**
+ * Get a random number between two numbers.
+ * If 'high' isn't passed, get a number from 0 to 'low'.
+ * @param {Number} low The low number.
+ * @param {Number} [high] The high number.
+ */
+Math.randomBetween = function (low, high) {
+    if (!high) {
+        high = low;
+        low = 0;
+    }
+    if (low >= high)
+        return low;
+    return low + (high - low) * Math.random();
+};
+Math.roundToDecimalPlace = function (num, dec) {
+    return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
+};
+Math.sq = function (n) {
+    return n * n;
+};
+Math.TAU = Math.PI * 2;
+Number.prototype.isInt = function () {
+    return this % 1 === 0;
+};
+String.prototype.b64_to_utf8 = function () {
+    return decodeURIComponent(escape(window.atob(this)));
+};
+String.prototype.contains = function (str) {
+    return this.indexOf(str) !== -1;
+};
+String.prototype.endsWith = function (str) {
+    return this.indexOf(str, this.length - str.length) !== -1;
+};
+String.format = function () {
+    var s = arguments[0];
+    for (var i = 0; i < arguments.length - 1; i++) {
+        var reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, arguments[i + 1]);
+    }
+    return s;
+};
+String.prototype.ltrim = function () {
+    return this.replace(/^\s+/, '');
+};
+String.prototype.rtrim = function () {
+    return this.replace(/\s+$/, '');
+};
+String.prototype.startsWith = function (str) {
+    return this.indexOf(str) == 0;
+};
+String.prototype.toCssClass = function () {
+    return this.replace(/[^a-z0-9]/g, function (s) {
+        var c = s.charCodeAt(0);
+        if (c == 32)
+            return '-';
+        if (c >= 65 && c <= 90)
+            return '_' + s.toLowerCase();
+        return '__' + ('000' + c.toString(16)).slice(-4);
+    });
+};
+String.prototype.toFileName = function () {
+    return this.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+};
+String.prototype.trim = function () {
+    return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+};
+String.prototype.utf8_to_b64 = function () {
+    return window.btoa(unescape(encodeURIComponent(this)));
+};
+
+define("ext", function(){});
 
 /*! jQuery v1.10.2 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license*/
 (function (e, t) {
@@ -7906,6 +8326,7 @@ define("modernizr", function(){});
 
 define("plugins", ["jquery"], function(){});
 
+(function(){"use strict";function lib$es6$promise$utils$$objectOrFunction(x){return typeof x==="function"||typeof x==="object"&&x!==null}function lib$es6$promise$utils$$isFunction(x){return typeof x==="function"}function lib$es6$promise$utils$$isMaybeThenable(x){return typeof x==="object"&&x!==null}var lib$es6$promise$utils$$_isArray;if(!Array.isArray){lib$es6$promise$utils$$_isArray=function(x){return Object.prototype.toString.call(x)==="[object Array]"}}else{lib$es6$promise$utils$$_isArray=Array.isArray}var lib$es6$promise$utils$$isArray=lib$es6$promise$utils$$_isArray;var lib$es6$promise$asap$$len=0;var lib$es6$promise$asap$$toString={}.toString;var lib$es6$promise$asap$$vertxNext;var lib$es6$promise$asap$$customSchedulerFn;function lib$es6$promise$asap$$asap(callback,arg){lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len]=callback;lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len+1]=arg;lib$es6$promise$asap$$len+=2;if(lib$es6$promise$asap$$len===2){if(lib$es6$promise$asap$$customSchedulerFn){lib$es6$promise$asap$$customSchedulerFn(lib$es6$promise$asap$$flush)}else{lib$es6$promise$asap$$scheduleFlush()}}}var lib$es6$promise$asap$$default=lib$es6$promise$asap$$asap;function lib$es6$promise$asap$$setScheduler(scheduleFn){lib$es6$promise$asap$$customSchedulerFn=scheduleFn}var lib$es6$promise$asap$$browserWindow=typeof window!=="undefined"?window:undefined;var lib$es6$promise$asap$$browserGlobal=lib$es6$promise$asap$$browserWindow||{};var lib$es6$promise$asap$$BrowserMutationObserver=lib$es6$promise$asap$$browserGlobal.MutationObserver||lib$es6$promise$asap$$browserGlobal.WebKitMutationObserver;var lib$es6$promise$asap$$isNode=typeof process!=="undefined"&&{}.toString.call(process)==="[object process]";var lib$es6$promise$asap$$isWorker=typeof Uint8ClampedArray!=="undefined"&&typeof importScripts!=="undefined"&&typeof MessageChannel!=="undefined";function lib$es6$promise$asap$$useNextTick(){var nextTick=process.nextTick;var version=process.versions.node.match(/^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$/);if(Array.isArray(version)&&version[1]==="0"&&version[2]==="10"){nextTick=setImmediate}return function(){nextTick(lib$es6$promise$asap$$flush)}}function lib$es6$promise$asap$$useVertxTimer(){return function(){lib$es6$promise$asap$$vertxNext(lib$es6$promise$asap$$flush)}}function lib$es6$promise$asap$$useMutationObserver(){var iterations=0;var observer=new lib$es6$promise$asap$$BrowserMutationObserver(lib$es6$promise$asap$$flush);var node=document.createTextNode("");observer.observe(node,{characterData:true});return function(){node.data=iterations=++iterations%2}}function lib$es6$promise$asap$$useMessageChannel(){var channel=new MessageChannel;channel.port1.onmessage=lib$es6$promise$asap$$flush;return function(){channel.port2.postMessage(0)}}function lib$es6$promise$asap$$useSetTimeout(){return function(){setTimeout(lib$es6$promise$asap$$flush,1)}}var lib$es6$promise$asap$$queue=new Array(1e3);function lib$es6$promise$asap$$flush(){for(var i=0;i<lib$es6$promise$asap$$len;i+=2){var callback=lib$es6$promise$asap$$queue[i];var arg=lib$es6$promise$asap$$queue[i+1];callback(arg);lib$es6$promise$asap$$queue[i]=undefined;lib$es6$promise$asap$$queue[i+1]=undefined}lib$es6$promise$asap$$len=0}function lib$es6$promise$asap$$attemptVertex(){try{var r=require;var vertx=r("vertx");lib$es6$promise$asap$$vertxNext=vertx.runOnLoop||vertx.runOnContext;return lib$es6$promise$asap$$useVertxTimer()}catch(e){return lib$es6$promise$asap$$useSetTimeout()}}var lib$es6$promise$asap$$scheduleFlush;if(lib$es6$promise$asap$$isNode){lib$es6$promise$asap$$scheduleFlush=lib$es6$promise$asap$$useNextTick()}else if(lib$es6$promise$asap$$BrowserMutationObserver){lib$es6$promise$asap$$scheduleFlush=lib$es6$promise$asap$$useMutationObserver()}else if(lib$es6$promise$asap$$isWorker){lib$es6$promise$asap$$scheduleFlush=lib$es6$promise$asap$$useMessageChannel()}else if(lib$es6$promise$asap$$browserWindow===undefined&&typeof require==="function"){lib$es6$promise$asap$$scheduleFlush=lib$es6$promise$asap$$attemptVertex()}else{lib$es6$promise$asap$$scheduleFlush=lib$es6$promise$asap$$useSetTimeout()}function lib$es6$promise$$internal$$noop(){}var lib$es6$promise$$internal$$PENDING=void 0;var lib$es6$promise$$internal$$FULFILLED=1;var lib$es6$promise$$internal$$REJECTED=2;var lib$es6$promise$$internal$$GET_THEN_ERROR=new lib$es6$promise$$internal$$ErrorObject;function lib$es6$promise$$internal$$selfFullfillment(){return new TypeError("You cannot resolve a promise with itself")}function lib$es6$promise$$internal$$cannotReturnOwn(){return new TypeError("A promises callback cannot return that same promise.")}function lib$es6$promise$$internal$$getThen(promise){try{return promise.then}catch(error){lib$es6$promise$$internal$$GET_THEN_ERROR.error=error;return lib$es6$promise$$internal$$GET_THEN_ERROR}}function lib$es6$promise$$internal$$tryThen(then,value,fulfillmentHandler,rejectionHandler){try{then.call(value,fulfillmentHandler,rejectionHandler)}catch(e){return e}}function lib$es6$promise$$internal$$handleForeignThenable(promise,thenable,then){lib$es6$promise$asap$$default(function(promise){var sealed=false;var error=lib$es6$promise$$internal$$tryThen(then,thenable,function(value){if(sealed){return}sealed=true;if(thenable!==value){lib$es6$promise$$internal$$resolve(promise,value)}else{lib$es6$promise$$internal$$fulfill(promise,value)}},function(reason){if(sealed){return}sealed=true;lib$es6$promise$$internal$$reject(promise,reason)},"Settle: "+(promise._label||" unknown promise"));if(!sealed&&error){sealed=true;lib$es6$promise$$internal$$reject(promise,error)}},promise)}function lib$es6$promise$$internal$$handleOwnThenable(promise,thenable){if(thenable._state===lib$es6$promise$$internal$$FULFILLED){lib$es6$promise$$internal$$fulfill(promise,thenable._result)}else if(thenable._state===lib$es6$promise$$internal$$REJECTED){lib$es6$promise$$internal$$reject(promise,thenable._result)}else{lib$es6$promise$$internal$$subscribe(thenable,undefined,function(value){lib$es6$promise$$internal$$resolve(promise,value)},function(reason){lib$es6$promise$$internal$$reject(promise,reason)})}}function lib$es6$promise$$internal$$handleMaybeThenable(promise,maybeThenable){if(maybeThenable.constructor===promise.constructor){lib$es6$promise$$internal$$handleOwnThenable(promise,maybeThenable)}else{var then=lib$es6$promise$$internal$$getThen(maybeThenable);if(then===lib$es6$promise$$internal$$GET_THEN_ERROR){lib$es6$promise$$internal$$reject(promise,lib$es6$promise$$internal$$GET_THEN_ERROR.error)}else if(then===undefined){lib$es6$promise$$internal$$fulfill(promise,maybeThenable)}else if(lib$es6$promise$utils$$isFunction(then)){lib$es6$promise$$internal$$handleForeignThenable(promise,maybeThenable,then)}else{lib$es6$promise$$internal$$fulfill(promise,maybeThenable)}}}function lib$es6$promise$$internal$$resolve(promise,value){if(promise===value){lib$es6$promise$$internal$$reject(promise,lib$es6$promise$$internal$$selfFullfillment())}else if(lib$es6$promise$utils$$objectOrFunction(value)){lib$es6$promise$$internal$$handleMaybeThenable(promise,value)}else{lib$es6$promise$$internal$$fulfill(promise,value)}}function lib$es6$promise$$internal$$publishRejection(promise){if(promise._onerror){promise._onerror(promise._result)}lib$es6$promise$$internal$$publish(promise)}function lib$es6$promise$$internal$$fulfill(promise,value){if(promise._state!==lib$es6$promise$$internal$$PENDING){return}promise._result=value;promise._state=lib$es6$promise$$internal$$FULFILLED;if(promise._subscribers.length!==0){lib$es6$promise$asap$$default(lib$es6$promise$$internal$$publish,promise)}}function lib$es6$promise$$internal$$reject(promise,reason){if(promise._state!==lib$es6$promise$$internal$$PENDING){return}promise._state=lib$es6$promise$$internal$$REJECTED;promise._result=reason;lib$es6$promise$asap$$default(lib$es6$promise$$internal$$publishRejection,promise)}function lib$es6$promise$$internal$$subscribe(parent,child,onFulfillment,onRejection){var subscribers=parent._subscribers;var length=subscribers.length;parent._onerror=null;subscribers[length]=child;subscribers[length+lib$es6$promise$$internal$$FULFILLED]=onFulfillment;subscribers[length+lib$es6$promise$$internal$$REJECTED]=onRejection;if(length===0&&parent._state){lib$es6$promise$asap$$default(lib$es6$promise$$internal$$publish,parent)}}function lib$es6$promise$$internal$$publish(promise){var subscribers=promise._subscribers;var settled=promise._state;if(subscribers.length===0){return}var child,callback,detail=promise._result;for(var i=0;i<subscribers.length;i+=3){child=subscribers[i];callback=subscribers[i+settled];if(child){lib$es6$promise$$internal$$invokeCallback(settled,child,callback,detail)}else{callback(detail)}}promise._subscribers.length=0}function lib$es6$promise$$internal$$ErrorObject(){this.error=null}var lib$es6$promise$$internal$$TRY_CATCH_ERROR=new lib$es6$promise$$internal$$ErrorObject;function lib$es6$promise$$internal$$tryCatch(callback,detail){try{return callback(detail)}catch(e){lib$es6$promise$$internal$$TRY_CATCH_ERROR.error=e;return lib$es6$promise$$internal$$TRY_CATCH_ERROR}}function lib$es6$promise$$internal$$invokeCallback(settled,promise,callback,detail){var hasCallback=lib$es6$promise$utils$$isFunction(callback),value,error,succeeded,failed;if(hasCallback){value=lib$es6$promise$$internal$$tryCatch(callback,detail);if(value===lib$es6$promise$$internal$$TRY_CATCH_ERROR){failed=true;error=value.error;value=null}else{succeeded=true}if(promise===value){lib$es6$promise$$internal$$reject(promise,lib$es6$promise$$internal$$cannotReturnOwn());return}}else{value=detail;succeeded=true}if(promise._state!==lib$es6$promise$$internal$$PENDING){}else if(hasCallback&&succeeded){lib$es6$promise$$internal$$resolve(promise,value)}else if(failed){lib$es6$promise$$internal$$reject(promise,error)}else if(settled===lib$es6$promise$$internal$$FULFILLED){lib$es6$promise$$internal$$fulfill(promise,value)}else if(settled===lib$es6$promise$$internal$$REJECTED){lib$es6$promise$$internal$$reject(promise,value)}}function lib$es6$promise$$internal$$initializePromise(promise,resolver){try{resolver(function resolvePromise(value){lib$es6$promise$$internal$$resolve(promise,value)},function rejectPromise(reason){lib$es6$promise$$internal$$reject(promise,reason)})}catch(e){lib$es6$promise$$internal$$reject(promise,e)}}function lib$es6$promise$enumerator$$Enumerator(Constructor,input){var enumerator=this;enumerator._instanceConstructor=Constructor;enumerator.promise=new Constructor(lib$es6$promise$$internal$$noop);if(enumerator._validateInput(input)){enumerator._input=input;enumerator.length=input.length;enumerator._remaining=input.length;enumerator._init();if(enumerator.length===0){lib$es6$promise$$internal$$fulfill(enumerator.promise,enumerator._result)}else{enumerator.length=enumerator.length||0;enumerator._enumerate();if(enumerator._remaining===0){lib$es6$promise$$internal$$fulfill(enumerator.promise,enumerator._result)}}}else{lib$es6$promise$$internal$$reject(enumerator.promise,enumerator._validationError())}}lib$es6$promise$enumerator$$Enumerator.prototype._validateInput=function(input){return lib$es6$promise$utils$$isArray(input)};lib$es6$promise$enumerator$$Enumerator.prototype._validationError=function(){return new Error("Array Methods must be provided an Array")};lib$es6$promise$enumerator$$Enumerator.prototype._init=function(){this._result=new Array(this.length)};var lib$es6$promise$enumerator$$default=lib$es6$promise$enumerator$$Enumerator;lib$es6$promise$enumerator$$Enumerator.prototype._enumerate=function(){var enumerator=this;var length=enumerator.length;var promise=enumerator.promise;var input=enumerator._input;for(var i=0;promise._state===lib$es6$promise$$internal$$PENDING&&i<length;i++){enumerator._eachEntry(input[i],i)}};lib$es6$promise$enumerator$$Enumerator.prototype._eachEntry=function(entry,i){var enumerator=this;var c=enumerator._instanceConstructor;if(lib$es6$promise$utils$$isMaybeThenable(entry)){if(entry.constructor===c&&entry._state!==lib$es6$promise$$internal$$PENDING){entry._onerror=null;enumerator._settledAt(entry._state,i,entry._result)}else{enumerator._willSettleAt(c.resolve(entry),i)}}else{enumerator._remaining--;enumerator._result[i]=entry}};lib$es6$promise$enumerator$$Enumerator.prototype._settledAt=function(state,i,value){var enumerator=this;var promise=enumerator.promise;if(promise._state===lib$es6$promise$$internal$$PENDING){enumerator._remaining--;if(state===lib$es6$promise$$internal$$REJECTED){lib$es6$promise$$internal$$reject(promise,value)}else{enumerator._result[i]=value}}if(enumerator._remaining===0){lib$es6$promise$$internal$$fulfill(promise,enumerator._result)}};lib$es6$promise$enumerator$$Enumerator.prototype._willSettleAt=function(promise,i){var enumerator=this;lib$es6$promise$$internal$$subscribe(promise,undefined,function(value){enumerator._settledAt(lib$es6$promise$$internal$$FULFILLED,i,value)},function(reason){enumerator._settledAt(lib$es6$promise$$internal$$REJECTED,i,reason)})};function lib$es6$promise$promise$all$$all(entries){return new lib$es6$promise$enumerator$$default(this,entries).promise}var lib$es6$promise$promise$all$$default=lib$es6$promise$promise$all$$all;function lib$es6$promise$promise$race$$race(entries){var Constructor=this;var promise=new Constructor(lib$es6$promise$$internal$$noop);if(!lib$es6$promise$utils$$isArray(entries)){lib$es6$promise$$internal$$reject(promise,new TypeError("You must pass an array to race."));return promise}var length=entries.length;function onFulfillment(value){lib$es6$promise$$internal$$resolve(promise,value)}function onRejection(reason){lib$es6$promise$$internal$$reject(promise,reason)}for(var i=0;promise._state===lib$es6$promise$$internal$$PENDING&&i<length;i++){lib$es6$promise$$internal$$subscribe(Constructor.resolve(entries[i]),undefined,onFulfillment,onRejection)}return promise}var lib$es6$promise$promise$race$$default=lib$es6$promise$promise$race$$race;function lib$es6$promise$promise$resolve$$resolve(object){var Constructor=this;if(object&&typeof object==="object"&&object.constructor===Constructor){return object}var promise=new Constructor(lib$es6$promise$$internal$$noop);lib$es6$promise$$internal$$resolve(promise,object);return promise}var lib$es6$promise$promise$resolve$$default=lib$es6$promise$promise$resolve$$resolve;function lib$es6$promise$promise$reject$$reject(reason){var Constructor=this;var promise=new Constructor(lib$es6$promise$$internal$$noop);lib$es6$promise$$internal$$reject(promise,reason);return promise}var lib$es6$promise$promise$reject$$default=lib$es6$promise$promise$reject$$reject;var lib$es6$promise$promise$$counter=0;function lib$es6$promise$promise$$needsResolver(){throw new TypeError("You must pass a resolver function as the first argument to the promise constructor")}function lib$es6$promise$promise$$needsNew(){throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.")}var lib$es6$promise$promise$$default=lib$es6$promise$promise$$Promise;function lib$es6$promise$promise$$Promise(resolver){this._id=lib$es6$promise$promise$$counter++;this._state=undefined;this._result=undefined;this._subscribers=[];if(lib$es6$promise$$internal$$noop!==resolver){if(!lib$es6$promise$utils$$isFunction(resolver)){lib$es6$promise$promise$$needsResolver()}if(!(this instanceof lib$es6$promise$promise$$Promise)){lib$es6$promise$promise$$needsNew()}lib$es6$promise$$internal$$initializePromise(this,resolver)}}lib$es6$promise$promise$$Promise.all=lib$es6$promise$promise$all$$default;lib$es6$promise$promise$$Promise.race=lib$es6$promise$promise$race$$default;lib$es6$promise$promise$$Promise.resolve=lib$es6$promise$promise$resolve$$default;lib$es6$promise$promise$$Promise.reject=lib$es6$promise$promise$reject$$default;lib$es6$promise$promise$$Promise._setScheduler=lib$es6$promise$asap$$setScheduler;lib$es6$promise$promise$$Promise._asap=lib$es6$promise$asap$$default;lib$es6$promise$promise$$Promise.prototype={constructor:lib$es6$promise$promise$$Promise,then:function(onFulfillment,onRejection){var parent=this;var state=parent._state;if(state===lib$es6$promise$$internal$$FULFILLED&&!onFulfillment||state===lib$es6$promise$$internal$$REJECTED&&!onRejection){return this}var child=new this.constructor(lib$es6$promise$$internal$$noop);var result=parent._result;if(state){var callback=arguments[state-1];lib$es6$promise$asap$$default(function(){lib$es6$promise$$internal$$invokeCallback(state,child,callback,result)})}else{lib$es6$promise$$internal$$subscribe(parent,child,onFulfillment,onRejection)}return child},"catch":function(onRejection){return this.then(null,onRejection)}};function lib$es6$promise$polyfill$$polyfill(){var local;if(typeof global!=="undefined"){local=global}else if(typeof self!=="undefined"){local=self}else{try{local=Function("return this")()}catch(e){throw new Error("polyfill failed because global object is unavailable in this environment")}}var P=local.Promise;if(P&&Object.prototype.toString.call(P.resolve())==="[object Promise]"&&!P.cast){return}local.Promise=lib$es6$promise$promise$$default}var lib$es6$promise$polyfill$$default=lib$es6$promise$polyfill$$polyfill;var lib$es6$promise$umd$$ES6Promise={Promise:lib$es6$promise$promise$$default,polyfill:lib$es6$promise$polyfill$$default};if(typeof define==="function"&&define["amd"]){define('promise',[],function(){return lib$es6$promise$umd$$ES6Promise})}else if(typeof module!=="undefined"&&module["exports"]){module["exports"]=lib$es6$promise$umd$$ES6Promise}else if(typeof this!=="undefined"){this["ES6Promise"]=lib$es6$promise$umd$$ES6Promise}lib$es6$promise$polyfill$$default()}).call(this);
 /*! Tiny Pub/Sub - v0.7.0 - 2015-04-21
  * https://github.com/cowboy/jquery-tiny-pubsub
  * Copyright (c) 2015 "Cowboy" Ben Alman; Licensed MIT */
@@ -8486,6 +8907,7 @@ define("yepnopecss", ["yepnope"], function(){});
 require.config({
     paths: {
         'browserdetect': 'lib/browserdetect',
+        'promise': 'lib/promise.min',
         'ext': 'lib/extensions',
         'jquery': 'lib/jquery-1.10.2.min',
         'jsviews': 'lib/jsviews.min',
@@ -8523,28 +8945,30 @@ require.config({
 });
 require([
     'Bootstrapper',
-    'browserdetect',
-    'ext',
     'extensions/uv-mediaelement-extension/Extension',
     'extensions/uv-mediaelement-extension/Provider',
     'extensions/uv-pdf-extension/Extension',
     'extensions/uv-pdf-extension/Provider',
     'extensions/uv-seadragon-extension/Extension',
     'extensions/uv-seadragon-extension/Provider',
+    'browserdetect',
+    'ext',
     'jquery',
     'jsviews',
     'l10n',
     'length',
     'modernizr',
     'plugins',
+    'promise',
     'pubsub',
     'sanitize',
     'underscore',
     'utils',
     'yepnope',
     'yepnopecss',
-], function (bootstrapper, browserdetect, ext, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, seadragonExtension, seadragonProvider) {
-    
+], function (bootstrapper, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, seadragonExtension, seadragonProvider) {
+    // todo: use a compiler flag (when available)
+     // this line is removed on build.
     var extensions = {};
     extensions['seadragon/iiif'] = {
         type: seadragonExtension,
