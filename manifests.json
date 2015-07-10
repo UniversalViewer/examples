@@ -37,6 +37,10 @@
             {
                 "title": "First Thursday Club (login required)",
                 "uri": "http://wellcomelibrary.org/iiif/b17564980/manifest"
+            },
+            {
+                "title": "Missing Images (jsonp)",
+                "uri": "/examples/manifest/missingimages.js"
             }
         ]
     },
