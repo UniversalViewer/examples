@@ -1,4 +1,4 @@
-module Utils.Measurement {
+module Utils.Measurements {
 
     export class Size{
         constructor (public width: number, public height: number){}

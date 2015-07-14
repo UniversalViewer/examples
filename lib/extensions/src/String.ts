@@ -6,9 +6,11 @@ String.prototype.contains = function(str): boolean {
     return this.indexOf(str) !== -1;
 };
 
-String.prototype.endsWith = function(str): boolean {
-    return this.indexOf(str, this.length - str.length) !== -1;
-};
+if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function (str):boolean {
+        return this.indexOf(str, this.length - str.length) !== -1;
+    };
+}
 
 String.format = function(): string {
     var s = arguments[0];
@@ -28,9 +30,11 @@ String.prototype.rtrim = function(): string {
     return this.replace(/\s+$/, '');
 };
 
-String.prototype.startsWith = function(str): boolean {
-    return this.indexOf(str) == 0;
-};
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function (str):boolean {
+        return this.indexOf(str) == 0;
+    };
+}
 
 String.prototype.toCssClass = function(): string {
     return this.replace(/[^a-z0-9]/g, function(s) {
@@ -45,9 +49,11 @@ String.prototype.toFileName = function(): string {
     return this.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 };
 
-String.prototype.trim = function(): string {
-    return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-};
+if (!String.prototype.trim) {
+    String.prototype.trim = function ():string {
+        return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    };
+}
 
 String.prototype.utf8_to_b64 = function(): string {
     return window.btoa(unescape(encodeURIComponent(this)));

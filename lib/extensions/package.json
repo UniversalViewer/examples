@@ -1,6 +1,6 @@
 {
   "name": "extensions",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "extends global objects with utility functions",
   "main": "dist/extensions.js",
   "scripts": {

@@ -1,6 +1,7 @@
 module Utils {
 
-    export class Color {
+    export class Colors {
+
         public static Float32ColorToARGB(float32Color:number):number[] {
             var a:number = ( float32Color & 0xff000000 ) >>> 24
             var r:number = ( float32Color & 0xff0000 ) >>> 16;
@@ -17,12 +18,12 @@ module Utils {
         }
 
         public static RGBToHexString(rgb:number[]):string {
-            Color.Coalesce(rgb);
-            return "#" + Color._ComponentToHex(rgb[0]) + Color._ComponentToHex(rgb[1]) + Color._ComponentToHex(rgb[2]);
+            Colors.Coalesce(rgb);
+            return "#" + Colors._ComponentToHex(rgb[0]) + Colors._ComponentToHex(rgb[1]) + Colors._ComponentToHex(rgb[2]);
         }
 
         public static ARGBToHexString(argb:number[]):string {
-            return "#" + Color._ComponentToHex(argb[0]) + Color._ComponentToHex(argb[1]) + Color._ComponentToHex(argb[2]) + Color._ComponentToHex(argb[3]);
+            return "#" + Colors._ComponentToHex(argb[0]) + Colors._ComponentToHex(argb[1]) + Colors._ComponentToHex(argb[2]) + Colors._ComponentToHex(argb[3]);
         }
 
         public static Coalesce(arr:any[]):void {
