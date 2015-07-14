@@ -243,62 +243,63 @@ define('modules/uv-shared-module/Commands',["require", "exports"], function (req
     var Commands = (function () {
         function Commands() {
         }
-        Commands.namespace = 'uv';
-        Commands.CANVAS_INDEX_CHANGE_FAILED = Commands.namespace + '.onAssetIndexChangeFailed';
-        Commands.CANVAS_INDEX_CHANGED = Commands.namespace + '.onAssetIndexChanged';
-        Commands.CLOSE_ACTIVE_DIALOGUE = Commands.namespace + '.onCloseActiveDialogue';
-        Commands.CLOSE_LEFT_PANEL = Commands.namespace + '.onCloseLeftPanel';
-        Commands.CLOSE_RIGHT_PANEL = Commands.namespace + '.onCloseRightPanel';
-        Commands.CREATED = Commands.namespace + '.onCreated';
-        Commands.DOWN_ARROW = Commands.namespace + '.onDownArrow';
-        Commands.DOWNLOAD = Commands.namespace + '.onDownload';
-        Commands.EMBED = Commands.namespace + '.onEmbed';
-        Commands.END = Commands.namespace + '.onEnd';
-        Commands.ESCAPE = Commands.namespace + '.onEscape';
-        Commands.HIDE_DOWNLOAD_DIALOGUE = Commands.namespace + '.onHideDownloadDialogue';
-        Commands.HIDE_EMBED_DIALOGUE = Commands.namespace + '.onHideEmbedDialogue';
-        Commands.HIDE_EXTERNALCONTENT_DIALOGUE = Commands.namespace + '.onHideExternalContentDialogue';
-        Commands.HIDE_GENERIC_DIALOGUE = Commands.namespace + '.onHideGenericDialogue';
-        Commands.HIDE_HELP_DIALOGUE = Commands.namespace + '.onHideHelpDialogue';
-        Commands.HIDE_MESSAGE = Commands.namespace + '.onHideMessage';
-        Commands.HIDE_OVERLAY = Commands.namespace + '.onHideOverlay';
-        Commands.HIDE_SETTINGS_DIALOGUE = Commands.namespace + '.onHideSettingsDialogue';
-        Commands.HOME = Commands.namespace + '.onHome';
-        Commands.LEFT_ARROW = Commands.namespace + '.onLeftArrow';
-        Commands.LEFTPANEL_COLLAPSE_FULL_FINISH = Commands.namespace + '.onLeftPanelCollapseFullFinish';
-        Commands.LEFTPANEL_COLLAPSE_FULL_START = Commands.namespace + '.onLeftPanelCollapseFullStart';
-        Commands.LEFTPANEL_EXPAND_FULL_FINISH = Commands.namespace + '.onLeftPanelExpandFullFinish';
-        Commands.LEFTPANEL_EXPAND_FULL_START = Commands.namespace + '.onLeftPanelExpandFullStart';
-        Commands.LOAD = Commands.namespace + '.onLoad';
-        Commands.OPEN_LEFT_PANEL = Commands.namespace + '.onOpenLeftPanel';
-        Commands.OPEN_MEDIA = Commands.namespace + '.onOpenMedia';
-        Commands.OPEN_RIGHT_PANEL = Commands.namespace + '.onOpenRightPanel';
-        Commands.PAGE_DOWN = Commands.namespace + '.onPageDown';
-        Commands.PAGE_UP = Commands.namespace + '.onPageUp';
-        Commands.REDIRECT = Commands.namespace + '.onRedirect';
-        Commands.REFRESH = Commands.namespace + '.onRefresh';
-        Commands.RESIZE = Commands.namespace + '.onResize';
-        Commands.RETURN = Commands.namespace + '.onReturn';
-        Commands.RIGHT_ARROW = Commands.namespace + '.onRightArrow';
-        Commands.RIGHTPANEL_COLLAPSE_FULL_FINISH = Commands.namespace + '.onRightPanelCollapseFullFinish';
-        Commands.RIGHTPANEL_COLLAPSE_FULL_START = Commands.namespace + '.onRightPanelCollapseFullStart';
-        Commands.RIGHTPANEL_EXPAND_FULL_FINISH = Commands.namespace + '.onRightPanelExpandFullFinish';
-        Commands.RIGHTPANEL_EXPAND_FULL_START = Commands.namespace + '.onRightPanelExpandFullStart';
-        Commands.SEQUENCE_INDEX_CHANGED = Commands.namespace + '.onSequenceIndexChanged';
-        Commands.SETTINGS_CHANGED = Commands.namespace + '.onSettingsChanged';
-        Commands.SHOW_DOWNLOAD_DIALOGUE = Commands.namespace + '.onShowDownloadDialogue';
-        Commands.SHOW_EMBED_DIALOGUE = Commands.namespace + '.onShowEmbedDialogue';
-        Commands.SHOW_EXTERNALCONTENT_DIALOGUE = Commands.namespace + '.onShowExternalContentDialogue';
-        Commands.SHOW_GENERIC_DIALOGUE = Commands.namespace + '.onShowGenericDialogue';
-        Commands.SHOW_HELP_DIALOGUE = Commands.namespace + '.onShowHelpDialogue';
-        Commands.SHOW_MESSAGE = Commands.namespace + '.onShowMessage';
-        Commands.SHOW_OVERLAY = Commands.namespace + '.onShowOverlay';
-        Commands.SHOW_SETTINGS_DIALOGUE = Commands.namespace + '.onShowSettingsDialogue';
-        Commands.THUMB_SELECTED = Commands.namespace + '.onThumbSelected';
-        Commands.TOGGLE_FULLSCREEN = Commands.namespace + '.onToggleFullScreen';
-        Commands.UP_ARROW = Commands.namespace + '.onUpArrow';
-        Commands.UPDATE_SETTINGS = Commands.namespace + '.onUpdateSettings';
-        Commands.WINDOW_UNLOAD = Commands.namespace + '.onWindowUnload';
+        Commands.namespace = 'uv.';
+        Commands.AUTHORIZATION_OCCURRED = Commands.namespace + 'onAuthorizationOccurred';
+        Commands.CANVAS_INDEX_CHANGE_FAILED = Commands.namespace + 'onAssetIndexChangeFailed';
+        Commands.CANVAS_INDEX_CHANGED = Commands.namespace + 'onAssetIndexChanged';
+        Commands.CLOSE_ACTIVE_DIALOGUE = Commands.namespace + 'onCloseActiveDialogue';
+        Commands.CLOSE_LEFT_PANEL = Commands.namespace + 'onCloseLeftPanel';
+        Commands.CLOSE_RIGHT_PANEL = Commands.namespace + 'onCloseRightPanel';
+        Commands.CREATED = Commands.namespace + 'onCreated';
+        Commands.DOWN_ARROW = Commands.namespace + 'onDownArrow';
+        Commands.DOWNLOAD = Commands.namespace + 'onDownload';
+        Commands.EMBED = Commands.namespace + 'onEmbed';
+        Commands.END = Commands.namespace + 'onEnd';
+        Commands.ESCAPE = Commands.namespace + 'onEscape';
+        Commands.HIDE_DOWNLOAD_DIALOGUE = Commands.namespace + 'onHideDownloadDialogue';
+        Commands.HIDE_EMBED_DIALOGUE = Commands.namespace + 'onHideEmbedDialogue';
+        Commands.HIDE_EXTERNALCONTENT_DIALOGUE = Commands.namespace + 'onHideExternalContentDialogue';
+        Commands.HIDE_GENERIC_DIALOGUE = Commands.namespace + 'onHideGenericDialogue';
+        Commands.HIDE_HELP_DIALOGUE = Commands.namespace + 'onHideHelpDialogue';
+        Commands.HIDE_MESSAGE = Commands.namespace + 'onHideMessage';
+        Commands.HIDE_OVERLAY = Commands.namespace + 'onHideOverlay';
+        Commands.HIDE_SETTINGS_DIALOGUE = Commands.namespace + 'onHideSettingsDialogue';
+        Commands.HOME = Commands.namespace + 'onHome';
+        Commands.LEFT_ARROW = Commands.namespace + 'onLeftArrow';
+        Commands.LEFTPANEL_COLLAPSE_FULL_FINISH = Commands.namespace + 'onLeftPanelCollapseFullFinish';
+        Commands.LEFTPANEL_COLLAPSE_FULL_START = Commands.namespace + 'onLeftPanelCollapseFullStart';
+        Commands.LEFTPANEL_EXPAND_FULL_FINISH = Commands.namespace + 'onLeftPanelExpandFullFinish';
+        Commands.LEFTPANEL_EXPAND_FULL_START = Commands.namespace + 'onLeftPanelExpandFullStart';
+        Commands.LOAD = Commands.namespace + 'onLoad';
+        Commands.OPEN_LEFT_PANEL = Commands.namespace + 'onOpenLeftPanel';
+        Commands.OPEN_MEDIA = Commands.namespace + 'onOpenMedia';
+        Commands.OPEN_RIGHT_PANEL = Commands.namespace + 'onOpenRightPanel';
+        Commands.PAGE_DOWN = Commands.namespace + 'onPageDown';
+        Commands.PAGE_UP = Commands.namespace + 'onPageUp';
+        Commands.REDIRECT = Commands.namespace + 'onRedirect';
+        Commands.REFRESH = Commands.namespace + 'onRefresh';
+        Commands.RESIZE = Commands.namespace + 'onResize';
+        Commands.RETURN = Commands.namespace + 'onReturn';
+        Commands.RIGHT_ARROW = Commands.namespace + 'onRightArrow';
+        Commands.RIGHTPANEL_COLLAPSE_FULL_FINISH = Commands.namespace + 'onRightPanelCollapseFullFinish';
+        Commands.RIGHTPANEL_COLLAPSE_FULL_START = Commands.namespace + 'onRightPanelCollapseFullStart';
+        Commands.RIGHTPANEL_EXPAND_FULL_FINISH = Commands.namespace + 'onRightPanelExpandFullFinish';
+        Commands.RIGHTPANEL_EXPAND_FULL_START = Commands.namespace + 'onRightPanelExpandFullStart';
+        Commands.SEQUENCE_INDEX_CHANGED = Commands.namespace + 'onSequenceIndexChanged';
+        Commands.SETTINGS_CHANGED = Commands.namespace + 'onSettingsChanged';
+        Commands.SHOW_DOWNLOAD_DIALOGUE = Commands.namespace + 'onShowDownloadDialogue';
+        Commands.SHOW_EMBED_DIALOGUE = Commands.namespace + 'onShowEmbedDialogue';
+        Commands.SHOW_EXTERNALCONTENT_DIALOGUE = Commands.namespace + 'onShowExternalContentDialogue';
+        Commands.SHOW_GENERIC_DIALOGUE = Commands.namespace + 'onShowGenericDialogue';
+        Commands.SHOW_HELP_DIALOGUE = Commands.namespace + 'onShowHelpDialogue';
+        Commands.SHOW_MESSAGE = Commands.namespace + 'onShowMessage';
+        Commands.SHOW_OVERLAY = Commands.namespace + 'onShowOverlay';
+        Commands.SHOW_SETTINGS_DIALOGUE = Commands.namespace + 'onShowSettingsDialogue';
+        Commands.THUMB_SELECTED = Commands.namespace + 'onThumbSelected';
+        Commands.TOGGLE_FULLSCREEN = Commands.namespace + 'onToggleFullScreen';
+        Commands.UP_ARROW = Commands.namespace + 'onUpArrow';
+        Commands.UPDATE_SETTINGS = Commands.namespace + 'onUpdateSettings';
+        Commands.WINDOW_UNLOAD = Commands.namespace + 'onWindowUnload';
         return Commands;
     })();
     return Commands;
@@ -908,11 +909,11 @@ define('extensions/uv-mediaelement-extension/Commands',["require", "exports"], f
     var Commands = (function () {
         function Commands() {
         }
-        Commands.namespace = 'mediaelementExtension';
-        Commands.MEDIA_ENDED = Commands.namespace + '.onMediaEnded';
-        Commands.MEDIA_PAUSED = Commands.namespace + '.onMediaPaused';
-        Commands.MEDIA_PLAYED = Commands.namespace + '.onMediaPlayed';
-        Commands.TREE_NODE_SELECTED = Commands.namespace + '.onTreeNodeSelected';
+        Commands.namespace = 'mediaelementExtension.';
+        Commands.MEDIA_ENDED = Commands.namespace + 'onMediaEnded';
+        Commands.MEDIA_PAUSED = Commands.namespace + 'onMediaPaused';
+        Commands.MEDIA_PLAYED = Commands.namespace + 'onMediaPlayed';
+        Commands.TREE_NODE_SELECTED = Commands.namespace + 'onTreeNodeSelected';
         return Commands;
     })();
     return Commands;
@@ -1693,32 +1694,32 @@ define('extensions/uv-seadragon-extension/Commands',["require", "exports"], func
     var Commands = (function () {
         function Commands() {
         }
-        Commands.namespace = 'seadragonExtension';
-        Commands.CLEAR_SEARCH = Commands.namespace + '.onClearSearch';
-        Commands.CURRENT_VIEW_URI = Commands.namespace + '.onCurrentViewUri';
-        Commands.FIRST = Commands.namespace + '.onFirst';
-        Commands.GALLERY_THUMB_SELECTED = Commands.namespace + '.onGalleryThumbSelected';
-        Commands.IMAGE_SEARCH = Commands.namespace + '.onImageSearch';
-        Commands.LAST = Commands.namespace + '.onLast';
-        Commands.MODE_CHANGED = Commands.namespace + '.onModeChanged';
-        Commands.NEXT = Commands.namespace + '.onNext';
-        Commands.NEXT_SEARCH_RESULT = Commands.namespace + '.onNextSearchResult';
-        Commands.OPEN_THUMBS_VIEW = Commands.namespace + '.onOpenThumbsView';
-        Commands.OPEN_TREE_VIEW = Commands.namespace + '.onOpenTreeView';
-        Commands.PAGE_SEARCH = Commands.namespace + '.onPageSearch';
-        Commands.PREV = Commands.namespace + '.onPrev';
-        Commands.PREV_SEARCH_RESULT = Commands.namespace + '.onPrevSearchResult';
-        Commands.SEADRAGON_ANIMATION = Commands.namespace + '.onAnimation';
-        Commands.SEADRAGON_ANIMATION_FINISH = Commands.namespace + '.onAnimationfinish';
-        Commands.SEADRAGON_ANIMATION_START = Commands.namespace + '.onAnimationStart';
-        Commands.SEADRAGON_OPEN = Commands.namespace + '.onOpen';
-        Commands.SEADRAGON_RESIZE = Commands.namespace + '.onResize';
-        Commands.SEADRAGON_ROTATION = Commands.namespace + '.onRotation';
-        Commands.SEARCH = Commands.namespace + '.onSearch';
-        Commands.SEARCH_RESULTS = Commands.namespace + '.onSearchResults';
-        Commands.SEARCH_RESULTS_EMPTY = Commands.namespace + '.onSearchResultsEmpty';
-        Commands.TREE_NODE_SELECTED = Commands.namespace + '.onTreeNodeSelected';
-        Commands.VIEW_PAGE = Commands.namespace + '.onViewPage';
+        Commands.namespace = 'seadragonExtension.';
+        Commands.CLEAR_SEARCH = Commands.namespace + 'onClearSearch';
+        Commands.CURRENT_VIEW_URI = Commands.namespace + 'onCurrentViewUri';
+        Commands.FIRST = Commands.namespace + 'onFirst';
+        Commands.GALLERY_THUMB_SELECTED = Commands.namespace + 'onGalleryThumbSelected';
+        Commands.IMAGE_SEARCH = Commands.namespace + 'onImageSearch';
+        Commands.LAST = Commands.namespace + 'onLast';
+        Commands.MODE_CHANGED = Commands.namespace + 'onModeChanged';
+        Commands.NEXT = Commands.namespace + 'onNext';
+        Commands.NEXT_SEARCH_RESULT = Commands.namespace + 'onNextSearchResult';
+        Commands.OPEN_THUMBS_VIEW = Commands.namespace + 'onOpenThumbsView';
+        Commands.OPEN_TREE_VIEW = Commands.namespace + 'onOpenTreeView';
+        Commands.PAGE_SEARCH = Commands.namespace + 'onPageSearch';
+        Commands.PREV = Commands.namespace + 'onPrev';
+        Commands.PREV_SEARCH_RESULT = Commands.namespace + 'onPrevSearchResult';
+        Commands.SEADRAGON_ANIMATION = Commands.namespace + 'onAnimation';
+        Commands.SEADRAGON_ANIMATION_FINISH = Commands.namespace + 'onAnimationfinish';
+        Commands.SEADRAGON_ANIMATION_START = Commands.namespace + 'onAnimationStart';
+        Commands.SEADRAGON_OPEN = Commands.namespace + 'onOpen';
+        Commands.SEADRAGON_RESIZE = Commands.namespace + 'onResize';
+        Commands.SEADRAGON_ROTATION = Commands.namespace + 'onRotation';
+        Commands.SEARCH = Commands.namespace + 'onSearch';
+        Commands.SEARCH_RESULTS = Commands.namespace + 'onSearchResults';
+        Commands.SEARCH_RESULTS_EMPTY = Commands.namespace + 'onSearchResultsEmpty';
+        Commands.TREE_NODE_SELECTED = Commands.namespace + 'onTreeNodeSelected';
+        Commands.VIEW_PAGE = Commands.namespace + 'onViewPage';
         return Commands;
     })();
     return Commands;
@@ -2230,6 +2231,9 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             $.subscribe(Commands.MODE_CHANGED, function (e, mode) {
                 _this.setLabel();
             });
+            $.subscribe(BaseCommands.AUTHORIZATION_OCCURRED, function () {
+                _this.loadThumbs();
+            });
             this.$thumbs = $('<div class="thumbs"></div>');
             this.$element.append(this.$thumbs);
             this.$thumbs.addClass(this.provider.getViewingDirection()); // defaults to "left-to-right"
@@ -2315,7 +2319,9 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
         ThumbsView.prototype.loadThumbs = function (index) {
             if (!this.thumbs || !this.thumbs.length)
                 return;
-            index = parseInt(index);
+            if (_.isUndefined(index)) {
+                index = this.provider.canvasIndex;
+            }
             var thumbRangeMid = index;
             var thumbLoadRange = this.options.thumbsLoadRange;
             var thumbRange = {
@@ -2325,14 +2331,15 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             //console.log('start: ' + thumbRange.start + ' end: ' + thumbRange.end);
             var fadeDuration = this.options.thumbsImageFadeInDuration;
             for (var i = thumbRange.start; i <= thumbRange.end; i++) {
-                var thumbElem = $(this.$thumbs.find('.thumb')[i]);
-                var imgCont = thumbElem.find('.wrap');
+                var $thumb = $(this.$thumbs.find('.thumb')[i]);
+                var $wrap = $thumb.find('.wrap');
                 // if no img has been added yet
-                if (!imgCont.hasClass('loading') && !imgCont.hasClass('loaded')) {
-                    var visible = thumbElem.attr('data-visible');
+                if (!$wrap.hasClass('loading') && !$wrap.hasClass('loaded')) {
+                    var visible = $thumb.attr('data-visible');
                     if (visible !== "false") {
-                        imgCont.addClass('loading');
-                        var src = thumbElem.attr('data-src');
+                        $wrap.removeClass('loadingFailed');
+                        $wrap.addClass('loading');
+                        var src = $thumb.attr('data-src');
                         //console.log(i, src);
                         var img = $('<img src="' + src + '" />');
                         // fade in on load.
@@ -2340,11 +2347,13 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
                             $(this).fadeIn(fadeDuration, function () {
                                 $(this).parent().swapClass('loading', 'loaded');
                             });
+                        }).error(function () {
+                            $(this).parent().swapClass('loading', 'loadingFailed');
                         });
-                        imgCont.append(img);
+                        $wrap.append(img);
                     }
                     else {
-                        imgCont.addClass('hidden');
+                        $wrap.addClass('hidden');
                     }
                 }
             }
@@ -2393,7 +2402,6 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
                 return;
             if (!this.thumbs || !this.thumbs.length)
                 return;
-            index = parseInt(index);
             this.$thumbs.find('.thumb').removeClass('selected');
             this.$selectedThumb = $(this.$thumbs.find('.thumb')[index]);
             if (this.provider.isPagingSettingEnabled()) {
@@ -2957,7 +2965,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.3.0';
+    exports.Version = '1.3.1';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5708,16 +5716,14 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.loadPages = function () {
             var _this = this;
             this.$spinner.show();
-            this.provider.getPages().then(function (pages) {
-                _this.viewer.open(Utils.Objects.ConvertToPlainObject(pages));
-            })['catch'](function (errorMessage) {
-                _this.extension.showMessage(errorMessage);
+            this.extension.getImages().then(function (images) {
+                _this.viewer.open(images);
             });
         };
         SeadragonCenterPanel.prototype.positionPages = function () {
             var viewingDirection = this.provider.getViewingDirection();
-            // if there's more than one page, align them next to each other.
-            if (this.provider.pages.length > 1) {
+            // if there's more than one image, align them next to each other.
+            if (this.provider.images.length > 1) {
                 // check if tilesources should be aligned horizontally or vertically
                 if (viewingDirection === "top-to-bottom" || viewingDirection === "bottom-to-top") {
                     // vertical
@@ -5829,11 +5835,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var viewingDirection = this.provider.getViewingDirection();
             switch (viewingDirection) {
                 case "top-to-bottom":
-                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.provider.pages.length), true);
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, 1, this.viewer.world.getItemAt(0).normHeight * this.provider.images.length), true);
                     break;
                 case "left-to-right":
                 case "right-to-left":
-                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.provider.pages.length, this.viewer.world.getItemAt(0).normHeight), true);
+                    this.viewer.viewport.fitBounds(new OpenSeadragon.Rect(0, 0, this.provider.images.length, this.viewer.world.getItemAt(0).normHeight), true);
                     break;
             }
         };
@@ -6203,7 +6209,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 return;
             }
             // if it's a valid canvas index.
-            if (canvasIndex == -1)
+            if (canvasIndex === -1)
                 return;
             this.isLoading = true;
             if (this.provider.isPagingSettingEnabled() && !isReload) {
@@ -6222,6 +6228,24 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var uri = _this.provider.getImageUri(canvas);
                 $.publish(BaseCommands.OPEN_MEDIA, [uri]);
                 _this.setParam(Params.canvasIndex, canvasIndex);
+            });
+        };
+        Extension.prototype.getImages = function () {
+            var _this = this;
+            return new Promise(function (resolve) {
+                _this.provider.getImages().then(function (images) {
+                    // check if any images required authorization
+                    for (var i = 0; i < images.length; i++) {
+                        var image = images[i];
+                        if (image.authorizationRequired) {
+                            $.publish(BaseCommands.AUTHORIZATION_OCCURRED);
+                            break;
+                        }
+                    }
+                    resolve(images);
+                })['catch'](function (errorMessage) {
+                    _this.showMessage(errorMessage);
+                });
             });
         };
         Extension.prototype.getViewer = function () {
@@ -6390,6 +6414,7 @@ define('modules/uv-shared-module/ServiceProfile',["require", "exports"], functio
 define('modules/uv-shared-module/Resource',["require", "exports", "../../modules/uv-shared-module/ServiceProfile", "./Session"], function (require, exports, ServiceProfile, Session) {
     var Resource = (function () {
         function Resource(provider) {
+            this.authorizationRequired = false;
             this.provider = provider;
         }
         Resource.prototype.getAccessToken = function () {
@@ -6415,7 +6440,8 @@ define('modules/uv-shared-module/Resource',["require", "exports", "../../modules
                 }).fail(function (error) {
                     that.status = error.status;
                     that.error = error;
-                    if (error.responseJSON) {
+                    if (that.status === 401 && error.responseJSON) {
+                        that.authorizationRequired = true;
                         that.loginService = that.provider.getService(error.responseJSON, ServiceProfile.login)['@id'];
                         that.logoutService = that.provider.getService(error.responseJSON, ServiceProfile.logout)['@id'];
                         that.tokenService = that.provider.getService(error.responseJSON, ServiceProfile.token)['@id'];
@@ -6556,21 +6582,23 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             var script = String.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
             return script;
         };
-        Provider.prototype.getPages = function () {
+        Provider.prototype.getImages = function () {
             var _this = this;
             var indices = this.getPagedIndices();
-            var pages = [];
+            var images = [];
             _.each(indices, function (index) {
                 var r = new Resource(_this);
                 r.dataUri = _this.getImageUri(_this.getCanvasByIndex(index));
-                pages.push(r);
+                images.push(r);
             });
             return new Promise(function (resolve) {
-                _this.loadResources(pages).then(function (resources) {
-                    _this.pages = _.map(resources, function (resource) {
+                _this.loadResources(images).then(function (resources) {
+                    _this.images = _.map(resources, function (resource) {
+                        // todo: should authorization be removed from loadResources?
+                        resource.data.authorizationRequired = resource.authorizationRequired;
                         return resource.data;
                     });
-                    resolve(_this.pages);
+                    resolve(Utils.Objects.ConvertToPlainObject(_this.images));
                 });
             });
         };

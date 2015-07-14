@@ -603,6 +603,9 @@
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
+#app .leftPanel .views .thumbsView .thumbs .thumb .wrap.loadingFailed {
+  background: url('../../img/uv-treeviewleftpanel-module/error.png') no-repeat 50% 50%;
+}
 #app .leftPanel .views .thumbsView .thumbs .thumb .wrap.hidden {
   background: url('../../img/uv-treeviewleftpanel-module/hidden_thumb.png') no-repeat 50% 50%;
 }
@@ -1770,20 +1773,8 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 432px;
+  width: 385px;
   position: absolute;
-}
-#app .headerPanel .options .centerOptions .prevOptions {
-  margin: 0 10px 0 0;
-}
-#app .headerPanel .options .centerOptions .mode label {
-  width: 42px;
-}
-#app .headerPanel .options .centerOptions .search {
-  width: 140px;
-}
-#app .headerPanel .options .centerOptions .nextOptions {
-  margin: 0 0 0 10px;
 }
 #app .headerPanel .options .rightOptions {
   float: right;
@@ -2106,12 +2097,6 @@ input[type=range]:focus::-ms-fill-upper {
   font-size: 0;
   color: transparent;
   width: 21px;
-}
-#app .footerPanel .searchOptions {
-  width: 425px;
-}
-#app .footerPanel .searchPager .controls .searchResultsInfo {
-  width: 290px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
   background: url('../../img/close_lightbox.png') no-repeat;
