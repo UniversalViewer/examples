@@ -2966,7 +2966,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.3.3';
+    exports.Version = '1.3.4';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -3901,7 +3901,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.getSerializedLocales = function () {
             return this.serializeLocales(this.locales);
         };
-        BaseProvider.prototype.loadResource = function (resource) {
+        BaseProvider.prototype.loadResource = function (resource, loginMethod) {
             var _this = this;
             return new Promise(function (resolve, reject) {
                 resource.getData().then(function () {
@@ -3909,7 +3909,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                         resolve(resource);
                     }
                     else if (resource.status === 401) {
-                        resolve(_this.authorize(resource));
+                        resolve(_this.authorize(resource, loginMethod));
                     }
                     else if (resource.status === 403) {
                         // todo: use config content
@@ -3922,32 +3922,21 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             });
         };
         // http://image-auth.iiif.io/api/image/2.1/authentication.html
-        BaseProvider.prototype.authorize = function (resource) {
+        BaseProvider.prototype.authorize = function (resource, loginMethod) {
             var _this = this;
             return new Promise(function (resolve) {
                 if (!resource.getAccessToken()) {
-                    _this.login(resource.loginService).then(function () {
+                    loginMethod(resource.loginService).then(function () {
                         _this.getAuthToken(resource.tokenService).then(function (token) {
                             Session.set(resource.tokenService, token, token.expiresIn);
-                            resolve(_this.loadResource(resource));
+                            resolve(_this.loadResource(resource, loginMethod));
                         });
                     });
                 }
                 else {
                     // the resource already has an access token
-                    resolve(_this.loadResource(resource));
+                    resolve(_this.loadResource(resource, loginMethod));
                 }
-            });
-        };
-        BaseProvider.prototype.login = function (loginServiceUrl) {
-            return new Promise(function (resolve) {
-                var win = window.open(loginServiceUrl, 'loginwindow', "height=600,width=600");
-                var pollTimer = window.setInterval(function () {
-                    if (win.closed) {
-                        window.clearInterval(pollTimer);
-                        resolve();
-                    }
-                }, 500);
             });
         };
         BaseProvider.prototype.getAuthToken = function (tokenServiceUrl) {
@@ -3959,11 +3948,11 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
                 });
             });
         };
-        BaseProvider.prototype.loadResources = function (resources) {
+        BaseProvider.prototype.loadResources = function (resources, loginMethod) {
             var that = this;
             return new Promise(function (resolve) {
                 var promises = _.map(resources, function (resource) {
-                    return that.loadResource(resource);
+                    return that.loadResource(resource, loginMethod);
                 });
                 Promise.all(promises)
                     .then(function () {
@@ -6238,19 +6227,23 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getImages = function () {
             var _this = this;
             return new Promise(function (resolve) {
-                _this.provider.getImages().then(function (images) {
-                    // check if any images required authorization
-                    for (var i = 0; i < images.length; i++) {
-                        var image = images[i];
-                        if (image.authorizationRequired) {
-                            $.publish(BaseCommands.AUTHORIZATION_OCCURRED);
-                            break;
-                        }
-                    }
+                _this.provider.getImages(_this.login).then(function (images) {
                     resolve(images);
                 })['catch'](function (errorMessage) {
                     _this.showMessage(errorMessage);
                 });
+            });
+        };
+        Extension.prototype.login = function (loginServiceUrl) {
+            return new Promise(function (resolve) {
+                var win = window.open(loginServiceUrl, 'loginwindow', 'height=600,width=600');
+                var pollTimer = window.setInterval(function () {
+                    if (win.closed) {
+                        window.clearInterval(pollTimer);
+                        $.publish(BaseCommands.AUTHORIZATION_OCCURRED);
+                        resolve();
+                    }
+                }, 500);
             });
         };
         Extension.prototype.getViewer = function () {
@@ -6587,7 +6580,7 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             var script = String.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
             return script;
         };
-        Provider.prototype.getImages = function () {
+        Provider.prototype.getImages = function (loginMethod) {
             var _this = this;
             var indices = this.getPagedIndices();
             var images = [];
@@ -6597,11 +6590,8 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
                 images.push(r);
             });
             return new Promise(function (resolve) {
-                _this.loadResources(images).then(function (resources) {
+                _this.loadResources(images, loginMethod).then(function (resources) {
                     _this.images = _.map(resources, function (resource) {
-                        // todo: pass loginMethod promise to loadResources from extension
-                        // this governs how the login box is shown and when the AUTHORIZATION_OCCURRED event is fired.
-                        resource.data.authorizationRequired = resource.authorizationRequired;
                         return resource.data;
                     });
                     resolve(Utils.Objects.ConvertToPlainObject(_this.images));
@@ -8174,9 +8164,13 @@ define("modernizr", function(){});
         });
     };
     // Recursively removes the last empty element (img, audio, etc) or word in an element
-    $.fn.removeLastWord = function (chars) {
+    $.fn.removeLastWord = function (chars, depth) {
+
         if ('undefined' === typeof chars)
             chars = 8;
+        if ('undefined' === typeof depth)
+            depth = 0;
+
         return this.each(function () {
             var $self = $(this);
             if ($self.contents().length > 0) {
@@ -8193,9 +8187,10 @@ define("modernizr", function(){});
                         return;
                     }
                 }
-                $lastElement.removeLastWord(chars); // Element
+
+                $lastElement.removeLastWord(chars, depth+1); // Element
             }
-            else {
+            else if(depth > 0) {
                 // Empty element
                 $self.remove();
             }
@@ -8260,50 +8255,33 @@ define("modernizr", function(){});
     $.fn.toggleExpandTextByLines = function (lines, callback) {
         return this.each(function () {
             var $self = $(this);
-            // Calculate line height to get target height
-            var lineHeight = parseFloat($self.css('line-height'));
-            var cssunit = $self.css('line-height').replace(/[\d\.]/g, '');
-            var fontSize = parseFloat($self.css('font-size'));
-            if (!lineHeight) {
-                cssunit = $self.css('font-size').replace(/[\d\.]/g, '');
-            }
-            if (!lineHeight) {
-                var $current = $self.parent();
-                while (!lineHeight && $current.prop('tagName') !== "BODY") {
-                    $current = $current.parent();
-                    lineHeight = parseFloat($current.css('line-height'));
-                    cssunit = $current.css('line-height').replace(/[\d\.]/g, '');
-                    if (!(lineHeight && fontSize)) {
-                        fontSize = parseFloat($self.css('font-size'));
-                        cssunit = $current.css('font-size').replace(/[\d\.]/g, '');
-                    }
-                }
-            }
-            // Default line-height is 'normal' (1.2 * font size)
-            if (!lineHeight) {
-                if (!fontSize) {
-                    lineHeight = 16 * 1.2; // CSS default font size
-                    cssunit = 'px';
-                }
-                else {
-                    lineHeight = fontSize * 1.2;
-                }
-            }
-            var targetHeight = Length.toPx(this, ((lineHeight + 1) * lines) + cssunit);
-            // Collapse
-            if ($self.outerHeight() <= targetHeight)
-                return;
             var expandedText = $self.html();
             // add 'pad' to account for the right margin in the sidebar
             var $buttonPad = $('<span>&hellip; <a href="#" class="toggle more">morepad</a></span>');
-            $self.append($buttonPad);
-            while ($self.height() > targetHeight) {
-                $buttonPad.remove();
+            // when height changes, store string, then pick from line counts
+            var stringsByLine = [expandedText];
+            var lastHeight = $self.height();
+            // Until empty
+            while ($self.text().length > 0) {
                 $self.removeLastWord();
+
+                var html = $self.html();
+
                 $self.append($buttonPad);
+                if (lastHeight > $self.height()) {
+                    stringsByLine.unshift(html);
+                    lastHeight = $self.height();
+                }
+                $buttonPad.remove();
             }
-            $buttonPad.remove();
-            var collapsedText = $self.html();
+
+            if (stringsByLine.length <= lines) {
+                $self.html(expandedText);
+                return;
+            }
+
+            var collapsedText = stringsByLine[lines - 1];
+
             // Toggle function
             var expanded = false;
             $self.toggle = function () {
