@@ -1,7 +1,7 @@
 $(function() {
 
     var bootstrapper, editor;
-    var uvVersion = 'uv-1.3.2';
+    var uvVersion = 'uv-1.3.3';
 
     function loadViewer() {
 
@@ -397,12 +397,16 @@ $(function() {
             console.log('full screen: ' + obj.isFullScreen);
         });
 
-        $(document).bind('uv.onSequenceIndexChanged', function (event, isFullScreen) {
-
+        $(document).bind('uv.onCanvasIndexChanged', function (event, canvasIndex) {
+            console.log('canvas: ' + canvasIndex);
         });
 
-        $(document).bind('uv.onCurrentViewUri', function (event, obj) {
+        $(document).bind('uv.onSequenceIndexChanged', function (event, sequenceIndex) {
+            console.log('sequence: ' + sequenceIndex);
+        });
 
+        $(document).bind('seadragonExtension.onCurrentViewUri', function (event, obj) {
+            console.log(obj);
         });
 
         $(document).bind('uv.onLoad', function (event, obj) {

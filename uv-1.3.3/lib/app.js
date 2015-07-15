@@ -245,8 +245,8 @@ define('modules/uv-shared-module/Commands',["require", "exports"], function (req
         }
         Commands.namespace = 'uv.';
         Commands.AUTHORIZATION_OCCURRED = Commands.namespace + 'onAuthorizationOccurred';
-        Commands.CANVAS_INDEX_CHANGE_FAILED = Commands.namespace + 'onAssetIndexChangeFailed';
-        Commands.CANVAS_INDEX_CHANGED = Commands.namespace + 'onAssetIndexChanged';
+        Commands.CANVAS_INDEX_CHANGE_FAILED = Commands.namespace + 'onCanvasIndexChangeFailed';
+        Commands.CANVAS_INDEX_CHANGED = Commands.namespace + 'onCanvasIndexChanged';
         Commands.CLOSE_ACTIVE_DIALOGUE = Commands.namespace + 'onCloseActiveDialogue';
         Commands.CLOSE_LEFT_PANEL = Commands.namespace + 'onCloseLeftPanel';
         Commands.CLOSE_RIGHT_PANEL = Commands.namespace + 'onCloseRightPanel';
@@ -852,6 +852,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
         BaseExtension.prototype.viewCanvas = function (canvasIndex, callback) {
             this.provider.canvasIndex = canvasIndex;
             $.publish(BaseCommands.CANVAS_INDEX_CHANGED, [canvasIndex]);
+            this.triggerSocket(BaseCommands.CANVAS_INDEX_CHANGED, canvasIndex);
             if (callback)
                 callback(canvasIndex);
         };
@@ -2965,7 +2966,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.3.2';
+    exports.Version = '1.3.3';
 });
 
 var __extends = this.__extends || function (d, b) {
