@@ -2965,7 +2965,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.3.1';
+    exports.Version = '1.3.2';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -5614,15 +5614,19 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             });
             this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
             this.$zoomInButton.attr('tabindex', 11);
+            this.$zoomInButton.prop('title', this.content.zoomIn);
             this.$zoomInButton.addClass('zoomIn');
             this.$zoomOutButton = this.$viewer.find('div[title="Zoom out"]');
             this.$zoomOutButton.attr('tabindex', 12);
+            this.$zoomOutButton.prop('title', this.content.zoomOut);
             this.$zoomOutButton.addClass('zoomOut');
             this.$goHomeButton = this.$viewer.find('div[title="Go home"]');
             this.$goHomeButton.attr('tabindex', 13);
+            this.$goHomeButton.prop('title', this.content.goHome);
             this.$goHomeButton.addClass('goHome');
             this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
             this.$rotateButton.attr('tabindex', 14);
+            this.$rotateButton.prop('title', this.content.rotateRight);
             this.$rotateButton.addClass('rotate');
             // events
             this.$element.on('mousemove', function (e) {
@@ -6594,7 +6598,8 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             return new Promise(function (resolve) {
                 _this.loadResources(images).then(function (resources) {
                     _this.images = _.map(resources, function (resource) {
-                        // todo: should authorization be removed from loadResources?
+                        // todo: pass loginMethod promise to loadResources from extension
+                        // this governs how the login box is shown and when the AUTHORIZATION_OCCURRED event is fired.
                         resource.data.authorizationRequired = resource.authorizationRequired;
                         return resource.data;
                     });
