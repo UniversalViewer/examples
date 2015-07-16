@@ -95,7 +95,6 @@ $(function() {
         $('#editor').empty();
 
         if (isIE8() || typeof(JSONEditor) === 'undefined') {
-            $('#edit-config').hide();
             return;
         }
 
@@ -428,7 +427,9 @@ $(function() {
             loadConfigSchema(function(schema) {
                 if (schema){
                     createEditor(schema);
-                    $('#configEditor').show();
+                    if (!isIE8()) {
+                        $('#configEditor').show();
+                    }
                 }
                 $('footer').show();
             });

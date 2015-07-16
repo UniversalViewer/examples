@@ -1,7 +1,7 @@
 {
   "name": "jmespath.js",
   "main": "jmespath.js",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "homepage": "https://github.com/jmespath/jmespath.js",
   "authors": [
     "James Saryerwinnie <js@jamesls.com>"
@@ -22,13 +22,13 @@
     "tests"
   ],
   "dependencies": {},
-  "_release": "0.12.4",
+  "_release": "0.12.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.12.4",
-    "commit": "41e226b0adb9d1c66f5909533416b0119f596b01"
+    "tag": "0.12.5",
+    "commit": "b9b8840cbf0f366aa5e00c7a314880e179c8099b"
   },
   "_source": "git@github.com:edsilv/jmespath.js.git",
-  "_target": "~0.12.4",
+  "_target": "~0.12.5",
   "_originalSource": "git@github.com:edsilv/jmespath.js.git"
 }
