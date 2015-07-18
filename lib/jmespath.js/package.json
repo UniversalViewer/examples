@@ -18,6 +18,7 @@
     "gulp-browserify": "^0.5.1",
     "gulp-eslint": "^0.15.0",
     "gulp-jshint": "^1.11.2",
+    "gulp-mocha": "^2.1.3",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0",
     "lodash": "^3.10.0",
@@ -27,7 +28,13 @@
     "yargs": "^3.15.0"
   },
   "dependencies": {
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "lodash._basetostring": "^3.0.1",
+    "lodash.indexof": "^3.0.3",
+    "lodash.isarray": "^3.0.4",
+    "lodash.isobject": "^3.0.2",
+    "lodash.keys": "^3.1.2",
+    "lodash.lastindexof": "^3.0.2"
   },
   "main": "jmespath.js",
   "directories": {
