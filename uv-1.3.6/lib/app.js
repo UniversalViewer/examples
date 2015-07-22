@@ -3218,36 +3218,6 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
     return Extension;
 });
 
-define('modules/uv-shared-module/Session',["require", "exports"], function (require, exports) {
-    // todo: add indexer? http://stackoverflow.com/questions/14841598/implementing-an-indexer-in-a-class-in-typescript
-    var Session = (function () {
-        function Session() {
-        }
-        Session.set = function (key, data, expirationSecs) {
-            var expirationMS = expirationSecs * 1000;
-            var record = {
-                value: JSON.stringify(data),
-                timestamp: new Date().getTime() + expirationMS
-            };
-            sessionStorage.setItem(key, JSON.stringify(record));
-            return data;
-        };
-        Session.get = function (key) {
-            var data = sessionStorage.getItem(key);
-            if (!data) {
-                return false;
-            }
-            data = JSON.parse(data);
-            return (new Date().getTime() < data.timestamp && JSON.parse(data.value));
-        };
-        Session.remove = function (key) {
-            sessionStorage.removeItem(key);
-        };
-        return Session;
-    })();
-    return Session;
-});
-
 define('modules/uv-shared-module/Thumb',["require", "exports"], function (require, exports) {
     var Thumb = (function () {
         function Thumb(index, url, label, width, height, visible) {
@@ -3281,7 +3251,7 @@ define('modules/uv-shared-module/TreeNode',["require", "exports"], function (req
     return TreeNode;
 });
 
-define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../BootstrapParams", "./Params", "./Session", "./Thumb", "./TreeNode"], function (require, exports, BootstrapParams, Params, Session, Thumb, TreeNode) {
+define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../BootstrapParams", "./Params", "./Thumb", "./TreeNode"], function (require, exports, BootstrapParams, Params, Thumb, TreeNode) {
     // providers contain methods that could be implemented differently according
     // to factors like varying back end data provision systems.
     // they provide a consistent interface and set of data structures
@@ -3973,58 +3943,98 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.getSerializedLocales = function () {
             return this.serializeLocales(this.locales);
         };
-        BaseProvider.prototype.loadResource = function (resource, loginMethod) {
+        BaseProvider.prototype.loadResource = function (resource, login, getAccessToken, storeAccessToken, getStoredAccessToken, handleResourceResponse) {
             var _this = this;
             return new Promise(function (resolve, reject) {
-                resource.getData().then(function () {
-                    if (resource.status === 200) {
-                        resolve(resource);
-                    }
-                    else if (resource.status === 401) {
-                        resolve(_this.authorize(resource, loginMethod));
-                    }
-                    else if (resource.status === 403) {
-                        // todo: use config content
-                        reject("You do not have permission to view this item.");
-                    }
-                    else {
-                        reject(resource.error.statusText);
-                    }
-                });
-            });
-        };
-        // http://image-auth.iiif.io/api/image/2.1/authentication.html
-        BaseProvider.prototype.authorize = function (resource, loginMethod) {
-            var _this = this;
-            return new Promise(function (resolve) {
-                if (!resource.getAccessToken()) {
-                    loginMethod(resource.loginService).then(function () {
-                        _this.getAuthToken(resource.tokenService).then(function (token) {
-                            Session.set(resource.tokenService, token, token.expiresIn);
-                            resolve(_this.loadResource(resource, loginMethod));
-                        });
+                if (_this.config.pessimisticAccessControl) {
+                    // pessimistic: access control cookies may have been deleted.
+                    // always request the access token for every access controlled info.json request
+                    // returned access tokens are not stored, therefore the login window flashes for every request.
+                    resource.getData().then(function () {
+                        if (resource.isAccessControlled) {
+                            login(resource.loginService).then(function () {
+                                getAccessToken(resource.tokenService).then(function (token) {
+                                    resource.getData(token).then(function () {
+                                        resolve(handleResourceResponse(resource));
+                                    });
+                                });
+                            });
+                        }
+                        else {
+                            // this info.json isn't access controlled, therefore no need to request an access token
+                            resolve(resource);
+                        }
                     });
                 }
                 else {
-                    // the resource already has an access token
-                    resolve(_this.loadResource(resource, loginMethod));
+                    // optimistic: access control cookies may not have been deleted.
+                    // store access tokens to avoid login window flashes.
+                    // if cookies are deleted a page refresh is required.
+                    // try loading the resource using an access token that matches the info.json domain.
+                    // if an access token is found, request the resource using it regardless of whether it is access controlled.
+                    getStoredAccessToken(resource.dataUri).then(function (storedAccessToken) {
+                        if (storedAccessToken) {
+                            // try using the stored access token
+                            resource.getData(storedAccessToken).then(function () {
+                                // if the info.json loaded using the stored access token
+                                if (resource.status === 200) {
+                                    resolve(handleResourceResponse(resource));
+                                }
+                                else {
+                                    // otherwise, load the resource data to determine the correct access control services.
+                                    // if access controlled, do login.
+                                    _this.authorize(resource, login, getAccessToken, storeAccessToken, getStoredAccessToken).then(function () {
+                                        resolve(handleResourceResponse(resource));
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            _this.authorize(resource, login, getAccessToken, storeAccessToken, getStoredAccessToken).then(function () {
+                                resolve(handleResourceResponse(resource));
+                            });
+                        }
+                    });
                 }
             });
         };
-        BaseProvider.prototype.getAuthToken = function (tokenServiceUrl) {
+        BaseProvider.prototype.authorize = function (resource, login, getAccessToken, storeAccessToken, getStoredAccessToken) {
             return new Promise(function (resolve, reject) {
-                $.getJSON(tokenServiceUrl + "?callback=?", function (token) {
-                    resolve(token);
-                }).fail(function (error) {
-                    reject(error);
+                resource.getData().then(function () {
+                    if (resource.isAccessControlled) {
+                        getStoredAccessToken(resource.tokenService).then(function (storedAccessToken) {
+                            if (storedAccessToken) {
+                                // try using the stored access token
+                                resource.getData(storedAccessToken).then(function () {
+                                    resolve(resource);
+                                });
+                            }
+                            else {
+                                // get an access token
+                                login(resource.loginService).then(function () {
+                                    getAccessToken(resource.tokenService).then(function (accessToken) {
+                                        storeAccessToken(resource, accessToken).then(function () {
+                                            resource.getData(accessToken).then(function () {
+                                                resolve(resource);
+                                            });
+                                        });
+                                    });
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        // this info.json isn't access controlled, therefore there's no need to request an access token
+                        resolve(resource);
+                    }
                 });
             });
         };
-        BaseProvider.prototype.loadResources = function (resources, loginMethod) {
+        BaseProvider.prototype.loadResources = function (resources, login, getAccessToken, storeAccessToken, getStoredAccessToken, handleResourceResponse) {
             var that = this;
             return new Promise(function (resolve) {
                 var promises = _.map(resources, function (resource) {
-                    return that.loadResource(resource, loginMethod);
+                    return that.loadResource(resource, login, getAccessToken, storeAccessToken, getStoredAccessToken, handleResourceResponse);
                 });
                 Promise.all(promises)
                     .then(function () {
@@ -6017,13 +6027,160 @@ define('extensions/uv-seadragon-extension/SettingsDialogue',["require", "exports
     return SettingsDialogue;
 });
 
+define('modules/uv-shared-module/StorageItem',["require", "exports"], function (require, exports) {
+    var StorageItem = (function () {
+        function StorageItem() {
+        }
+        return StorageItem;
+    })();
+    return StorageItem;
+});
+
+define('modules/uv-shared-module/StorageType',["require", "exports"], function (require, exports) {
+    var StorageType = (function () {
+        function StorageType(value) {
+            this.value = value;
+        }
+        StorageType.prototype.toString = function () {
+            return this.value;
+        };
+        StorageType.memory = new StorageType("memory");
+        StorageType.session = new StorageType("session");
+        StorageType.local = new StorageType("local");
+        return StorageType;
+    })();
+    return StorageType;
+});
+
+define('modules/uv-shared-module/Storage',["require", "exports", "./StorageItem", "./StorageType"], function (require, exports, StorageItem, StorageType) {
+    // todo: add indexer? http://stackoverflow.com/questions/14841598/implementing-an-indexer-in-a-class-in-typescript
+    var Storage = (function () {
+        function Storage() {
+        }
+        Storage.clear = function (storageType) {
+            if (storageType === void 0) { storageType = StorageType.memory; }
+            switch (storageType) {
+                case StorageType.memory:
+                    this._memoryStorage = {};
+                    break;
+                case StorageType.session:
+                    sessionStorage.clear();
+                    break;
+                case StorageType.local:
+                    localStorage.clear();
+                    break;
+            }
+        };
+        Storage.clearExpired = function (storageType) {
+            if (storageType === void 0) { storageType = StorageType.memory; }
+            var items = this.getItems(storageType);
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (this._isExpired(item)) {
+                    this.remove(item.key);
+                }
+            }
+        };
+        Storage.get = function (key, storageType) {
+            if (storageType === void 0) { storageType = StorageType.memory; }
+            var data;
+            switch (storageType) {
+                case StorageType.memory:
+                    data = this._memoryStorage[key];
+                    break;
+                case StorageType.session:
+                    data = sessionStorage.getItem(key);
+                    break;
+                case StorageType.local:
+                    data = localStorage.getItem(key);
+                    break;
+            }
+            if (!data)
+                return null;
+            var item = JSON.parse(data);
+            if (this._isExpired(item))
+                return null;
+            // useful reference
+            item.key = key;
+            return item;
+        };
+        Storage._isExpired = function (item) {
+            if (new Date().getTime() < item.expiresAt) {
+                return false;
+            }
+            return true;
+        };
+        Storage.getItems = function (storageType) {
+            if (storageType === void 0) { storageType = StorageType.memory; }
+            var items = [];
+            switch (storageType) {
+                case StorageType.memory:
+                    var keys = Object.keys(this._memoryStorage);
+                    for (var i = 0; i < keys.length; i++) {
+                        items.push(this.get(keys[i], StorageType.memory));
+                    }
+                    break;
+                case StorageType.session:
+                    for (var i = 0; i < sessionStorage.length; i++) {
+                        var key = sessionStorage.key(i);
+                        items.push(this.get(key, StorageType.session));
+                    }
+                    break;
+                case StorageType.local:
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var key = localStorage.key(i);
+                        items.push(this.get(key, StorageType.local));
+                    }
+                    break;
+            }
+            return items;
+        };
+        Storage.remove = function (key, storageType) {
+            if (storageType === void 0) { storageType = StorageType.memory; }
+            switch (storageType) {
+                case StorageType.memory:
+                    delete this._memoryStorage[key];
+                    break;
+                case StorageType.session:
+                    sessionStorage.removeItem(key);
+                    break;
+                case StorageType.local:
+                    localStorage.removeItem(key);
+                    break;
+            }
+        };
+        Storage.set = function (key, value, expirationSecs, storageType) {
+            if (storageType === void 0) { storageType = StorageType.memory; }
+            var expirationMS = expirationSecs * 1000;
+            var record = new StorageItem();
+            record.value = value;
+            record.expiresAt = new Date().getTime() + expirationMS;
+            switch (storageType) {
+                case StorageType.memory:
+                    this._memoryStorage[key] = JSON.stringify(record);
+                    break;
+                case StorageType.session:
+                    sessionStorage.setItem(key, JSON.stringify(record));
+                    break;
+                case StorageType.local:
+                    localStorage.setItem(key, JSON.stringify(record));
+                    break;
+            }
+            return record;
+        };
+        Storage._memoryStorage = {};
+        return Storage;
+    })();
+    return Storage;
+});
+
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Params", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, DownloadDialogue, EmbedDialogue, ExternalContentDialogue, FooterPanel, HelpDialogue, Mode, MoreInfoRightPanel, PagingHeaderPanel, Params, SeadragonCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
+define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/Commands", "../../modules/uv-shared-module/BaseExtension", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Params", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-shared-module/Storage", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Commands, DownloadDialogue, EmbedDialogue, ExternalContentDialogue, FooterPanel, HelpDialogue, Mode, MoreInfoRightPanel, PagingHeaderPanel, Params, SeadragonCenterPanel, SettingsDialogue, Shell, Storage, TreeViewLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -6206,7 +6363,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getImages = function () {
             var _this = this;
             return new Promise(function (resolve) {
-                _this.provider.getImages(_this.login).then(function (images) {
+                _this.provider.getImages(_this.login, _this.getAccessToken, _this.storeAccessToken, _this.getStoredAccessToken, _this.handleResourceResponse).then(function (images) {
                     resolve(images);
                 })['catch'](function (errorMessage) {
                     _this.showMessage(errorMessage);
@@ -6223,6 +6380,51 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                         resolve();
                     }
                 }, 500);
+            });
+        };
+        Extension.prototype.getAccessToken = function (tokenServiceUrl) {
+            return new Promise(function (resolve, reject) {
+                $.getJSON(tokenServiceUrl + "?callback=?", function (token) {
+                    resolve(token);
+                }).fail(function (error) {
+                    reject(error);
+                });
+            });
+        };
+        Extension.prototype.storeAccessToken = function (resource, token) {
+            return new Promise(function (resolve, reject) {
+                Storage.set(resource.tokenService, token, token.expiresIn);
+                resolve();
+            });
+        };
+        Extension.prototype.getStoredAccessToken = function (url) {
+            return new Promise(function (resolve, reject) {
+                // first try an exact match of the url
+                var item = Storage.get(url);
+                if (item) {
+                    resolve(item.value);
+                }
+                // find an access token for the domain
+                var domain = Utils.Urls.GetUrlParts(url).hostname;
+                var items = Storage.getItems();
+                for (var i = 0; i < items.length; i++) {
+                    item = items[i];
+                    if (item.key.contains(domain)) {
+                        resolve(item.value);
+                    }
+                }
+                resolve(null);
+            });
+        };
+        Extension.prototype.handleResourceResponse = function (resource) {
+            return new Promise(function (resolve, reject) {
+                if (resource.status === 200) {
+                    resolve(resource);
+                }
+                else {
+                    // access denied
+                    reject(resource.error.statusText);
+                }
             });
         };
         Extension.prototype.getViewer = function () {
@@ -6388,36 +6590,27 @@ define('modules/uv-shared-module/ServiceProfile',["require", "exports"], functio
     return ServiceProfile;
 });
 
-define('modules/uv-shared-module/Resource',["require", "exports", "../../modules/uv-shared-module/ServiceProfile", "./Session"], function (require, exports, ServiceProfile, Session) {
+define('modules/uv-shared-module/Resource',["require", "exports", "../../modules/uv-shared-module/ServiceProfile"], function (require, exports, ServiceProfile) {
     var Resource = (function () {
         function Resource(provider) {
-            this.authorizationRequired = false;
+            this.isAccessControlled = false;
             this.provider = provider;
         }
-        Resource.prototype.getAccessToken = function () {
-            return Session.get(this.tokenService);
+        Resource.prototype._parseAuthServices = function (resource) {
+            var loginService = this.provider.getService(resource, ServiceProfile.login);
+            if (loginService)
+                this.loginService = loginService['@id'];
+            var logoutService = this.provider.getService(resource, ServiceProfile.logout);
+            if (logoutService)
+                this.logoutService = logoutService['@id'];
+            var tokenService = this.provider.getService(resource, ServiceProfile.token);
+            if (tokenService)
+                this.tokenService = tokenService['@id'];
+            if (this.loginService)
+                this.isAccessControlled = true;
         };
-        Resource.prototype._getAccessTokenForDomain = function (url) {
-            var domain = Utils.Urls.GetUrlParts(url).hostname;
-            for (var i = 0; i < sessionStorage.length; i++) {
-                var key = sessionStorage.key(i);
-                if (key.contains(domain)) {
-                    return Session.get(key);
-                }
-            }
-            return null;
-        };
-        Resource.prototype._removeAccessToken = function () {
-            Session.remove(this.tokenService);
-        };
-        Resource.prototype.getData = function () {
+        Resource.prototype.getData = function (accessToken) {
             var that = this;
-            // check if an access token already exists for the info.json domain
-            // if so, try using that first.
-            var accessToken = this._getAccessTokenForDomain(that.dataUri);
-            if (!accessToken) {
-                accessToken = that.getAccessToken();
-            }
             return new Promise(function (resolve, reject) {
                 $.ajax({
                     url: that.dataUri,
@@ -6431,15 +6624,13 @@ define('modules/uv-shared-module/Resource',["require", "exports", "../../modules
                 }).done(function (data) {
                     that.status = 200;
                     that.data = data;
+                    that._parseAuthServices(that.data);
                     resolve(that);
                 }).fail(function (error) {
                     that.status = error.status;
                     that.error = error;
                     if (error.responseJSON) {
-                        that.authorizationRequired = true;
-                        that.loginService = that.provider.getService(error.responseJSON, ServiceProfile.login)['@id'];
-                        that.logoutService = that.provider.getService(error.responseJSON, ServiceProfile.logout)['@id'];
-                        that.tokenService = that.provider.getService(error.responseJSON, ServiceProfile.token)['@id'];
+                        that._parseAuthServices(error.responseJSON);
                     }
                     resolve(that);
                 });
@@ -6579,7 +6770,7 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             var script = String.format(template, this.getSerializedLocales(), configUri, this.manifestUri, this.sequenceIndex, canvasIndex, zoom, rotation, width, height, esu);
             return script;
         };
-        Provider.prototype.getImages = function (loginMethod) {
+        Provider.prototype.getImages = function (loginMethod, getAccessTokenMethod, storeAccessTokenMethod, getStoredAccessTokenMethod, handleResourceResponse) {
             var _this = this;
             var indices = this.getPagedIndices();
             var images = [];
@@ -6589,7 +6780,7 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
                 images.push(r);
             });
             return new Promise(function (resolve) {
-                _this.loadResources(images, loginMethod).then(function (resources) {
+                _this.loadResources(images, loginMethod, getAccessTokenMethod, storeAccessTokenMethod, getStoredAccessTokenMethod, handleResourceResponse).then(function (resources) {
                     _this.images = _.map(resources, function (resource) {
                         return resource.data;
                     });
