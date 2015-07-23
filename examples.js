@@ -68,15 +68,15 @@ $(function() {
 
             var $manifestSelect = $('#manifestSelect');
 
-            for (var i = 0; i < manifests.length; i++) {
-                var group = manifests[i];
+            for (var i = 0; i < manifests.collections.length; i++) {
+                var collection = manifests.collections[i];
 
-                $manifestSelect.append('<optgroup label="' + group.title + '">');
+                $manifestSelect.append('<optgroup label="' + collection.label + '">');
 
-                for (var j = 0; j < group.manifests.length; j++){
-                    var manifest = group.manifests[j];
+                for (var j = 0; j < collection.manifests.length; j++){
+                    var manifest = collection.manifests[j];
 
-                    $manifestSelect.append('<option value="' + manifest.uri + '">' + manifest.title + '</option>');
+                    $manifestSelect.append('<option value="' + manifest['@id'] + '">' + manifest.label + '</option>');
                 }
 
                 $manifestSelect.append('</optgroup>');
