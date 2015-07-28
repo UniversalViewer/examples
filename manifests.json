@@ -55,6 +55,11 @@
           "label": "First Thursday Club (login required)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b1818893x/manifest",
+          "@type": "sc:Manifest",
+          "label": "Correspondence Concerning Publication (click through)"
+        },
+        {
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images (jsonp)"
