@@ -60,6 +60,11 @@
           "label": "Correspondence Concerning Publication (click through)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b17307703/manifest",
+          "@type": "sc:Manifest",
+          "label": "I Remember Sir Henry Dale (audio, click through)"
+        },
+        {
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images (jsonp)"
