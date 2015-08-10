@@ -65,6 +65,11 @@
           "label": "I Remember Sir Henry Dale (audio, click through)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b11599820/manifest",
+          "@type": "sc:Manifest",
+          "label": "Sixteen feet in profile (degraded image)"
+        },
+        {
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images (jsonp)"
