@@ -70,6 +70,11 @@
           "label": "Sixteen feet in profile (degraded image)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b19684538/manifest",
+          "@type": "sc:Manifest",
+          "label": "Pseudo-Albert the Great (folio)"
+        },
+        {
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images (jsonp)"
