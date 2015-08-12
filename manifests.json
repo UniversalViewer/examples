@@ -75,6 +75,12 @@
           "label": "Pseudo-Albert the Great (folio)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
+          "@type": "sc:Manifest",
+          "label": "Chemist & Druggist (collection)",
+          "visible": false
+        },
+        {
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images (jsonp)"

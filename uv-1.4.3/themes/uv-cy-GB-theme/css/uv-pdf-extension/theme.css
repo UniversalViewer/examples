@@ -150,6 +150,12 @@
 #app .overlay.settings .scroll .setting label {
   margin: 0 5px 0 0;
 }
+#app .overlay.settings .version {
+  float: left;
+}
+#app .overlay.settings .website {
+  float: right;
+}
 #app .overlay.settings .bottom {
   background: none;
 }
@@ -308,20 +314,27 @@
   display: block;
   padding: 2px 0 0 0;
 }
+#app .leftPanel .views .thumbsView .thumbs .thumb .label {
+  overflow-x: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+}
 #app .leftPanel .views .thumbsView .thumbs .thumb.placeholder .wrap {
   background: url('../../img/uv-treeviewleftpanel-module/unavailable.png') no-repeat 50% 50%;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.oneCol {
   margin: 0 0 7px 0;
 }
-#app .leftPanel .views .thumbsView .thumbs .thumb.oneCol .wrap {
+#app .leftPanel .views .thumbsView .thumbs .thumb.oneCol .wrap,
+#app .leftPanel .views .thumbsView .thumbs .thumb.oneCol .label {
   width: 208px;
   max-height: 373px;
 }
 #app .leftPanel .views .thumbsView .thumbs .thumb.twoCol {
   margin: 0 7px 7px 0;
 }
-#app .leftPanel .views .thumbsView .thumbs .thumb.twoCol .wrap {
+#app .leftPanel .views .thumbsView .thumbs .thumb.twoCol .wrap,
+#app .leftPanel .views .thumbsView .thumbs .thumb.twoCol .label {
   width: 98px;
   max-height: 182px;
 }

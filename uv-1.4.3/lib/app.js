@@ -1125,28 +1125,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Comman
                 });
             });
         };
-        //getExternalResources(): Promise<Manifesto.IExternalResource[]> {
-        //    var canvas: Manifesto.ICanvas = this.provider.getCurrentCanvas();
-        //    var resource: Manifesto.IExternalResource = new ExternalResource(this.provider);
-        //    var ixifService = canvas.getService(manifesto.ServiceProfile.ixif());
-        //
-        //    resource.dataUri = ixifService.getInfoUri();
-        //
-        //    return new Promise<Manifesto.IExternalResource[]>((resolve) => {
-        //        (<IProvider>this.provider).manifest.loadResources(
-        //            [resource],
-        //            this.clickThrough,
-        //            this.login,
-        //            this.getAccessToken,
-        //            this.storeAccessToken,
-        //            this.getStoredAccessToken,
-        //            this.handleExternalResourceResponse).then((resources: Manifesto.IExternalResource[]) => {
-        //                resolve(resources);
-        //            })['catch']((errorMessage) => {
-        //            this.showMessage(errorMessage);
-        //        });
-        //    });
-        //}
         // get hash or data-attribute params depending on whether the UV is embedded.
         BaseExtension.prototype.getParam = function (key) {
             var value;
@@ -1801,12 +1779,11 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./Commands
             }
         };
         HeaderPanel.prototype.updatePagingToggle = function () {
-            if (!this.provider.isPagingEnabled()) {
+            if (!this.pagingToggleIsVisible()) {
                 this.$pagingToggleButton.hide();
                 return;
             }
-            var settings = this.provider.getSettings();
-            if (settings.pagingEnabled) {
+            if (this.provider.isPagingSettingEnabled()) {
                 this.$pagingToggleButton.removeClass('two-up');
                 this.$pagingToggleButton.addClass('one-up');
                 this.$pagingToggleButton.prop('title', this.content.oneUp);
@@ -1832,7 +1809,7 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./Commands
             return this.provider.getLocales().length > 1 && this.options.localeToggleEnabled;
         };
         HeaderPanel.prototype.pagingToggleIsVisible = function () {
-            return this.options.pagingToggleEnabled;
+            return this.options.pagingToggleEnabled && this.provider.isPagingAvailable();
         };
         HeaderPanel.prototype.showMessage = function (message) {
             this.message = message;
@@ -2482,7 +2459,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.4.2';
+    exports.Version = '1.4.3';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -2513,6 +2490,8 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             this.$content.append(this.$scroll);
             this.$version = $('<div class="version"></div>');
             this.$content.append(this.$version);
+            this.$website = $('<div class="website"></div>');
+            this.$content.append(this.$website);
             this.$locale = $('<div class="setting locale"></div>');
             this.$scroll.append(this.$locale);
             this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
@@ -2522,6 +2501,8 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             // initialise ui.
             this.$title.text(this.content.title);
             this.$version.text("v" + Version.Version);
+            this.$website.html(this.content.website);
+            this.$website.targetBlank();
             var locales = this.provider.getLocales();
             for (var i = 0; i < locales.length; i++) {
                 var locale = locales[i];
@@ -3668,9 +3649,13 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             // No jsonp setting? Then use autodetection. Otherwise, use explicit setting.
             return (null === this.jsonp) ? Modernizr.cors : !this.jsonp;
         };
-        // todo: should this inspect a viewingHint?
         BaseProvider.prototype.getManifestType = function () {
-            return 'monograph';
+            var manifestType = this.manifest.getType();
+            // default to monograph
+            if (manifestType.toString() === "") {
+                manifestType = manifesto.ManifestType.monograph();
+            }
+            return manifestType;
         };
         BaseProvider.prototype.getService = function (resource, profile) {
             return this.manifest.getService(resource, profile);
@@ -3681,11 +3666,11 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.getRenderings = function (resource) {
             return this.manifest.getRenderings(resource);
         };
-        BaseProvider.prototype.getSequenceType = function () {
-            // todo: use viewingHint attribute?
-            // default to 'seadragon-iiif'
-            return 'seadragon-iiif';
-        };
+        //getSequenceType(): string{
+        //    // todo: use rendering?
+        //    // default to 'seadragon-iiif'
+        //    return 'seadragon-iiif';
+        //}
         BaseProvider.prototype.getCanvasType = function (canvas) {
             if (!canvas) {
                 canvas = this.getCurrentCanvas();
@@ -3752,11 +3737,15 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.isMultiCanvas = function () {
             return this.sequence.isMultiCanvas();
         };
+        BaseProvider.prototype.isPagingAvailable = function () {
+            // paged mode is useless unless you have at least 3 pages...
+            return this.isPagingEnabled() && this.getTotalCanvases() > 2;
+        };
         BaseProvider.prototype.isPagingEnabled = function () {
             return this.sequence.isPagingEnabled();
         };
         BaseProvider.prototype.isPagingSettingEnabled = function () {
-            if (this.isPagingEnabled()) {
+            if (this.isPagingAvailable()) {
                 return this.getSettings().pagingEnabled;
             }
             return false;
@@ -3839,7 +3828,8 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             return this.sequence.getCanvasIndexById(id);
         };
         BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
-            return this.sequence.getCanvasIndexByLabel(label);
+            var foliated = this.getManifestType().toString() === manifesto.ManifestType.folio().toString();
+            return this.sequence.getCanvasIndexByLabel(label, foliated);
         };
         BaseProvider.prototype.getTree = function () {
             return this.manifest.getTree();
@@ -3854,29 +3844,21 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.getMetadata = function (includeRootProperties) {
             return this.manifest.getMetadata(includeRootProperties);
         };
-        // todo: is this still needed?
         BaseProvider.prototype.defaultToThumbsView = function () {
-            var manifestType = this.getManifestType();
-            switch (manifestType) {
-                case 'monograph':
+            switch (this.getManifestType().toString()) {
+                case manifesto.ManifestType.monograph().toString():
                     if (!this.isMultiSequence())
                         return true;
                     break;
-                case 'archive':
-                    return true;
-                    break;
-                case 'boundmanuscript':
-                    return true;
-                    break;
-                case 'artwork':
-                    return true;
             }
-            var sequenceType = this.getSequenceType();
-            switch (sequenceType) {
-                case 'application-pdf':
-                    return true;
-                    break;
-            }
+            // todo: use rendering?
+            //var sequenceType = this.getSequenceType();
+            //
+            //switch (sequenceType){
+            //    case 'application-pdf':
+            //        return true;
+            //        break;
+            //}
             return false;
         };
         BaseProvider.prototype.getSettings = function () {
@@ -4390,8 +4372,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 this.$noneAvailable.hide();
                 this.$downloadButton.show();
             }
-            var settings = this.provider.getSettings();
-            if (this.provider.isPagingEnabled() && settings.pagingEnabled) {
+            if (this.provider.isPagingSettingEnabled()) {
                 this.$pagingNote.show();
             }
             else {
@@ -4452,17 +4433,16 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             return [0, 0];
         };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            var settings = this.provider.getSettings();
             switch (option) {
                 case DownloadOption.currentViewAsJpg:
                 case DownloadOption.dynamicCanvasRenderings:
                 case DownloadOption.dynamicImageRenderings:
                 case DownloadOption.wholeImageHighRes:
-                    return settings.pagingEnabled ? false : true;
+                    return this.provider.isPagingSettingEnabled() ? false : true;
                 case DownloadOption.wholeImageLowResAsJpg:
                     // hide low-res option if hi-res width is smaller than constraint
                     var dimensions = this.getDimensionsForCurrentCanvas();
-                    return (!settings.pagingEnabled && (dimensions[0] > this.options.confinedImageSize));
+                    return (!this.provider.isPagingSettingEnabled() && (dimensions[0] > this.options.confinedImageSize));
                 default:
                     return true;
             }
@@ -5157,7 +5137,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$modeOptions.append(this.$imageModeLabel);
             this.$imageModeOption = $('<input type="radio" id="image" name="mode" tabindex="17"/>');
             this.$modeOptions.append(this.$imageModeOption);
-            this.$pageModeLabel = $('<label for="page">' + this.content.page + '</label>');
+            this.$pageModeLabel = $('<label for="page"></label>');
             this.$modeOptions.append(this.$pageModeLabel);
             this.$pageModeOption = $('<input type="radio" id="page" name="mode" tabindex="18"/>');
             this.$modeOptions.append(this.$pageModeOption);
@@ -5185,6 +5165,12 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 // disable page mode option.
                 this.$pageModeOption.attr('disabled', 'disabled');
                 this.$pageModeLabel.addClass('disabled');
+            }
+            if (this.provider.getManifestType().toString() === manifesto.ManifestType.folio().toString()) {
+                this.$pageModeLabel.text(this.content.folio);
+            }
+            else {
+                this.$pageModeLabel.text(this.content.page);
             }
             this.setTitles();
             this.setTotal();
@@ -5224,7 +5210,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 _this.$searchText.blur();
                 _this.search();
             });
-            this.$searchText.focus(function () {
+            this.$searchText.click(function () {
                 $(this).select();
             });
             this.$searchButton.onPressed(function () {
@@ -5926,7 +5912,7 @@ define('extensions/uv-seadragon-extension/SettingsDialogue',["require", "exports
         SettingsDialogue.prototype.open = function () {
             _super.prototype.open.call(this);
             var settings = this.getSettings();
-            if (!this.provider.isPagingEnabled()) {
+            if (!this.provider.isPagingAvailable()) {
                 this.$pagingEnabled.hide();
             }
             else {
@@ -6122,14 +6108,14 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getMode = function () {
             if (this.mode)
                 return this.mode;
-            switch (this.provider.getManifestType()) {
-                case 'monograph':
+            switch (this.provider.getManifestType().toString()) {
+                case manifesto.ManifestType.monograph().toString():
                     return Mode.page;
                     break;
-                case 'archive',
-                    'boundmanuscript':
-                    return Mode.image;
-                    break;
+                //case 'archive',
+                //     'boundmanuscript':
+                //    return Mode.image;
+                //    break;
                 default:
                     return Mode.image;
             }
@@ -6468,36 +6454,50 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define('manifesto',e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.manifesto=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 var Manifesto;
 (function (Manifesto) {
-    var CanvasType = (function () {
-        function CanvasType(value) {
-            this.value = value;
-            if (value)
+    var StringValue = (function () {
+        function StringValue(value) {
+            this.value = "";
+            if (value) {
                 this.value = value.toLowerCase();
+            }
         }
-        CanvasType.prototype.toString = function () {
+        StringValue.prototype.toString = function () {
             return this.value;
         };
+        return StringValue;
+    })();
+    Manifesto.StringValue = StringValue;
+})(Manifesto || (Manifesto = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Manifesto;
+(function (Manifesto) {
+    var CanvasType = (function (_super) {
+        __extends(CanvasType, _super);
+        function CanvasType() {
+            _super.apply(this, arguments);
+        }
         // todo: use getters when ES3 target is no longer required.
         CanvasType.prototype.canvas = function () {
             return new CanvasType(CanvasType.CANVAS.toString());
         };
         CanvasType.CANVAS = new CanvasType("sc:canvas");
         return CanvasType;
-    })();
+    })(Manifesto.StringValue);
     Manifesto.CanvasType = CanvasType;
 })(Manifesto || (Manifesto = {}));
 var Manifesto;
 (function (Manifesto) {
-    var ElementType = (function () {
-        // todo: Should IIIFIMAGE go here?
-        function ElementType(value) {
-            this.value = value;
-            if (value)
-                this.value = value.toLowerCase();
+    var ElementType = (function (_super) {
+        __extends(ElementType, _super);
+        function ElementType() {
+            _super.apply(this, arguments);
         }
-        ElementType.prototype.toString = function () {
-            return this.value;
-        };
+        // todo: Should IIIFIMAGE go here?
         // todo: use getters when ES3 target is no longer required.
         ElementType.prototype.document = function () {
             return new ElementType(ElementType.DOCUMENT.toString());
@@ -6512,20 +6512,40 @@ var Manifesto;
         ElementType.MOVINGIMAGE = new ElementType("dctypes:movingimage");
         ElementType.SOUND = new ElementType("dctypes:sound");
         return ElementType;
-    })();
+    })(Manifesto.StringValue);
     Manifesto.ElementType = ElementType;
 })(Manifesto || (Manifesto = {}));
 var Manifesto;
 (function (Manifesto) {
-    var RenderingFormat = (function () {
-        function RenderingFormat(value) {
-            this.value = value;
-            if (value)
-                this.value = value.toLowerCase();
+    var ManifestType = (function (_super) {
+        __extends(ManifestType, _super);
+        function ManifestType() {
+            _super.apply(this, arguments);
         }
-        RenderingFormat.prototype.toString = function () {
-            return this.value;
+        // todo: use getters when ES3 target is no longer required.
+        ManifestType.prototype.empty = function () {
+            return new ManifestType(ManifestType.EMPTY.toString());
         };
+        ManifestType.prototype.folio = function () {
+            return new ManifestType(ManifestType.FOLIO.toString());
+        };
+        ManifestType.prototype.monograph = function () {
+            return new ManifestType(ManifestType.MONOGRAPH.toString());
+        };
+        ManifestType.EMPTY = new ManifestType("");
+        ManifestType.FOLIO = new ManifestType("folio");
+        ManifestType.MONOGRAPH = new ManifestType("monograph");
+        return ManifestType;
+    })(Manifesto.StringValue);
+    Manifesto.ManifestType = ManifestType;
+})(Manifesto || (Manifesto = {}));
+var Manifesto;
+(function (Manifesto) {
+    var RenderingFormat = (function (_super) {
+        __extends(RenderingFormat, _super);
+        function RenderingFormat() {
+            _super.apply(this, arguments);
+        }
         // todo: use getters when ES3 target is no longer required.
         RenderingFormat.prototype.pdf = function () {
             return new RenderingFormat(RenderingFormat.PDF.toString());
@@ -6540,20 +6560,16 @@ var Manifesto;
         RenderingFormat.DOC = new RenderingFormat("application/msword");
         RenderingFormat.DOCX = new RenderingFormat("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
         return RenderingFormat;
-    })();
+    })(Manifesto.StringValue);
     Manifesto.RenderingFormat = RenderingFormat;
 })(Manifesto || (Manifesto = {}));
 var Manifesto;
 (function (Manifesto) {
-    var ServiceProfile = (function () {
-        function ServiceProfile(value) {
-            this.value = value;
-            if (value)
-                this.value = value.toLowerCase();
+    var ServiceProfile = (function (_super) {
+        __extends(ServiceProfile, _super);
+        function ServiceProfile() {
+            _super.apply(this, arguments);
         }
-        ServiceProfile.prototype.toString = function () {
-            return this.value;
-        };
         // todo: use getters when ES3 target is no longer required.
         ServiceProfile.prototype.autoComplete = function () {
             return new ServiceProfile(ServiceProfile.AUTOCOMPLETE.toString());
@@ -6596,20 +6612,16 @@ var Manifesto;
         ServiceProfile.SEARCHWITHIN = new ServiceProfile("http://iiif.io/api/search/1/");
         ServiceProfile.TOKEN = new ServiceProfile("http://iiif.io/api/image/2/auth/token");
         return ServiceProfile;
-    })();
+    })(Manifesto.StringValue);
     Manifesto.ServiceProfile = ServiceProfile;
 })(Manifesto || (Manifesto = {}));
 var Manifesto;
 (function (Manifesto) {
-    var ViewingDirection = (function () {
-        function ViewingDirection(value) {
-            this.value = value;
-            if (value)
-                this.value = value.toLowerCase();
+    var ViewingDirection = (function (_super) {
+        __extends(ViewingDirection, _super);
+        function ViewingDirection() {
+            _super.apply(this, arguments);
         }
-        ViewingDirection.prototype.toString = function () {
-            return this.value;
-        };
         // todo: use getters when ES3 target is no longer required.
         ViewingDirection.prototype.leftToRight = function () {
             return new ViewingDirection(ViewingDirection.LEFTTORIGHT.toString());
@@ -6628,47 +6640,43 @@ var Manifesto;
         ViewingDirection.TOPTOBOTTOM = new ViewingDirection("top-to-bottom");
         ViewingDirection.BOTTOMTOTOP = new ViewingDirection("bottom-to-top");
         return ViewingDirection;
-    })();
+    })(Manifesto.StringValue);
     Manifesto.ViewingDirection = ViewingDirection;
 })(Manifesto || (Manifesto = {}));
 var Manifesto;
 (function (Manifesto) {
-    var ViewingHint = (function () {
-        function ViewingHint(value) {
-            this.value = value;
-            if (value)
-                this.value = value.toLowerCase();
+    var ViewingHint = (function (_super) {
+        __extends(ViewingHint, _super);
+        function ViewingHint() {
+            _super.apply(this, arguments);
         }
-        ViewingHint.prototype.toString = function () {
-            return this.value;
-        };
         // todo: use getters when ES3 target is no longer required.
-        ViewingHint.prototype.individuals = function () {
-            return new ViewingHint(ViewingHint.INDIVIDUALS.toString());
-        };
-        ViewingHint.prototype.paged = function () {
-            return new ViewingHint(ViewingHint.PAGED.toString());
-        };
         ViewingHint.prototype.continuous = function () {
             return new ViewingHint(ViewingHint.CONTINUOUS.toString());
+        };
+        ViewingHint.prototype.empty = function () {
+            return new ViewingHint(ViewingHint.EMPTY.toString());
+        };
+        ViewingHint.prototype.individuals = function () {
+            return new ViewingHint(ViewingHint.INDIVIDUALS.toString());
         };
         ViewingHint.prototype.nonPaged = function () {
             return new ViewingHint(ViewingHint.NONPAGED.toString());
         };
+        ViewingHint.prototype.paged = function () {
+            return new ViewingHint(ViewingHint.PAGED.toString());
+        };
         ViewingHint.prototype.top = function () {
             return new ViewingHint(ViewingHint.TOP.toString());
         };
-        ViewingHint.prototype.none = function () {
-            return new ViewingHint(ViewingHint.NONE.toString());
-        };
-        ViewingHint.INDIVIDUALS = new ViewingHint("individuals");
-        ViewingHint.PAGED = new ViewingHint("paged");
         ViewingHint.CONTINUOUS = new ViewingHint("continuous");
+        ViewingHint.EMPTY = new ViewingHint("");
+        ViewingHint.INDIVIDUALS = new ViewingHint("individuals");
         ViewingHint.NONPAGED = new ViewingHint("non-paged");
+        ViewingHint.PAGED = new ViewingHint("paged");
         ViewingHint.TOP = new ViewingHint("top");
-        ViewingHint.NONE = new ViewingHint("");
         return ViewingHint;
-    })();
+    })(Manifesto.StringValue);
     Manifesto.ViewingHint = ViewingHint;
 })(Manifesto || (Manifesto = {}));
 var Manifesto;
@@ -6700,12 +6708,6 @@ var Manifesto;
     })();
     Manifesto.JSONLDResource = JSONLDResource;
 })(Manifesto || (Manifesto = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 var Manifesto;
 (function (Manifesto) {
     var ManifestResource = (function (_super) {
@@ -7054,6 +7056,9 @@ var Manifesto;
                 }
             }
         };
+        Manifest.prototype.getType = function () {
+            return new Manifesto.ManifestType(this.getProperty('exp:manifestType'));
+        };
         Manifest.prototype.isMultiSequence = function () {
             return this.getTotalSequences() > 1;
         };
@@ -7228,7 +7233,6 @@ var Manifesto;
     })(Manifesto.JSONLDResource);
     Manifesto.Rendering = Rendering;
 })(Manifesto || (Manifesto = {}));
-var _isNumber = _dereq_("lodash.isnumber");
 var _last = _dereq_("lodash.last");
 var Manifesto;
 (function (Manifesto) {
@@ -7259,11 +7263,12 @@ var Manifesto;
             }
             return null;
         };
-        Sequence.prototype.getCanvasIndexByLabel = function (label) {
+        Sequence.prototype.getCanvasIndexByLabel = function (label, foliated) {
             label = label.trim();
-            // trim any preceding zeros.
-            if (_isNumber(label)) {
-                label = parseInt(label, 10).toString();
+            if (!isNaN(label)) {
+                label = parseInt(label, 10).toString(); // trim any preceding zeros.
+                if (foliated)
+                    label += 'r'; // default to recto
             }
             var doublePageRegExp = /(\d*)\D+(\d*)/;
             var match, regExp, regStr, labelPart1, labelPart2;
@@ -7400,7 +7405,7 @@ var Manifesto;
             if (this.getProperty('viewingHint')) {
                 return new Manifesto.ViewingHint(this.getProperty('viewingHint'));
             }
-            return Manifesto.ViewingHint.NONE;
+            return Manifesto.ViewingHint.EMPTY;
         };
         Sequence.prototype.isCanvasIndexOutOfRange = function (canvasIndex) {
             return canvasIndex > this.getTotalCanvases() - 1;
@@ -7604,6 +7609,7 @@ var url = _dereq_("url");
 module.exports = {
     CanvasType: new Manifesto.CanvasType(),
     ElementType: new Manifesto.ElementType(),
+    ManifestType: new Manifesto.ManifestType(),
     RenderingFormat: new Manifesto.RenderingFormat(),
     ServiceProfile: new Manifesto.ServiceProfile(),
     ViewingDirection: new Manifesto.ViewingDirection(),
@@ -7631,8 +7637,10 @@ module.exports = {
         return Manifesto.Deserialiser.parse(manifest, options);
     }
 };
+/// <reference path="./StringValue.ts" />
 /// <reference path="./CanvasType.ts" />
 /// <reference path="./ElementType.ts" />
+/// <reference path="./ManifestType.ts" />
 /// <reference path="./RenderingFormat.ts" />
 /// <reference path="./ServiceProfile.ts" />
 /// <reference path="./ViewingDirection.ts" />
@@ -7651,7 +7659,7 @@ module.exports = {
 /// <reference path="./TreeNode.ts" />
 /// <reference path="./Manifesto.ts" /> 
 
-},{"http":6,"jmespath":27,"lodash.assign":40,"lodash.endswith":50,"lodash.isarray":52,"lodash.isnumber":53,"lodash.last":54,"lodash.map":55,"url":24}],2:[function(_dereq_,module,exports){
+},{"http":6,"jmespath":27,"lodash.assign":40,"lodash.endswith":50,"lodash.isarray":52,"lodash.last":53,"lodash.map":54,"url":24}],2:[function(_dereq_,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -17132,67 +17140,6 @@ module.exports = isArray;
 
 },{}],53:[function(_dereq_,module,exports){
 /**
- * lodash 3.0.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-
-/** `Object#toString` result references. */
-var numberTag = '[object Number]';
-
-/**
- * Checks if `value` is object-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
-
-/**
- * Checks if `value` is classified as a `Number` primitive or object.
- *
- * **Note:** To exclude `Infinity`, `-Infinity`, and `NaN`, which are classified
- * as numbers, use the `_.isFinite` method.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
- * @example
- *
- * _.isNumber(8.4);
- * // => true
- *
- * _.isNumber(NaN);
- * // => true
- *
- * _.isNumber('8.4');
- * // => false
- */
-function isNumber(value) {
-  return typeof value == 'number' || (isObjectLike(value) && objToString.call(value) == numberTag);
-}
-
-module.exports = isNumber;
-
-},{}],54:[function(_dereq_,module,exports){
-/**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
  * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
@@ -17221,7 +17168,7 @@ function last(array) {
 
 module.exports = last;
 
-},{}],55:[function(_dereq_,module,exports){
+},{}],54:[function(_dereq_,module,exports){
 /**
  * lodash 3.1.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -17373,7 +17320,7 @@ function map(collection, iteratee, thisArg) {
 
 module.exports = map;
 
-},{"lodash._arraymap":56,"lodash._basecallback":57,"lodash._baseeach":62,"lodash.isarray":52}],56:[function(_dereq_,module,exports){
+},{"lodash._arraymap":55,"lodash._basecallback":56,"lodash._baseeach":61,"lodash.isarray":52}],55:[function(_dereq_,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -17405,7 +17352,7 @@ function arrayMap(array, iteratee) {
 
 module.exports = arrayMap;
 
-},{}],57:[function(_dereq_,module,exports){
+},{}],56:[function(_dereq_,module,exports){
 /**
  * lodash 3.3.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -17829,7 +17776,7 @@ function property(path) {
 
 module.exports = baseCallback;
 
-},{"lodash._baseisequal":58,"lodash._bindcallback":60,"lodash.isarray":52,"lodash.pairs":61}],58:[function(_dereq_,module,exports){
+},{"lodash._baseisequal":57,"lodash._bindcallback":59,"lodash.isarray":52,"lodash.pairs":60}],57:[function(_dereq_,module,exports){
 /**
  * lodash 3.0.7 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -18173,7 +18120,7 @@ function isObject(value) {
 
 module.exports = baseIsEqual;
 
-},{"lodash.isarray":52,"lodash.istypedarray":59,"lodash.keys":63}],59:[function(_dereq_,module,exports){
+},{"lodash.isarray":52,"lodash.istypedarray":58,"lodash.keys":62}],58:[function(_dereq_,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -18285,9 +18232,9 @@ function isTypedArray(value) {
 
 module.exports = isTypedArray;
 
-},{}],60:[function(_dereq_,module,exports){
+},{}],59:[function(_dereq_,module,exports){
 module.exports=_dereq_(44)
-},{}],61:[function(_dereq_,module,exports){
+},{}],60:[function(_dereq_,module,exports){
 /**
  * lodash 3.0.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -18367,7 +18314,7 @@ function pairs(object) {
 
 module.exports = pairs;
 
-},{"lodash.keys":63}],62:[function(_dereq_,module,exports){
+},{"lodash.keys":62}],61:[function(_dereq_,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -18550,11 +18497,11 @@ function isObject(value) {
 
 module.exports = baseEach;
 
-},{"lodash.keys":63}],63:[function(_dereq_,module,exports){
+},{"lodash.keys":62}],62:[function(_dereq_,module,exports){
 module.exports=_dereq_(34)
-},{"lodash._getnative":64,"lodash.isarguments":65,"lodash.isarray":52}],64:[function(_dereq_,module,exports){
+},{"lodash._getnative":63,"lodash.isarguments":64,"lodash.isarray":52}],63:[function(_dereq_,module,exports){
 module.exports=_dereq_(35)
-},{}],65:[function(_dereq_,module,exports){
+},{}],64:[function(_dereq_,module,exports){
 module.exports=_dereq_(36)
 },{}]},{},[1])
 (1)

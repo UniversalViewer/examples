@@ -1,7 +1,7 @@
 $(function() {
 
     var bootstrapper, editor;
-    var uvVersion = 'uv-1.4.2';
+    var uvVersion = 'uv-1.4.3';
 
     function loadViewer() {
 
@@ -11,7 +11,6 @@ $(function() {
         } else {
             setTimeout(loadViewer, 100);
         }
-
     }
 
     function loadConfigSchema(cb) {
@@ -76,7 +75,9 @@ $(function() {
                 for (var j = 0; j < collection.manifests.length; j++){
                     var manifest = collection.manifests[j];
 
-                    $manifestSelect.append('<option value="' + manifest['@id'] + '">' + manifest.label + '</option>');
+                    if (manifest.visible !== false){
+                        $manifestSelect.append('<option value="' + manifest['@id'] + '">' + manifest.label + '</option>');
+                    }
                 }
 
                 $manifestSelect.append('</optgroup>');
