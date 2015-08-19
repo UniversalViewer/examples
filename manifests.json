@@ -78,7 +78,7 @@
           "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
           "@type": "sc:Manifest",
           "label": "Chemist & Druggist (collection)",
-          "visible": false
+          "visible": true
         },
         {
           "@id": "/examples/manifest/missingimages.js",
