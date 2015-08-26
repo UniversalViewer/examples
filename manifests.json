@@ -57,17 +57,20 @@
         {
           "@id": "http://wellcomelibrary.org/iiif/b17564980/manifest",
           "@type": "sc:Manifest",
-          "label": "First Thursday Club (login required)"
+          "label": "First Thursday Club (login required)",
+          "visible": false
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/b1818893x/manifest",
           "@type": "sc:Manifest",
-          "label": "Correspondence Concerning Publication (click through)"
+          "label": "Correspondence Concerning Publication (click through)",
+          "visible": false
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/b17307703/manifest",
           "@type": "sc:Manifest",
-          "label": "I Remember Sir Henry Dale (audio, click through)"
+          "label": "I Remember Sir Henry Dale (audio, click through)",
+          "visible": false
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/b11599820/manifest",
