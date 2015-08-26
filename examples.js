@@ -393,6 +393,10 @@ $(function() {
             reload();
         });
 
+        $(document).bind('uv.onNotFound', function (event, obj) {
+            console.log('not found');
+        });
+
         $(document).bind('uv.onToggleFullScreen', function (event, obj) {
             console.log('full screen: ' + obj.isFullScreen);
         });

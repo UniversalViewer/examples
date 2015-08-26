@@ -40,6 +40,11 @@
           "label": "The story of the Wellcome Foundation Ltd (video)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b20605055/manifest",
+          "@type": "sc:Manifest",
+          "label": "English folding almanac in Latin (video)"
+        },
+        {
           "@id": "http://wellcomelibrary.org/iiif/b17307922/manifest",
           "@type": "sc:Manifest",
           "label": "Florence Nightingale (audio)"
@@ -77,13 +82,13 @@
         {
           "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
           "@type": "sc:Manifest",
-          "label": "Chemist & Druggist (collection)",
-          "visible": true
+          "label": "Chemist & Druggist (collection)"
         },
         {
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
-          "label": "Missing Images (jsonp)"
+          "label": "Missing Images (jsonp)",
+          "visible": false
         }
       ]
     },
