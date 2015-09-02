@@ -236,10 +236,10 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
             var canvasType = canvas.getType();
             // try using canvasType
             extension = this.extensions[canvasType.toString()];
-            // if there isn't an extension for the canvasType, try the rendering
+            // if there isn't an extension for the canvasType, try the format
             if (!extension) {
-                var renderings = this.manifest.getRenderings(sequence);
-                extension = this.extensions[renderings[0].toString()];
+                var format = canvas.getProperty('format');
+                extension = this.extensions[format];
             }
             this.featureDetect(function () {
                 _this.configure(extension, function (config) {
@@ -2479,7 +2479,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.0';
+    exports.Version = '1.5.1';
 });
 
 var __extends = this.__extends || function (d, b) {
