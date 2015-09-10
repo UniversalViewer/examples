@@ -91,7 +91,13 @@
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images (jsonp)",
-          "visible": true
+          "visible": false
+        },
+        {
+          "@id": "/examples/manifest/deephierarchylongtitle.js",
+          "@type": "sc:Manifest",
+          "label": "Deep hierarchy long title (jsonp)",
+          "visible": false
         }
       ]
     },
