@@ -2482,7 +2482,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.2';
+    exports.Version = '1.5.3';
 });
 
 var __extends = this.__extends || function (d, b) {
@@ -7524,12 +7524,14 @@ var Manifesto;
             var result = jmespath.search(manifest, "sequences[].canvases[?\"@id\"=='" + id + "'][]");
             if (result.length)
                 return result[0];
+            console.log("canvas " + id + " not found");
             return null;
         };
         JsonUtils.getRangeById = function (manifest, id) {
             var result = jmespath.search(manifest, "structures[?\"@id\"=='" + id + "'][]");
             if (result.length)
                 return result[0];
+            console.log("range " + id + " not found");
             return null;
         };
         JsonUtils.getRootRange = function (manifest) {
