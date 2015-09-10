@@ -2482,7 +2482,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.4';
+    exports.Version = '1.5.5';
 });
 
 var __extends = this.__extends || function (d, b) {
