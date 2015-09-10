@@ -1,7 +1,7 @@
 $(function() {
 
     var bootstrapper, editor;
-    var uvVersion = 'uv-1.5.5';
+    var uvVersion = 'uv-1.5.6';
 
     function loadViewer() {
 
