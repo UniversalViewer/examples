@@ -105,6 +105,19 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
+      "label": "Qatar Digital Library",
+      "manifests": [
+        {
+          "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
+          "@type": "sc:Manifest",
+          "label": "Correspondence and other Papers concerning the Duke of Argyll's Attack on Lewis Pelly in the House of Lords"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
       "label": "Stanford University",
       "manifests": [
         {
