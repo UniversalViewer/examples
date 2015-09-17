@@ -144,6 +144,19 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
+      "label": "Bodleian",
+      "manifests": [
+        {
+          "@id": "http://iiif.bodleian.ox.ac.uk/examples/mushaf4.json",
+          "@type": "sc:Manifest",
+          "label": "Mixed"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
       "label": "Stanford University",
       "manifests": [
         {
