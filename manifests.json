@@ -118,6 +118,32 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
+      "label": "British Library",
+      "manifests": [
+        {
+          "@id": "http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Anzac bulletin"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
+      "label": "National Library of Wales",
+      "manifests": [
+        {
+          "@id": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Cardiganshire Constabulary"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
       "label": "Stanford University",
       "manifests": [
         {
@@ -134,19 +160,6 @@
           "@id": "http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json",
           "@type": "sc:Manifest",
           "label": "Japanese Songbook"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
-      "@type": "sc:Collection",
-      "label": "National Library of Wales",
-      "manifests": [
-        {
-          "@id": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Cardiganshire Constabulary"
         }
       ]
     }
