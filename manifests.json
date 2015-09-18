@@ -86,18 +86,6 @@
           "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
           "@type": "sc:Manifest",
           "label": "Chemist & Druggist (collection)"
-        },
-        {
-          "@id": "/examples/manifest/missingimages.js",
-          "@type": "sc:Manifest",
-          "label": "Missing Images (jsonp)",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/deephierarchylongtitle.js",
-          "@type": "sc:Manifest",
-          "label": "Deep hierarchy long title (jsonp)",
-          "visible": false
         }
       ]
     },
@@ -173,6 +161,32 @@
           "@id": "http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json",
           "@type": "sc:Manifest",
           "label": "Japanese Songbook"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
+      "label": "Tests (require jsonp)",
+      "manifests": [
+        {
+          "@id": "/examples/manifest/missingimages.js",
+          "@type": "sc:Manifest",
+          "label": "Missing Images",
+          "visible": false
+        },
+        {
+          "@id": "/examples/manifest/deephierarchylongtitle.js",
+          "@type": "sc:Manifest",
+          "label": "Deep hierarchy long title",
+          "visible": false
+        },
+        {
+          "@id": "/examples/manifest/attribution.js",
+          "@type": "sc:Manifest",
+          "label": "Attribution",
+          "visible": true
         }
       ]
     }
