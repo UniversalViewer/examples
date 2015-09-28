@@ -191,6 +191,12 @@
           "visible": true
         },
         {
+          "@id": "/examples/manifest/collection.js",
+          "@type": "sc:Manifest",
+          "label": "Collection",
+          "visible": false
+        },
+        {
           "@id": "/examples/manifest/deephierarchylongtitle.js",
           "@type": "sc:Manifest",
           "label": "Deep hierarchy long title",
