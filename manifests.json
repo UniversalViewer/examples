@@ -182,6 +182,37 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
+      "label": "Villanova University",
+      "manifests": [
+        {
+          "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest",
+          "@type": "sc:Manifest",
+          "label": "The Bride of the Tomb"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
+      "label": "World Digital Library",
+      "manifests": [
+        {
+          "@id": "http://beta.wdl.org/en/item/14291/iiif/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Treatise on Cats"
+        },
+        {
+          "@id": "http://beta.wdl.org/en/item/3083/iiif/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Illustrations of China (multi sequence)"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
       "label": "Tests (require jsonp)",
       "manifests": [
         {
