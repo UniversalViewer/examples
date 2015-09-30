@@ -6,6 +6,15 @@ header {
     padding: 20px 0 20px 0;
 }
 
+#dragndrop{
+    margin: 0 0 0 20px;
+}
+
+#dragndrop img{
+    width: 75px;
+    height: 75px;
+}
+
 .config-name{
     font-size: 20px;
 }

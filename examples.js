@@ -1,7 +1,7 @@
 $(function() {
 
     var bootstrapper, editor;
-    var uvVersion = 'uv-1.5.16';
+    var uvVersion = 'uv-1.5.17';
 
     function loadViewer() {
 
@@ -129,7 +129,7 @@ $(function() {
         var locale = $('#locales').val() || 'en-GB';
 
         // clear hash params
-        document.location.hash = '';
+        clearHashParams();
 
         var qs = document.location.search.replace('?', '');
         qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'jsonp', jsonp);
@@ -143,6 +143,10 @@ $(function() {
         } else {
             window.location.search = qs;
         }
+    }
+
+    function clearHashParams(){
+        document.location.hash = '';
     }
 
     function getLocale() {
@@ -213,8 +217,13 @@ $(function() {
         }
 
         $('#manifest').val(manifest);
+        updateDragDrop();
 
         $('.uv').attr('data-uri', manifest);
+    }
+
+    function updateDragDrop(){
+        $('#dragndrop').attr('href', location.origin + location.pathname + '?manifest=' + $('#manifest').val());
     }
 
     // called when the page loads to set the initial data-locale
@@ -334,6 +343,7 @@ $(function() {
 
         $('#manifestSelect').on('change', function(){
             $('#manifest').val($('#manifestSelect option:selected').val());
+            updateDragDrop();
         });
 
         $('#setManifestBtn').on('click', function(e){
@@ -407,6 +417,11 @@ $(function() {
 
         $(document).bind('uv.onSequenceIndexChanged', function (event, sequenceIndex) {
             console.log('sequence: ' + sequenceIndex);
+        });
+
+        $(document).bind('uv.onDrop', function (event, manifestUri) {
+            console.log('drop: ' + manifestUri);
+            clearHashParams();
         });
 
         $(document).bind('seadragonExtension.onCurrentViewUri', function (event, obj) {
