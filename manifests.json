@@ -238,6 +238,12 @@
           "@type": "sc:Manifest",
           "label": "Attribution",
           "visible": false
+        },
+        {
+          "@id": "/examples/manifest/logo.js",
+          "@type": "sc:Manifest",
+          "label": "Logo as IIIF",
+          "visible": true
         }
       ]
     }
