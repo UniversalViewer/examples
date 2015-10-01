@@ -81,23 +81,23 @@
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
-          "@type": "sc:Manifest",
+          "@type": "sc:Collection",
           "label": "Chemist & Druggist (collection)"
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/collection/b18031511",
-          "@type": "sc:Manifest",
+          "@type": "sc:Collection",
           "label": "Biological Basis of Medicine (collection)"
         },
         {
           "@id": "http://showcase.iiif.io/shims/chroniclingamerica/prezi/top.json",
-          "@type": "sc:Manifest",
+          "@type": "sc:Collection",
           "label": "Chronicling America (collection)",
           "visible": false
         },
         {
           "@id": "http://showcase.iiif.io/shims/wales/potter/top.json",
-          "@type": "sc:Manifest",
+          "@type": "sc:Collection",
           "label": "Potter's Electric News (collection)",
           "visible": false
         }
@@ -185,9 +185,55 @@
       "label": "Villanova University",
       "manifests": [
         {
-          "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest",
+          "label": "The Bride of the Tomb; and, Queenie's Terrible Secret",
           "@type": "sc:Manifest",
-          "label": "The Bride of the Tomb"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest"
+        },
+        {
+          "label": "Villanova University Digital Library (collection)",
+          "@type": "sc:Collection",
+          "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
+        },
+        {
+          "label": "LeBlanc Bibliography, Binder 1",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest"
+        },
+        {
+          "label": "Augustine PDF",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:100576/Manifest"
+        },
+        {
+          "label": "LeBlanc Interview, Cassette 1",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:283833/Manifest"
+        },
+        {
+          "label": "Steam Men Bibliography",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:291994/Manifest",
+          "visible": false
+        },
+        {
+          "label": "Saint Augustines confessions translated [1650] (image only)",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:98253/Manifest"
+        },
+        {
+          "label": "The 104th Psalm (with panorama)",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:58970/Manifest"
+        },
+        {
+          "label": "Letter fragment (2 page item)",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:364476/Manifest"
+        },
+        {
+          "label": "Typescript Letter (with weird aspect ratios in contents)",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:347767/Manifest"
         }
       ]
     },
