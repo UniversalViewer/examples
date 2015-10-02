@@ -197,17 +197,20 @@
         {
           "label": "LeBlanc Bibliography, Binder 1",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest",
+          "visible": false
         },
         {
           "label": "Augustine PDF",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:100576/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:100576/Manifest",
+          "visible": false
         },
         {
           "label": "LeBlanc Interview, Cassette 1",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:283833/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:283833/Manifest",
+          "visible": false
         },
         {
           "label": "Steam Men Bibliography",
@@ -218,22 +221,26 @@
         {
           "label": "Saint Augustines confessions translated [1650] (image only)",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:98253/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:98253/Manifest",
+          "visible": false
         },
         {
           "label": "The 104th Psalm (with panorama)",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:58970/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:58970/Manifest",
+          "visible": false
         },
         {
           "label": "Letter fragment (2 page item)",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:364476/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:364476/Manifest",
+          "visible": false
         },
         {
           "label": "Typescript Letter (with weird aspect ratios in contents)",
           "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:347767/Manifest"
+          "@id": "http://digital.library.villanova.edu/Item/vudl:347767/Manifest",
+          "visible": false
         }
       ]
     },
