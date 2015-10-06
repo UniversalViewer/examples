@@ -614,6 +614,7 @@ define('modules/uv-shared-module/ExternalResource',["require", "exports"], funct
                 $.ajax({
                     url: that.dataUri,
                     type: 'GET',
+                    contentType: 'application/json',
                     dataType: 'json',
                     beforeSend: function (xhr) {
                         if (accessToken) {
@@ -1390,14 +1391,23 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 $.publish(BaseCommands.SHOW_LOGIN_DIALOGUE, [{
                         resource: resource,
                         acceptCallback: function () {
-                            var win = window.open(resource.loginService.id);
+                            var win = window.open(resource.loginService.id + "?t=" + new Date().getTime(), 'loginwindow', "height=600,width=600");
                             var pollTimer = window.setInterval(function () {
                                 if (win.closed) {
                                     window.clearInterval(pollTimer);
                                     $.publish(BaseCommands.AUTHORIZATION_OCCURRED);
                                     resolve();
                                 }
-                            }, 100);
+                            }, 1000);
+                            //var win = window.open(resource.loginService.id);
+                            //
+                            //var pollTimer = window.setInterval(() => {
+                            //    if (win.closed) {
+                            //        window.clearInterval(pollTimer);
+                            //        $.publish(BaseCommands.AUTHORIZATION_OCCURRED);
+                            //        resolve();
+                            //    }
+                            //}, 100);
                         }
                     }]);
             });
