@@ -590,9 +590,8 @@ define('modules/uv-shared-module/ExternalResource',["require", "exports"], funct
     var ExternalResource = (function () {
         // todo: pass in services associated with this resource if they exist
         // if the resource returns services in the info.json, those override
-        function ExternalResource(provider) {
+        function ExternalResource() {
             this.isResponseHandled = false;
-            this.provider = provider;
         }
         ExternalResource.prototype._parseAuthServices = function (resource) {
             this.clickThroughService = manifesto.getService(resource, manifesto.ServiceProfile.clickThrough().toString());
@@ -628,6 +627,7 @@ define('modules/uv-shared-module/ExternalResource',["require", "exports"], funct
                     that.data = data;
                     that._parseAuthServices(that.data);
                     // if the request was redirected to a degraded version and there's a login service to get the full quality version
+                    // todo: compare the ids, otherwise any redirect is treated as degraded
                     if (uri !== that.dataUri && that.loginService) {
                         that.status = HTTPStatusCode.MOVED_TEMPORARILY;
                     }
@@ -1260,7 +1260,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             var indices = this.provider.getPagedIndices();
             var resourcesToLoad = [];
             _.each(indices, function (index) {
-                var r = new ExternalResource(_this.provider);
+                var r = new ExternalResource();
                 var canvas = _this.provider.getCanvasByIndex(index);
                 r.dataUri = _this.provider.getInfoUri(canvas);
                 // used to reload resources with isResponseHandled = true.
@@ -2694,7 +2694,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.19';
+    exports.Version = '1.5.20';
 });
 
 var __extends = this.__extends || function (d, b) {

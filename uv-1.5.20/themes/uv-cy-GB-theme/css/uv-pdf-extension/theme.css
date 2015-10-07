@@ -2261,16 +2261,6 @@ canvas {
 #app .centerPanel .content #pdfContainer {
   overflow: auto;
 }
-#app .leftPanel .thumbsView .thumb .wrap {
-  border: none;
-}
-#app .leftPanel .thumbsView .thumb .wrap img {
-  display: block;
-  width: 90px;
-}
-#app .leftPanel .thumbsView .thumb.selected .wrap {
-  border: none;
-}
 *,
 *:before,
 *:after {
@@ -3054,7 +3044,6 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .options .centerOptions {
   margin: 5px 0 0 0;
-  width: 385px;
   position: absolute;
 }
 #app .headerPanel .options .rightOptions {
@@ -3062,7 +3051,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 6px 0 0 0;
 }
 #app .headerPanel .options .rightOptions .settings {
-  background: url('../../img/settings.png');
+  background: url('../../img/uv-shared-module/settings.png');
   height: 30px;
   width: 30px;
   margin-right: 8px;
@@ -3088,7 +3077,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .headerPanel .informationBox .close {
   float: right;
-  background-image: url('../../img/close_information_box.png');
+  background-image: url('../../img/uv-shared-module/close_information_box.png');
   background-repeat: no-repeat;
   width: 17px;
   height: 17px;
@@ -3112,7 +3101,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .collapseButton {
   float: right;
-  background: url('../../img/arrows_left.png') no-repeat;
+  background: url('../../img/uv-shared-module/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3121,7 +3110,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .leftPanel .top .expandFullButton {
   float: right;
-  background: url('../../img/arrows_right.png') no-repeat;
+  background: url('../../img/uv-shared-module/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3155,7 +3144,7 @@ input[type=range]:focus::-ms-fill-upper {
   text-decoration: none;
 }
 #app .leftPanel .closed .expandButton {
-  background: url('../../img/arrows_right.png') no-repeat;
+  background: url('../../img/uv-shared-module/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3184,7 +3173,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .collapseButton {
   position: absolute;
-  background: url('../../img/arrows_right.png') no-repeat;
+  background: url('../../img/uv-shared-module/arrows_right.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3194,7 +3183,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .rightPanel .top .expandFullButton {
   position: absolute;
-  background: url('../../img/arrows_left.png') no-repeat;
+  background: url('../../img/uv-shared-module/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3225,7 +3214,7 @@ input[type=range]:focus::-ms-fill-upper {
   text-decoration: none;
 }
 #app .rightPanel .closed .expandButton {
-  background: url('../../img/arrows_left.png') no-repeat;
+  background: url('../../img/uv-shared-module/arrows_left.png') no-repeat;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -3254,6 +3243,9 @@ input[type=range]:focus::-ms-fill-upper {
 #app .centerPanel .title span {
   line-height: 30px;
 }
+#app .footerPanel .searchOptions {
+  width: 425px;
+}
 #app .footerPanel .options {
   height: 41px;
 }
@@ -3263,7 +3255,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 15px;
 }
 #app .footerPanel .options a.embed {
-  background-image: url('../../img/embed.png');
+  background-image: url('../../img/uv-shared-module/embed.png');
   background-repeat: no-repeat;
   height: 20px;
   line-height: 20px;
@@ -3283,7 +3275,7 @@ input[type=range]:focus::-ms-fill-upper {
   text-decoration: none;
 }
 #app .footerPanel .options a.download {
-  background-image: url('../../img/download.png');
+  background-image: url('../../img/uv-shared-module/download.png');
   background-repeat: no-repeat;
   height: 20px;
   line-height: 20px;
@@ -3303,7 +3295,7 @@ input[type=range]:focus::-ms-fill-upper {
   text-decoration: none;
 }
 #app .footerPanel .options a.fullScreen {
-  background-image: url('../../img/fullscreen.png');
+  background-image: url('../../img/uv-shared-module/fullscreen.png');
   background-repeat: no-repeat;
   height: 20px;
   line-height: 20px;
@@ -3325,7 +3317,7 @@ input[type=range]:focus::-ms-fill-upper {
   text-decoration: none;
 }
 #app .footerPanel .options a.exitFullscreen {
-  background-image: url('../../img/exit_fullscreen.png');
+  background-image: url('../../img/uv-shared-module/exit_fullscreen.png');
   background-repeat: no-repeat;
   height: 20px;
   line-height: 20px;
@@ -3387,14 +3379,14 @@ input[type=range]:focus::-ms-fill-upper {
   width: 21px;
 }
 #app.lightbox .footerPanel .options a.imageBtn.normal {
-  background: url('../../img/close_lightbox.png') no-repeat;
+  background: url('../../img/uv-shared-module/close_lightbox.png') no-repeat;
 }
 #app .overlays {
   position: absolute;
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.5);
-  background-image: url('../../img/modal_bg.gif');
+  background-image: url('../../img/uv-shared-module/modal_bg.gif');
   display: none;
 }
 #app .overlay {
@@ -3405,7 +3397,7 @@ input[type=range]:focus::-ms-fill-upper {
   overflow: auto;
 }
 #app .overlay .top .close {
-  background-image: url('../../img/close.png');
+  background-image: url('../../img/uv-shared-module/close.png');
   background-repeat: no-repeat;
   height: 24px;
   line-height: 24px;
@@ -3494,7 +3486,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 #app .overlay .bottom {
   height: 11px;
-  background: url('../../img/dialogue_arrow.png') no-repeat;
+  background: url('../../img/uv-shared-module/dialogue_arrow.png') no-repeat;
 }
 #app .overlay.genericDialogue {
   width: 250px;
@@ -3539,7 +3531,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app a.action.black,
 #app input.action {
   display: inline-block;
-  background: url('../../img/sprite.png') 0 -1000px no-repeat;
+  background: url('../../img/uv-shared-module/sprite.png') 0 -1000px no-repeat;
   text-transform: none;
   padding: 0 0 0 16px;
   font-weight: bold;
@@ -3576,4 +3568,32 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 8px;
   margin-bottom: 0px;
   margin-left: 8px;
+}
+#app .leftPanel .thumbsView .thumb .wrap {
+  border: none;
+}
+#app .leftPanel .thumbsView .thumb .wrap img {
+  display: block;
+  width: 90px;
+}
+#app .leftPanel .thumbsView .thumb.selected .wrap {
+  border: none;
+}
+#app .headerPanel .options .centerOptions {
+  width: 432px;
+}
+#app .headerPanel .options .centerOptions .prevOptions {
+  margin: 0 10px 0 0;
+}
+#app .headerPanel .options .centerOptions .mode label {
+  width: 42px;
+}
+#app .headerPanel .options .centerOptions .search {
+  width: 140px;
+}
+#app .headerPanel .options .centerOptions .nextOptions {
+  margin: 0 0 0 10px;
+}
+#app .footerPanel .searchPager .controls .searchResultsInfo {
+  width: 290px;
 }
