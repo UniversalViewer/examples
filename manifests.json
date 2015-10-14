@@ -182,6 +182,19 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
+      "label": "Sentences Commentary Text Archive",
+      "manifests": [
+        {
+          "@id": "http://scta.info/iiif/pp-sorb/manifest",
+          "@type": "sc:Manifest",
+          "label": "Witness to Peter Plaoul's Commentary on the Sentences"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
       "label": "Villanova University",
       "manifests": [
         {
