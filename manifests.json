@@ -107,12 +107,12 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
-      "label": "Qatar Digital Library",
+      "label": "Internet Archive",
       "manifests": [
         {
-          "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
+          "@id": "http://iiif.archivelab.org/platowithenglish04platuoft/manifest.json",
           "@type": "sc:Manifest",
-          "label": "Correspondence and other Papers concerning the Duke of Argyll's Attack on Lewis Pelly in the House of Lords"
+          "label": "Plato, with an English translation"
         }
       ]
     },
@@ -269,9 +269,22 @@
           "label": "Treatise on Cats"
         },
         {
-          "@id": "http://beta.wdl.org/en/item/3083/iiif/manifest.json",
+          "@id": "http://beta.wdl.org/en/item/80/iiif/manifest.json",
           "@type": "sc:Manifest",
-          "label": "Illustrations of China (multi sequence)"
+          "label": "Description of Egypt. Second Edition."
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
+      "label": "Qatar Digital Library",
+      "manifests": [
+        {
+          "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
+          "@type": "sc:Manifest",
+          "label": "Correspondence and other Papers concerning the Duke of Argyll's Attack on Lewis Pelly in the House of Lords"
         }
       ]
     },
@@ -285,7 +298,7 @@
           "@id": "/examples/manifest/missingimages.js",
           "@type": "sc:Manifest",
           "label": "Missing Images",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "/examples/manifest/collection.js",
@@ -306,10 +319,16 @@
           "visible": false
         },
         {
+          "@id": "/examples/manifest/toptobottom.js",
+          "@type": "sc:Manifest",
+          "label": "Top to Bottom",
+          "visible": false
+        },
+        {
           "@id": "/examples/manifest/logo.js",
           "@type": "sc:Manifest",
           "label": "Logo as IIIF",
-          "visible": true
+          "visible": false
         }
       ]
     }
