@@ -18447,7 +18447,7 @@ define("httpstatuscodes", function(){});
                 // set an empty handler for 'onprogress' so requests don't get aborted
                 xdr.onprogress = function(){};
                 xdr.onerror = function() {
-                    complete(401, 'error', {
+                    complete(302, 'error', {
                         text: xdr.responseText
                     });
                 };
