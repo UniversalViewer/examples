@@ -618,6 +618,17 @@ define('modules/uv-shared-module/ExternalResource',["require", "exports"], funct
                 var type = 'GET';
                 // todo: use manifesto.hasServiceDescriptor
                 if (!_.endsWith(that.dataUri, 'info.json')) {
+                    // If access control is unnecessary, short circuit the process.
+                    // Note that isAccessControlled check for short-circuiting only
+                    // works in the "binary resource" context, since in that case,
+                    // we know about access control from the manifest. For image
+                    // resources, we need to check info.json for details and can't
+                    // short-circuit like this.
+                    if (!that.isAccessControlled()) {
+                        that.status = HTTPStatusCode.OK;
+                        resolve(that);
+                        return;
+                    }
                     type = 'HEAD';
                 }
                 $.ajax({
@@ -2857,7 +2868,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.25';
+    exports.Version = '1.5.26';
 });
 
 var __extends = this.__extends || function (d, b) {
