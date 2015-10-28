@@ -18356,120 +18356,7 @@ define("httpstatuscodes", function(){});
  * Copyright (c) 2015 Jason Moon (@JSONMOON)
  * Licensed MIT (/blob/master/LICENSE.txt)
  */
-(function(factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as anonymous module.
-        define('jqueryxdomain',['jquery'], factory);
-    } else if (typeof exports === 'object') {
-        // CommonJS
-        module.exports = factory(require('jquery'));
-    } else {
-        // Browser globals.
-        factory(jQuery);
-    }
-}(function($) {
-
-// Only continue if we're on IE8/IE9 with jQuery 1.5+ (contains the ajaxTransport function)
-    if ($.support.cors || !$.ajaxTransport || !window.XDomainRequest) {
-        return $;
-    }
-
-    var httpRegEx = /^(https?:)?\/\//i;
-    var getOrPostRegEx = /^get|post$/i;
-    var sameSchemeRegEx = new RegExp('^(\/\/|' + location.protocol + ')', 'i');
-
-// ajaxTransport exists in jQuery 1.5+
-    $.ajaxTransport('* text html xml json', function(options, userOptions, jqXHR) {
-
-        // Only continue if the request is: asynchronous, uses GET or POST method, has HTTP or HTTPS protocol, and has the same scheme as the calling page
-        if (!options.crossDomain || !options.async || !getOrPostRegEx.test(options.type) || !httpRegEx.test(options.url) || !sameSchemeRegEx.test(options.url)) {
-            return;
-        }
-
-        var xdr = null;
-
-        return {
-            send: function(headers, complete) {
-                var postData = '';
-                var userType = (userOptions.dataType || '').toLowerCase();
-
-                xdr = new XDomainRequest();
-                if (/^\d+$/.test(userOptions.timeout)) {
-                    xdr.timeout = userOptions.timeout;
-                }
-
-                xdr.ontimeout = function() {
-                    complete(500, 'timeout');
-                };
-
-                xdr.onload = function() {
-                    var allResponseHeaders = 'Content-Length: ' + xdr.responseText.length + '\r\nContent-Type: ' + xdr.contentType;
-                    var status = {
-                        code: 200,
-                        message: 'success'
-                    };
-                    var responses = {
-                        text: xdr.responseText
-                    };
-                    try {
-                        if (userType === 'html' || /text\/html/i.test(xdr.contentType)) {
-                            responses.html = xdr.responseText;
-                        } else if (userType === 'json' || (userType !== 'text' && /\/json/i.test(xdr.contentType))) {
-                            try {
-                                responses.json = $.parseJSON(xdr.responseText);
-                            } catch(e) {
-                                status.code = 500;
-                                status.message = 'parseerror';
-                                //throw 'Invalid JSON: ' + xdr.responseText;
-                            }
-                        } else if (userType === 'xml' || (userType !== 'text' && /\/xml/i.test(xdr.contentType))) {
-                            var doc = new ActiveXObject('Microsoft.XMLDOM');
-                            doc.async = false;
-                            try {
-                                doc.loadXML(xdr.responseText);
-                            } catch(e) {
-                                doc = undefined;
-                            }
-                            if (!doc || !doc.documentElement || doc.getElementsByTagName('parsererror').length) {
-                                status.code = 500;
-                                status.message = 'parseerror';
-                                throw 'Invalid XML: ' + xdr.responseText;
-                            }
-                            responses.xml = doc;
-                        }
-                    } catch(parseMessage) {
-                        throw parseMessage;
-                    } finally {
-                        complete(status.code, status.message, responses, allResponseHeaders);
-                    }
-                };
-
-                // set an empty handler for 'onprogress' so requests don't get aborted
-                xdr.onprogress = function(){};
-                xdr.onerror = function() {
-                    complete(401, 'error', {
-                        text: xdr.responseText
-                    });
-                };
-
-                if (userOptions.data) {
-                    postData = ($.type(userOptions.data) === 'string') ? userOptions.data : $.param(userOptions.data);
-                }
-                xdr.open(options.type, options.url);
-                xdr.send(postData);
-            },
-            abort: function() {
-                if (xdr) {
-                    xdr.abort();
-                }
-            }
-        };
-    });
-
-    return $;
-
-}));
-
+(function(a){if(typeof define==='function'&&define.amd){define('jqueryxdomain',['jquery'],a)}else if(typeof exports==='object'){module.exports=a(require('jquery'))}else{a(jQuery)}}(function($){if($.support.cors||!$.ajaxTransport||!window.XDomainRequest){return $}var n=/^(https?:)?\/\//i;var o=/^get|post$/i;var p=new RegExp('^(\/\/|'+location.protocol+')','i');$.ajaxTransport('* text html xml json',function(j,k,l){if(!j.crossDomain||!j.async||!o.test(j.type)||!n.test(j.url)||!p.test(j.url)){return}var m=null;return{send:function(f,g){var h='';var i=(k.dataType||'').toLowerCase();m=new XDomainRequest();if(/^\d+$/.test(k.timeout)){m.timeout=k.timeout}m.ontimeout=function(){g(500,'timeout')};m.onload=function(){var a='Content-Length: '+m.responseText.length+'\r\nContent-Type: '+m.contentType;var b={code:200,message:'success'};var c={text:m.responseText};try{if(i==='html'||/text\/html/i.test(m.contentType)){c.html=m.responseText}else if(i==='json'||(i!=='text'&&/\/json/i.test(m.contentType))){try{c.json=$.parseJSON(m.responseText)}catch(e){b.code=500;b.message='parseerror'}}else if(i==='xml'||(i!=='text'&&/\/xml/i.test(m.contentType))){var d=new ActiveXObject('Microsoft.XMLDOM');d.async=false;try{d.loadXML(m.responseText)}catch(e){d=undefined}if(!d||!d.documentElement||d.getElementsByTagName('parsererror').length){b.code=500;b.message='parseerror';throw'Invalid XML: '+m.responseText;}c.xml=d}}catch(parseMessage){throw parseMessage;}finally{g(b.code,b.message,c,a)}};m.onprogress=function(){};m.onerror=function(){g(500,'error',{text:m.responseText})};if(k.data){h=($.type(k.data)==='string')?k.data:$.param(k.data)}m.open(j.type,j.url);m.send(h)},abort:function(){if(m){m.abort()}}}});return $}));
 /*! jsviews.js v1.0.0-alpha single-file version:
  includes JsRender, JsObservable and JsViews  http://github.com/BorisMoore/jsrender and http://jsviews.com/jsviews
  off(informal pre V1.0 commit counter: 61 (Beta Candidate) */
@@ -23222,7 +23109,7 @@ require.config({
         'ext': 'lib/extensions',
         'httpstatuscodes': 'lib/http-status-codes',
         'jquery': 'lib/jquery-1.10.2.min',
-        'jqueryxdomain': 'lib/jquery.xdomainrequest',
+        'jqueryxdomain': 'lib/jquery.xdomainrequest.min',
         'jsviews': 'lib/jsviews.min',
         'l10n': 'lib/l10n',
         'length': 'lib/Length.min',
