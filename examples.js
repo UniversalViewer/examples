@@ -58,7 +58,7 @@ $(function() {
     function loadManifests(cb) {
         var manifestsUri = '/manifests.json'
 
-        if (isLocalhost){
+        if (isLocalhost || isGithub){
             manifestsUri = '/examples/manifests.json'
         }
 
@@ -285,7 +285,7 @@ $(function() {
 
             var root = '';
 
-            if (isLocalhost){
+            if (isLocalhost || isGithub){
                 root = '/examples/';
             }
 
@@ -714,18 +714,20 @@ $(function() {
         } else {
             // built version
 
-            // remove '/examples' from paths
-            $('.uv').updateAttr('data-config', '/examples/', '/');
+            if (!isGithub){
+                // remove '/examples' from paths
+                $('.uv').updateAttr('data-config', '/examples/', '/');
 
-            $('.uv').updateAttr('data-uri', '/examples/', '/');
+                $('.uv').updateAttr('data-uri', '/examples/', '/');
 
-            $('#locale option').each(function() {
-                $(this).updateAttr('value', '/examples/', '/');
-            });
+                $('#locale option').each(function() {
+                    $(this).updateAttr('value', '/examples/', '/');
+                });
 
-            $('#manifestSelect option').each(function() {
-                $(this).updateAttr('value', '/examples/', '/');
-            });
+                $('#manifestSelect option').each(function() {
+                    $(this).updateAttr('value', '/examples/', '/');
+                });
+            }
 
             $('body').append('<script type="text/javascript" id="embedUV" src="' + uvVersion + '/lib/embed.js"><\/script>');
         }
@@ -811,6 +813,8 @@ $(function() {
     }
 
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
+
+    var isGithub = document.location.href.indexOf('github') != -1;
 
     // if the embed script has been included in the page for testing, don't append it.
     var scriptIncluded = $('#embedUV').length;
