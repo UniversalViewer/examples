@@ -813,7 +813,6 @@ $(function() {
     }
 
     var isLocalhost = document.location.href.indexOf('localhost') != -1;
-
     var isGithub = document.location.href.indexOf('github') != -1;
 
     // if the embed script has been included in the page for testing, don't append it.
