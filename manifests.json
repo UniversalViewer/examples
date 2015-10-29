@@ -112,7 +112,8 @@
         {
           "@id": "http://iiif.archivelab.org/platowithenglish04platuoft/manifest.json",
           "@type": "sc:Manifest",
-          "label": "Plato, with an English translation"
+          "label": "Plato, with an English translation",
+          "visible": false
         }
       ]
     },
