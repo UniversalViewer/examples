@@ -1,18 +1,33 @@
 <html>
+<head>
+</head>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
 <body>
 
 <div class="uv" data-locale="en-GB:English (GB),cy-GB:Cymraeg" data-config="" data-uri="http://wellcomelibrary.org/iiif/collection/b19974760" data-collectionindex="7" data-manifestindex="9" data-sequenceindex="0" data-canvasindex="0" data-zoom="-0.0041,-0.1143,0.5114,0.4018" data-rotation="0" style="width:800px; height:600px; background-color: #000"></div>
-<script type="text/javascript" id="embedUV" src="http://localhost:8001/src/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>
 
 <br><br>
 
 <div class="uv" data-locale="en-GB:English (GB),cy-GB:Cymraeg" data-config="" data-uri="http://wellcomelibrary.org/iiif/b17502792/manifest" data-collectionindex="0" data-manifestindex="0" data-sequenceindex="0" data-canvasindex="0" style="width:800px; height:600px; background-color: #000"></div>
-<script type="text/javascript" id="embedUV" src="http://localhost:8001/src/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>
 
 <br><br>
 
 <div class="uv" data-locale="en-GB:English (GB),cy-GB:Cymraeg" data-config="" data-uri="http://wellcomelibrary.org/iiif/b16659090/manifest" data-collectionindex="0" data-manifestindex="0" data-sequenceindex="0" data-canvasindex="0" style="width:800px; height:600px; background-color: #000"></div>
+
 <script type="text/javascript" id="embedUV" src="http://localhost:8001/src/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>
+
+<script type="text/javascript">
+
+    $(function(){
+        var isLocalhost = document.location.href.indexOf('localhost') != -1;
+
+        if(!isLocalhost){
+            $('#embedUv').attr('src', 'http://universalviewer.github.io/examples/uv/lib/embed.js');
+        }
+
+    });
+
+</script>
 
 </body>
 </html>
