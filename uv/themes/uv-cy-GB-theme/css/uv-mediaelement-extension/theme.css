@@ -2438,6 +2438,26 @@ input[type=range]:focus::-ms-fill-upper {
   color: #fff;
   text-decoration: none;
 }
+#app .footerPanel .options a.bookmark {
+  background-image: url('../../img/uv-shared-module/bookmark.png');
+  background-repeat: no-repeat;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #fff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 30px;
+  padding-right: 10px;
+  line-height: 22px;
+}
+#app .footerPanel .options a.bookmark:link,
+#app .footerPanel .options a.bookmark:visited,
+#app .footerPanel .options a.bookmark:hover,
+#app .footerPanel .options a.bookmark:active {
+  color: #fff;
+  text-decoration: none;
+}
 #app .footerPanel .options a.fullScreen {
   background-image: url('../../img/uv-shared-module/fullscreen.png');
   background-repeat: no-repeat;

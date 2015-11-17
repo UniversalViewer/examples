@@ -321,6 +321,10 @@ $(function() {
             console.log('uv.onAuthorizationOccurred');
         });
 
+        $(document).bind('uv.onBookmark', function (event, obj) {
+            console.log('uv.onBookmark', obj);
+        });
+
         $(document).bind('uv.onCanvasIndexChangeFailed', function (event, obj) {
             console.log('uv.onCanvasIndexChangeFailed');
         });
