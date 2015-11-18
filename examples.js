@@ -123,9 +123,9 @@ $(function() {
 
     function reload() {
 
-        var jsonp = getJSONPSetting();
-        var testids = $('#testids').is(':checked');
-        var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
+        //var jsonp = getJSONPSetting();
+        //var testids = $('#testids').is(':checked');
+        //var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
         var manifest = $('#manifest').val();
         var locale = $('#locales').val() || 'en-GB';
 
@@ -133,9 +133,9 @@ $(function() {
         clearHashParams();
 
         var qs = document.location.search.replace('?', '');
-        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'jsonp', jsonp);
-        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'testids', testids);
-        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
+        //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'jsonp', jsonp);
+        //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'testids', testids);
+        //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
         qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'manifest', manifest);
         qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'locale', locale);
 
