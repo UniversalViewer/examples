@@ -140,6 +140,11 @@
           "@id": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json",
           "@type": "sc:Manifest",
           "label": "Cardiganshire Constabulary"
+        },
+        {
+          "@id": "http://dams.llgc.org.uk/iiif/2.0/1123257/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Tankerey's house, Llangollen"
         }
       ]
     },
