@@ -317,6 +317,10 @@ $(function() {
 
     function uvEventHandlers() {
 
+        $(document).bind('uv.onAcceptTerms', function (event, obj) {
+            console.log('uv.onAcceptTerms');
+        });
+
         $(document).bind('uv.onAuthorizationOccurred', function (event, obj) {
             console.log('uv.onAuthorizationOccurred');
         });
@@ -464,6 +468,10 @@ $(function() {
             console.log('uv.onNotFound');
         });
 
+        $(document).bind('uv.onMinus', function (event, obj) {
+            console.log('uv.onMinus');
+        });
+
         $(document).bind('uv.onOpenLeftPanel', function (event, obj) {
             console.log('uv.onOpenLeftPanel');
         });
@@ -482,6 +490,10 @@ $(function() {
 
         $(document).bind('uv.onPageUp', function (event, obj) {
             console.log('uv.onPageUp');
+        });
+
+        $(document).bind('uv.onPlus', function (event, obj) {
+            console.log('uv.onPlus');
         });
 
         $(document).bind('uv.onRedirect', function (event, obj) {
@@ -598,6 +610,26 @@ $(function() {
 
         $(document).bind('seadragonExtension.onCurrentViewUri', function (event, obj) {
             console.log('seadragonExtension.onCurrentViewUri');
+        });
+
+        $(document).bind('seadragonExtension.onDownloadCurrentView', function (event, obj) {
+            console.log('seadragonExtension.onDownloadCurrentView');
+        });
+
+        $(document).bind('seadragonExtension.onDownloadWholeImageHighRes', function (event, obj) {
+            console.log('seadragonExtension.onDownloadWholeImageHighRes');
+        });
+
+        $(document).bind('seadragonExtension.onDownloadWholeImageLowRes', function (event, obj) {
+            console.log('seadragonExtension.onDownloadWholeImageLowRes');
+        });
+
+        $(document).bind('seadragonExtension.onDownloadEntireDocumentAsPDF', function (event, obj) {
+            console.log('seadragonExtension.onDownloadEntireDocumentAsPDF');
+        });
+
+        $(document).bind('seadragonExtension.onDownloadEntireDocumentAsText', function (event, obj) {
+            console.log('seadragonExtension.onDownloadEntireDocumentAsText');
         });
 
         $(document).bind('seadragonExtension.onFirst', function (event, obj) {
