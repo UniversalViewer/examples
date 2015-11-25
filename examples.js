@@ -379,13 +379,19 @@ $(function() {
             console.log('uv.onEscape');
         });
 
+        $(document).bind('uv.onExternalLinkClicked', function (event, obj) {
+            console.log('uv.onExternalLinkClicked', obj);
+        });
+
+        $(document).bind('uv.onHideClickthroughDialogue', function (event, obj) {
+            console.log('uv.onHideClickthroughDialogue');
+        });
+
         $(document).bind('uv.onHideDownloadDialogue', function (event, obj) {
-            // uv uses onHideOverlay
             console.log('uv.onHideDownloadDialogue');
         });
 
         $(document).bind('uv.onHideEmbedDialogue', function (event, obj) {
-            // uv uses onHideOverlay
             console.log('uv.onHideEmbedDialogue');
         });
 
@@ -394,7 +400,6 @@ $(function() {
         });
 
         $(document).bind('uv.onHideGenericDialogue', function (event, obj) {
-            // uv uses onHideOverlay
             console.log('uv.onHideGenericDialogue');
         });
 
