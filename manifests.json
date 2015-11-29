@@ -298,6 +298,25 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
+      "label": "Nelis Antiques",
+      "visible": false,
+      "manifests": [
+        {
+          "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
+          "@type": "sc:Manifest",
+          "label": "Animal Skull"
+        },
+        {
+          "@id": "http://files.universalviewer.io/manifests/nelis/ecorche.json",
+          "@type": "sc:Manifest",
+          "label": "Écorché"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@type": "sc:Collection",
       "label": "Tests (require jsonp)",
       "manifests": [
         {
