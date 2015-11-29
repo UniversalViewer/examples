@@ -398,7 +398,7 @@ $(function() {
         $(document).bind('uv.onHideExternalContentDialogue', function (event, obj) {
             console.log('uv.onHideExternalContentDialogue');
         });
-        
+
         $(document).bind('uv.onHideGenericDialogue', function (event, obj) {
             console.log('uv.onHideGenericDialogue');
         });
