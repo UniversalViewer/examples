@@ -57,11 +57,7 @@ $(function() {
     }
 
     function loadManifests(cb) {
-        var manifestsUri = '/manifests.json';
-
-        if (isLocalhost || isGithub){
-            manifestsUri = '/examples/manifests.json';
-        }
+        var manifestsUri = '/examples/manifests.json';
 
         // load manifests
         $.getJSON(manifestsUri, function(manifests){
