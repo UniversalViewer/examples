@@ -67,6 +67,8 @@ $(function() {
             for (var i = 0; i < manifests.collections.length; i++) {
                 var collection = manifests.collections[i];
 
+                if (collection.visible === false) continue;
+
                 $manifestSelect.append('<optgroup label="' + collection.label + '">');
 
                 for (var j = 0; j < collection.manifests.length; j++){
