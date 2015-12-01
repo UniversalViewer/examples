@@ -6,6 +6,14 @@ header {
     padding: 20px 0 20px 0;
 }
 
+.button{
+    background-color: #14a4c3;
+}
+
+.button:hover, .button:focus {
+    background-color: #14a4c3;
+}
+
 #dragndrop{
     margin: 0 0 0 20px;
 }
