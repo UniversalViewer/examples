@@ -10,11 +10,6 @@
       "label": "Wellcome Library",
       "manifests": [
         {
-          "@id": "http://wellcomelibrary.org/iiif/b19684915/manifest",
-          "@type": "sc:Manifest",
-          "label": "Wellcome Apocalypse"
-        },
-        {
           "@id": "http://wellcomelibrary.org/iiif/b18035723/manifest",
           "@type": "sc:Manifest",
           "label": "Wunder der Vererbung"
@@ -23,6 +18,11 @@
           "@id": "http://wellcomelibrary.org/iiif/b18035978/manifest",
           "@type": "sc:Manifest",
           "label": "The Biocrats"
+        },
+        {
+          "@id": "http://wellcomelibrary.org/iiif/b19684915/manifest",
+          "@type": "sc:Manifest",
+          "label": "Wellcome Apocalypse"
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/b22674883/manifest",
