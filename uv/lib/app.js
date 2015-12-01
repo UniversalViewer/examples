@@ -793,11 +793,13 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
             var _this = this;
             this.setConfig('genericDialogue');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands.SHOW_GENERIC_DIALOGUE, function (e, params) {
+            this.openCommand = BaseCommands.SHOW_GENERIC_DIALOGUE;
+            this.closeCommand = BaseCommands.HIDE_GENERIC_DIALOGUE;
+            $.subscribe(this.openCommand, function (e, params) {
                 _this.acceptCallback = params.acceptCallback;
                 _this.showMessage(params);
             });
-            $.subscribe(BaseCommands.HIDE_GENERIC_DIALOGUE, function (e) {
+            $.subscribe(this.closeCommand, function (e) {
                 _this.close();
             });
             this.$message = $('<p></p>');
@@ -2918,7 +2920,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.36';
+    exports.Version = '1.5.37';
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
