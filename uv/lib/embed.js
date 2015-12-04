@@ -252,6 +252,15 @@ docReady(function() {
                 resize();
             };
 
+            // if exiting full screen
+            $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function (e) {
+                if (e.type === 'webkitfullscreenchange' && !document.webkitIsFullScreen ||
+                e.type === 'mozfullscreenchange' && !document.mozFullScreen ||
+                e.type === 'MSFullscreenChange' && document.msFullscreenElement === null) {
+                    triggerSocket('uv.onParentExitFullScreen');
+                }
+            });
+
             createSocket();
 
             function resize() {
