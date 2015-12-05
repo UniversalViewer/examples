@@ -2919,7 +2919,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.5.40';
+    exports.Version = '1.5.41';
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -4477,7 +4477,7 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.getSettings = function () {
             if (Utils.Bools.GetBool(this.config.options.saveUserSettings, false)) {
-                var settings = Utils.Storage.get("settings", Utils.StorageType.local);
+                var settings = Utils.Storage.get("uv.settings", Utils.StorageType.local);
                 if (settings)
                     return $.extend(this.config.options, settings.value);
             }
@@ -4485,11 +4485,11 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.updateSettings = function (settings) {
             if (Utils.Bools.GetBool(this.config.options.saveUserSettings, false)) {
-                var storedSettings = Utils.Storage.get("settings", Utils.StorageType.local);
+                var storedSettings = Utils.Storage.get("uv.settings", Utils.StorageType.local);
                 if (storedSettings)
                     settings = $.extend(storedSettings.value, settings);
                 //store for ten years
-                Utils.Storage.set("settings", settings, 315360000, Utils.StorageType.local);
+                Utils.Storage.set("uv.settings", settings, 315360000, Utils.StorageType.local);
             }
             this.config.options = $.extend(this.config.options, settings);
         };
