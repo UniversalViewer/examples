@@ -30,6 +30,11 @@
           "label": "6th Layer Line"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b18246813/manifest",
+          "@type": "sc:Manifest",
+          "label": "Report of the Medical Officer of Health for Southwark"
+        },
+        {
           "@id": "http://wellcomelibrary.org/iiif/b17307922/manifest",
           "@type": "sc:Manifest",
           "label": "Audio - Florence Nightingale"
