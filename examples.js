@@ -57,7 +57,7 @@ $(function() {
     }
 
     function loadManifests(cb) {
-        var manifestsUri = '/examples/manifests.json';
+        var manifestsUri = '/examples/manifests2.json';
 
         // load manifests
         $.getJSON(manifestsUri, function(manifests){
