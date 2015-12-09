@@ -292,6 +292,11 @@
           "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
           "@type": "sc:Manifest",
           "label": "Correspondence and other Papers concerning the Duke of Argyll's Attack on Lewis Pelly in the House of Lords"
+        },
+        {
+          "@id": "http://www.qdl.qa/العربية/iiif/81055/vdc_100000004987.0x000001/manifest",
+          "@type": "sc:Manifest",
+          "label": "كتاب بطلميوس في التعليم المعروف بالمجسطي، نقل إسحق بن حنين بطلميوس"
         }
       ]
     },
