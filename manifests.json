@@ -108,6 +108,7 @@
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
       "label": "Internet Archive",
+      "visible": false,
       "manifests": [
         {
           "@id": "http://iiif.archivelab.org/platowithenglish04platuoft/manifest.json",
@@ -318,6 +319,7 @@
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
       "label": "Tests (require jsonp)",
+      "visible": false,
       "manifests": [
         {
           "@id": "/examples/manifest/missingimages.js",
