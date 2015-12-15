@@ -304,8 +304,7 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
-      "label": "Nelis Antiques",
-      "visible": false,
+      "label": "3D",
       "manifests": [
         {
           "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
@@ -316,6 +315,11 @@
           "@id": "http://files.universalviewer.io/manifests/nelis/ecorche.json",
           "@type": "sc:Manifest",
           "label": "Écorché"
+        },
+        {
+          "@id": "http://files.universalviewer.io/manifests/foundobjects/thekiss.json",
+          "@type": "sc:Manifest",
+          "label": "The Kiss"
         }
       ]
     },
