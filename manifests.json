@@ -190,6 +190,7 @@
       "@id": "http://universalviewer.azurewebsites.net/manifests.json",
       "@type": "sc:Collection",
       "label": "Sentences Commentary Text Archive",
+      "visible": false,
       "manifests": [
         {
           "@id": "http://scta.info/iiif/pp-sorb/manifest",
@@ -271,12 +272,12 @@
       "label": "World Digital Library",
       "manifests": [
         {
-          "@id": "http://beta.wdl.org/en/item/14291/iiif/manifest.json",
+          "@id": "http://www.wdl.org/en/item/14291/iiif/manifest.json",
           "@type": "sc:Manifest",
           "label": "Treatise on Cats"
         },
         {
-          "@id": "http://beta.wdl.org/en/item/80/iiif/manifest.json",
+          "@id": "http://www.wdl.org/en/item/80/iiif/manifest.json",
           "@type": "sc:Manifest",
           "label": "Description of Egypt. Second Edition."
         }
