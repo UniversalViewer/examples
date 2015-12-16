@@ -18,7 +18,9 @@
   height: 50px;
 }
 #app .overlay.embed .middle .firstRow .rightCol {
-  float: right;
+  float: left;
+  margin-left: 10px;
+  width: 380px;
 }
 #app .overlay.embed .middle .secondRow textarea.code {
   width: 100%;
