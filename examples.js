@@ -105,7 +105,7 @@ $(function() {
             schema: schema,
             disable_edit_json: false,
             disable_properties: true,
-            required_by_default: true
+            required_by_default: false
         });
 
         editor.on('change', function() {
