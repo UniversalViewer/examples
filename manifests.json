@@ -1,11 +1,11 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+  "@id": "http://universalviewer.io/manifests.json",
   "@type": "sc:Collection",
   "collections": [
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Wellcome Library",
       "manifests": [
@@ -105,7 +105,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Internet Archive",
       "visible": false,
@@ -120,7 +120,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "British Library",
       "manifests": [
@@ -133,7 +133,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "National Library of Wales",
       "manifests": [
@@ -151,7 +151,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Bodleian",
       "manifests": [
@@ -164,7 +164,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Stanford University",
       "manifests": [
@@ -187,7 +187,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Sentences Commentary Text Archive",
       "visible": false,
@@ -201,7 +201,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Villanova University",
       "manifests": [
@@ -267,7 +267,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "World Digital Library",
       "manifests": [
@@ -285,7 +285,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Qatar Digital Library",
       "manifests": [
@@ -303,7 +303,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "3D",
       "manifests": [
@@ -326,7 +326,7 @@
     },
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.azurewebsites.net/manifests.json",
+      "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Tests (require jsonp)",
       "visible": false,
