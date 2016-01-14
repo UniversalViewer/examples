@@ -305,6 +305,19 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "Yale",
+      "manifests": [
+        {
+          "@id": "http://manifests.ydc2.yale.edu/manifest/Scroll",
+          "@type": "sc:Manifest",
+          "label": "Scroll"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "3D",
       "manifests": [
         {
