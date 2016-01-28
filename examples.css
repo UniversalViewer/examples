@@ -1,5 +1,6 @@
 body {
     padding: 20px;
+    background: #EEE;
 }
 
 header {
@@ -33,6 +34,10 @@ header {
     height: 480px;
 }
 
+#editPnl .panel{
+    background: #EEE;
+}
+
 #saveBtn, #resetBtn{
     margin-left: 10px;
 }
@@ -43,4 +48,9 @@ footer {
 
 .hide {
     display: none;
+}
+
+hr {
+    border: solid #9a9a9a;
+    border-width: 1px 0 0;
 }
