@@ -38,12 +38,17 @@ header {
     background: #EEE;
 }
 
+#editPnl .row{
+    margin: 0;
+}
+
 #saveBtn, #resetBtn{
     margin-left: 10px;
 }
 
 footer {
     padding: 20px 0 20px 0;
+    width: 924px;
 }
 
 .hide {
