@@ -782,6 +782,16 @@ $(function() {
             updateDragDrop();
         });
 
+        $('#manifest').click(function() {
+            $(this).select();
+        });
+
+        $('#manifest').keypress(function(e) {
+            if(e.which === 13) {
+                reload();
+            }
+        });
+
         $('#setManifestBtn').on('click', function(e){
             e.preventDefault();
             reload();
