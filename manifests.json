@@ -15,6 +15,11 @@
           "label": "Wunder der Vererbung"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b23984971/manifest",
+          "@type": "sc:Manifest",
+          "label": "Nervous system in a fruit fly larva"
+        },
+        {
           "@id": "http://wellcomelibrary.org/iiif/b18035978/manifest",
           "@type": "sc:Manifest",
           "label": "The Biocrats"
