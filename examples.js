@@ -655,6 +655,10 @@ $(function() {
             console.log('seadragonExtension.onModeChanged', obj);
         });
 
+        $(document).bind('seadragonExtension.onMultiSelection', function (event, ids) {
+            console.log('seadragonExtension.onMultiSelection', ids);
+        });
+
         $(document).bind('seadragonExtension.onNext', function (event, obj) {
             console.log('seadragonExtension.onNext');
         });
