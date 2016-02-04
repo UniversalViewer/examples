@@ -4006,12 +4006,12 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             this.$options.append(this.$treeViewOptions);
             this.$sortByLabel = $('<span class="sort">' + this.content.sortBy + '</span>');
             this.$treeViewOptions.append(this.$sortByLabel);
-            this.$buttonGroup = $('<div class="btn-group"></div>');
-            this.$treeViewOptions.append(this.$buttonGroup);
+            this.$sortButtonGroup = $('<div class="btn-group"></div>');
+            this.$treeViewOptions.append(this.$sortButtonGroup);
             this.$sortByDateButton = $('<button class="btn">' + this.content.date + '</button>');
-            this.$buttonGroup.append(this.$sortByDateButton);
+            this.$sortButtonGroup.append(this.$sortByDateButton);
             this.$sortByVolumeButton = $('<button class="btn">' + this.content.volume + '</button>');
-            this.$buttonGroup.append(this.$sortByVolumeButton);
+            this.$sortButtonGroup.append(this.$sortByVolumeButton);
             this.$views = $('<div class="views"></div>');
             this.$tabsContent.append(this.$views);
             this.$treeView = $('<div class="treeView"></div>');
