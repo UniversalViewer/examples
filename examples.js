@@ -56,8 +56,14 @@ $(function() {
         }
     }
 
+    function formatUrl(url) {
+        var parts = Utils.Urls.GetUrlParts(location.href);
+        return String.format(url, parts.pathname);
+    }
+
     function loadManifests(cb) {
-        var manifestsUri = '/examples/manifests.json';
+
+        var manifestsUri = formatUrl('{0}manifests.json');
 
         // load manifests
         $.getJSON(manifestsUri, function(manifests){
