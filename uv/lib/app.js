@@ -3138,14 +3138,14 @@ define('extensions/uv-seadragon-extension/Commands',["require", "exports"], func
         Commands.DOWNLOAD_ENTIREDOCUMENTASTEXT = Commands.namespace + 'onDownloadEntireDocumentAsText';
         Commands.DOWNLOAD_WHOLEIMAGEHIGHRES = Commands.namespace + 'onDownloadWholeImageHighRes';
         Commands.DOWNLOAD_WHOLEIMAGELOWRES = Commands.namespace + 'onDownloadWholeImageLowRes';
-        Commands.ENTER_MULTI_SELECTION_MODE = Commands.namespace + 'onEnterMultiSelectionMode';
-        Commands.EXIT_MULTI_SELECTION_MODE = Commands.namespace + 'onExitMultiSelectionMode';
+        Commands.ENTER_MULTISELECT_MODE = Commands.namespace + 'onEnterMultiSelectionMode';
+        Commands.EXIT_MULTISELECT_MODE = Commands.namespace + 'onExitMultiSelectionMode';
         Commands.FIRST = Commands.namespace + 'onFirst';
         Commands.GALLERY_THUMB_SELECTED = Commands.namespace + 'onGalleryThumbSelected';
         Commands.IMAGE_SEARCH = Commands.namespace + 'onImageSearch';
         Commands.LAST = Commands.namespace + 'onLast';
         Commands.MODE_CHANGED = Commands.namespace + 'onModeChanged';
-        Commands.MULTI_SELECTION = Commands.namespace + 'onMultiSelection';
+        Commands.MULTISELECTION_MADE = Commands.namespace + 'onMultiSelection';
         Commands.NEXT = Commands.namespace + 'onNext';
         Commands.NEXT_SEARCH_RESULT = Commands.namespace + 'onNextSearchResult';
         Commands.OPEN_THUMBS_VIEW = Commands.namespace + 'onOpenThumbsView';
@@ -3766,11 +3766,11 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             var _this = this;
             _super.prototype.create.call(this);
             var that = this;
-            $.subscribe(Commands.ENTER_MULTI_SELECTION_MODE, function () {
+            $.subscribe(Commands.ENTER_MULTISELECT_MODE, function () {
                 _this.multiSelectionMode = true;
                 _this.dataBind();
             });
-            $.subscribe(Commands.EXIT_MULTI_SELECTION_MODE, function () {
+            $.subscribe(Commands.EXIT_MULTISELECT_MODE, function () {
                 _this.multiSelectionMode = false;
                 _this.dataBind();
             });
@@ -3970,19 +3970,19 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 }
                 _this.selectCurrentTreeNode();
             });
-            $.subscribe(Commands.ENTER_MULTI_SELECTION_MODE, function () {
+            $.subscribe(Commands.ENTER_MULTISELECT_MODE, function () {
                 that.setTitle(that.content.selection);
                 if (!that.isFullyExpanded) {
                     that.expandFull();
                 }
                 _this.$selectButton.show();
             });
-            $.subscribe(Commands.EXIT_MULTI_SELECTION_MODE, function () {
+            $.subscribe(Commands.EXIT_MULTISELECT_MODE, function () {
                 that.setTitle(that.content.title);
                 _this.$selectButton.hide();
             });
             $.subscribe(BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
-                $.publish(Commands.EXIT_MULTI_SELECTION_MODE);
+                $.publish(Commands.EXIT_MULTISELECT_MODE);
             });
             this.$tabs = $('<div class="tabs"></div>');
             this.$main.append(this.$tabs);
@@ -4041,7 +4041,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 var ids = _.map(selectedNodes, function (node) {
                     return node.data.id;
                 });
-                $.publish(Commands.MULTI_SELECTION, [ids]);
+                $.publish(Commands.MULTISELECTION_MADE, [ids]);
             });
             this.$expandButton.attr('tabindex', '7');
             this.$collapseButton.attr('tabindex', '7');
@@ -5184,7 +5184,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             $.publish(Commands.DOWNLOAD_CURRENTVIEW);
                             break;
                         case DownloadOption.selection.toString():
-                            $.publish(Commands.ENTER_MULTI_SELECTION_MODE);
+                            $.publish(Commands.ENTER_MULTISELECT_MODE);
                             break;
                         case DownloadOption.wholeImageHighRes.toString():
                             window.open(_this.getOriginalImageForCurrentCanvas());
@@ -7000,8 +7000,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var settings = _this.provider.getSettings();
                 $.publish(BaseCommands.SETTINGS_CHANGED, [settings]);
             });
-            $.subscribe(Commands.MULTI_SELECTION, function (e, ids) {
-                _this.triggerSocket(Commands.MULTI_SELECTION, ids);
+            $.subscribe(Commands.MULTISELECTION_MADE, function (e, ids) {
+                _this.triggerSocket(Commands.MULTISELECTION_MADE, ids);
             });
             $.subscribe(Commands.NEXT, function (e) {
                 _this.triggerSocket(Commands.NEXT);

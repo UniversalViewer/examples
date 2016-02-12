@@ -661,8 +661,8 @@ $(function() {
             console.log('seadragonExtension.onModeChanged', obj);
         });
 
-        $(document).bind('seadragonExtension.onMultiSelection', function (event, ids) {
-            console.log('seadragonExtension.onMultiSelection', ids);
+        $(document).bind('seadragonExtension.onMultiSelectionMade', function (event, ids) {
+            console.log('seadragonExtension.onMultiSelectionMade', ids);
         });
 
         $(document).bind('seadragonExtension.onNext', function (event, obj) {
