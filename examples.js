@@ -387,6 +387,10 @@ $(function() {
             console.log('uv.onExternalLinkClicked', obj);
         });
 
+        $(document).bind('uv.onFeedback', function (event, obj) {
+            console.log('uv.onFeedback', obj);
+        });
+
         $(document).bind('uv.onHideClickthroughDialogue', function (event, obj) {
             console.log('uv.onHideClickthroughDialogue');
         });

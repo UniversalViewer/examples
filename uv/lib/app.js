@@ -19,6 +19,7 @@ define('modules/uv-shared-module/BaseCommands',["require", "exports"], function 
         Commands.END = Commands.namespace + 'onEnd';
         Commands.ESCAPE = Commands.namespace + 'onEscape';
         Commands.EXTERNAL_LINK_CLICKED = Commands.namespace + 'onExternalLinkClicked';
+        Commands.FEEDBACK = Commands.namespace + 'onFeedback';
         Commands.PARENT_EXIT_FULLSCREEN = Commands.namespace + 'onParentExitFullScreen';
         Commands.HIDE_CLICKTHROUGH_DIALOGUE = Commands.namespace + 'onHideClickthroughDialogue';
         Commands.HIDE_DOWNLOAD_DIALOGUE = Commands.namespace + 'onHideDownloadDialogue';
@@ -1095,6 +1096,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     $.publish(BaseCommands.TOGGLE_FULLSCREEN);
                 }
             });
+            $.subscribe(BaseCommands.FEEDBACK, function () {
+                _this.feedback();
+            });
             $.subscribe(BaseCommands.HIDE_DOWNLOAD_DIALOGUE, function () {
                 _this.triggerSocket(BaseCommands.HIDE_DOWNLOAD_DIALOGUE);
             });
@@ -1494,6 +1498,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.bookmark = function () {
             // override for each extension
+        };
+        BaseExtension.prototype.feedback = function () {
+            this.triggerSocket(BaseCommands.FEEDBACK, new BootstrapParams());
         };
         BaseExtension.prototype.getBookmarkUri = function () {
             var absUri = parent.document.URL;
@@ -2034,6 +2041,8 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
             });
             this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
+            this.$feedbackButton = $('<a class="feedback" title="' + this.content.feedback + '">' + this.content.feedback + '</a>');
+            this.$options.prepend(this.$feedbackButton);
             this.$openButton = $('<a class="open" title="' + this.content.open + '">' + this.content.open + '</a>');
             this.$options.prepend(this.$openButton);
             this.$bookmarkButton = $('<a class="bookmark" title="' + this.content.bookmark + '">' + this.content.bookmark + '</a>');
@@ -2048,6 +2057,9 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
             this.$fullScreenBtn.attr('tabindex', '5');
             this.$openButton.onPressed(function () {
                 $.publish(BaseCommands.OPEN);
+            });
+            this.$feedbackButton.onPressed(function () {
+                $.publish(BaseCommands.FEEDBACK);
             });
             this.$bookmarkButton.onPressed(function () {
                 $.publish(BaseCommands.BOOKMARK);
@@ -2067,6 +2079,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
                 this.$embedButton.hide();
             }
             this.updateOpenButton();
+            this.updateFeedbackButton();
             this.updateBookmarkButton();
             this.updateDownloadButton();
             this.updateFullScreenButton();
@@ -2108,6 +2121,15 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
             }
             else {
                 this.$downloadButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateFeedbackButton = function () {
+            var configEnabled = Utils.Bools.GetBool(this.options.feedbackEnabled, false);
+            if (configEnabled) {
+                this.$feedbackButton.show();
+            }
+            else {
+                this.$feedbackButton.hide();
             }
         };
         FooterPanel.prototype.updateBookmarkButton = function () {
@@ -3038,7 +3060,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.7.0';
+    exports.Version = '1.7.1';
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
