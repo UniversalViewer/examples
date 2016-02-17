@@ -30,11 +30,6 @@
           "label": "Wellcome Apocalypse"
         },
         {
-          "@id": "http://wellcomelibrary.org/iiif/b22674883/manifest",
-          "@type": "sc:Manifest",
-          "label": "Harris's ladies"
-        },
-        {
           "@id": "http://wellcomelibrary.org/iiif/b1948799x/manifest",
           "@type": "sc:Manifest",
           "label": "Crick's letter"
@@ -63,6 +58,11 @@
           "@id": "http://wellcomelibrary.org/iiif/b17564980/manifest",
           "@type": "sc:Manifest",
           "label": "First Thursday Club (login required)"
+        },
+        {
+          "@id": "http://wellcomelibrary.org/iiif/b19813508/manifest",
+          "@type": "sc:Manifest",
+          "label": "Kourilsky, Philippe (restricted content)"
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/b1818893x/manifest",
