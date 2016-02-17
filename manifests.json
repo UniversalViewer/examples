@@ -346,6 +346,36 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "Level 0",
+      "visible": false,
+      "manifests": [
+        {
+          "@id": "http://files.universalviewer.io/manifests/demo/tetons.json",
+          "@type": "sc:Manifest",
+          "label": "Tetons",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
+      "label": "IPFS",
+      "visible": false,
+      "manifests": [
+        {
+          "@id": "https://ipfs.io/ipfs/QmbqZNSUkf99BxpYXhHMGi41pjqHfZDw8jzEgYnvbQEusn",
+          "@type": "sc:Manifest",
+          "label": "Tetons",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "Tests (require jsonp)",
       "visible": false,
       "manifests": [
