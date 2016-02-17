@@ -1470,6 +1470,15 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             p.canvasIndex = 0;
             this.provider.reload(p);
         };
+        BaseExtension.prototype.viewCollection = function (collection) {
+            var p = new BootstrapParams();
+            p.manifestUri = this.provider.manifestUri;
+            p.collectionIndex = collection.index;
+            p.manifestIndex = 0;
+            p.sequenceIndex = 0;
+            p.canvasIndex = 0;
+            this.provider.reload(p);
+        };
         BaseExtension.prototype.isFullScreen = function () {
             return this.bootstrapper.isFullScreen;
         };
@@ -1731,6 +1740,7 @@ define('modules/uv-shared-module/DownloadOption',["require", "exports"], functio
         DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
         DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
         DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
+        DownloadOption.selection = new DownloadOption("selection");
         DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
         DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
         return DownloadOption;
@@ -2708,6 +2718,10 @@ define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./Base
         BaseExpandPanel.prototype.init = function () {
             _super.prototype.init.call(this);
         };
+        BaseExpandPanel.prototype.setTitle = function (title) {
+            this.$title.text(title);
+            this.$closedTitle.text(title);
+        };
         BaseExpandPanel.prototype.toggle = function (autoToggled) {
             var _this = this;
             (autoToggled) ? this.autoToggled = true : this.autoToggled = false;
@@ -2894,8 +2908,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             this.$main.append(this.$noData);
             this.$expandButton.attr('tabindex', '4');
             this.$collapseButton.attr('tabindex', '4');
-            this.$title.text(this.content.title);
-            this.$closedTitle.text(this.content.title);
+            this.setTitle(this.content.title);
         };
         MoreInfoRightPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
@@ -3025,7 +3038,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.6.18';
+    exports.Version = '1.7.0';
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -3134,11 +3147,15 @@ define('extensions/uv-seadragon-extension/Commands',["require", "exports"], func
         Commands.DOWNLOAD_ENTIREDOCUMENTASTEXT = Commands.namespace + 'onDownloadEntireDocumentAsText';
         Commands.DOWNLOAD_WHOLEIMAGEHIGHRES = Commands.namespace + 'onDownloadWholeImageHighRes';
         Commands.DOWNLOAD_WHOLEIMAGELOWRES = Commands.namespace + 'onDownloadWholeImageLowRes';
+        Commands.ENTER_MULTISELECT_MODE = Commands.namespace + 'onEnterMultiSelectMode';
+        Commands.EXIT_MULTISELECT_MODE = Commands.namespace + 'onExitMultiSelectMode';
         Commands.FIRST = Commands.namespace + 'onFirst';
         Commands.GALLERY_THUMB_SELECTED = Commands.namespace + 'onGalleryThumbSelected';
         Commands.IMAGE_SEARCH = Commands.namespace + 'onImageSearch';
         Commands.LAST = Commands.namespace + 'onLast';
         Commands.MODE_CHANGED = Commands.namespace + 'onModeChanged';
+        Commands.MULTISELECTION_MADE = Commands.namespace + 'onMultiSelectionMade';
+        Commands.MULTISELECT_CHANGE = Commands.namespace + 'onMultiSelectChange';
         Commands.NEXT = Commands.namespace + 'onNext';
         Commands.NEXT_SEARCH_RESULT = Commands.namespace + 'onNextSearchResult';
         Commands.OPEN_THUMBS_VIEW = Commands.namespace + 'onOpenThumbsView';
@@ -3157,6 +3174,8 @@ define('extensions/uv-seadragon-extension/Commands',["require", "exports"], func
         Commands.SEARCH_PREVIEW_START = Commands.namespace + 'onSearchPreviewStart';
         Commands.SEARCH_RESULTS = Commands.namespace + 'onSearchResults';
         Commands.SEARCH_RESULTS_EMPTY = Commands.namespace + 'onSearchResultsEmpty';
+        Commands.THUMB_MULTISELECTED = Commands.namespace + 'onThumbMultiSelected';
+        Commands.TREE_NODE_MULTISELECTED = Commands.namespace + 'onTreeNodeMultiSelected';
         Commands.TREE_NODE_SELECTED = Commands.namespace + 'onTreeNodeSelected';
         Commands.VIEW_PAGE = Commands.namespace + 'onViewPage';
         return Commands;
@@ -3184,7 +3203,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseView, Commands, Mode) {
+define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseView, Commands, Mode) {
     var GalleryView = (function (_super) {
         __extends(GalleryView, _super);
         function GalleryView($element) {
@@ -3193,7 +3212,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
         }
         GalleryView.prototype.create = function () {
             var _this = this;
-            this.setConfig('treeViewLeftPanel');
+            this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
             $.subscribe(BaseCommands.CANVAS_INDEX_CHANGED, function (e, index) {
                 _this.selectIndex(parseInt(index));
@@ -3207,11 +3226,21 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             $.subscribe(Commands.SEARCH_PREVIEW_FINISH, function () {
                 _this.searchPreviewFinish();
             });
+            $.subscribe(Commands.ENTER_MULTISELECT_MODE, function () {
+                _this.dataBind();
+                _this.resize();
+            });
+            $.subscribe(Commands.EXIT_MULTISELECT_MODE, function () {
+                _this.dataBind();
+            });
+            $.subscribe(Commands.MULTISELECT_CHANGE, function (s, state) {
+                _this._multiSelectStateChange(state);
+            });
             this.$header = $('<div class="header"></div>');
             this.$element.append(this.$header);
             this.$sizeDownButton = $('<input class="btn btn-default size-down" type="button" value="-" />');
             this.$header.append(this.$sizeDownButton);
-            this.$sizeRange = $('<input type="range" name="size" min="0" max="10" value="5" />');
+            this.$sizeRange = $('<input type="range" name="size" min="1" max="10" value="6" />');
             this.$header.append(this.$sizeRange);
             this.$sizeUpButton = $('<input class="btn btn-default size-up" type="button" value="+" />');
             this.$header.append(this.$sizeUpButton);
@@ -3239,11 +3268,16 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
                 _this.scrollToThumb(_this.getSelectedThumbIndex());
             });
             $.templates({
-                galleryThumbsTemplate: '<div class="{{:~className()}}" data-src="{{>uri}}" data-index="{{>index}}" data-visible="{{>visible}}" data-width="{{>width}}" data-height="{{>height}}">\
-                                        <div class="wrap"></div>\
-                                        <span class="index">{{:#index + 1}}</span>\
-                                        <span class="label" title="{{>label}}">{{>label}}&nbsp;</span>\
-                                     </div>'
+                galleryThumbsTemplate: '\
+                <div class="{{:~className()}}" data-src="{{>uri}}" data-index="{{>index}}" data-visible="{{>visible}}" data-width="{{>width}}" data-height="{{>height}}">\
+                    <div class="wrap" data-link="class{merge:multiSelected toggle=\'multiSelected\'}">\
+                    {^{if multiSelectionEnabled}}\
+                        <input id="thumb-checkbox-{{>id}}" type="checkbox" data-link="checked{:multiSelected ? \'checked\' : \'\'}" class="multiSelect" />\
+                    {{/if}}\
+                    </div>\
+                    <span class="index">{{:#index + 1}}</span>\
+                    <span class="label" title="{{>label}}">{{>label}}&nbsp;</span>\
+                </div>'
             });
             $.views.helpers({
                 className: function () {
@@ -3269,6 +3303,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
         GalleryView.prototype.dataBind = function () {
             if (!this.thumbs)
                 return;
+            this._reset();
             this.createThumbs();
         };
         GalleryView.prototype.createThumbs = function () {
@@ -3276,15 +3311,63 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             if (!this.thumbs)
                 return;
             this.$thumbs.link($.templates.galleryThumbsTemplate, this.thumbs);
-            this.$thumbs.delegate(".thumb", "click", function (e) {
-                e.preventDefault();
-                var data = $.view(this).data;
-                that.lastThumbClickedIndex = data.index;
-                $.publish(BaseCommands.THUMB_SELECTED, [data.index]);
-            });
+            if (!that.multiSelectState.enabled) {
+                // add a selection click event to all thumbs
+                this.$thumbs.delegate('.thumb', 'click', function (e) {
+                    e.preventDefault();
+                    var data = $.view(this).data;
+                    that.lastThumbClickedIndex = data.index;
+                    $.publish(BaseCommands.THUMB_SELECTED, [data.index]);
+                });
+            }
+            else {
+                // make each thumb a checkboxButton
+                $.each(this.$thumbs.find('.thumb'), function (index, thumb) {
+                    var $thumb = $(thumb);
+                    $thumb.checkboxButton(function (checked) {
+                        var data = $.view(this).data;
+                        that._setThumbMultiSelected(data, !data.multiSelected);
+                        $.publish(Commands.THUMB_MULTISELECTED, [data]);
+                    });
+                });
+            }
             this.selectIndex(this.provider.canvasIndex);
             this.setLabel();
             this.updateThumbs();
+        };
+        GalleryView.prototype._getThumbsByRange = function (range) {
+            var thumbs = [];
+            for (var i = 0; i < this.thumbs.length; i++) {
+                var thumb = this.thumbs[i];
+                var canvas = thumb.data;
+                var r = this.provider.getCanvasRange(canvas);
+                if (r && r.id === range.id) {
+                    thumbs.push(thumb);
+                }
+            }
+            return thumbs;
+        };
+        GalleryView.prototype._multiSelectStateChange = function (state) {
+            for (var j = 0; j < state.canvases.length; j++) {
+                var canvas = state.canvases[j];
+                var thumb = this._getThumbByCanvas(canvas);
+                this._setThumbMultiSelected(thumb, canvas.multiSelected);
+            }
+            // range selections override canvas selections
+            for (var i = 0; i < state.ranges.length; i++) {
+                var range = state.ranges[i];
+                var thumbs = this._getThumbsByRange(range);
+                for (var k = 0; k < thumbs.length; k++) {
+                    var thumb = thumbs[k];
+                    this._setThumbMultiSelected(thumb, range.multiSelected);
+                }
+            }
+        };
+        GalleryView.prototype._getThumbByCanvas = function (canvas) {
+            return this.thumbs.en().where(function (c) { return c.data.id === canvas.id; }).first();
+        };
+        GalleryView.prototype._setThumbMultiSelected = function (thumb, selected) {
+            $.observable(thumb).setProperty("multiSelected", selected);
         };
         GalleryView.prototype.updateThumbs = function () {
             if (!this.thumbs || !this.thumbs.length)
@@ -3324,13 +3407,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             $wrap.height(height * this.range);
             $label.width(width * this.range);
         };
-        //sizeThumbImage($thumb: JQuery) : void {
-        //    var width = $thumb.data('width');
-        //    var height = $thumb.data('height');
-        //
-        //    var $img = $thumb.find('img');
-        //}
-        GalleryView.prototype.loadThumb = function ($thumb, callback) {
+        GalleryView.prototype.loadThumb = function ($thumb, cb) {
             var $wrap = $thumb.find('.wrap');
             if ($wrap.hasClass('loading') || $wrap.hasClass('loaded'))
                 return;
@@ -3340,16 +3417,16 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             if (visible !== "false") {
                 $wrap.addClass('loading');
                 var src = $thumb.attr('data-src');
-                var img = $('<img src="' + src + '" />');
+                var img = $('<img class="thumbImage" src="' + src + '" />');
                 // fade in on load.
                 $(img).hide().load(function () {
                     $(this).fadeIn(fadeDuration, function () {
                         $(this).parent().swapClass('loading', 'loaded');
                     });
                 });
-                $wrap.append(img);
-                if (callback)
-                    callback(img);
+                $wrap.prepend(img);
+                if (cb)
+                    cb(img);
             }
             else {
                 $wrap.addClass('hidden');
@@ -3386,7 +3463,7 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
         };
         GalleryView.prototype.selectIndex = function (index) {
             // may be authenticating
-            if (index == -1)
+            if (index === -1)
                 return;
             if (!this.thumbs || !this.thumbs.length)
                 return;
@@ -3396,6 +3473,16 @@ define('modules/uv-treeviewleftpanel-module/GalleryView',["require", "exports", 
             this.$selectedThumb.addClass('selected');
             // make sure visible images are loaded.
             this.updateThumbs();
+        };
+        GalleryView.prototype._setMultiSelectionEnabled = function (enabled) {
+            for (var i = 0; i < this.thumbs.length; i++) {
+                var thumb = this.thumbs[i];
+                thumb.multiSelectionEnabled = enabled;
+            }
+        };
+        GalleryView.prototype._reset = function () {
+            this.$thumbs.undelegate('.thumb', 'click');
+            this._setMultiSelectionEnabled(this.multiSelectState.enabled);
         };
         GalleryView.prototype.getSelectedThumbIndex = function () {
             return Number(this.$selectedThumb.data('index'));
@@ -3486,7 +3573,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseView, Commands, Mode) {
+define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseCommands, BaseView, Commands, Mode) {
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
@@ -3496,7 +3583,7 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
         }
         ThumbsView.prototype.create = function () {
             var _this = this;
-            this.setConfig('treeViewLeftPanel');
+            this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
             $.subscribe(BaseCommands.CANVAS_INDEX_CHANGED, function (e, index) {
                 _this.selectIndex(parseInt(index));
@@ -3591,6 +3678,8 @@ define('modules/uv-treeviewleftpanel-module/ThumbsView',["require", "exports", "
             // do initial load to show padlocks
             this.loadThumbs(0);
             this.isCreated = true;
+        };
+        ThumbsView.prototype.selectAll = function (selected) {
         };
         ThumbsView.prototype.scrollStop = function () {
             var scrollPos = 1 / ((this.$thumbs.height() - this.$element.height()) / this.$element.scrollTop());
@@ -3747,7 +3836,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, BaseView, Commands) {
+define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, BaseView, Commands) {
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
@@ -3755,7 +3844,15 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
             this.isOpen = false;
         }
         TreeView.prototype.create = function () {
+            var _this = this;
             _super.prototype.create.call(this);
+            var that = this;
+            $.subscribe(Commands.ENTER_MULTISELECT_MODE, function () {
+                _this.dataBind();
+            });
+            $.subscribe(Commands.MULTISELECT_CHANGE, function (s, state) {
+                _this._multiSelectStateChange(state);
+            });
             this.$tree = $('<ul class="tree"></ul>');
             this.$element.append(this.$tree);
             $.templates({
@@ -3764,18 +3861,17 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
                            {{/for}}',
                 treeTemplate: '<li>\
                                {^{if nodes && nodes.length}}\
-                                   {^{if expanded}}\
-                                       <div class="toggle expanded"></div>\
-                                   {{else}}\
-                                       <div class="toggle"></div>\
-                                   {{/if}}\
+                                   <div class="toggle" data-link="class{merge:expanded toggle=\'expanded\'}"></div>\
                                {{else}}\
-                                   <div class="spacer"></div>\
+                               <div class="spacer"></div>\
+                               {{/if}}\
+                               {^{if multiSelectionEnabled}}\
+                                    <input id="tree-checkbox-{{>id}}" type="checkbox" data-link="checked{:multiSelected ? \'checked\' : \'\'}" class="multiSelect" />\
                                {{/if}}\
                                {^{if selected}}\
-                                   <a href="#" title="{{>label}}" class="selected" data-link="~elide(text)"></a>\
+                                   <a id="tree-link-{{>id}}" href="#" title="{{>label}}" class="selected" data-link="~elide(text)"></a>\
                                {{else}}\
-                                   <a href="#" title="{{>label}}" data-link="~elide(text)"></a>\
+                                   <a id="tree-link-{{>id}}" href="#" title="{{>label}}" data-link="~elide(text)"></a>\
                                {{/if}}\
                            </li>\
                            {^{if expanded}}\
@@ -3798,11 +3894,12 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
             });
             $.views.tags({
                 tree: {
-                    toggle: function () {
-                        $.observable(this.data).setProperty("expanded", !this.data.expanded);
-                        //this.contents().find('a').each(function() {
-                        //    that.elide($(this));
-                        //});
+                    toggleExpanded: function () {
+                        that._setNodeExpanded(this.data, !this.data.expanded);
+                    },
+                    toggleMultiSelect: function () {
+                        that._multiSelectTreeNode(this.data, !this.data.multiSelected);
+                        that._updateParentNodes(this.data);
                     },
                     init: function (tagCtx, linkCtx, ctx) {
                         var data = tagCtx.view.data;
@@ -3811,15 +3908,21 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
                     },
                     onAfterLink: function () {
                         var self = this;
-                        self.contents("li").first()
-                            .on("click", ".toggle", function () {
-                            self.toggle();
-                        }).on("click", "a", function (e) {
+                        self.contents('li').first()
+                            .on('click', '.toggle', function () {
+                            self.toggleExpanded();
+                        }).on('click', 'a', function (e) {
                             e.preventDefault();
-                            if (self.data.nodes.length) {
-                                self.toggle();
+                            if (self.data.nodes.length)
+                                self.toggleExpanded();
+                            if (that.multiSelectState.enabled) {
+                                self.toggleMultiSelect();
                             }
-                            $.publish(Commands.TREE_NODE_SELECTED, [self.data.data]);
+                            else {
+                                $.publish(Commands.TREE_NODE_SELECTED, [self.data.data]);
+                            }
+                        }).on('click', 'input.multiSelect', function (e) {
+                            self.toggleMultiSelect();
                         });
                     },
                     template: $.templates.treeTemplate
@@ -3829,12 +3932,122 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
         TreeView.prototype.dataBind = function () {
             if (!this.rootNode)
                 return;
+            this._reset();
             this.$tree.link($.templates.pageTemplate, this.rootNode);
             this.resize();
         };
+        TreeView.prototype._multiSelectStateChange = function (state) {
+            this.multiSelectState = state;
+            for (var i = 0; i < this.multiSelectState.ranges.length; i++) {
+                var range = this.multiSelectState.ranges[i];
+                var node = this._getMultiSelectableNodes().en().where(function (n) { return n.data.id === range.id; }).first();
+                this._setNodeMultiSelected(node, range.multiSelected);
+            }
+            this.dataBind();
+        };
+        TreeView.prototype._reset = function () {
+            this.allNodes = null;
+            this.multiSelectableNodes = null;
+            this._setMultiSelectionEnabled(this.multiSelectState.enabled);
+        };
+        TreeView.prototype.allNodesSelected = function () {
+            var applicableNodes = this._getMultiSelectableNodes();
+            var multiSelectedNodes = this.getMultiSelectedNodes();
+            return applicableNodes.length === multiSelectedNodes.length;
+        };
+        TreeView.prototype._getMultiSelectableNodes = function () {
+            var _this = this;
+            // if cached
+            if (this.multiSelectableNodes) {
+                return this.multiSelectableNodes;
+            }
+            return this.multiSelectableNodes = this._getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n); }).toArray();
+        };
+        TreeView.prototype._nodeIsMultiSelectable = function (node) {
+            return (node.isManifest() && node.nodes.length > 0 || node.isRange());
+        };
+        TreeView.prototype._getAllNodes = function () {
+            // if cached
+            if (this.allNodes) {
+                return this.allNodes;
+            }
+            return this.allNodes = this.rootNode.nodes.en().traverseUnique(function (node) { return node.nodes; }).toArray();
+        };
+        TreeView.prototype.getMultiSelectedNodes = function () {
+            var _this = this;
+            return this._getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n) && n.multiSelected; }).toArray();
+        };
         TreeView.prototype.getNodeById = function (id) {
-            return this.rootNode.nodes.en().traverseUnique(function (node) { return node.nodes; })
-                .where(function (n) { return n.id === id; }).first();
+            return this._getAllNodes().en().where(function (n) { return n.id === id; }).first();
+        };
+        TreeView.prototype._multiSelectTreeNode = function (node, isSelected) {
+            if (!this._nodeIsMultiSelectable(node))
+                return;
+            this._setNodeMultiSelected(node, isSelected);
+            $.publish(Commands.TREE_NODE_MULTISELECTED, [node]);
+            // recursively select/deselect child nodes
+            for (var i = 0; i < node.nodes.length; i++) {
+                var n = node.nodes[i];
+                this._multiSelectTreeNode(n, isSelected);
+            }
+        };
+        TreeView.prototype._updateParentNodes = function (node) {
+            var parentNode = node.parentNode;
+            if (!parentNode)
+                return;
+            // expand parents if selected
+            if (node.selected) {
+                this._expandParents(node);
+            }
+            // get the number of selected children.
+            var checkedCount = parentNode.nodes.en().where(function (n) { return n.multiSelected; }).count();
+            // if any are checked, check the parent.
+            this._setNodeMultiSelected(parentNode, checkedCount > 0);
+            var indeterminate = checkedCount > 0 && checkedCount < parentNode.nodes.length;
+            this._setNodeIndeterminate(parentNode, indeterminate);
+            // cascade up tree
+            this._updateParentNodes(parentNode);
+        };
+        TreeView.prototype._expandParents = function (node) {
+            if (!node.parentNode)
+                return;
+            this._setNodeExpanded(node.parentNode, true);
+            this._expandParents(node.parentNode);
+        };
+        TreeView.prototype._setNodeSelected = function (node, selected) {
+            $.observable(node).setProperty("selected", selected);
+        };
+        TreeView.prototype._setNodeExpanded = function (node, expanded) {
+            $.observable(node).setProperty("expanded", expanded);
+        };
+        TreeView.prototype._setNodeMultiSelected = function (node, selected) {
+            $.observable(node).setProperty("multiSelected", selected);
+            if (!selected) {
+                this._setNodeIndeterminate(node, false);
+            }
+        };
+        TreeView.prototype._setNodeIndeterminate = function (node, indeterminate) {
+            var $checkbox = this._getNodeCheckbox(node);
+            $checkbox.prop("indeterminate", indeterminate);
+        };
+        TreeView.prototype._getNodeCheckbox = function (node) {
+            return $("#tree-checkbox-" + node.id);
+        };
+        TreeView.prototype._getNodeSiblings = function (node) {
+            var siblings = [];
+            if (node.parentNode) {
+                siblings = node.parentNode.nodes.en().where(function (n) { return n !== node; }).toArray();
+            }
+            return siblings;
+        };
+        TreeView.prototype._setMultiSelectionEnabled = function (enabled) {
+            var nodes = this._getAllNodes();
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (this._nodeIsMultiSelectable(node)) {
+                    node.multiSelectionEnabled = enabled;
+                }
+            }
         };
         TreeView.prototype.selectPath = function (path) {
             if (!this.rootNode)
@@ -3847,22 +4060,15 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
         };
         TreeView.prototype.deselectCurrentNode = function () {
             if (this.selectedNode)
-                $.observable(this.selectedNode).setProperty("selected", false);
+                this._setNodeSelected(this.selectedNode, false);
         };
         TreeView.prototype.selectNode = function (node) {
             if (!this.rootNode)
                 return;
             this.deselectCurrentNode();
             this.selectedNode = node;
-            $.observable(this.selectedNode).setProperty("selected", true);
-            this.expandParents(this.selectedNode);
-        };
-        // walk up the tree expanding parent nodes.
-        TreeView.prototype.expandParents = function (node) {
-            if (!node.parentNode)
-                return;
-            $.observable(node.parentNode).setProperty("expanded", true);
-            this.expandParents(node.parentNode);
+            this._setNodeSelected(this.selectedNode, true);
+            this._updateParentNodes(this.selectedNode);
         };
         // walks down the tree using the specified path e.g. [2,2,0]
         TreeView.prototype.getNodeByPath = function (parentNode, path) {
@@ -3903,25 +4109,35 @@ define('modules/uv-treeviewleftpanel-module/TreeView',["require", "exports", "..
     return TreeView;
 });
 
+define('modules/uv-shared-module/MultiSelectState',["require", "exports"], function (require, exports) {
+    var MultiSelectState = (function () {
+        function MultiSelectState() {
+        }
+        return MultiSelectState;
+    })();
+    return MultiSelectState;
+});
+
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "./GalleryView", "../uv-shared-module/LeftPanel", "./ThumbsView", "../../extensions/uv-seadragon-extension/TreeSortType", "./TreeView"], function (require, exports, BaseCommands, Commands, GalleryView, LeftPanel, ThumbsView, TreeSortType, TreeView) {
-    var TreeViewLeftPanel = (function (_super) {
-        __extends(TreeViewLeftPanel, _super);
-        function TreeViewLeftPanel($element) {
+define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "./GalleryView", "../uv-shared-module/LeftPanel", "./ThumbsView", "../../extensions/uv-seadragon-extension/TreeSortType", "./TreeView", "../uv-shared-module/MultiSelectState"], function (require, exports, BaseCommands, Commands, GalleryView, LeftPanel, ThumbsView, TreeSortType, TreeView, MultiSelectState) {
+    var ContentLeftPanel = (function (_super) {
+        __extends(ContentLeftPanel, _super);
+        function ContentLeftPanel($element) {
             _super.call(this, $element);
+            this.isTreeViewOpen = false;
+            this.isThumbsViewOpen = false;
         }
-        TreeViewLeftPanel.prototype.create = function () {
+        ContentLeftPanel.prototype.create = function () {
             var _this = this;
-            this.setConfig('treeViewLeftPanel');
+            this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
+            var that = this;
             $.subscribe(BaseCommands.SETTINGS_CHANGED, function () {
-                _this.dataBindThumbsView();
-                _this.dataBindTreeView();
-                _this.dataBindGalleryView();
+                _this.dataBind();
             });
             $.subscribe(Commands.GALLERY_THUMB_SELECTED, function () {
                 _this.collapseFull();
@@ -3931,6 +4147,48 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                     _this.collapseFull();
                 }
                 _this.selectCurrentTreeNode();
+            });
+            $.subscribe(Commands.ENTER_MULTISELECT_MODE, function (s, e) {
+                that._reset();
+                that.multiSelectState.enabled = true;
+                _this._publishMultiSelectStateChange();
+                that.setTitle(that.content.selection);
+                if (!that.isFullyExpanded) {
+                    that.expandFull();
+                }
+                else {
+                    _this._showMultiSelectOptions();
+                }
+                _this.$selectButton.text(e);
+            });
+            $.subscribe(Commands.EXIT_MULTISELECT_MODE, function () {
+                that._reset();
+                that.multiSelectState.enabled = false;
+                $.publish(Commands.MULTISELECT_CHANGE, [_this.multiSelectState]);
+                that.setTitle(that.content.title);
+                _this.$multiSelectOptions.hide();
+            });
+            $.subscribe(BaseCommands.LEFTPANEL_COLLAPSE_FULL_START, function () {
+                if (_this.multiSelectState.enabled) {
+                    $.publish(Commands.EXIT_MULTISELECT_MODE);
+                }
+            });
+            $.subscribe(BaseCommands.LEFTPANEL_EXPAND_FULL_START, function () {
+                if (_this.multiSelectState.enabled) {
+                    _this._showMultiSelectOptions();
+                }
+            });
+            $.subscribe(Commands.TREE_NODE_MULTISELECTED, function (s, node) {
+                if (node.isRange()) {
+                    _this._updateRangeMultiSelectState(node.data, node.multiSelected);
+                }
+            });
+            $.subscribe(Commands.THUMB_MULTISELECTED, function (s, thumb) {
+                var range = _this.provider.getCanvasRange(thumb.data);
+                if (range) {
+                    _this._updateRangeMultiSelectState(range, thumb.multiSelected);
+                }
+                _this._updateCanvasMultiSelectState(thumb.data, thumb.multiSelected);
             });
             this.$tabs = $('<div class="tabs"></div>');
             this.$main.append(this.$tabs);
@@ -3944,16 +4202,27 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             this.$main.append(this.$tabsContent);
             this.$options = $('<div class="options"></div>');
             this.$tabsContent.append(this.$options);
+            this.$leftOptions = $('<div class="left"></div>');
+            this.$options.append(this.$leftOptions);
+            this.$rightOptions = $('<div class="right"></div>');
+            this.$options.append(this.$rightOptions);
             this.$treeViewOptions = $('<div class="treeView"></div>');
-            this.$options.append(this.$treeViewOptions);
+            this.$leftOptions.append(this.$treeViewOptions);
             this.$sortByLabel = $('<span class="sort">' + this.content.sortBy + '</span>');
             this.$treeViewOptions.append(this.$sortByLabel);
-            this.$buttonGroup = $('<div class="btn-group"></div>');
-            this.$treeViewOptions.append(this.$buttonGroup);
+            this.$sortButtonGroup = $('<div class="btn-group"></div>');
+            this.$treeViewOptions.append(this.$sortButtonGroup);
             this.$sortByDateButton = $('<button class="btn">' + this.content.date + '</button>');
-            this.$buttonGroup.append(this.$sortByDateButton);
+            this.$sortButtonGroup.append(this.$sortByDateButton);
             this.$sortByVolumeButton = $('<button class="btn">' + this.content.volume + '</button>');
-            this.$buttonGroup.append(this.$sortByVolumeButton);
+            this.$sortButtonGroup.append(this.$sortByVolumeButton);
+            this.$multiSelectOptions = $('<div class="multiSelect"></div>');
+            this.$rightOptions.append(this.$multiSelectOptions);
+            this.$selectAllButton = $('<div class="multiSelectAll"><input id="multiSelectAll" type="checkbox" /><label for="multiSelectAll">' + this.content.selectAll + '</label></div>');
+            this.$multiSelectOptions.append(this.$selectAllButton);
+            this.$selectAllButtonCheckbox = $(this.$selectAllButton.find('input:checkbox'));
+            this.$selectButton = $('<a class="btn btn-primary">' + this.content.select + '</a>');
+            this.$multiSelectOptions.append(this.$selectButton);
             this.$views = $('<div class="views"></div>');
             this.$tabsContent.append(this.$views);
             this.$treeView = $('<div class="treeView"></div>');
@@ -3962,6 +4231,7 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             this.$views.append(this.$thumbsView);
             this.$galleryView = $('<div class="galleryView"></div>');
             this.$views.append(this.$galleryView);
+            this.$multiSelectOptions.hide();
             this.$sortByDateButton.on('click', function () {
                 _this.sortByDate();
             });
@@ -3977,11 +4247,19 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                 _this.openThumbsView();
                 $.publish(Commands.OPEN_THUMBS_VIEW);
             });
+            this.$selectAllButton.checkboxButton(function (checked) {
+                _this._multiSelectAll(checked);
+            });
+            this.$selectButton.on('click', function () {
+                var ids = _.map(that._getAllSelectedCanvases(), function (canvas) {
+                    return canvas.id;
+                });
+                $.publish(Commands.MULTISELECTION_MADE, [ids]);
+            });
             this.$expandButton.attr('tabindex', '7');
             this.$collapseButton.attr('tabindex', '7');
             this.$expandFullButton.attr('tabindex', '8');
-            this.$title.text(this.content.title);
-            this.$closedTitle.text(this.content.title);
+            this.setTitle(this.content.title);
             this.$sortByVolumeButton.addClass('on');
             var tabOrderConfig = this.options.tabOrder;
             if (tabOrderConfig) {
@@ -3997,14 +4275,33 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                     this.$treeButton.addClass('first');
                 }
             }
+            this._reset();
         };
-        TreeViewLeftPanel.prototype.createTreeView = function () {
+        ContentLeftPanel.prototype.createTreeView = function () {
             this.treeView = new TreeView(this.$treeView);
             this.treeView.elideCount = this.config.options.elideCount;
+            this.treeView.multiSelectState = this.multiSelectState;
             this.dataBindTreeView();
             this.updateTreeViewOptions();
         };
-        TreeViewLeftPanel.prototype.updateTreeViewOptions = function () {
+        ContentLeftPanel.prototype.dataBind = function () {
+            this._reset();
+            this.dataBindThumbsView();
+            this.dataBindTreeView();
+            this.dataBindGalleryView();
+        };
+        ContentLeftPanel.prototype._reset = function () {
+            this.multiSelectState = new MultiSelectState();
+            this.multiSelectState.ranges = this.provider.getRanges();
+            this.multiSelectState.canvases = this.provider.getCurrentSequence().getCanvases();
+            //this.multiSelectState.ranges = _.cloneDeep(this.provider.getRanges());
+            //this.multiSelectState.canvases = <ICanvas[]>_.cloneDeep(this.provider.getCurrentSequence().getCanvases());
+        };
+        ContentLeftPanel.prototype._showMultiSelectOptions = function () {
+            this.$multiSelectOptions.show();
+            this.resize();
+        };
+        ContentLeftPanel.prototype.updateTreeViewOptions = function () {
             if (this.isCollection() && this.treeData.nodes.length && !isNaN(this.treeData.nodes[0].navDate.getTime())) {
                 this.$treeViewOptions.show();
             }
@@ -4012,7 +4309,65 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                 this.$treeViewOptions.hide();
             }
         };
-        TreeViewLeftPanel.prototype.sortByDate = function () {
+        ContentLeftPanel.prototype._multiSelectAll = function (selected) {
+            this._multiSelectRanges(this.multiSelectState.ranges, selected);
+            this._multiSelectCanvases(this.multiSelectState.canvases, selected);
+            this._publishMultiSelectStateChange();
+        };
+        ContentLeftPanel.prototype._multiSelectRanges = function (ranges, selected) {
+            for (var i = 0; i < ranges.length; i++) {
+                var range = ranges[i];
+                range.multiSelected = selected;
+                var canvases = this._getCanvasesByIds(range.getCanvasIds());
+                this._multiSelectCanvases(canvases, selected);
+            }
+        };
+        ContentLeftPanel.prototype._multiSelectCanvases = function (canvases, selected) {
+            for (var j = 0; j < canvases.length; j++) {
+                var canvas = canvases[j];
+                canvas.multiSelected = selected;
+            }
+        };
+        ContentLeftPanel.prototype._getCanvasById = function (id) {
+            return this.multiSelectState.canvases.en().where(function (c) { return c.id === id; }).first();
+        };
+        ContentLeftPanel.prototype._getCanvasesByIds = function (ids) {
+            var canvases = [];
+            for (var i = 0; i < ids.length; i++) {
+                var id = ids[i];
+                canvases.push(this._getCanvasById(id));
+            }
+            return canvases;
+        };
+        ContentLeftPanel.prototype._updateRangeMultiSelectState = function (range, selected) {
+            var r = this.multiSelectState.ranges.en().where(function (r) { return r.id === range.id; }).first();
+            r.multiSelected = selected;
+            var canvases = this.provider.getRangeCanvases(r);
+            this._multiSelectCanvases(canvases, selected);
+            this._publishMultiSelectStateChange();
+        };
+        ContentLeftPanel.prototype._updateCanvasMultiSelectState = function (canvas, selected) {
+            var c = this.multiSelectState.canvases.en().where(function (c) { return c.id === canvas.id; }).first();
+            c.multiSelected = selected;
+            this._publishMultiSelectStateChange();
+        };
+        ContentLeftPanel.prototype._publishMultiSelectStateChange = function () {
+            this.$selectAllButtonCheckbox.prop('checked', this._allRangesSelected() && this._allCanvasesSelected());
+            $.publish(Commands.MULTISELECT_CHANGE, [this.multiSelectState]);
+        };
+        ContentLeftPanel.prototype._allRangesSelected = function () {
+            return this._getAllSelectedRanges().length === this.multiSelectState.ranges.length;
+        };
+        ContentLeftPanel.prototype._getAllSelectedRanges = function () {
+            return this.multiSelectState.ranges.en().where(function (r) { return r.multiSelected; }).toArray();
+        };
+        ContentLeftPanel.prototype._allCanvasesSelected = function () {
+            return this._getAllSelectedCanvases().length === this.multiSelectState.canvases.length;
+        };
+        ContentLeftPanel.prototype._getAllSelectedCanvases = function () {
+            return this.multiSelectState.canvases.en().where(function (c) { return c.multiSelected; }).toArray();
+        };
+        ContentLeftPanel.prototype.sortByDate = function () {
             this.treeView.rootNode = this.provider.getSortedTree(TreeSortType.date);
             this.treeView.dataBind();
             this.selectCurrentTreeNode();
@@ -4020,7 +4375,7 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             this.$sortByVolumeButton.removeClass('on');
             this.resize();
         };
-        TreeViewLeftPanel.prototype.sortByVolume = function () {
+        ContentLeftPanel.prototype.sortByVolume = function () {
             this.treeView.rootNode = this.provider.getSortedTree(TreeSortType.none);
             this.treeView.dataBind();
             this.selectCurrentTreeNode();
@@ -4028,20 +4383,22 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             this.$sortByVolumeButton.addClass('on');
             this.resize();
         };
-        TreeViewLeftPanel.prototype.isCollection = function () {
+        ContentLeftPanel.prototype.isCollection = function () {
             return this.treeData.data.type === manifesto.TreeNodeType.collection().toString();
         };
-        TreeViewLeftPanel.prototype.dataBindTreeView = function () {
+        ContentLeftPanel.prototype.dataBindTreeView = function () {
             if (!this.treeView)
                 return;
             this.treeView.rootNode = this.treeData;
             this.treeView.dataBind();
+            // ensure tree has current multiselect state
+            this._publishMultiSelectStateChange();
         };
-        TreeViewLeftPanel.prototype.createThumbsView = function () {
+        ContentLeftPanel.prototype.createThumbsView = function () {
             this.thumbsView = new ThumbsView(this.$thumbsView);
             this.dataBindThumbsView();
         };
-        TreeViewLeftPanel.prototype.dataBindThumbsView = function () {
+        ContentLeftPanel.prototype.dataBindThumbsView = function () {
             if (!this.thumbsView)
                 return;
             var width, height;
@@ -4057,19 +4414,22 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             this.thumbsView.thumbs = this.provider.getThumbs(width, height);
             this.thumbsView.dataBind();
         };
-        TreeViewLeftPanel.prototype.createGalleryView = function () {
+        ContentLeftPanel.prototype.createGalleryView = function () {
             this.galleryView = new GalleryView(this.$galleryView);
+            this.galleryView.multiSelectState = this.multiSelectState;
             this.dataBindGalleryView();
         };
-        TreeViewLeftPanel.prototype.dataBindGalleryView = function () {
+        ContentLeftPanel.prototype.dataBindGalleryView = function () {
             if (!this.galleryView)
                 return;
             var width = this.config.options.galleryThumbWidth;
             var height = this.config.options.galleryThumbHeight;
             this.galleryView.thumbs = this.provider.getThumbs(width, height);
             this.galleryView.dataBind();
+            // ensure gallery has current multiselect state
+            this._publishMultiSelectStateChange();
         };
-        TreeViewLeftPanel.prototype.toggleFinish = function () {
+        ContentLeftPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
             if (this.isUnopened) {
                 var treeEnabled = Utils.Bools.GetBool(this.config.options.treeEnabled, true);
@@ -4099,11 +4459,11 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                 this.$thumbsButton.attr('tabindex', '');
             }
         };
-        TreeViewLeftPanel.prototype.expandFullStart = function () {
+        ContentLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
             $.publish(BaseCommands.LEFTPANEL_EXPAND_FULL_START);
         };
-        TreeViewLeftPanel.prototype.expandFullFinish = function () {
+        ContentLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
             if (this.$treeButton.hasClass('on')) {
                 this.openTreeView();
@@ -4113,11 +4473,11 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             }
             $.publish(BaseCommands.LEFTPANEL_EXPAND_FULL_FINISH);
         };
-        TreeViewLeftPanel.prototype.collapseFullStart = function () {
+        ContentLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
             $.publish(BaseCommands.LEFTPANEL_COLLAPSE_FULL_START);
         };
-        TreeViewLeftPanel.prototype.collapseFullFinish = function () {
+        ContentLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
             // todo: write a more generic tabs system with base tab class.
             // thumbsView may not necessarily have been created yet.
@@ -4127,8 +4487,10 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             }
             $.publish(BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH);
         };
-        TreeViewLeftPanel.prototype.openTreeView = function () {
+        ContentLeftPanel.prototype.openTreeView = function () {
             var _this = this;
+            this.isTreeViewOpen = true;
+            this.isThumbsViewOpen = false;
             if (!this.treeView) {
                 this.createTreeView();
             }
@@ -4149,7 +4511,9 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
             this.resize();
             this.treeView.resize();
         };
-        TreeViewLeftPanel.prototype.openThumbsView = function () {
+        ContentLeftPanel.prototype.openThumbsView = function () {
+            this.isTreeViewOpen = false;
+            this.isThumbsViewOpen = true;
             if (!this.thumbsView) {
                 this.createThumbsView();
             }
@@ -4176,7 +4540,7 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                 this.thumbsView.resize();
             }
         };
-        TreeViewLeftPanel.prototype.selectCurrentTreeNode = function () {
+        ContentLeftPanel.prototype.selectCurrentTreeNode = function () {
             if (this.treeView) {
                 var id;
                 var node;
@@ -4196,14 +4560,14 @@ define('modules/uv-treeviewleftpanel-module/TreeViewLeftPanel',["require", "expo
                 }
             }
         };
-        TreeViewLeftPanel.prototype.resize = function () {
+        ContentLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
             this.$tabsContent.height(this.$main.height() - (this.$tabs.is(':visible') ? this.$tabs.height() : 0) - this.$tabsContent.verticalPadding());
-            this.$views.height(this.$tabsContent.height() - this.$options.height());
+            this.$views.height(this.$tabsContent.height() - this.$options.outerHeight());
         };
-        return TreeViewLeftPanel;
+        return ContentLeftPanel;
     })(LeftPanel);
-    return TreeViewLeftPanel;
+    return ContentLeftPanel;
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -4211,7 +4575,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, Commands, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, HelpDialogue, MediaElementCenterPanel, MoreInfoRightPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
+define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-contentleftpanel-module/ContentLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, Commands, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, HelpDialogue, MediaElementCenterPanel, MoreInfoRightPanel, SettingsDialogue, Shell, ContentLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -4256,7 +4620,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             _super.prototype.createModules.call(this);
             this.headerPanel = new HeaderPanel(Shell.$headerPanel);
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new TreeViewLeftPanel(Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel(Shell.$leftPanel);
             }
             this.centerPanel = new MediaElementCenterPanel(Shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
@@ -4379,7 +4743,11 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.getCollectionIndex = function (iiifResource) {
             // todo: support nested collections. walk up parents adding to array and return csv string.
-            return iiifResource.parentCollection.index;
+            var index;
+            if (iiifResource.parentCollection) {
+                index = iiifResource.parentCollection.index;
+            }
+            return index;
         };
         BaseProvider.prototype.getManifestType = function () {
             var manifestType = this.manifest.getManifestType();
@@ -4437,6 +4805,17 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.isSeeAlsoEnabled = function () {
             return this.config.options.seeAlsoEnabled !== false;
         };
+        BaseProvider.prototype.getCanvasById = function (id) {
+            return this.getCurrentSequence().getCanvasById(id);
+        };
+        BaseProvider.prototype.getCanvasesById = function (ids) {
+            var canvases = [];
+            for (var i = 0; i < ids.length; i++) {
+                var id = ids[i];
+                canvases.push(this.getCanvasById(id));
+            }
+            return canvases;
+        };
         BaseProvider.prototype.getCanvasByIndex = function (index) {
             return this.getCurrentSequence().getCanvasByIndex(index);
         };
@@ -4445,14 +4824,26 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         };
         BaseProvider.prototype.getCanvasRange = function (canvas) {
             // get ranges that contain the canvas id. return the last.
-            var ranges = this.manifest.getRanges();
-            return ranges.en().last(function (range) { return (range.getCanvases().en().any(function (c) { return c === canvas.id; })); });
+            return this.getCanvasRanges(canvas).last();
+        };
+        BaseProvider.prototype.getCanvasRanges = function (canvas) {
+            if (canvas.ranges) {
+                return canvas.ranges;
+            }
+            else {
+                canvas.ranges = this.manifest.getRanges().en().where(function (range) { return (range.getCanvasIds().en().any(function (c) { return c === canvas.id; })); }).toArray();
+            }
+            return canvas.ranges;
         };
         BaseProvider.prototype.getCurrentCanvas = function () {
             return this.getCurrentSequence().getCanvasByIndex(this.canvasIndex);
         };
         BaseProvider.prototype.getCurrentSequence = function () {
             return this.getSequenceByIndex(this.sequenceIndex);
+        };
+        BaseProvider.prototype.getRangeCanvases = function (range) {
+            var ids = range.getCanvasIds();
+            return this.getCanvasesById(ids);
         };
         BaseProvider.prototype.getTotalCanvases = function () {
             return this.getCurrentSequence().getTotalCanvases();
@@ -4556,6 +4947,9 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
         BaseProvider.prototype.getCanvasIndexByLabel = function (label) {
             var foliated = this.getManifestType().toString() === manifesto.ManifestType.manuscript().toString();
             return this.getCurrentSequence().getCanvasIndexByLabel(label, foliated);
+        };
+        BaseProvider.prototype.getRanges = function () {
+            return this.manifest.getRanges();
         };
         BaseProvider.prototype.getTree = function () {
             return this.iiifResource.getTree();
@@ -4937,7 +5331,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, PDFCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-contentleftpanel-module/ContentLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, PDFCenterPanel, SettingsDialogue, Shell, ContentLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -4980,7 +5374,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             _super.prototype.createModules.call(this);
             this.headerPanel = new HeaderPanel(Shell.$headerPanel);
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new TreeViewLeftPanel(Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel(Shell.$leftPanel);
             }
             this.centerPanel = new PDFCenterPanel(Shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
@@ -5084,6 +5478,9 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             this.$downloadOptions.append(this.$sequenceOptionsContainer);
             this.$sequenceOptions = $('<ul></ul>');
             this.$sequenceOptionsContainer.append(this.$sequenceOptions);
+            this.$selectionButton = $('<li class="option"><input id="' + DownloadOption.selection.toString() + '" type="radio" name="downloadOptions" /><label id="' + DownloadOption.selection.toString() + 'label" for="' + DownloadOption.selection.toString() + '"></label></li>');
+            this.$sequenceOptions.append(this.$selectionButton);
+            this.$selectionButton.hide();
             this.$buttonsContainer = $('<div class="buttons"></div>');
             this.$content.append(this.$buttonsContainer);
             this.$downloadButton = $('<a class="btn btn-primary" href="#">' + this.content.download + '</a>');
@@ -5109,6 +5506,9 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             var viewer = that.extension.getViewer();
                             window.open(that.provider.getCroppedImageUri(canvas, viewer));
                             $.publish(Commands.DOWNLOAD_CURRENTVIEW);
+                            break;
+                        case DownloadOption.selection.toString():
+                            $.publish(Commands.ENTER_MULTISELECT_MODE, [_this.content.downloadSelectionButton]);
                             break;
                         case DownloadOption.wholeImageHighRes.toString():
                             window.open(_this.getOriginalImageForCurrentCanvas());
@@ -5136,9 +5536,14 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 var label = this.content.currentViewAsJpg;
                 var viewer = this.extension.getViewer();
                 var dimensions = this.provider.getCroppedImageDimensions(canvas, viewer);
-                label = String.format(label, dimensions.size.width, dimensions.size.height);
-                $label.text(label);
-                this.$currentViewAsJpgButton.show();
+                if (dimensions) {
+                    label = String.format(label, dimensions.size.width, dimensions.size.height);
+                    $label.text(label);
+                    this.$currentViewAsJpgButton.show();
+                }
+                else {
+                    this.$currentViewAsJpgButton.hide();
+                }
             }
             else {
                 this.$currentViewAsJpgButton.hide();
@@ -5163,6 +5568,14 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             }
             else {
                 this.$wholeImageLowResAsJpgButton.hide();
+            }
+            if (this.isDownloadOptionAvailable(DownloadOption.selection)) {
+                var $label = this.$selectionButton.find('label');
+                $label.text(this.content.downloadSelection);
+                this.$selectionButton.show();
+            }
+            else {
+                this.$selectionButton.hide();
             }
             this.resetDynamicDownloadOptions();
             if (this.isDownloadOptionAvailable(DownloadOption.dynamicImageRenderings)) {
@@ -5289,6 +5702,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                     // hide low-res option if hi-res width is smaller than constraint
                     var size = this.getDimensionsForCurrentCanvas();
                     return (!this.provider.isPagingSettingEnabled() && (size.width > this.options.confinedImageSize));
+                case DownloadOption.selection:
+                    return this.options.selectionEnabled;
                 default:
                     return true;
             }
@@ -6747,6 +7162,7 @@ define('extensions/uv-seadragon-extension/SettingsDialogue',["require", "exports
             _super.prototype.create.call(this);
             this.$navigatorEnabled = $('<div class="setting navigatorEnabled"></div>');
             this.$scroll.append(this.$navigatorEnabled);
+            // todo: use .checkboxButton jquery extension
             this.$navigatorEnabledCheckbox = $('<input id="navigatorEnabled" type="checkbox" />');
             this.$navigatorEnabled.append(this.$navigatorEnabledCheckbox);
             this.$navigatorEnabledLabel = $('<label for="navigatorEnabled">' + this.content.navigatorEnabled + '</label>');
@@ -6831,7 +7247,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../Params", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, Commands, DownloadDialogue, EmbedDialogue, ExternalContentDialogue, FooterPanel, HelpDialogue, Mode, MoreInfoRightPanel, PagingHeaderPanel, Params, SeadragonCenterPanel, SettingsDialogue, Shell, TreeViewLeftPanel) {
+define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../Params", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-contentleftpanel-module/ContentLeftPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, Commands, DownloadDialogue, EmbedDialogue, ExternalContentDialogue, FooterPanel, HelpDialogue, Mode, MoreInfoRightPanel, PagingHeaderPanel, Params, SeadragonCenterPanel, SettingsDialogue, Shell, ContentLeftPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -6913,6 +7329,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.mode = new Mode(mode);
                 var settings = _this.provider.getSettings();
                 $.publish(BaseCommands.SETTINGS_CHANGED, [settings]);
+            });
+            $.subscribe(Commands.MULTISELECTION_MADE, function (e, ids) {
+                _this.triggerSocket(Commands.MULTISELECTION_MADE, ids);
             });
             $.subscribe(Commands.NEXT, function (e) {
                 _this.triggerSocket(Commands.NEXT);
@@ -7030,7 +7449,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             _super.prototype.createModules.call(this);
             this.headerPanel = new PagingHeaderPanel(Shell.$headerPanel);
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new TreeViewLeftPanel(Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel(Shell.$leftPanel);
             }
             else {
                 Shell.$leftPanel.hide();
@@ -7133,7 +7552,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var range = this.provider.getRangeByPath(path);
             if (!range)
                 return;
-            var canvasId = range.getCanvases()[0];
+            var canvasId = range.getCanvasIds()[0];
             var index = this.provider.getCanvasIndexById(canvasId);
             this.viewPage(index);
         };
@@ -7155,11 +7574,16 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.treeNodeSelected = function (data) {
             if (!data.type)
                 return;
-            if (data.type === 'manifest') {
-                this.viewManifest(data);
-            }
-            else {
-                this.viewRange(data.path);
+            switch (data.type) {
+                case manifesto.IIIFResourceType.manifest().toString():
+                    this.viewManifest(data);
+                    break;
+                case manifesto.IIIFResourceType.collection().toString():
+                    this.viewCollection(data);
+                    break;
+                default:
+                    this.viewRange(data.path);
+                    break;
             }
         };
         Extension.prototype.searchWithin = function (terms) {
@@ -7295,6 +7719,9 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
                 return null;
             if (!viewer.viewport)
                 return null;
+            if (!canvas.getHeight() || !canvas.getWidth()) {
+                return null;
+            }
             var bounds = viewer.viewport.getBounds(true);
             var containerSize = viewer.viewport.getContainerSize();
             var zoom = viewer.viewport.getZoom(true);
@@ -7520,8 +7947,8 @@ define('extensions/uv-seadragon-extension/Provider',["require", "exports", "../.
             var all = tree.nodes.en().traverseUnique(function (node) { return node.nodes; })
                 .where(function (n) { return n.data.type === manifesto.TreeNodeType.collection().toString() ||
                 n.data.type === manifesto.TreeNodeType.manifest().toString(); }).toArray();
-            //var collections: Manifesto.TreeNode[] = tree.nodes.en().traverseUnique(n => n.nodes)
-            //    .where((n) => n.data.type === manifesto.TreeNodeType.collection().toString()).toArray();
+            //var collections: ITreeNode[] = tree.nodes.en().traverseUnique(n => n.nodes)
+            //    .where((n) => n.data.type === ITreeNodeType.collection().toString()).toArray();
             var manifests = tree.nodes.en().traverseUnique(function (n) { return n.nodes; })
                 .where(function (n) { return n.data.type === manifesto.TreeNodeType.manifest().toString(); }).toArray();
             this.createDecadeNodes(sortedTree, all);
@@ -7850,7 +8277,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-treeviewleftpanel-module/TreeViewLeftPanel", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, SettingsDialogue, Shell, TreeViewLeftPanel, VirtexCenterPanel) {
+define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./EmbedDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseCommands, BaseExtension, Bookmark, DownloadDialogue, EmbedDialogue, FooterPanel, HeaderPanel, MoreInfoRightPanel, SettingsDialogue, Shell, ContentLeftPanel, VirtexCenterPanel) {
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -7878,7 +8305,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             _super.prototype.createModules.call(this);
             this.headerPanel = new HeaderPanel(Shell.$headerPanel);
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new TreeViewLeftPanel(Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel(Shell.$leftPanel);
             }
             this.centerPanel = new VirtexCenterPanel(Shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
@@ -8657,7 +9084,6 @@ var Manifesto;
         __extends(Canvas, _super);
         function Canvas(jsonld, options) {
             _super.call(this, jsonld, options);
-            this.ranges = [];
         }
         Canvas.prototype.getImages = function () {
             var images = [];
@@ -8829,7 +9255,8 @@ var Manifesto;
         function Manifest(jsonld, options) {
             _super.call(this, jsonld, options);
             this.index = 0;
-            this.sequences = null;
+            this._ranges = null;
+            this._sequences = null;
             if (this.__jsonld.structures && this.__jsonld.structures.length) {
                 var r = this._getRootRange();
                 this._parseRanges(r, '');
@@ -8884,11 +9311,13 @@ var Manifesto;
             }
         };
         Manifest.prototype.getRanges = function () {
-            var ranges = [];
+            if (this._ranges != null)
+                return this._ranges;
+            this._ranges = [];
             if (this.rootRange) {
-                ranges = this.rootRange.ranges.en().traverseUnique(function (range) { return range.ranges; }).toArray();
+                this._ranges = this.rootRange.ranges.en().traverseUnique(function (range) { return range.ranges; }).toArray();
             }
-            return ranges;
+            return this._ranges;
         };
         Manifest.prototype.getRangeById = function (id) {
             var ranges = this.getRanges();
@@ -8911,19 +9340,19 @@ var Manifesto;
             return null;
         };
         Manifest.prototype.getSequences = function () {
-            if (this.sequences != null)
-                return this.sequences;
-            this.sequences = [];
+            if (this._sequences != null)
+                return this._sequences;
+            this._sequences = [];
             // if IxIF mediaSequences is present, use that. Otherwise fall back to IIIF sequences.
             var children = this.__jsonld.mediaSequences || this.__jsonld.sequences;
             if (children) {
                 for (var i = 0; i < children.length; i++) {
                     var s = children[i];
                     var sequence = new Manifesto.Sequence(s, this.options);
-                    this.sequences.push(sequence);
+                    this._sequences.push(sequence);
                 }
             }
-            return this.sequences;
+            return this._sequences;
         };
         Manifest.prototype.getSequenceByIndex = function (sequenceIndex) {
             return this.getSequences()[sequenceIndex];
@@ -9058,7 +9487,7 @@ var Manifesto;
             _super.call(this, jsonld, options);
             this.ranges = [];
         }
-        Range.prototype.getCanvases = function () {
+        Range.prototype.getCanvasIds = function () {
             if (this.__jsonld.canvases) {
                 return this.__jsonld.canvases;
             }
@@ -17106,17 +17535,285 @@ module.exports = isArguments;
 
 },{}],37:[function(_dereq_,module,exports){
 /**
- * lodash 3.0.2 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <https://lodash.com/license>
  */
-var baseToString = _dereq_('lodash._basetostring');
+var root = _dereq_('lodash._root');
 
-/* Native method references for those with the same name as other `lodash` methods. */
-var nativeMin = Math.min;
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0,
+    MAX_INTEGER = 1.7976931348623157e+308,
+    NAN = 0 / 0;
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    symbolTag = '[object Symbol]';
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = Symbol ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.clamp` which doesn't coerce arguments to numbers.
+ *
+ * @private
+ * @param {number} number The number to clamp.
+ * @param {number} [lower] The lower bound.
+ * @param {number} upper The upper bound.
+ * @returns {number} Returns the clamped number.
+ */
+function baseClamp(number, lower, upper) {
+  if (number === number) {
+    if (upper !== undefined) {
+      number = number <= upper ? number : upper;
+    }
+    if (lower !== undefined) {
+      number = number >= lower ? number : lower;
+    }
+  }
+  return number;
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array constructors, and
+  // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+/**
+ * Converts `value` to an integer.
+ *
+ * **Note:** This function is loosely based on [`ToInteger`](http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger).
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted integer.
+ * @example
+ *
+ * _.toInteger(3);
+ * // => 3
+ *
+ * _.toInteger(Number.MIN_VALUE);
+ * // => 0
+ *
+ * _.toInteger(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toInteger('3');
+ * // => 3
+ */
+function toInteger(value) {
+  if (!value) {
+    return value === 0 ? value : 0;
+  }
+  value = toNumber(value);
+  if (value === INFINITY || value === -INFINITY) {
+    var sign = (value < 0 ? -1 : 1);
+    return sign * MAX_INTEGER;
+  }
+  var remainder = value % 1;
+  return value === value ? (remainder ? value - remainder : value) : 0;
+}
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3);
+ * // => 3
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3');
+ * // => 3
+ */
+function toNumber(value) {
+  if (isObject(value)) {
+    var other = isFunction(value.valueOf) ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+/**
+ * Converts `value` to a string if it's not one. An empty string is returned
+ * for `null` and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (value == null) {
+    return '';
+  }
+  if (isSymbol(value)) {
+    return Symbol ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
 
 /**
  * Checks if `string` ends with the given target string.
@@ -17140,13 +17837,13 @@ var nativeMin = Math.min;
  * // => true
  */
 function endsWith(string, target, position) {
-  string = baseToString(string);
-  target = (target + '');
+  string = toString(string);
+  target = typeof target == 'string' ? target : (target + '');
 
   var length = string.length;
   position = position === undefined
     ? length
-    : nativeMin(position < 0 ? 0 : (+position || 0), length);
+    : baseClamp(toInteger(position), 0, length);
 
   position -= target.length;
   return position >= 0 && string.indexOf(target, position) == position;
@@ -17154,30 +17851,63 @@ function endsWith(string, target, position) {
 
 module.exports = endsWith;
 
-},{"lodash._basetostring":38}],38:[function(_dereq_,module,exports){
+},{"lodash._root":38}],38:[function(_dereq_,module,exports){
+(function (global){
 /**
- * lodash 3.0.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * lodash 3.0.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <https://lodash.com/license>
  */
 
+/** Used to determine if values are of the language type `Object`. */
+var objectTypes = {
+  'function': true,
+  'object': true
+};
+
+/** Detect free variable `exports`. */
+var freeExports = (objectTypes[typeof exports] && exports && !exports.nodeType) ? exports : null;
+
+/** Detect free variable `module`. */
+var freeModule = (objectTypes[typeof module] && module && !module.nodeType) ? module : null;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = checkGlobal(freeExports && freeModule && typeof global == 'object' && global);
+
+/** Detect free variable `self`. */
+var freeSelf = checkGlobal(objectTypes[typeof self] && self);
+
+/** Detect free variable `window`. */
+var freeWindow = checkGlobal(objectTypes[typeof window] && window);
+
+/** Detect `this` as the global object. */
+var thisGlobal = checkGlobal(objectTypes[typeof this] && this);
+
 /**
- * Converts `value` to a string if it's not one. An empty string is returned
- * for `null` or `undefined` values.
+ * Used as a reference to the global object.
+ *
+ * The `this` value is used if it's the global object to avoid Greasemonkey's
+ * restricted `window` object, otherwise the `window` object is used.
+ */
+var root = freeGlobal || ((freeWindow !== (thisGlobal && thisGlobal.window)) && freeWindow) || freeSelf || thisGlobal || Function('return this')();
+
+/**
+ * Checks if `value` is a global object.
  *
  * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
+ * @param {*} value The value to check.
+ * @returns {null|Object} Returns `value` if it's a global object, else `null`.
  */
-function baseToString(value) {
-  return value == null ? '' : (value + '');
+function checkGlobal(value) {
+  return (value && value.Object === Object) ? value : null;
 }
 
-module.exports = baseToString;
+module.exports = root;
 
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],39:[function(_dereq_,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
@@ -20457,6 +21187,25 @@ return typeof n.toString!="function"&&typeof(n+"")=="string"}}(),Jn=m();typeof d
 define("modernizr", function(){});
 
 (function ($) {
+    $.fn.checkboxButton = function (onClick) {
+        return this.each(function () {
+            var $this = $(this);
+            $this.on('click', function (e) {
+                var tagName = e.target.tagName;
+                var $checkbox;
+                if (tagName !== "INPUT") {
+                    e.preventDefault();
+                    $checkbox = $(this).find(':checkbox');
+                    $checkbox.prop('checked', !$checkbox.prop('checked'));
+                }
+                else {
+                    $checkbox = $(this);
+                }
+                var checked = $checkbox.is(':checked');
+                onClick.call(this, checked);
+            });
+        });
+    };
     $.fn.disable = function () {
         return this.each(function () {
             var $this = $(this);
@@ -24521,10 +25270,9 @@ require([
     'xdomainrequest',
     'yepnope',
     'yepnopecss',
-], function (bootstrapper, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, seadragonExtension, seadragonProvider, virtexExtension, virtexProvider, manifesto) {
+], function (bootstrapper, mediaelementExtension, mediaelementProvider, pdfExtension, pdfProvider, seadragonExtension, seadragonProvider, virtexExtension, virtexProvider) {
     // todo: use a compiler flag (when available)
      // this line is removed on build.
-    window.manifesto = manifesto;
     var extensions = {};
     extensions[manifesto.CanvasType.canvas().toString()] = {
         type: seadragonExtension,
