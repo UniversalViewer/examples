@@ -226,6 +226,11 @@
           "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
         },
         {
+          "label": "The Holy Bible",
+          "@type": "sc:Collection",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:60609/Manifest"
+        },
+        {
           "label": "LeBlanc Bibliography, Binder 1",
           "@type": "sc:Manifest",
           "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest",
