@@ -133,6 +133,11 @@
           "@id": "http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json",
           "@type": "sc:Manifest",
           "label": "Anzac bulletin"
+        },
+        {
+          "@id": "http://sanddragon.bl.uk/IIIFMetadataService/or_1459.json",
+          "@type": "sc:Manifest",
+          "label": "Scroll (continuous rtl)"
         }
       ]
     },
