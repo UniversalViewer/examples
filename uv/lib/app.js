@@ -4,6 +4,7 @@ define('modules/uv-shared-module/BaseCommands',["require", "exports"], function 
         }
         Commands.namespace = 'uv.';
         Commands.ACCEPT_TERMS = Commands.namespace + 'onAcceptTerms';
+        Commands.AUTHORIZATION_FAILED = Commands.namespace + 'onAuthorizationFailed';
         Commands.AUTHORIZATION_OCCURRED = Commands.namespace + 'onAuthorizationOccurred';
         Commands.BOOKMARK = Commands.namespace + 'onBookmark';
         Commands.CANVAS_INDEX_CHANGE_FAILED = Commands.namespace + 'onCanvasIndexChangeFailed';
@@ -760,9 +761,10 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
             _super.prototype.create.call(this);
             this.openCommand = BaseCommands.SHOW_LOGIN_DIALOGUE;
             this.closeCommand = BaseCommands.HIDE_LOGIN_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
-                _this.acceptCallback = params.acceptCallback;
-                _this.resource = params.resource;
+            $.subscribe(this.openCommand, function (s, e) {
+                _this.acceptCallback = e.acceptCallback;
+                _this.options = e.options;
+                _this.resource = e.resource;
                 _this.open();
             });
             $.subscribe(this.closeCommand, function (e) {
@@ -775,11 +777,14 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
                 <p class="message scroll"></p>\
                 <div class="buttons">\
                     <a class="login btn btn-primary" href="#" target="_parent"></a>\
+                    <a class="cancel btn btn-primary" href="#"></a>\
                 </div>\
             </div>');
             this.$message = this.$content.find('.message');
             this.$loginButton = this.$content.find('.login');
             this.$loginButton.text(this.content.login);
+            this.$cancelButton = this.$content.find('.cancel');
+            this.$cancelButton.text(this.content.cancel);
             this.$element.hide();
             this.$loginButton.on('click', function (e) {
                 e.preventDefault();
@@ -787,16 +792,30 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
                 if (_this.acceptCallback)
                     _this.acceptCallback();
             });
+            this.$cancelButton.on('click', function (e) {
+                e.preventDefault();
+                _this.close();
+            });
         };
         LoginDialogue.prototype.open = function () {
             _super.prototype.open.call(this);
             this.$title.text(this.resource.loginService.getProperty('label'));
-            this.$message.html(this.resource.loginService.getProperty('description'));
+            var message = this.resource.loginService.getProperty('description');
+            if (this.options.warningMessage) {
+                message = '<span class="warning">' + this.provider.config.content[this.options.warningMessage] + '</span><span class="description">' + message + '</span>';
+            }
+            this.$message.html(message);
             this.$message.targetBlank();
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
                 $.publish(BaseCommands.EXTERNAL_LINK_CLICKED, [url]);
             });
+            if (this.options.showCancelButton) {
+                this.$cancelButton.show();
+            }
+            else {
+                this.$cancelButton.hide();
+            }
             this.resize();
         };
         LoginDialogue.prototype.resize = function () {
@@ -929,7 +948,17 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
     return Shell;
 });
 
-define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../BootstrapParams", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./ExternalResource", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "../../Params", "./Shell"], function (require, exports, BaseCommands, BootstrapParams, ClickThroughDialogue, ExternalResource, InformationArgs, InformationType, LoginDialogue, Params, Shell) {
+define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], function (require, exports) {
+    var LoginWarningMessages = (function () {
+        function LoginWarningMessages() {
+        }
+        LoginWarningMessages.FORBIDDEN = "forbiddenResourceMessage";
+        return LoginWarningMessages;
+    })();
+    return LoginWarningMessages;
+});
+
+define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../BootstrapParams", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./ExternalResource", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "../../Params", "./Shell", "./LoginWarningMessages"], function (require, exports, BaseCommands, BootstrapParams, ClickThroughDialogue, ExternalResource, InformationArgs, InformationType, LoginDialogue, Params, Shell, LoginWarningMessages) {
     var BaseExtension = (function () {
         function BaseExtension(bootstrapper) {
             this.shifted = false;
@@ -1052,6 +1081,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             this.$element.append('<a href="/" id="top"></a>');
             $.subscribe(BaseCommands.ACCEPT_TERMS, function () {
                 _this.triggerSocket(BaseCommands.ACCEPT_TERMS);
+            });
+            $.subscribe(BaseCommands.AUTHORIZATION_OCCURRED, function () {
+                _this.triggerSocket(BaseCommands.AUTHORIZATION_FAILED);
+                _this.showMessage(_this.provider.config.content.authorisationFailedMessage);
             });
             $.subscribe(BaseCommands.AUTHORIZATION_OCCURRED, function () {
                 _this.triggerSocket(BaseCommands.AUTHORIZATION_OCCURRED);
@@ -1538,6 +1571,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.login = function (resource) {
             return new Promise(function (resolve) {
+                var options = {};
+                if (resource.status === HTTPStatusCode.FORBIDDEN) {
+                    options.warningMessage = LoginWarningMessages.FORBIDDEN;
+                    options.showCancelButton = true;
+                }
                 $.publish(BaseCommands.SHOW_LOGIN_DIALOGUE, [{
                         resource: resource,
                         acceptCallback: function () {
@@ -1549,7 +1587,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                                     resolve();
                                 }
                             }, 500);
-                        }
+                        },
+                        options: options
                     }]);
             });
         };
@@ -1575,11 +1614,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.getStoredAccessToken = function (resource, storageStrategy) {
             return new Promise(function (resolve, reject) {
-                var foundToken;
+                var foundItems = [];
                 // first try an exact match of the url
                 var item = Utils.Storage.get(resource.dataUri, new Utils.StorageType(storageStrategy));
                 if (item) {
-                    foundToken = item.value;
+                    foundItems.push(item);
                 }
                 else {
                     // find an access token for the domain
@@ -1588,9 +1627,17 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     for (var i = 0; i < items.length; i++) {
                         item = items[i];
                         if (item.key.contains(domain)) {
-                            foundToken = item.value;
+                            foundItems.push(item);
                         }
                     }
+                }
+                // sort by expiresAt
+                foundItems = _.sortBy(foundItems, function (item) {
+                    return item.expiresAt;
+                });
+                var foundToken;
+                if (foundItems.length) {
+                    foundToken = foundItems.last().value;
                 }
                 resolve(foundToken);
             });
@@ -1604,6 +1651,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 else if (resource.status === HTTPStatusCode.MOVED_TEMPORARILY) {
                     resolve(resource);
                     $.publish(BaseCommands.RESOURCE_DEGRADED, [resource]);
+                }
+                else if (resource.status === HTTPStatusCode.UNAUTHORIZED) {
+                    resolve(resource);
+                    $.publish(BaseCommands.AUTHORIZATION_FAILED, [resource]);
                 }
                 else {
                     if (resource.error.status === HTTPStatusCode.UNAUTHORIZED ||
@@ -3067,7 +3118,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.7.2';
+    exports.Version = '1.7.3';
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -10173,24 +10224,31 @@ var Manifesto;
                                     Utils.authorize(resource, tokenStorageStrategy, clickThrough, login, getAccessToken, storeAccessToken, getStoredAccessToken).then(function () {
                                         resolve(handleResourceResponse(resource));
                                     })["catch"](function (error) {
-                                        reject(error);
+                                        resolve(Utils.authorizationFailed());
                                     });
                                 }
                             })["catch"](function (error) {
-                                reject(error);
+                                resolve(Utils.authorizationFailed());
                             });
                         }
                         else {
                             Utils.authorize(resource, tokenStorageStrategy, clickThrough, login, getAccessToken, storeAccessToken, getStoredAccessToken).then(function () {
                                 resolve(handleResourceResponse(resource));
                             })["catch"](function (error) {
-                                reject(error);
+                                resolve(Utils.authorizationFailed());
                             });
                         }
                     })["catch"](function (error) {
-                        reject(error);
+                        resolve(Utils.authorizationFailed());
                     });
                 }
+            });
+        };
+        Utils.authorizationFailed = function () {
+            return new Promise(function (resolve, reject) {
+                var errorResponse = {};
+                errorResponse.status = HTTPStatusCode.UNAUTHORIZED;
+                resolve(errorResponse);
             });
         };
         Utils.loadExternalResources = function (resources, tokenStorageStrategy, clickThrough, login, getAccessToken, storeAccessToken, getStoredAccessToken, handleResourceResponse, options) {
@@ -10214,7 +10272,28 @@ var Manifesto;
                             if (storedAccessToken) {
                                 // try using the stored access token
                                 resource.getData(storedAccessToken).then(function () {
-                                    resolve(resource);
+                                    // invalid access token
+                                    if (resource.status === HTTPStatusCode.FORBIDDEN) {
+                                        // get an access token
+                                        login(resource).then(function () {
+                                            getAccessToken(resource).then(function (accessToken) {
+                                                storeAccessToken(resource, accessToken, tokenStorageStrategy).then(function () {
+                                                    resource.getData(accessToken).then(function () {
+                                                        resolve(resource);
+                                                    })["catch"](function (error) {
+                                                        reject(error);
+                                                    });
+                                                })["catch"](function (error) {
+                                                    reject(error);
+                                                });
+                                            })["catch"](function (error) {
+                                                reject(error);
+                                            });
+                                        });
+                                    }
+                                    else {
+                                        resolve(resource);
+                                    }
                                 })["catch"](function (error) {
                                     reject(error);
                                 });

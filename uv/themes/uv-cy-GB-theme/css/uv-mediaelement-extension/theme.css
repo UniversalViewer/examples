@@ -236,6 +236,13 @@
   border-bottom: none !important;
   font-size: 12px !important;
 }
+#app .overlay.login .message .warning {
+  display: block;
+  background-color: #FFB81D;
+  font-weight: bold;
+  padding: 10px 10px 10px 10px;
+  margin-bottom: 10px;
+}
 #app .overlay.login .bottom {
   background: none;
 }
