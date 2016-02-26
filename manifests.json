@@ -353,7 +353,8 @@
         {
           "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
           "@type": "sc:Manifest",
-          "label": "Henry Wellcome Life Mask"
+          "label": "Henry Wellcome Life Mask",
+          "visible": false
         }
       ]
     },
