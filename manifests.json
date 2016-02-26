@@ -349,6 +349,11 @@
           "@id": "http://files.universalviewer.io/manifests/foundobjects/thekiss.json",
           "@type": "sc:Manifest",
           "label": "The Kiss"
+        },
+        {
+          "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
+          "@type": "sc:Manifest",
+          "label": "Henry Wellcome Life Mask"
         }
       ]
     },
