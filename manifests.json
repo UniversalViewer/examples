@@ -113,13 +113,13 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Internet Archive",
-      "visible": false,
+      "visible": true,
       "manifests": [
         {
-          "@id": "http://iiif.archivelab.org/platowithenglish04platuoft/manifest.json",
+          "@id": "https://iiif.archivelab.org/iiif/principleofrelat00eins/manifest.json",
           "@type": "sc:Manifest",
-          "label": "Plato, with an English translation",
-          "visible": false
+          "label": "The principle of relativity; original papers",
+          "visible": true
         }
       ]
     },
@@ -295,6 +295,19 @@
           "@id": "http://www.wdl.org/en/item/80/iiif/manifest.json",
           "@type": "sc:Manifest",
           "label": "Description of Egypt. Second Edition."
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
+      "label": "Riks Arkivet",
+      "manifests": [
+        {
+          "@id": "https://iiif.riksarkivet.se/arkis!C0000263/manifest",
+          "@type": "sc:Manifest",
+          "label": "Ervalla kyrkoarkiv (canvas metadata)"
         }
       ]
     },
