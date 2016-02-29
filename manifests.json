@@ -355,6 +355,12 @@
           "@type": "sc:Manifest",
           "label": "Henry Wellcome Life Mask",
           "visible": false
+        },
+        {
+          "@id": "http://files.universalviewer.io/manifests/demo/nefertiti.json",
+          "@type": "sc:Manifest",
+          "label": "Bust of Queen Nefertiti",
+          "visible": true
         }
       ]
     },
@@ -381,7 +387,7 @@
       "visible": false,
       "manifests": [
         {
-          "@id": "https://ipfs.io/ipfs/QmbqZNSUkf99BxpYXhHMGi41pjqHfZDw8jzEgYnvbQEusn",
+          "@id": "https://ipfs.io/ipfs/Qmcr4YEo5q7PN2nmXL2YbocEWRmLqMaHauAceTficxMWHR",
           "@type": "sc:Manifest",
           "label": "Tetons",
           "visible": true
