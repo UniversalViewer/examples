@@ -2030,7 +2030,7 @@ define('modules/uv-dialogues-module/EmbedDialogue',["require", "exports", "../uv
             this.$firstRow.find('.leftCol').append(this.$link);
             this.$image = $('<img class="share" />');
             this.$link.append(this.$image);
-            this.$url = $('<input type="text"></input>');
+            this.$url = $('<input class="url" type="text"></input>');
             this.$firstRow.find('.rightCol').append(this.$url);
             this.$intro = $('<p>' + this.content.instructions + '</p>');
             this.$firstRow.find('.rightCol').append(this.$intro);
@@ -2067,8 +2067,9 @@ define('modules/uv-dialogues-module/EmbedDialogue',["require", "exports", "../uv
             this.$customHeight = $('<input id="height" type="text" maxlength="5" />');
             this.$customSizeHeightWrap.append(this.$customHeight);
             this.$customSizeHeightWrap.append('<span>px</span>');
-            // initialise ui.
-            // ui event handlers.
+            this.$url.click(function () {
+                $(this).select();
+            });
             this.$code.focus(function () {
                 $(this).select();
             });
@@ -3121,6 +3122,10 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             else if (this.limitType === "chars") {
                 this.limit = this.config.options.textLimit ? this.config.options.textLimit : 130;
             }
+            this.aggregateValuesConfig = this.readConfig(this.options.aggregateValues);
+            this.canvasExcludeConfig = this.readConfig(this.options.canvasExclude);
+            this.manifestData = this.getManifestData();
+            this.canvasData = [];
             this.moreInfoItemTemplate = $('<div class="item">\
                                            <div class="header"></div>\
                                            <div class="text"></div>\
@@ -3134,13 +3139,38 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             this.$expandButton.attr('tabindex', '4');
             this.$collapseButton.attr('tabindex', '4');
             this.setTitle(this.content.title);
-            this.manifestData = this.provider.getMetadata();
-            this.canvasData = [];
             $.subscribe(BaseCommands.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                var canvas = _this.provider.getCanvasByIndex(canvasIndex);
-                _this.canvasData = canvas.getMetadata();
+                _this.canvasData = _this.getCanvasData(_this.provider.getCanvasByIndex(canvasIndex));
                 _this.displayInfo();
             });
+        };
+        MoreInfoRightPanel.prototype.getManifestData = function () {
+            var data = this.provider.getMetadata();
+            if (this.options.displayOrder) {
+                data = this.sort(data, this.readConfig(this.options.displayOrder));
+            }
+            if (this.options.manifestExclude) {
+                data = this.exclude(data, this.readConfig(this.options.manifestExclude));
+            }
+            return this.flatten(data);
+        };
+        MoreInfoRightPanel.prototype.getCanvasData = function (canvas) {
+            var data = this.provider.getCanvasMetadata(canvas);
+            if (this.canvasExcludeConfig.length !== 0) {
+                data = this.exclude(data, this.canvasExcludeConfig);
+            }
+            return this.flatten(data);
+        };
+        MoreInfoRightPanel.prototype.readConfig = function (config) {
+            if (config) {
+                return config
+                    .toLowerCase()
+                    .replace(/ /g, "")
+                    .split(',');
+            }
+            else {
+                return [];
+            }
         };
         MoreInfoRightPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
@@ -3162,42 +3192,40 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             this.$noData.hide();
             var manifestRenderData = $.extend(true, [], this.manifestData);
             var canvasRenderData = $.extend(true, [], this.canvasData);
-            var displayOrderConfig = this.options.displayOrder;
-            if (displayOrderConfig) {
-                displayOrderConfig = displayOrderConfig.toLowerCase();
-                displayOrderConfig = displayOrderConfig.replace(/ /g, "");
-                var displayOrder = displayOrderConfig.split(',');
-                // sort items
-                var sorted = [];
-                _.each(displayOrder, function (item) {
-                    var match = manifestRenderData.en().where((function (x) { return x.label.toLowerCase() === item; })).first();
-                    if (match) {
-                        sorted.push(match);
-                        manifestRenderData.remove(match);
-                    }
-                });
-                // add remaining items that were not in the displayOrder.
-                _.each(manifestRenderData, function (item) {
-                    sorted.push(item);
-                });
-                manifestRenderData = sorted;
-            }
-            // Exclusions
-            var excludeConfig = this.options.exclude;
-            if (excludeConfig) {
-                excludeConfig = excludeConfig.toLowerCase();
-                excludeConfig = excludeConfig.replace(/ /g, "");
-                var exclude = excludeConfig.split(',');
-                _.each(exclude, function (item) {
-                    var match = manifestRenderData.en().where((function (x) { return x.label.toLowerCase() === item; })).first();
-                    if (match) {
-                        manifestRenderData.remove(match);
-                    }
-                });
-            }
+            this.aggregateValues(manifestRenderData, canvasRenderData);
+            this.renderElement(this.$items, manifestRenderData, this.content.manifestHeader, canvasRenderData.length !== 0);
+            this.renderElement(this.$canvasItems, canvasRenderData, this.content.canvasHeader, manifestRenderData.length !== 0);
+        };
+        MoreInfoRightPanel.prototype.sort = function (data, displayOrder) {
+            // sort items
+            var sorted = [];
+            _.each(displayOrder, function (item) {
+                var match = data.en().where((function (x) { return x.label.toLowerCase() === item; })).first();
+                if (match) {
+                    sorted.push(match);
+                    data.remove(match);
+                }
+            });
+            // add remaining items that were not in the displayOrder.
+            _.each(data, function (item) {
+                sorted.push(item);
+            });
+            return sorted;
+        };
+        MoreInfoRightPanel.prototype.exclude = function (data, excludeConfig) {
+            var excluded = $.extend(true, [], data);
+            _.each(excludeConfig, function (item) {
+                var match = excluded.en().where((function (x) { return x.label.toLowerCase() === item; })).first();
+                if (match) {
+                    excluded.remove(match);
+                }
+            });
+            return excluded;
+        };
+        MoreInfoRightPanel.prototype.flatten = function (data) {
             // flatten metadata into array.
             var flattened = [];
-            _.each(manifestRenderData, function (item) {
+            _.each(data, function (item) {
                 if (_.isArray(item.value)) {
                     flattened = flattened.concat(item.value);
                 }
@@ -3205,27 +3233,23 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
                     flattened.push(item);
                 }
             });
-            manifestRenderData = flattened;
-            if (this.config.options.aggregateValues) {
-                this.aggregateValues(manifestRenderData, canvasRenderData);
-            }
-            this.renderElement(this.$items, manifestRenderData, this.content.manifestHeader, canvasRenderData.length !== 0);
-            this.renderElement(this.$canvasItems, canvasRenderData, this.content.canvasHeader, true);
+            return flattened;
         };
         MoreInfoRightPanel.prototype.aggregateValues = function (fromData, toData) {
-            var values = this.config.options.aggregateValues.split(",");
-            _.each(toData, function (item) {
-                _.each(values, function (value) {
-                    value = value.trim();
-                    if (item.label.toLowerCase() == value.toLowerCase()) {
-                        var manifestIndex = _.findIndex(fromData, function (x) { return x.label.toLowerCase() == value.toLowerCase(); });
-                        if (manifestIndex != -1) {
-                            var data = fromData.splice(manifestIndex, 1)[0];
-                            item.value = data.value + item.value;
+            var _this = this;
+            if (this.aggregateValuesConfig.length !== 0) {
+                _.each(toData, function (item) {
+                    _.each(_this.aggregateValuesConfig, function (value) {
+                        if (item.label.toLowerCase() == value) {
+                            var manifestIndex = _.findIndex(fromData, function (x) { return x.label.toLowerCase() == value.toLowerCase(); });
+                            if (manifestIndex != -1) {
+                                var data = fromData.splice(manifestIndex, 1)[0];
+                                item.value = data.value + item.value;
+                            }
                         }
-                    }
+                    });
                 });
-            });
+            }
         };
         MoreInfoRightPanel.prototype.renderElement = function (element, data, header, renderHeader) {
             var _this = this;
@@ -3292,7 +3316,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
 });
 
 define('_Version',["require", "exports"], function (require, exports) {
-    exports.Version = '1.7.8';
+    exports.Version = '1.7.9';
 });
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -5230,6 +5254,18 @@ define('modules/uv-shared-module/BaseProvider',["require", "exports", "../../Boo
             }
             return result;
         };
+        BaseProvider.prototype.getCanvasMetadata = function (canvas) {
+            var result = [];
+            var metadata = canvas.getMetadata();
+            if (metadata) {
+                result.push({
+                    label: "metadata",
+                    value: metadata,
+                    isRootLevel: true
+                });
+            }
+            return result;
+        };
         BaseProvider.prototype.defaultToThumbsView = function () {
             switch (this.getManifestType().toString()) {
                 case manifesto.ManifestType.monograph().toString():
@@ -7155,27 +7191,41 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.positionPages = function () {
             var resources = this.provider.resources;
+            var x;
+            var y;
+            var page;
+            var pageBounds;
+            var nextPage;
+            var nextPagePos;
+            var topPage;
+            var topPageBounds;
+            var bottomPage;
+            var bottomPagePos;
+            var leftPage;
+            var leftPageBounds;
+            var rightPage;
+            var rightPagePos;
             // if there's more than one image, determine alignment strategy
             if (resources.length > 1) {
                 if (resources.length === 2) {
                     // recto verso
                     if (this.provider.isVerticallyAligned()) {
                         // vertical alignment
-                        var topPage = this.viewer.world.getItemAt(0);
-                        var topPageBounds = topPage.getBounds(true);
-                        var y = topPageBounds.y + topPageBounds.height;
-                        var bottomPage = this.viewer.world.getItemAt(1);
-                        var bottomPagePos = bottomPage.getBounds(true).getTopLeft();
+                        topPage = this.viewer.world.getItemAt(0);
+                        topPageBounds = topPage.getBounds(true);
+                        y = topPageBounds.y + topPageBounds.height;
+                        bottomPage = this.viewer.world.getItemAt(1);
+                        bottomPagePos = bottomPage.getBounds(true).getTopLeft();
                         bottomPagePos.y = y + this.config.options.pageGap;
                         bottomPage.setPosition(bottomPagePos, true);
                     }
                     else {
                         // horizontal alignment
-                        var leftPage = this.viewer.world.getItemAt(0);
-                        var leftPageBounds = leftPage.getBounds(true);
-                        var x = leftPageBounds.x + leftPageBounds.width;
-                        var rightPage = this.viewer.world.getItemAt(1);
-                        var rightPagePos = rightPage.getBounds(true).getTopLeft();
+                        leftPage = this.viewer.world.getItemAt(0);
+                        leftPageBounds = leftPage.getBounds(true);
+                        x = leftPageBounds.x + leftPageBounds.width;
+                        rightPage = this.viewer.world.getItemAt(1);
+                        rightPagePos = rightPage.getBounds(true).getTopLeft();
                         rightPagePos.x = x + this.config.options.pageGap;
                         rightPage.setPosition(rightPagePos, true);
                     }
@@ -7184,26 +7234,56 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     // scroll
                     if (this.provider.isVerticallyAligned()) {
                         // vertical alignment
-                        for (var i = 0; i < resources.length - 1; i++) {
-                            var page = this.viewer.world.getItemAt(i);
-                            var pageBounds = page.getBounds(true);
-                            var y = pageBounds.y + pageBounds.height;
-                            var nextPage = this.viewer.world.getItemAt(i + 1);
-                            var nextPagePos = nextPage.getBounds(true).getTopLeft();
-                            nextPagePos.y = y;
-                            nextPage.setPosition(nextPagePos, true);
+                        if (this.provider.isTopToBottom()) {
+                            // top to bottom
+                            for (var i = 0; i < resources.length - 1; i++) {
+                                page = this.viewer.world.getItemAt(i);
+                                pageBounds = page.getBounds(true);
+                                y = pageBounds.y + pageBounds.height;
+                                nextPage = this.viewer.world.getItemAt(i + 1);
+                                nextPagePos = nextPage.getBounds(true).getTopLeft();
+                                nextPagePos.y = y;
+                                nextPage.setPosition(nextPagePos, true);
+                            }
+                        }
+                        else {
+                            // bottom to top
+                            for (var i = resources.length; i > 0; i--) {
+                                page = this.viewer.world.getItemAt(i);
+                                pageBounds = page.getBounds(true);
+                                y = pageBounds.y - pageBounds.height;
+                                nextPage = this.viewer.world.getItemAt(i - 1);
+                                nextPagePos = nextPage.getBounds(true).getTopLeft();
+                                nextPagePos.y = y;
+                                nextPage.setPosition(nextPagePos, true);
+                            }
                         }
                     }
                     else {
                         // horizontal alignment
-                        for (var i = 0; i < resources.length - 1; i++) {
-                            var page = this.viewer.world.getItemAt(i);
-                            var pageBounds = page.getBounds(true);
-                            var x = pageBounds.x + pageBounds.width;
-                            var nextPage = this.viewer.world.getItemAt(i + 1);
-                            var nextPagePos = nextPage.getBounds(true).getTopLeft();
-                            nextPagePos.x = x;
-                            nextPage.setPosition(nextPagePos, true);
+                        if (this.provider.isLeftToRight()) {
+                            // left to right
+                            for (var i = 0; i < resources.length - 1; i++) {
+                                page = this.viewer.world.getItemAt(i);
+                                pageBounds = page.getBounds(true);
+                                x = pageBounds.x + pageBounds.width;
+                                nextPage = this.viewer.world.getItemAt(i + 1);
+                                nextPagePos = nextPage.getBounds(true).getTopLeft();
+                                nextPagePos.x = x;
+                                nextPage.setPosition(nextPagePos, true);
+                            }
+                        }
+                        else {
+                            // right to left
+                            for (var i = resources.length - 1; i > 0; i--) {
+                                page = this.viewer.world.getItemAt(i);
+                                pageBounds = page.getBounds(true);
+                                x = pageBounds.x - pageBounds.width;
+                                nextPage = this.viewer.world.getItemAt(i - 1);
+                                nextPagePos = nextPage.getBounds(true).getTopLeft();
+                                nextPagePos.x = x;
+                                nextPage.setPosition(nextPagePos, true);
+                            }
                         }
                     }
                 }
