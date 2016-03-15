@@ -95,6 +95,16 @@
           "label": "Biological Basis of Medicine (collection)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b21274344/manifest",
+          "@type": "sc:Manifest",
+          "label": "Abnormalities and curiosities of medicine"
+        },
+        {
+          "@id": "http://wellcomelibrary.org/iiif/b21072061/manifest",
+          "@type": "sc:Manifest",
+          "label": "An Atlas of Clinical Microscopy (clinical)"
+        },
+        {
           "@id": "http://showcase.iiif.io/shims/chroniclingamerica/prezi/top.json",
           "@type": "sc:Collection",
           "label": "Chronicling America (collection)",
