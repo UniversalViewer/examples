@@ -20,6 +20,11 @@
           "label": "Nervous system in a fruit fly larva"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b23984958/manifest",
+          "@type": "sc:Manifest",
+          "label": "Greenfly Eye"
+        },
+        {
           "@id": "http://wellcomelibrary.org/iiif/b18035978/manifest",
           "@type": "sc:Manifest",
           "label": "The Biocrats"
@@ -407,7 +412,7 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "IPFS",
-      "visible": false,
+      "visible": true,
       "manifests": [
         {
           "@id": "https://ipfs.io/ipfs/QmYomyCpT1vKNovYvTjAStYq31JoaH8xdivjmWcDj5mpM1",
