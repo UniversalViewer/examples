@@ -50,6 +50,11 @@
           "label": "English folding almanac in Latin (video)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b16748967/manifest",
+          "@type": "sc:Manifest",
+          "label": "Entebbe encounter (video with transcript)"
+        },
+        {
           "@id": "http://wellcomelibrary.org/iiif/b17307922/manifest",
           "@type": "sc:Manifest",
           "label": "Florence Nightingale (audio)"
