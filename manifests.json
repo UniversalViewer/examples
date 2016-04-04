@@ -115,6 +115,11 @@
           "label": "An Atlas of Clinical Microscopy (clinical)"
         },
         {
+          "@id": "http://wellcomelibrary.org/iiif/b13266330/manifest",
+          "@type": "sc:Manifest",
+          "label": "Spiegl de Artzny (manuscript)"
+        },
+        {
           "@id": "http://showcase.iiif.io/shims/chroniclingamerica/prezi/top.json",
           "@type": "sc:Collection",
           "label": "Chronicling America (collection)",
