@@ -310,6 +310,7 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "World Digital Library",
+      "visible": false,
       "manifests": [
         {
           "@id": "http://www.wdl.org/en/item/14291/iiif/manifest.json",
