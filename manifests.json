@@ -256,6 +256,11 @@
           "@id": "http://digital.library.villanova.edu/Item/vudl:60609/Manifest"
         },
         {
+          "label": "Letter, To: Ellie From: A. M. Thackara (download options)",
+          "@type": "sc:Manifest",
+          "@id": "http://digital.library.villanova.edu/Item/vudl:30471/Manifest"
+        },
+        {
           "label": "LeBlanc Bibliography, Binder 1",
           "@type": "sc:Manifest",
           "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest",
