@@ -1,5 +1,5 @@
 define(function() {
     return {
-        dependencies: ['pdf_combined', 'pdfobject']
+        dependencies: ['l10n', 'pdf_combined', 'pdfobject']
     };
 });
