@@ -364,6 +364,24 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "Ghent University Library",
+      "manifests": [
+        {
+          "@id": "http://shared.ugent.be/IIIF/collections/rug01-002212499",
+          "@type": "sc:Collection",
+          "label": "Nalatenschap Raoul De Keyser"
+        },
+        {
+          "@id": "http://shared.ugent.be/IIIF/collections/jan-frans-willems",
+          "@type": "sc:Collection",
+          "label": "Jan Frans Willems"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "Yale",
       "manifests": [
         {
