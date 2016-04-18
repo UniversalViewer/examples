@@ -413,6 +413,12 @@
           "label": "The Kiss"
         },
         {
+          "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
+          "@type": "sc:Manifest",
+          "label": "Skull",
+          "visible": true
+        },
+        {
           "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
           "@type": "sc:Manifest",
           "label": "Henry Wellcome Life Mask",

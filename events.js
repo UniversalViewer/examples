@@ -315,6 +315,14 @@ $(function() {
         console.log('seadragonExtension.onFirst');
     });
 
+    $(document).bind('seadragonExtension.onGalleryDecreaseSize', function (event, obj) {
+        console.log('seadragonExtension.onGalleryDecreaseSize');
+    });
+
+    $(document).bind('seadragonExtension.onGalleryIncreaseSize', function (event, obj) {
+        console.log('seadragonExtension.onGalleryIncreaseSize');
+    });
+
     $(document).bind('seadragonExtension.onGalleryThumbSelected', function (event, obj) {
         console.log('seadragonExtension.onGalleryThumbSelected');
     });
