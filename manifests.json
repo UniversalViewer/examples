@@ -62,7 +62,7 @@
         {
           "@id": "http://wellcomelibrary.org/iiif/b17502792/manifest",
           "@type": "sc:Manifest",
-          "label": "Fungal disease in Britain and the United States (PDF)"
+          "label": "A Review of Science Communication and Public Attitudes to Science in Britain (PDF)"
         },
         {
           "@id": "http://wellcomelibrary.org/iiif/b17564980/manifest",
@@ -413,7 +413,7 @@
           "label": "The Kiss"
         },
         {
-          "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
+          "@id": "http://files.universalviewer.io/manifests/nelis/skull.json",
           "@type": "sc:Manifest",
           "label": "Skull",
           "visible": true
