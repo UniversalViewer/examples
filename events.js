@@ -105,6 +105,10 @@ $(function() {
         console.log('uv.onHideOverlay');
     });
 
+    $(document).bind('uv.onHideRestrictedDialogue', function (event, obj) {
+        console.log('uv.onHideRestrictedDialogue');
+    });
+
     $(document).bind('uv.onHideSettingsDialogue', function (event, obj) {
         // uv uses onHideOverlay
         console.log('uv.onHideSettingsDialogue');
@@ -259,6 +263,10 @@ $(function() {
         console.log('uv.onShowOverlay');
     });
 
+    $(document).bind('uv.onShowRestrictedDialogue', function (event, obj) {
+        console.log('uv.onShowRestrictedDialogue');
+    });
+
     $(document).bind('uv.onShowSettingsDialogue', function (event, obj) {
         console.log('uv.onShowSettingsDialogue');
     });
@@ -365,6 +373,10 @@ $(function() {
 
     $(document).bind('seadragonExtension.onPageSearch', function (event, obj) {
         console.log('seadragonExtension.onPageSearch');
+    });
+
+    $(document).bind('seadragonExtension.onPagingToggled', function (event, obj) {
+        console.log('seadragonExtension.onPagingToggled', obj);
     });
 
     $(document).bind('seadragonExtension.onPrev', function (event, obj) {
