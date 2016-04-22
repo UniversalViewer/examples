@@ -1,7 +1,6 @@
 $(function() {
 
     var bootstrapper, editor;
-    //var uvVersion = 'uv-1.5.26';
     var uvVersion = 'uv';
 
     function loadViewer() {
@@ -471,7 +470,7 @@ $(function() {
         }
 
         setInitialLocale();
-        setDefaultToFullScreen();
+        //setDefaultToFullScreen();
         loadViewer();
     }
 

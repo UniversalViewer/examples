@@ -17,10 +17,6 @@ $(function() {
         console.log('uv.onAcceptTerms');
     });
 
-    $(document).bind('uv.onAuthorizationOccurred', function (event, obj) {
-        console.log('uv.onAuthorizationOccurred');
-    });
-
     $(document).bind('uv.onBookmark', function (event, obj) {
         console.log('uv.onBookmark', obj);
     });
@@ -33,8 +29,8 @@ $(function() {
         console.log('uv.onCanvasIndexChanged', obj);
     });
 
-    $(document).bind('uv.onClickthroughOccurred', function (event, obj) {
-        console.log('uv.onClickthroughOccurred');
+    $(document).bind('uv.onClickthrough', function (event, obj) {
+        console.log('uv.onClickthrough');
     });
 
     $(document).bind('uv.onCloseActiveDialogue', function (event, obj) {
@@ -141,6 +137,14 @@ $(function() {
     $(document).bind('uv.onLoad', function (event, obj) {
         console.log('uv.onLoad', obj);
         //trackEvent("Player", "Load", trackingLabel);
+    });
+
+    $(document).bind('uv.onLogin', function (event, obj) {
+        console.log('uv.onLogin');
+    });
+
+    $(document).bind('uv.onLogout', function (event, obj) {
+        console.log('uv.onLogout');
     });
 
     $(document).bind('uv.onNotFound', function (event, obj) {
