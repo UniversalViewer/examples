@@ -451,6 +451,27 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "Tests",
+      "visible": true,
+      "manifests": [
+        {
+          "@id": "http://tomcrane.github.io/scratch/manifests/top-to-bottom.json",
+          "@type": "sc:Manifest",
+          "label": "Top to Bottom",
+          "visible": true
+        },
+        {
+          "@id": "http://tomcrane.github.io/scratch/manifests/bottom-to-top.json",
+          "@type": "sc:Manifest",
+          "label": "Bottom to Top",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "IPFS",
       "visible": true,
       "manifests": [
