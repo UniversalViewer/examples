@@ -187,6 +187,10 @@
       "@id": "http://dams.llgc.org.uk/iiif/2.0/1123257/manifest.json",
       "@type": "sc:Manifest",
       "label": "Tankerey's house, Llangollen"
+    }, {
+      "@id": "http://dams.llgc.org.uk/iiif/archive/3975658/fonds.json",
+      "@type": "sc:Collection",
+      "label": "Cardiganshire Great War Tribunal (Appeals) Records"
     }]
   }, {
     "@context": "http://iiif.io/api/presentation/2/context.json",
@@ -236,7 +240,11 @@
       "label": "The Bride of the Tomb; and, Queenie's Terrible Secret",
       "@type": "sc:Manifest",
       "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest"
-    }, {
+    },{
+        "label": "Collections",
+        "@type": "sc:Collection",
+        "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
+    },{
       "label": "Villanova University Digital Library (collection)",
       "@type": "sc:Collection",
       "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
