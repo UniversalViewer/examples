@@ -2,531 +2,461 @@
   "@context": "http://iiif.io/api/presentation/2/context.json",
   "@id": "http://universalviewer.io/manifests.json",
   "@type": "sc:Collection",
-  "collections": [
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
+  "collections": [{
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Wellcome Library",
+    "manifests": [{
+      "@id": "http://wellcomelibrary.org/iiif/b18035723/manifest",
+      "@type": "sc:Manifest",
+      "label": "Wunder der Vererbung"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b23984971/manifest",
+      "@type": "sc:Manifest",
+      "label": "Nervous system in a fruit fly larva"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b23984958/manifest",
+      "@type": "sc:Manifest",
+      "label": "Greenfly Eye"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b18035978/manifest",
+      "@type": "sc:Manifest",
+      "label": "The Biocrats"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b19684915/manifest",
+      "@type": "sc:Manifest",
+      "label": "Wellcome Apocalypse"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b1948799x/manifest",
+      "@type": "sc:Manifest",
+      "label": "Crick's letter"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b16659090/manifest",
+      "@type": "sc:Manifest",
+      "label": "The story of the Wellcome Foundation Ltd (video)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b20605055/manifest",
+      "@type": "sc:Manifest",
+      "label": "English folding almanac in Latin (video)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b16748967/manifest",
+      "@type": "sc:Manifest",
+      "label": "Entebbe encounter (video with transcript)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b17307922/manifest",
+      "@type": "sc:Manifest",
+      "label": "Florence Nightingale (audio)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b17502792/manifest",
+      "@type": "sc:Manifest",
+      "label": "A Review of Science Communication and Public Attitudes to Science in Britain (PDF)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b17564980/manifest",
+      "@type": "sc:Manifest",
+      "label": "First Thursday Club (click through)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b19813508/manifest",
+      "@type": "sc:Manifest",
+      "label": "Kourilsky, Philippe (restricted content)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b1818893x/manifest",
+      "@type": "sc:Manifest",
+      "label": "Correspondence Concerning Publication (click through)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b17307703/manifest",
+      "@type": "sc:Manifest",
+      "label": "I Remember Sir Henry Dale (audio, click through)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b11599820/manifest",
+      "@type": "sc:Manifest",
+      "label": "Sixteen feet in profile (degraded image)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b21072061/manifest",
+      "@type": "sc:Manifest",
+      "label": "An Atlas of Clinical Microscopy (clinical login)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b19684538/manifest",
+      "@type": "sc:Manifest",
+      "label": "Pseudo-Albert the Great (folio)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
       "@type": "sc:Collection",
-      "label": "Wellcome Library",
-      "manifests": [
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b18035723/manifest",
-          "@type": "sc:Manifest",
-          "label": "Wunder der Vererbung"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b23984971/manifest",
-          "@type": "sc:Manifest",
-          "label": "Nervous system in a fruit fly larva"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b23984958/manifest",
-          "@type": "sc:Manifest",
-          "label": "Greenfly Eye"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b18035978/manifest",
-          "@type": "sc:Manifest",
-          "label": "The Biocrats"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b19684915/manifest",
-          "@type": "sc:Manifest",
-          "label": "Wellcome Apocalypse"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b1948799x/manifest",
-          "@type": "sc:Manifest",
-          "label": "Crick's letter"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b16659090/manifest",
-          "@type": "sc:Manifest",
-          "label": "The story of the Wellcome Foundation Ltd (video)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b20605055/manifest",
-          "@type": "sc:Manifest",
-          "label": "English folding almanac in Latin (video)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b16748967/manifest",
-          "@type": "sc:Manifest",
-          "label": "Entebbe encounter (video with transcript)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b17307922/manifest",
-          "@type": "sc:Manifest",
-          "label": "Florence Nightingale (audio)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b17502792/manifest",
-          "@type": "sc:Manifest",
-          "label": "A Review of Science Communication and Public Attitudes to Science in Britain (PDF)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b17564980/manifest",
-          "@type": "sc:Manifest",
-          "label": "First Thursday Club (click through)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b19813508/manifest",
-          "@type": "sc:Manifest",
-          "label": "Kourilsky, Philippe (restricted content)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b1818893x/manifest",
-          "@type": "sc:Manifest",
-          "label": "Correspondence Concerning Publication (click through)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b17307703/manifest",
-          "@type": "sc:Manifest",
-          "label": "I Remember Sir Henry Dale (audio, click through)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b11599820/manifest",
-          "@type": "sc:Manifest",
-          "label": "Sixteen feet in profile (degraded image)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b21072061/manifest",
-          "@type": "sc:Manifest",
-          "label": "An Atlas of Clinical Microscopy (clinical login)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b19684538/manifest",
-          "@type": "sc:Manifest",
-          "label": "Pseudo-Albert the Great (folio)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/collection/b19974760",
-          "@type": "sc:Collection",
-          "label": "Chemist & Druggist (collection)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/collection/b18031511",
-          "@type": "sc:Collection",
-          "label": "Biological Basis of Medicine (collection)"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b21274344/manifest",
-          "@type": "sc:Manifest",
-          "label": "Abnormalities and curiosities of medicine"
-        },
-        {
-          "@id": "http://wellcomelibrary.org/iiif/b13266330/manifest",
-          "@type": "sc:Manifest",
-          "label": "Spiegl de Artzny (manuscript)"
-        },
-        {
-          "@id": "http://showcase.iiif.io/shims/chroniclingamerica/prezi/top.json",
-          "@type": "sc:Collection",
-          "label": "Chronicling America (collection)",
-          "visible": false
-        },
-        {
-          "@id": "http://showcase.iiif.io/shims/wales/potter/top.json",
-          "@type": "sc:Collection",
-          "label": "Potter's Electric News (collection)",
-          "visible": false
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
+      "label": "Chemist & Druggist (collection)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/collection/b18031511",
       "@type": "sc:Collection",
-      "label": "Internet Archive",
-      "visible": true,
-      "manifests": [
-        {
-          "@id": "https://iiif.archivelab.org/iiif/principleofrelat00eins/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "The principle of relativity; original papers",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
+      "label": "Biological Basis of Medicine (collection)"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b21274344/manifest",
+      "@type": "sc:Manifest",
+      "label": "Abnormalities and curiosities of medicine"
+    }, {
+      "@id": "http://wellcomelibrary.org/iiif/b13266330/manifest",
+      "@type": "sc:Manifest",
+      "label": "Spiegl de Artzny (manuscript)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
+      "@type": "sc:Manifest",
+      "label": "Henry Wellcome Life Mask (3D)",
+      "visible": false
+    }, {
+      "@id": "http://showcase.iiif.io/shims/chroniclingamerica/prezi/top.json",
       "@type": "sc:Collection",
-      "label": "British Library",
-      "manifests": [
-        {
-          "@id": "http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Anzac bulletin"
-        },
-        {
-          "@id": "http://sanddragon.bl.uk/IIIFMetadataService/or_1459.json",
-          "@type": "sc:Manifest",
-          "label": "Scroll (continuous rtl)"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
+      "label": "Chronicling America (collection)",
+      "visible": false
+    }, {
+      "@id": "http://showcase.iiif.io/shims/wales/potter/top.json",
       "@type": "sc:Collection",
-      "label": "National Library of Wales",
-      "manifests": [
-        {
-          "@id": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Cardiganshire Constabulary"
-        },
-        {
-          "@id": "http://dams.llgc.org.uk/iiif/2.0/1123257/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Tankerey's house, Llangollen"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Bodleian",
-      "manifests": [
-        {
-          "@id": "http://iiif.bodleian.ox.ac.uk/examples/mushaf4.json",
-          "@type": "sc:Manifest",
-          "label": "Mixed"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Stanford University",
-      "manifests": [
-        {
-          "@id": "http://dms-data.stanford.edu/data/manifests/RomanCoins/bb853kn3021/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Roman Coins"
-        },
-        {
-          "label": "California as Island",
-          "@id": "http://dms-data.stanford.edu/data/manifests/McLaughlin/bc788vp3448/manifest.json",
-          "@type": "sc:Manifest"
-        },
-        {
-          "@id": "http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Japanese Songbook"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Sentences Commentary Text Archive",
-      "visible": false,
-      "manifests": [
-        {
-          "@id": "http://scta.info/iiif/pp-sorb/manifest",
-          "@type": "sc:Manifest",
-          "label": "Witness to Peter Plaoul's Commentary on the Sentences"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Villanova University",
-      "manifests": [
-        {
-          "label": "The Bride of the Tomb; and, Queenie's Terrible Secret",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest"
-        },
-        {
-          "label": "Villanova University Digital Library (collection)",
-          "@type": "sc:Collection",
-          "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
-        },
-        {
-          "label": "The Holy Bible",
-          "@type": "sc:Collection",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:60609/Manifest"
-        },
-        {
-          "label": "Letter, To: Ellie From: A. M. Thackara (download options)",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:30471/Manifest"
-        },
-        {
-          "label": "LeBlanc Bibliography, Binder 1",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest",
-          "visible": false
-        },
-        {
-          "label": "Augustine PDF",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:100576/Manifest",
-          "visible": false
-        },
-        {
-          "label": "LeBlanc Interview, Cassette 1",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:283833/Manifest",
-          "visible": false
-        },
-        {
-          "label": "Steam Men Bibliography",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:291994/Manifest",
-          "visible": false
-        },
-        {
-          "label": "Saint Augustines confessions translated [1650] (image only)",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:98253/Manifest",
-          "visible": false
-        },
-        {
-          "label": "The 104th Psalm (with panorama)",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:58970/Manifest",
-          "visible": false
-        },
-        {
-          "label": "Letter fragment (2 page item)",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:364476/Manifest",
-          "visible": false
-        },
-        {
-          "label": "Typescript Letter (with weird aspect ratios in contents)",
-          "@type": "sc:Manifest",
-          "@id": "http://digital.library.villanova.edu/Item/vudl:347767/Manifest",
-          "visible": false
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "World Digital Library",
-      "visible": false,
-      "manifests": [
-        {
-          "@id": "http://www.wdl.org/en/item/14291/iiif/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Treatise on Cats"
-        },
-        {
-          "@id": "http://www.wdl.org/en/item/80/iiif/manifest.json",
-          "@type": "sc:Manifest",
-          "label": "Description of Egypt. Second Edition."
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Riks Arkivet",
-      "manifests": [
-        {
-          "@id": "https://iiif.riksarkivet.se/arkis!C0000263/manifest",
-          "@type": "sc:Manifest",
-          "label": "Ervalla kyrkoarkiv (canvas metadata)"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Qatar Digital Library",
-      "manifests": [
-        {
-          "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
-          "@type": "sc:Manifest",
-          "label": "Correspondence and other Papers concerning the Duke of Argyll's Attack on Lewis Pelly in the House of Lords"
-        },
-        {
-          "@id": "http://www.qdl.qa/العربية/iiif/81055/vdc_100000004987.0x000001/manifest",
-          "@type": "sc:Manifest",
-          "label": "كتاب بطلميوس في التعليم المعروف بالمجسطي، نقل إسحق بن حنين بطلميوس"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Ghent University Library",
-      "manifests": [
-        {
-          "@id": "http://shared.ugent.be/IIIF/collections/rug01-002212499",
-          "@type": "sc:Collection",
-          "label": "Nalatenschap Raoul De Keyser"
-        },
-        {
-          "@id": "http://shared.ugent.be/IIIF/collections/jan-frans-willems",
-          "@type": "sc:Collection",
-          "label": "Jan Frans Willems"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Yale",
-      "manifests": [
-        {
-          "@id": "http://manifests.ydc2.yale.edu/manifest/Scroll",
-          "@type": "sc:Manifest",
-          "label": "Scroll"
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "3D",
-      "manifests": [
-        {
-          "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
-          "@type": "sc:Manifest",
-          "label": "Animal Skull"
-        },
-        {
-          "@id": "http://files.universalviewer.io/manifests/nelis/ecorche.json",
-          "@type": "sc:Manifest",
-          "label": "Écorché"
-        },
-        {
-          "@id": "http://files.universalviewer.io/manifests/foundobjects/thekiss.json",
-          "@type": "sc:Manifest",
-          "label": "The Kiss"
-        },
-        {
-          "@id": "http://files.universalviewer.io/manifests/nelis/skull.json",
-          "@type": "sc:Manifest",
-          "label": "Skull",
-          "visible": true
-        },
-        {
-          "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
-          "@type": "sc:Manifest",
-          "label": "Henry Wellcome Life Mask",
-          "visible": false
-        },
-        {
-          "@id": "http://files.universalviewer.io/manifests/demo/nefertiti.json",
-          "@type": "sc:Manifest",
-          "label": "Bust of Queen Nefertiti",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Level 0",
-      "visible": false,
-      "manifests": [
-        {
-          "@id": "http://files.universalviewer.io/manifests/demo/tetons.json",
-          "@type": "sc:Manifest",
-          "label": "Tetons",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Tests",
-      "visible": true,
-      "manifests": [
-        {
-          "@id": "http://tomcrane.github.io/scratch/manifests/top-to-bottom.json",
-          "@type": "sc:Manifest",
-          "label": "Top to Bottom",
-          "visible": true
-        },
-        {
-          "@id": "http://tomcrane.github.io/scratch/manifests/bottom-to-top.json",
-          "@type": "sc:Manifest",
-          "label": "Bottom to Top",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "IPFS",
-      "visible": true,
-      "manifests": [
-        {
-          "@id": "https://ipfs.io/ipfs/QmYomyCpT1vKNovYvTjAStYq31JoaH8xdivjmWcDj5mpM1",
-          "@type": "sc:Manifest",
-          "label": "Tetons",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Tests (require jsonp)",
-      "visible": false,
-      "manifests": [
-        {
-          "@id": "/examples/manifest/missingimages.js",
-          "@type": "sc:Manifest",
-          "label": "Missing Images",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/collection.js",
-          "@type": "sc:Manifest",
-          "label": "Collection",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/deephierarchylongtitle.js",
-          "@type": "sc:Manifest",
-          "label": "Deep hierarchy long title",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/attribution.js",
-          "@type": "sc:Manifest",
-          "label": "Attribution",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/toptobottom.js",
-          "@type": "sc:Manifest",
-          "label": "Top to Bottom",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/logo.js",
-          "@type": "sc:Manifest",
-          "label": "Logo as IIIF",
-          "visible": false
-        }
-      ]
+      "label": "Potter's Electric News (collection)",
+      "visible": false
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Internet Archive",
+    "visible": true,
+    "manifests": [{
+      "@id": "https://iiif.archivelab.org/iiif/principleofrelat00eins/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "The principle of relativity; original papers",
+      "visible": true
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "British Library",
+    "manifests": [{
+      "@id": "http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Anzac bulletin"
+    }, {
+      "@id": "http://sanddragon.bl.uk/IIIFMetadataService/or_1459.json",
+      "@type": "sc:Manifest",
+      "label": "Scroll (continuous rtl)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/Add_11831.json",
+      "@type": "sc:Manifest",
+      "label": "Add_11831 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/Add_4709.json",
+      "@type": "sc:Manifest",
+      "label": "Add_4709 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/Or_1087.json",
+      "@type": "sc:Manifest",
+      "label": "Or_1087 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/Or_13027.json",
+      "@type": "sc:Manifest",
+      "label": "Or_13027 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/or_7694_1580.json",
+      "@type": "sc:Manifest",
+      "label": "or_7694_1580 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/or_7694_1595.json",
+      "@type": "sc:Manifest",
+      "label": "or_7694_1595 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/or_7694_1655_1672.json",
+      "@type": "sc:Manifest",
+      "label": "or_7694_1655_1672 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/or_7694_1988_part1.json",
+      "@type": "sc:Manifest",
+      "label": "or_7694_1988_part1 (3D)"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/adiks/or_7694_1988_part2.json",
+      "@type": "sc:Manifest",
+      "label": "or_7694_1988_part2 (3D)"
     }
-  ]
+    ]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "National Library of Wales",
+    "manifests": [{
+      "@id": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Cardiganshire Constabulary"
+    }, {
+      "@id": "http://dams.llgc.org.uk/iiif/2.0/1123257/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Tankerey's house, Llangollen"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Bodleian",
+    "manifests": [{
+      "@id": "http://iiif.bodleian.ox.ac.uk/examples/mushaf4.json",
+      "@type": "sc:Manifest",
+      "label": "Mixed"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Stanford University",
+    "manifests": [{
+      "@id": "http://dms-data.stanford.edu/data/manifests/RomanCoins/bb853kn3021/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Roman Coins"
+    }, {
+      "label": "California as Island",
+      "@id": "http://dms-data.stanford.edu/data/manifests/McLaughlin/bc788vp3448/manifest.json",
+      "@type": "sc:Manifest"
+    }, {
+      "@id": "http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Japanese Songbook"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Sentences Commentary Text Archive",
+    "visible": false,
+    "manifests": [{
+      "@id": "http://scta.info/iiif/pp-sorb/manifest",
+      "@type": "sc:Manifest",
+      "label": "Witness to Peter Plaoul's Commentary on the Sentences"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Villanova University",
+    "manifests": [{
+      "label": "The Bride of the Tomb; and, Queenie's Terrible Secret",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest"
+    }, {
+      "label": "Villanova University Digital Library (collection)",
+      "@type": "sc:Collection",
+      "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
+    }, {
+      "label": "The Holy Bible",
+      "@type": "sc:Collection",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:60609/Manifest"
+    }, {
+      "label": "Letter, To: Ellie From: A. M. Thackara (download options)",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:30471/Manifest"
+    }, {
+      "label": "LeBlanc Bibliography, Binder 1",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest",
+      "visible": false
+    }, {
+      "label": "Augustine PDF",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:100576/Manifest",
+      "visible": false
+    }, {
+      "label": "LeBlanc Interview, Cassette 1",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:283833/Manifest",
+      "visible": false
+    }, {
+      "label": "Steam Men Bibliography",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:291994/Manifest",
+      "visible": false
+    }, {
+      "label": "Saint Augustines confessions translated [1650] (image only)",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:98253/Manifest",
+      "visible": false
+    }, {
+      "label": "The 104th Psalm (with panorama)",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:58970/Manifest",
+      "visible": false
+    }, {
+      "label": "Letter fragment (2 page item)",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:364476/Manifest",
+      "visible": false
+    }, {
+      "label": "Typescript Letter (with weird aspect ratios in contents)",
+      "@type": "sc:Manifest",
+      "@id": "http://digital.library.villanova.edu/Item/vudl:347767/Manifest",
+      "visible": false
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "World Digital Library",
+    "visible": false,
+    "manifests": [{
+      "@id": "http://www.wdl.org/en/item/14291/iiif/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Treatise on Cats"
+    }, {
+      "@id": "http://www.wdl.org/en/item/80/iiif/manifest.json",
+      "@type": "sc:Manifest",
+      "label": "Description of Egypt. Second Edition."
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Riks Arkivet",
+    "manifests": [{
+      "@id": "https://iiif.riksarkivet.se/arkis!C0000263/manifest",
+      "@type": "sc:Manifest",
+      "label": "Ervalla kyrkoarkiv (canvas metadata)"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Qatar Digital Library",
+    "manifests": [{
+      "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
+      "@type": "sc:Manifest",
+      "label": "Correspondence and other Papers concerning the Duke of Argyll's Attack on Lewis Pelly in the House of Lords"
+    }, {
+      "@id": "http://www.qdl.qa/العربية/iiif/81055/vdc_100000004987.0x000001/manifest",
+      "@type": "sc:Manifest",
+      "label": "كتاب بطلميوس في التعليم المعروف بالمجسطي، نقل إسحق بن حنين بطلميوس"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Ghent University Library",
+    "manifests": [{
+      "@id": "http://shared.ugent.be/IIIF/collections/rug01-002212499",
+      "@type": "sc:Collection",
+      "label": "Nalatenschap Raoul De Keyser"
+    }, {
+      "@id": "http://shared.ugent.be/IIIF/collections/jan-frans-willems",
+      "@type": "sc:Collection",
+      "label": "Jan Frans Willems"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Yale",
+    "manifests": [{
+      "@id": "http://manifests.ydc2.yale.edu/manifest/Scroll",
+      "@type": "sc:Manifest",
+      "label": "Scroll"
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "3D",
+    "manifests": [{
+      "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
+      "@type": "sc:Manifest",
+      "label": "Animal Skull"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/nelis/ecorche.json",
+      "@type": "sc:Manifest",
+      "label": "Écorché"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/foundobjects/thekiss.json",
+      "@type": "sc:Manifest",
+      "label": "The Kiss"
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/nelis/skull.json",
+      "@type": "sc:Manifest",
+      "label": "Skull",
+      "visible": true
+    }, {
+      "@id": "http://files.universalviewer.io/manifests/demo/nefertiti.json",
+      "@type": "sc:Manifest",
+      "label": "Bust of Queen Nefertiti",
+      "visible": true
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Level 0",
+    "visible": false,
+    "manifests": [{
+      "@id": "http://files.universalviewer.io/manifests/demo/tetons.json",
+      "@type": "sc:Manifest",
+      "label": "Tetons",
+      "visible": true
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Tests",
+    "visible": true,
+    "manifests": [{
+      "@id": "http://tomcrane.github.io/scratch/manifests/top-to-bottom.json",
+      "@type": "sc:Manifest",
+      "label": "Top to Bottom",
+      "visible": true
+    }, {
+      "@id": "http://tomcrane.github.io/scratch/manifests/bottom-to-top.json",
+      "@type": "sc:Manifest",
+      "label": "Bottom to Top",
+      "visible": true
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "IPFS",
+    "visible": true,
+    "manifests": [{
+      "@id": "https://ipfs.io/ipfs/QmYomyCpT1vKNovYvTjAStYq31JoaH8xdivjmWcDj5mpM1",
+      "@type": "sc:Manifest",
+      "label": "Tetons",
+      "visible": true
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
+    "label": "Tests (require jsonp)",
+    "visible": false,
+    "manifests": [{
+      "@id": "/examples/manifest/missingimages.js",
+      "@type": "sc:Manifest",
+      "label": "Missing Images",
+      "visible": false
+    }, {
+      "@id": "/examples/manifest/collection.js",
+      "@type": "sc:Manifest",
+      "label": "Collection",
+      "visible": false
+    }, {
+      "@id": "/examples/manifest/deephierarchylongtitle.js",
+      "@type": "sc:Manifest",
+      "label": "Deep hierarchy long title",
+      "visible": false
+    }, {
+      "@id": "/examples/manifest/attribution.js",
+      "@type": "sc:Manifest",
+      "label": "Attribution",
+      "visible": false
+    }, {
+      "@id": "/examples/manifest/toptobottom.js",
+      "@type": "sc:Manifest",
+      "label": "Top to Bottom",
+      "visible": false
+    }, {
+      "@id": "/examples/manifest/logo.js",
+      "@type": "sc:Manifest",
+      "label": "Logo as IIIF",
+      "visible": false
+    }]
+  }]
 }
