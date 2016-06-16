@@ -387,6 +387,10 @@ $(function() {
         console.log('seadragonExtension.onPrevSearchResult');
     });
 
+    $(document).bind('seadragonExtension.onPrint', function (event, obj) {
+        console.log('seadragonExtension.onPrint', obj);
+    });
+
     $(document).bind('seadragonExtension.onAnimation', function (event, obj) {
         console.log('seadragonExtension.onAnimation');
     });
