@@ -1888,6 +1888,26 @@ input[type=range]:focus::-ms-fill-upper {
   color: #fff;
   text-decoration: none;
 }
+#app .footerPanel .options a.print {
+  background-image: url('../../img/uv-shared-module/print.png');
+  background-repeat: no-repeat;
+  height: 21px;
+  line-height: 21px;
+  cursor: pointer;
+  color: #fff;
+  text-decoration: none;
+  background-position: left center;
+  padding-left: 30px;
+  padding-right: 10px;
+  line-height: 22px;
+}
+#app .footerPanel .options a.print:link,
+#app .footerPanel .options a.print:visited,
+#app .footerPanel .options a.print:hover,
+#app .footerPanel .options a.print:active {
+  color: #fff;
+  text-decoration: none;
+}
 #app .footerPanel .options a.fullScreen {
   background-image: url('../../img/uv-shared-module/fullscreen.png');
   background-repeat: no-repeat;
@@ -1971,6 +1991,17 @@ input[type=range]:focus::-ms-fill-upper {
   padding: 0;
 }
 #app .footerPanel .options.minimiseButtons a.feedback {
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
+  width: 27px;
+  padding: 0;
+}
+#app .footerPanel .options.minimiseButtons a.print {
   font: 0/0 a;
   text-shadow: none;
   background-color: transparent;
