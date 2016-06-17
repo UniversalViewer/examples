@@ -96,6 +96,10 @@
       "@type": "sc:Manifest",
       "label": "Spiegl de Artzny (manuscript)"
     }, {
+      "@id": "http://wellcomelibrary.org/iiif/b19646045/manifest",
+      "@type": "sc:Manifest",
+      "label": "Herbal (overlapping ranges)"
+    }, {
       "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
       "@type": "sc:Manifest",
       "label": "Henry Wellcome Life Mask (3D)",
