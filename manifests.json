@@ -141,6 +141,14 @@
       "@type": "sc:Manifest",
       "label": "Scroll (continuous rtl)"
     }, {
+      "@id": "https://dlcs.io/iiif-resource/british-library-3/manifest/G_809",
+      "@type": "sc:Manifest",
+      "label": "Blest With Thee My Soul's Dear Treasure"
+    }, {
+      "@id": "https://dlcs.io/iiif-resource/british-library-3/manifest/H_3690_tt",
+      "@type": "sc:Manifest",
+      "label": "A Duet for two Performers on one Piano Forte or Harpsichord"
+    }, {
       "@id": "http://files.universalviewer.io/manifests/adiks/Add_11831.json",
       "@type": "sc:Manifest",
       "label": "Add_11831 (3D)"
