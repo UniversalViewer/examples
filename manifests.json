@@ -131,6 +131,18 @@
     "@context": "http://iiif.io/api/presentation/2/context.json",
     "@id": "http://universalviewer.io/manifests.json",
     "@type": "sc:Collection",
+    "label": "Princeton",
+    "visible": true,
+    "manifests": [{
+      "@id": "https://gist.githubusercontent.com/escowles/8ba9e9d3d9780993b4fd03fbe30b5008/raw/e600ac865187933a4db04e0af87773c850288bd4/f7623d04x.json",
+      "@type": "sc:Manifest",
+      "label": "Multiple top viewingHints",
+      "visible": true
+    }]
+  }, {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "http://universalviewer.io/manifests.json",
+    "@type": "sc:Collection",
     "label": "British Library",
     "manifests": [{
       "@id": "http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json",
