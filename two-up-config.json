@@ -1,0 +1,23 @@
+{
+  "options": {
+    "headerPanelEnabled": false,
+    "leftPanelEnabled": false,
+    "rightPanelEnabled": false,
+    "searchWithinEnabled": false
+  },
+  "modules": {
+    "footerPanel": {
+      "options": {
+        "bookmarkEnabled": false,
+        "downloadEnabled": false,
+        "embedEnabled": false,
+        "feedbackEnabled": false,
+        "fullscreenEnabled": true,
+        "minimiseButtons": true,
+        "openEnabled": false,
+        "printEnabled": false,
+        "shareEnabled": false
+      }
+    }
+  }
+}

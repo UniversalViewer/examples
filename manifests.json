@@ -100,6 +100,10 @@
       "@type": "sc:Manifest",
       "label": "Herbal (overlapping ranges)"
     }, {
+      "@id": "http://wellcomelibrary.org/iiif/b16625948/manifest",
+      "@type": "sc:Manifest",
+      "label": "Public perspectives (Embed disabled using UI Extension))"
+    }, {
       "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
       "@type": "sc:Manifest",
       "label": "Henry Wellcome Life Mask (3D)",
@@ -494,6 +498,11 @@
       "@id": "https://edsilv.github.io/test-manifests/top-level-ranges.json",
       "@type": "sc:Manifest",
       "label": "Multiple Top Ranges (small)",
+      "visible": true
+    }, {
+      "@id": "https://edsilv.github.io/test-manifests/print.json",
+      "@type": "sc:Manifest",
+      "label": "Print Service",
       "visible": true
     }
     ]

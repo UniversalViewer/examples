@@ -312,34 +312,40 @@
   padding: 10px 10px 10px 10px;
 }
  #app .leftPanel .tabsContent .options {
-  overflow: hidden;
   padding: 0 0 10px 0;
 }
- #app .leftPanel .tabsContent .options .left {
+ #app .leftPanel .tabsContent .options .top {
+  overflow: hidden;
+  height: auto;
+}
+ #app .leftPanel .tabsContent .options .bottom {
+  overflow: hidden;
+}
+ #app .leftPanel .tabsContent .options .bottom .left {
   float: left;
 }
- #app .leftPanel .tabsContent .options .left .treeView {
+ #app .leftPanel .tabsContent .options .bottom .left .treeView {
   padding: 5px 0 0 0;
 }
- #app .leftPanel .tabsContent .options .left .treeView span {
+ #app .leftPanel .tabsContent .options .bottom .left .treeView span {
   display: block;
   float: left;
   color: #fff;
   padding: 5px 4px 0 0;
   font-size: 11px;
 }
- #app .leftPanel .tabsContent .options .left .treeView select {
+ #app .leftPanel .tabsContent .options .bottom .left .treeView select {
   float: left;
   font-size: 11px;
 }
- #app .leftPanel .tabsContent .options .right {
+ #app .leftPanel .tabsContent .options .bottom .right {
   float: right;
   overflow: hidden;
 }
- #app .leftPanel .tabsContent .options .right .multiSelect .multiSelectAll {
+ #app .leftPanel .tabsContent .options .bottom .right .multiSelect .multiSelectAll {
   float: left;
 }
- #app .leftPanel .tabsContent .options .right .multiSelect .btn {
+ #app .leftPanel .tabsContent .options .bottom .right .multiSelect .btn {
   margin-left: 10px;
 }
  #app .leftPanel .tabsContent .btn-group .btn {
