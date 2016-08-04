@@ -442,10 +442,10 @@ $(function() {
 
             var errors = editor.validate();
 
-            if(errors.length) {
-                //console.log(errors);
-                return;
-            }
+            // if(errors.length) {
+            //     //console.log(errors);
+            //     return;
+            // }
 
             // save contents of #json to session storage
             sessionStorage.setItem(getConfigName(), JSON.stringify(editor.getValue()));
