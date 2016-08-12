@@ -2220,7 +2220,7 @@ input[type=range]:focus::-ms-fill-upper {
 #app .centerPanel .title span {
   line-height: 30px;
 }
-#app .centerPanel .content .acknowledgements {
+#app .centerPanel .content .attribution {
   background: #343434;
   background: rgba(52, 52, 52, 0.7);
   position: absolute;
@@ -2229,10 +2229,10 @@ input[type=range]:focus::-ms-fill-upper {
   margin: 10px 0 5px 15px;
   font-size: 11px;
 }
-#app .centerPanel .content .acknowledgements .header {
+#app .centerPanel .content .attribution .header {
   overflow: hidden;
 }
-#app .centerPanel .content .acknowledgements .header .title {
+#app .centerPanel .content .attribution .header .title {
   font-size: 11px;
   font-weight: bold;
   height: 20px;
@@ -2242,38 +2242,38 @@ input[type=range]:focus::-ms-fill-upper {
   padding: 0;
   text-transform: uppercase;
 }
-#app .centerPanel .content .acknowledgements .header .close {
+#app .centerPanel .content .attribution .header .close {
   width: 16px;
   height: 16px;
   margin: 2px;
   float: right;
-  background-image: url('../../img/uv-shared-module/close_acknowledgements.png');
+  background-image: url('../../img/uv-shared-module/close_attribution.png');
   cursor: pointer;
 }
-#app .centerPanel .content .acknowledgements .main {
+#app .centerPanel .content .attribution .main {
   margin-top: 5px;
 }
-#app .centerPanel .content .acknowledgements .main img {
+#app .centerPanel .content .attribution .main img {
   margin-top: 5px;
   margin-bottom: 5px;
   max-width: 100px;
 }
-#app .centerPanel .content .acknowledgements .main a:not(.toggle) {
+#app .centerPanel .content .attribution .main a:not(.toggle) {
   color: #26b5cc;
 }
-#app .centerPanel .content .acknowledgements .main a:not(.toggle):link {
+#app .centerPanel .content .attribution .main a:not(.toggle):link {
   color: #26b5cc;
 }
-#app .centerPanel .content .acknowledgements .main a:not(.toggle):hover {
+#app .centerPanel .content .attribution .main a:not(.toggle):hover {
   color: #26b5cc;
 }
-#app .centerPanel .content .acknowledgements .main a:not(.toggle):visited {
+#app .centerPanel .content .attribution .main a:not(.toggle):visited {
   color: #26b5cc;
 }
-#app .centerPanel .content .acknowledgements .main a:not(.toggle):active {
+#app .centerPanel .content .attribution .main a:not(.toggle):active {
   color: #26b5cc;
 }
-#app .centerPanel .content .acknowledgements .main .attribution {
+#app .centerPanel .content .attribution .main .attribution-text {
   overflow: hidden;
 }
 #app .footerPanel .searchOptions {
