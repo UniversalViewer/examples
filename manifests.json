@@ -508,6 +508,11 @@
       "@type": "sc:Manifest",
       "label": "Print Service",
       "visible": true
+    }, {
+      "@id": "https://edsilv.github.io/test-manifests/share-service.json",
+      "@type": "sc:Manifest",
+      "label": "Share Service",
+      "visible": true
     }
     ]
   }, {
