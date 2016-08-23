@@ -418,6 +418,7 @@
     "@id": "http://universalviewer.io/manifests.json",
     "@type": "sc:Collection",
     "label": "Ghent University Library",
+    "visible": false,
     "manifests": [{
       "@id": "http://shared.ugent.be/IIIF/collections/rug01-002212499",
       "@type": "sc:Collection",
