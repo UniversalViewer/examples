@@ -514,6 +514,16 @@
       "@type": "sc:Manifest",
       "label": "Share Service",
       "visible": true
+    }, {
+      "@id": "http://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json",
+      "@type": "sc:Manifest",
+      "label": "Metadata with rtl",
+      "visible": true
+    }, {
+      "@id": "https://edsilv.github.io/test-manifests/no-autocomplete.json",
+      "@type": "sc:Manifest",
+      "label": "No Autocomplete",
+      "visible": true
     }
     ]
   }, {
