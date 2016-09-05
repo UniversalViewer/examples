@@ -1,11 +1,16 @@
 {
   "options": {
-    "headerPanelEnabled": false,
-    "leftPanelEnabled": false,
-    "rightPanelEnabled": false,
-    "searchWithinEnabled": false
+    "headerPanelEnabled": true,
+    "leftPanelEnabled": true,
+    "rightPanelEnabled": true,
+    "searchWithinEnabled": true
   },
   "modules": {
+    "contentLeftPanel": {
+      "options": {
+        "panelOpen": false
+      }
+    },
     "footerPanel": {
       "options": {
         "bookmarkEnabled": false,
