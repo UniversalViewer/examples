@@ -316,37 +316,37 @@
     "manifests": [{
       "label": "The Bride of the Tomb; and, Queenie's Terrible Secret",
       "@type": "sc:Manifest",
-      "@id": "http://digital.library.villanova.edu/Item/vudl:24299/Manifest"
+      "@id": "https://digital.library.villanova.edu/Item/vudl:24299/Manifest"
     },{
         "label": "Collections",
         "@type": "sc:Collection",
-        "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
+        "@id": "https://digital.library.villanova.edu/Collection/vudl:3/IIIF"
     },{
       "label": "Villanova University Digital Library (collection)",
       "@type": "sc:Collection",
-      "@id": "http://digital.library.villanova.edu/Collection/vudl:3/IIIF"
+      "@id": "https://digital.library.villanova.edu/Collection/vudl:3/IIIF"
     }, {
       "label": "The Holy Bible",
       "@type": "sc:Collection",
-      "@id": "http://digital.library.villanova.edu/Item/vudl:60609/Manifest"
+      "@id": "https://digital.library.villanova.edu/Item/vudl:60609/Manifest"
     }, {
       "label": "Letter, To: Ellie From: A. M. Thackara (download options)",
       "@type": "sc:Manifest",
-      "@id": "http://digital.library.villanova.edu/Item/vudl:30471/Manifest"
+      "@id": "https://digital.library.villanova.edu/Item/vudl:30471/Manifest"
     }, {
       "label": "LeBlanc Bibliography, Binder 1",
       "@type": "sc:Manifest",
-      "@id": "http://digital.library.villanova.edu/Item/vudl:294631/Manifest",
+      "@id": "https://digital.library.villanova.edu/Item/vudl:294631/Manifest",
       "visible": false
     }, {
       "label": "Augustine PDF",
       "@type": "sc:Manifest",
-      "@id": "http://digital.library.villanova.edu/Item/vudl:100576/Manifest",
+      "@id": "https://digital.library.villanova.edu/Item/vudl:100576/Manifest",
       "visible": false
     }, {
       "label": "LeBlanc Interview, Cassette 1",
       "@type": "sc:Manifest",
-      "@id": "http://digital.library.villanova.edu/Item/vudl:283833/Manifest",
+      "@id": "https://digital.library.villanova.edu/Item/vudl:283833/Manifest",
       "visible": false
     }, {
       "label": "Steam Men Bibliography",
