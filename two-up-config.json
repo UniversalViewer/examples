@@ -3,7 +3,7 @@
     "headerPanelEnabled": true,
     "leftPanelEnabled": true,
     "rightPanelEnabled": true,
-    "searchWithinEnabled": true
+    "searchWithinEnabled": false
   },
   "modules": {
     "contentLeftPanel": {
