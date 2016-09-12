@@ -11,6 +11,11 @@
         "panelOpen": false
       }
     },
+    "headerPanel": {
+      "options": {
+        "settingsButtonEnabled": false
+      }
+    },
     "footerPanel": {
       "options": {
         "bookmarkEnabled": false,
@@ -22,6 +27,14 @@
         "openEnabled": false,
         "printEnabled": false,
         "shareEnabled": false
+      }
+    },
+    "pagingHeaderPanel":
+    {
+      "options":
+      {
+        "galleryButtonEnabled": false,
+        "pagingToggleEnabled": false
       }
     }
   }
