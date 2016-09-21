@@ -351,8 +351,8 @@ $(function() {
         console.log('seadragonExtension.onModeChanged', obj);
     });
 
-    $(document).bind('seadragonExtension.onMultiSelectionMade', function (event, ids) {
-        console.log('seadragonExtension.onMultiSelectionMade', ids);
+    $(document).bind('seadragonExtension.onMultiSelectionMade', function (event, obj) {
+        console.log('seadragonExtension.onMultiSelectionMade', obj);
     });
 
     $(document).bind('seadragonExtension.onNext', function (event, obj) {
