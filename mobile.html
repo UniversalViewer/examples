@@ -1,0 +1,51 @@
+<html>
+<head>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .uv.left{
+            float: left;
+        }
+
+        .uv.right{
+            float: right;
+        }
+    </style>
+</head>    
+<body>
+
+<div class="uv left" data-locale="en-GB:English (GB),cy-GB:Cymraeg" data-uri="http://wellcomelibrary.org/iiif/b18035723/manifest" style="background-color: #000"></div>
+
+<!--<script type="text/javascript" id="embedUV" src="http://universalviewer.io/examples/uv/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>-->
+
+<script type="text/javascript" id="embedUV" src="http://localhost:8001/src/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>
+
+<script>
+
+    $(function() {
+
+        var $UV = $('.uv');
+
+        window.onresize = function() {
+            resize();
+        };
+
+        function resize() {
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
+            $UV.width(windowWidth);
+            $UV.height(windowHeight);
+        }
+        
+        resize();
+    });
+    
+</script>
+
+</body>
+</html>
