@@ -250,6 +250,14 @@
 #app .overlay.login .bottom {
   background: none;
 }
+@media only screen and (min-width: 0px) and (max-width: 480px) {
+  #app .overlay.share {
+    padding: 0 0 45px 8px;
+  }
+  #app .overlay.download {
+    padding: 0 0 45px 8px;
+  }
+}
 #app .leftPanel .views .thumbsView {
   overflow: auto;
 }
