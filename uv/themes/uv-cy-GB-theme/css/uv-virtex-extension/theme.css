@@ -55,11 +55,17 @@
   margin-bottom: 5px;
   font-size: 11px;
 }
-#app .overlay.share .middle .content .tabsContent .shareView .url {
+#app .overlay.share .middle .content .tabsContent .shareView .shareInput {
   width: 100%;
   background: #efefef;
   border: 1px solid #9a9a9a;
   font-size: 11px;
+}
+#app .overlay.share .middle .content .tabsContent .shareView .shareLink {
+  display: block;
+  overflow: hidden;
+  height: 18px;
+  text-overflow: ellipsis;
 }
 #app .overlay.share .middle .content .tabsContent .shareView .shareFrame {
   width: 240px;
