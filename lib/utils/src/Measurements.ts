@@ -5,7 +5,7 @@ module Utils.Measurements {
     }
 
     export class Dimensions {
-        static FitRect(width1: number, height1: number, width2: number, height2: number): Size {
+        static fitRect(width1: number, height1: number, width2: number, height2: number): Size {
             var ratio1 = height1 / width1;
             var ratio2 = height2 / width2;
 
@@ -23,6 +23,13 @@ module Utils.Measurements {
             }
 
             return new Size(Math.floor(width), Math.floor(height));
+        }
+
+        static hitRect(x: number, y: number, w: number, h: number, mx: number, my: number) {
+            if (mx > x && mx < (x + w) && my > y && my < (y + h)) {
+                return true;
+            }
+            return false;
         }
     }
 }

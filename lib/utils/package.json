@@ -1,6 +1,6 @@
 {
   "name": "utils",
-  "version": "0.0.22",
+  "version": "0.0.38",
   "description": "utilities",
   "main": "dist/extensions.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "gulp-mocha": "^2.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-typescript": "^2.7.4",
+    "gulp-utils": "git://github.com/edsilv/gulp-utils.git",
     "merge2": "^0.3.5",
     "mocha": "^2.2.4",
     "require-dir": "^0.3.0",

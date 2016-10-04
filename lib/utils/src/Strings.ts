@@ -1,7 +1,7 @@
 module Utils {
 
     export class Strings {
-        static Ellipsis(text: string, chars: number): string {
+        static ellipsis(text: string, chars: number): string {
             if (text.length <= chars) return text;
             var trimmedText = text.substr(0, chars);
             var lastSpaceIndex = trimmedText.lastIndexOf(" ");
@@ -11,7 +11,7 @@ module Utils {
             return trimmedText + "&hellip;";
         }
 
-        static HtmlDecode(encoded: string): string {
+        static htmlDecode(encoded: string): string {
             var div = document.createElement('div');
             div.innerHTML = encoded;
             return div.firstChild.nodeValue;

@@ -1,6 +1,17 @@
 declare module Utils {
+    class Async {
+        static waitFor(test: () => boolean, successCallback: () => void, failureCallback?: () => void, interval?: number, maxTries?: number, numTries?: number): void;
+    }
+}
+declare module Utils {
     class Bools {
-        static GetBool(val: any, defaultVal: boolean): boolean;
+        static getBool(val: any, defaultVal: boolean): boolean;
+    }
+}
+declare module Utils {
+    class Clipboard {
+        static copy(text: string): void;
+        static supportsCopy(): boolean;
     }
 }
 /**
@@ -1392,21 +1403,45 @@ declare module Utils.Collections {
 }
 declare module Utils {
     class Colors {
-        static Float32ColorToARGB(float32Color: number): number[];
-        private static _ComponentToHex(c);
-        static RGBToHexString(rgb: number[]): string;
-        static ARGBToHexString(argb: number[]): string;
-        static Coalesce(arr: any[]): void;
+        static float32ColorToARGB(float32Color: number): number[];
+        private static _componentToHex(c);
+        static rgbToHexString(rgb: number[]): string;
+        static argbToHexString(argb: number[]): string;
+        static coalesce(arr: any[]): void;
     }
 }
 declare module Utils {
     class Dates {
-        static GetTimeStamp(): number;
+        static getTimeStamp(): number;
+    }
+}
+declare module Utils {
+    class Device {
+        static getPixelRatio(ctx: CanvasRenderingContext2D): number;
+        static isTouch(): boolean;
+    }
+}
+declare module Utils {
+    class Documents {
+        static isInIFrame(): boolean;
+        static supportsFullscreen(): boolean;
+        static isHidden(): boolean;
+        static getHiddenProp(): string;
     }
 }
 declare module Utils {
     class Events {
-        static Debounce(fn: any, debounceDuration: number): () => any;
+        static debounce(fn: any, debounceDuration: number): () => any;
+    }
+}
+declare module Utils {
+    class Files {
+        static simplifyMimeType(mime: string): string;
+    }
+}
+declare module Utils {
+    class Keyboard {
+        static getCharCode(e: KeyboardEvent): number;
     }
 }
 declare module Utils.Maths {
@@ -1414,26 +1449,26 @@ declare module Utils.Maths {
         X: number;
         Y: number;
         constructor(x: number, y: number);
-        Get(): Vector;
-        Set(x: number, y: number): void;
-        Add(v: Vector): void;
-        static Add(v1: Vector, v2: Vector): Vector;
-        Sub(v: Vector): void;
-        static Sub(v1: Vector, v2: Vector): Vector;
-        Mult(n: number): void;
-        static Mult(v1: Vector, v2: Vector): Vector;
-        static MultN(v1: Vector, n: number): Vector;
+        get(): Vector;
+        set(x: number, y: number): void;
+        add(v: Vector): void;
+        static add(v1: Vector, v2: Vector): Vector;
+        sub(v: Vector): void;
+        static sub(v1: Vector, v2: Vector): Vector;
+        mult(n: number): void;
+        static mult(v1: Vector, v2: Vector): Vector;
+        static multN(v1: Vector, n: number): Vector;
         Div(n: number): void;
-        static Div(v1: Vector, v2: Vector): Vector;
-        static DivN(v1: Vector, n: number): Vector;
-        Mag(): number;
-        MagSq(): number;
-        Normalise(): void;
-        Limit(max: number): void;
-        Equals(v: Vector): boolean;
-        Heading(): number;
-        static Random2D(): Vector;
-        static FromAngle(angle: number): Vector;
+        static div(v1: Vector, v2: Vector): Vector;
+        static divN(v1: Vector, n: number): Vector;
+        mag(): number;
+        magSq(): number;
+        normalise(): void;
+        limit(max: number): void;
+        equals(v: Vector): boolean;
+        heading(): number;
+        static random2D(): Vector;
+        static fromAngle(angle: number): Vector;
     }
 }
 declare module Utils.Measurements {
@@ -1443,34 +1478,61 @@ declare module Utils.Measurements {
         constructor(width: number, height: number);
     }
     class Dimensions {
-        static FitRect(width1: number, height1: number, width2: number, height2: number): Size;
+        static fitRect(width1: number, height1: number, width2: number, height2: number): Size;
+        static hitRect(x: number, y: number, w: number, h: number, mx: number, my: number): boolean;
     }
 }
 declare module Utils {
     class Numbers {
-        static NumericalInput(event: any): boolean;
+        static numericalInput(event: any): boolean;
     }
 }
 declare module Utils {
-    class Objects {
-        static ConvertToPlainObject(obj: any): any;
+}
+declare module Utils {
+    class Storage {
+        private static _memoryStorage;
+        static clear(storageType?: StorageType): void;
+        static clearExpired(storageType?: StorageType): void;
+        static get(key: string, storageType?: StorageType): StorageItem;
+        private static _isExpired(item);
+        static getItems(storageType?: StorageType): StorageItem[];
+        static remove(key: string, storageType?: StorageType): void;
+        static set(key: string, value: any, expirationSecs: number, storageType?: StorageType): StorageItem;
+    }
+}
+declare module Utils {
+    class StorageItem {
+        key: string;
+        value: any;
+        expiresAt: number;
+    }
+}
+declare module Utils {
+    class StorageType {
+        value: string;
+        static memory: StorageType;
+        static session: StorageType;
+        static local: StorageType;
+        constructor(value: string);
+        toString(): string;
     }
 }
 declare module Utils {
     class Strings {
-        static Ellipsis(text: string, chars: number): string;
-        static HtmlDecode(encoded: string): string;
+        static ellipsis(text: string, chars: number): string;
+        static htmlDecode(encoded: string): string;
     }
 }
 declare module Utils {
     class Urls {
-        static GetHashParameter(key: string, doc?: Document): string;
-        static SetHashParameter(key: string, value: any, doc?: Document): void;
-        static GetQuerystringParameter(key: string, w?: Window): string;
-        static GetQuerystringParameterFromString(key: string, querystring: string): string;
-        static SetQuerystringParameter(key: string, value: any, doc?: Document): void;
-        static UpdateURIKeyValuePair(uriSegment: string, key: string, value: string): string;
-        static GetUrlParts(url: string): any;
-        static ConvertToRelativeUrl(url: string): string;
+        static getHashParameter(key: string, doc?: Document): string;
+        static setHashParameter(key: string, value: any, doc?: Document): void;
+        static getQuerystringParameter(key: string, w?: Window): string;
+        static getQuerystringParameterFromString(key: string, querystring: string): string;
+        static setQuerystringParameter(key: string, value: any, doc?: Document): void;
+        static updateURIKeyValuePair(uriSegment: string, key: string, value: string): string;
+        static getUrlParts(url: string): any;
+        static convertToRelativeUrl(url: string): string;
     }
 }

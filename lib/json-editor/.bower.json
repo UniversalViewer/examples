@@ -24,14 +24,14 @@
     "src"
   ],
   "homepage": "https://github.com/jdorn/json-editor",
-  "version": "0.7.21",
-  "_release": "0.7.21",
+  "version": "0.7.28",
+  "_release": "0.7.28",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.21",
-    "commit": "06b04e2c01e3729fa41cd0637c21641681d3f3e8"
+    "tag": "v0.7.28",
+    "commit": "26e221593e3678794d4abf6c0ba98ccb180c7387"
   },
-  "_source": "git://github.com/jdorn/json-editor.git",
-  "_target": "~0.7.13",
+  "_source": "https://github.com/jdorn/json-editor.git",
+  "_target": "~0.7.28",
   "_originalSource": "json-editor"
 }

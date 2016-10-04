@@ -2,7 +2,7 @@ module Utils {
 
     export class Events {
 
-        static Debounce(fn: any, debounceDuration: number) {
+        static debounce(fn: any, debounceDuration: number) {
             // summary:
             //      Returns a debounced function that will make sure the given
             //      function is not triggered too much.

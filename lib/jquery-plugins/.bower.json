@@ -1,6 +1,6 @@
 {
   "name": "jquery-plugins",
-  "version": "0.0.11",
+  "version": "0.0.24",
   "homepage": "https://github.com/edsilv/jquery-plugins",
   "authors": [
     "edsilv <e.silverton@gmail.com>"
@@ -25,11 +25,11 @@
     "extensions": "edsilv/extensions#~0.1.3",
     "Units": "heygrady/Units"
   },
-  "_release": "0.0.11",
+  "_release": "0.0.24",
   "_resolution": {
     "type": "version",
-    "tag": "0.0.11",
-    "commit": "2c333f38bb1f7eb3bc064c67430069850ca192ec"
+    "tag": "v0.0.24",
+    "commit": "23148a69a4edd3175035f2366872d9acfbbddbae"
   },
   "_source": "git://github.com/edsilv/jquery-plugins.git",
   "_target": "~0.0.11",

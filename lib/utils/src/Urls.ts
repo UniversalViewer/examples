@@ -2,17 +2,17 @@ module Utils {
 
     export class Urls {
 
-        static GetHashParameter(key: string, doc?: Document): string {
+        static getHashParameter(key: string, doc?: Document): string {
             if (!doc) doc = window.document;
             var regex = new RegExp("#.*[?&]" + key + "=([^&]+)(&|$)");
             var match = regex.exec(doc.location.hash);
             return(match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : null);
         }
 
-        static SetHashParameter(key: string, value: any, doc?: Document): void{
+        static setHashParameter(key: string, value: any, doc?: Document): void{
             if (!doc) doc = window.document;
 
-            var kvp = this.UpdateURIKeyValuePair(doc.location.hash.replace('#?', ''), key, value);
+            var kvp = this.updateURIKeyValuePair(doc.location.hash.replace('#?', ''), key, value);
 
             var newHash = "#?" + kvp;
 
@@ -28,28 +28,28 @@ module Utils {
             doc.location.replace(url + newHash);
         }
 
-        static GetQuerystringParameter(key: string, w?: Window): string {
+        static getQuerystringParameter(key: string, w?: Window): string {
             if (!w) w = window;
-            return this.GetQuerystringParameterFromString(key, w.location.search);
+            return this.getQuerystringParameterFromString(key, w.location.search);
         }
 
-        static GetQuerystringParameterFromString(key: string, querystring: string): string {
+        static getQuerystringParameterFromString(key: string, querystring: string): string {
             key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
             var match = regex.exec(querystring);
             return(match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : null);
         }
 
-        static SetQuerystringParameter(key: string, value: any, doc?: Document): void{
+        static setQuerystringParameter(key: string, value: any, doc?: Document): void{
             if (!doc) doc = window.document;
 
-            var kvp = this.UpdateURIKeyValuePair(doc.location.hash.replace('#?', ''), key, value);
+            var kvp = this.updateURIKeyValuePair(doc.location.hash.replace('#?', ''), key, value);
 
             // redirects.
             window.location.search = kvp;
         }
 
-        static UpdateURIKeyValuePair(uriSegment: string, key: string, value: string): string{
+        static updateURIKeyValuePair(uriSegment: string, key: string, value: string): string{
 
             key = encodeURIComponent(key);
             value = encodeURIComponent(value);
@@ -82,14 +82,14 @@ module Utils {
             return kvp.join('&');
         }
 
-        static GetUrlParts(url: string): any {
+        static getUrlParts(url: string): any {
             var a = document.createElement('a');
             a.href = url;
             return a;
         }
 
-        static ConvertToRelativeUrl(url: string): string {
-            var parts = this.GetUrlParts(url);
+        static convertToRelativeUrl(url: string): string {
+            var parts = this.getUrlParts(url);
             var relUri = parts.pathname + parts.searchWithin;
 
             if (!relUri.startsWith("/")) {

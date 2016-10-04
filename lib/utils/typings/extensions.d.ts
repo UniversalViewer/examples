@@ -13,6 +13,14 @@ interface Array<T>{
     removeAt(index: number): void;
 }
 
+interface CanvasRenderingContext2D {
+    webkitBackingStorePixelRatio: number;
+    mozBackingStorePixelRatio: number;
+    msBackingStorePixelRatio: number;
+    oBackingStorePixelRatio: number;
+    backingStorePixelRatio: number;
+}
+
 interface Math {
     clamp(value: number, min: number, max: number): number;
     constrain(value: number, low: number, high: number): number;
@@ -49,4 +57,9 @@ interface String {
 
 interface StringConstructor {
     format(template: string, ...args: any[]): string;
+}
+
+interface HTMLElement{
+    mozRequestFullScreen: any;
+    msRequestFullscreen: any;
 }

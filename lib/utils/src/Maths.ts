@@ -10,11 +10,11 @@ module Utils.Maths {
             this.Y = y;
         }
 
-        Get(): Vector {
+        get(): Vector {
             return new Vector(this.X, this.Y);
         }
 
-        Set(x: number, y: number): void{
+        set(x: number, y: number): void{
             this.X = x;
             this.Y = y;
         }
@@ -37,34 +37,34 @@ module Utils.Maths {
         //    //this.OnPropertyChanged("Y");
         //}
 
-        Add(v: Vector): void {
+        add(v: Vector): void {
             this.X += v.X;
             this.Y += v.Y;
         }
 
-        static Add(v1: Vector, v2: Vector): Vector {
+        static add(v1: Vector, v2: Vector): Vector {
             return new Vector(v1.X + v2.X, v1.Y + v2.Y);
         }
 
-        Sub(v: Vector): void {
+        sub(v: Vector): void {
             this.X -= v.X;
             this.Y -= v.Y;
         }
 
-        static Sub(v1: Vector, v2: Vector): Vector {
+        static sub(v1: Vector, v2: Vector): Vector {
             return new Vector(v1.X - v2.X, v1.Y - v2.Y);
         }
 
-        Mult(n: number): void {
+        mult(n: number): void {
             this.X = this.X * n;
             this.Y = this.Y * n;
         }
 
-        static Mult(v1: Vector, v2: Vector): Vector {
+        static mult(v1: Vector, v2: Vector): Vector {
             return new Vector(v1.X * v2.X, v1.Y * v2.Y);
         }
 
-        static MultN(v1: Vector, n: number): Vector {
+        static multN(v1: Vector, n: number): Vector {
             return new Vector(v1.X * n, v1.Y * n);
         }
 
@@ -73,50 +73,50 @@ module Utils.Maths {
             this.Y = this.Y / n;
         }
 
-        static Div(v1: Vector, v2: Vector): Vector {
+        static div(v1: Vector, v2: Vector): Vector {
             return new Vector(v1.X / v2.X, v1.Y / v2.Y);
         }
 
-        static DivN(v1: Vector, n: number): Vector {
+        static divN(v1: Vector, n: number): Vector {
             return new Vector(v1.X / n, v1.Y / n);
         }
 
-        Mag(): number {
+        mag(): number {
             return Math.sqrt(this.X * this.X + this.Y * this.Y);
         }
 
-        MagSq(): number {
+        magSq(): number {
             return (this.X * this.X + this.Y * this.Y);
         }
 
-        Normalise(): void {
-            var m = this.Mag();
+        normalise(): void {
+            var m = this.mag();
             if (m != 0 && m != 1) {
                 this.Div(m);
             }
         }
 
-        Limit(max: number){
-            if (this.MagSq() > max * max) {
-                this.Normalise();
-                this.Mult(max);
+        limit(max: number){
+            if (this.magSq() > max * max) {
+                this.normalise();
+                this.mult(max);
             }
         }
 
-        Equals(v: Vector): boolean {
+        equals(v: Vector): boolean {
             return (this.X == v.X && this.Y == v.Y);
         }
 
-        Heading() {
+        heading() {
             var angle = Math.atan2(-this.Y, this.X);
             return -1*angle;
         }
 
-        static Random2D(): Vector{
-            return Vector.FromAngle((Math.random() * Math.TAU));
+        static random2D(): Vector{
+            return Vector.fromAngle((Math.random() * Math.TAU));
         }
 
-        static FromAngle(angle: number): Vector {
+        static fromAngle(angle: number): Vector {
             return new Vector(Math.cos(angle), Math.sin(angle));
         }
     }

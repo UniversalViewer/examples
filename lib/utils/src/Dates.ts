@@ -1,7 +1,7 @@
 module Utils {
 
     export class Dates {
-        static GetTimeStamp(): number {
+        static getTimeStamp(): number {
             return new Date().getTime();
         }
     }

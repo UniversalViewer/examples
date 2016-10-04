@@ -1,6 +1,6 @@
 {
   "name": "extensions",
-  "version": "0.1.5",
+  "version": "0.1.11",
   "homepage": "https://github.com/edsilv/extensions",
   "authors": [
     "edsilv <e.silverton@gmail.com>"
@@ -19,11 +19,11 @@
     "test",
     "tests"
   ],
-  "_release": "0.1.5",
+  "_release": "0.1.11",
   "_resolution": {
     "type": "version",
-    "tag": "0.1.5",
-    "commit": "97531e1e3e8a0338c4bf706e9f9c7d4e48986188"
+    "tag": "v0.1.11",
+    "commit": "cd03b2c90cb241b4d9df2e59005fbf85cce5eb60"
   },
   "_source": "git://github.com/edsilv/extensions.git",
   "_target": "~0.1.3",

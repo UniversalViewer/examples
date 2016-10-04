@@ -1,7 +1,7 @@
 module Utils {
 
     export class Numbers {
-        static NumericalInput(event: any): boolean {
+        static numericalInput(event: any): boolean {
             // Allow: backspace, delete, tab and escape
             if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 ||
                     // Allow: Ctrl+A
