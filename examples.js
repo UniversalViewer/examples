@@ -56,7 +56,7 @@ $(function() {
     }
 
     function formatUrl(url) {
-        var parts = Utils.Urls.GetUrlParts(location.href);
+        var parts = Utils.Urls.getUrlParts(location.href);
         var pathname = parts.pathname;
         if (!pathname.startsWith('/')){
             pathname = '/' + pathname;
@@ -143,8 +143,8 @@ $(function() {
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'jsonp', jsonp);
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'testids', testids);
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
-        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'manifest', manifest);
-        qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'locale', locale);
+        qs = Utils.Urls.updateURIKeyValuePair(qs, 'manifest', manifest);
+        qs = Utils.Urls.updateURIKeyValuePair(qs, 'locale', locale);
 
         if (window.location.search === '?' + qs){
             window.location.reload();
@@ -190,7 +190,7 @@ $(function() {
 
         var jsonp = getJSONPSetting();
 
-        var qs = Utils.Urls.GetQuerystringParameter('jsonp');
+        var qs = Utils.Urls.getQuerystringParameter('jsonp');
 
         if (qs === 'false'){
             jsonp = false;
@@ -212,7 +212,7 @@ $(function() {
 
     function setSelectedManifest(){
 
-        var manifest = Utils.Urls.GetQuerystringParameter('manifest');
+        var manifest = Utils.Urls.getQuerystringParameter('manifest');
 
         if (manifest) {
             $('#manifestSelect').val(manifest);
@@ -236,7 +236,7 @@ $(function() {
 
     // called when the page loads to set the initial data-locale
     function setInitialLocale() {
-        var locale = Utils.Urls.GetQuerystringParameter('locale');
+        var locale = Utils.Urls.getQuerystringParameter('locale');
         if (locale){
             $('.uv').attr('data-locale', locale);
         }
@@ -253,7 +253,7 @@ $(function() {
     function setTestIds(){
         //var testids = $('#testids').is(':checked');
 
-        var qs = Utils.Urls.GetQuerystringParameter('testids');
+        var qs = Utils.Urls.getQuerystringParameter('testids');
 
         if (qs === 'true') {
             createTestIds();
@@ -266,7 +266,7 @@ $(function() {
     function setDefaultToFullScreen(){
         var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
 
-        var qs = Utils.Urls.GetQuerystringParameter('defaultToFullScreen');
+        var qs = Utils.Urls.getQuerystringParameter('defaultToFullScreen');
 
         if (qs === 'true') {
             $('.uv').attr('data-fullscreen', true);
