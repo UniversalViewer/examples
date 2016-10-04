@@ -524,6 +524,11 @@
       "@type": "sc:Manifest",
       "label": "No Autocomplete",
       "visible": true
+    }, {
+      "@id": "https://edsilv.github.io/test-manifests/members.json",
+      "@type": "sc:Manifest",
+      "label": "Members",
+      "visible": true
     }
     ]
   }, {
