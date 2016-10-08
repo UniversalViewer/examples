@@ -267,7 +267,7 @@
 #app .overlay.login .bottom {
   background: none;
 }
-@media only screen and (min-width: 0px) and (max-width: 568px) {
+@media only screen and (min-width: 0px) and (max-width: 640px) {
   #app .overlay.share {
     padding: 0 0 45px 8px;
   }
@@ -2999,7 +2999,7 @@ input[type=range]:focus::-ms-fill-upper {
 .iiif-metadata-component .items .item .text img {
   max-width: 100px;
 }
-@media only screen and (min-width: 0px) and (max-width: 568px) {
+@media only screen and (min-width: 0px) and (max-width: 640px) {
   #app .headerPanel {
     display: none;
   }
