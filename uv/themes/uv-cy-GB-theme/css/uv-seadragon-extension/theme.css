@@ -2941,7 +2941,7 @@ input[type=range]:focus::-ms-fill-upper {
   }
   #app .footerPanel.mobile .options .spacer {
     float: left;
-    width: 50px;
+    width: 30px;
     height: 41px;
   }
   #app .footerPanel.mobile .options a {
