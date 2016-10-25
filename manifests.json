@@ -529,6 +529,16 @@
       "@type": "sc:Manifest",
       "label": "Members",
       "visible": true
+    }, {
+      "@id": "http://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json",
+      "@type": "sc:Manifest",
+      "label": "Mixed RTL",
+      "visible": true
+    }, {
+      "@id": "https://edsilv.github.io/test-manifests/all-metadata.json",
+      "@type": "sc:Manifest",
+      "label": "All Metadata",
+      "visible": true
     }
     ]
   }, {
