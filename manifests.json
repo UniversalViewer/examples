@@ -331,6 +331,16 @@
           "@id": "http://dams.llgc.org.uk/iiif/archive/3975658/fonds.json",
           "@type": "sc:Collection",
           "label": "Cardiganshire Great War Tribunal (Appeals) Records"
+        },
+        {
+          "@id": "http://dev.llgc.org.uk/iiif/search/4623730.json",
+          "@type": "sc:Manifest",
+          "label": "Map of the parish of Llanbadarn Fawr in the County of Cardigan"
+        },
+        {
+          "@id": "https://damsssl.llgc.org.uk/iiif/2.0/4566425/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Map of the parish of Llanbadarn Fawr in the County of Cardigan"
         }
       ]
     },
