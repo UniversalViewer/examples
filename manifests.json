@@ -127,7 +127,12 @@
         {
           "@id": "http://wellcomelibrary.org/iiif/b16625948/manifest",
           "@type": "sc:Manifest",
-          "label": "Public perspectives (Embed disabled using UI Extension))"
+          "label": "Public perspectives (Embed disabled using UI Extension)"
+        },
+        {
+          "@id": "http://wellcomelibrary.org/iiif/b20641151/manifest",
+          "@type": "sc:Manifest",
+          "label": "Completed Schedules from the International Health Exhibition (large)"
         },
         {
           "@id": "http://files.universalviewer.io/manifests/wellcome/henry.json",
