@@ -181,6 +181,12 @@
           "@type": "sc:Manifest",
           "label": "Multiple top viewingHints",
           "visible": true
+        },
+        {
+          "@id": "http://bluemountain.princeton.edu/exist/restxq/iiif/collection/top",
+          "@type": "sc:Manifest",
+          "label": "Action, Première Année, Numéro 1",
+          "visible": true
         }
       ]
     },
@@ -359,6 +365,11 @@
           "@id": "http://iiif.bodleian.ox.ac.uk/examples/mushaf4.json",
           "@type": "sc:Manifest",
           "label": "Mixed"
+        },
+        {
+          "@id": "http://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json",
+          "@type": "sc:Manifest",
+          "label": "MS. Bodl. 264"
         }
       ]
     },
