@@ -539,6 +539,16 @@
           "@id": "https://iiif.riksarkivet.se/arkis!C0000263/manifest",
           "@type": "sc:Manifest",
           "label": "Ervalla kyrkoarkiv (canvas metadata)"
+        },
+        {
+          "@id": "https://iiif.riksarkivet.se/arkis!R0000004/manifest",
+          "@type": "sc:Manifest",
+          "label": "Originaltraktater med främmande makter"
+        },
+        {
+          "@id": "https://iiif.riksarkivet.se/sdhk!456/manifest",
+          "@type": "sc:Manifest",
+          "label": "SDHK nr 456, datering 1229-01-23"
         }
       ]
     },
