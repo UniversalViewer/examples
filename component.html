@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.75/jsviews.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/json2.min.js"></script>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/json2.min.js"></script>-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/3.2.1/es6-promise.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/yepnope/1.5.4/yepnope.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/yepnope/1.5.4/yepnope.min.js"></script> <!-- todo: is yepnope.css.js needed in bundle.js? -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash-compat/3.10.2/lodash.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>
-    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>-->
-    <script type="text/javascript" src="lib/bundle.min.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="uv/lib/bundle.min.js"></script>
+    <script type="text/javascript" src="uv/app.js"></script>
 
     <style type="text/css">
         #app.loading {
@@ -29,11 +28,11 @@
     <div id="app"></div>
 
     <script type="text/javascript">
-        var app = document.getElementById("app");
-        var width = window.innerWidth || document.documentElement.clientWidth;
-        var height = window.innerHeight || document.documentElement.clientHeight;
-        app.setAttribute("style", "width:" + width + "px");
-        app.setAttribute("style", "height:" + height + "px");
+        // var app = document.getElementById("app");
+        // var width = window.innerWidth || document.documentElement.clientWidth;
+        // var height = window.innerHeight || document.documentElement.clientHeight;
+        // app.setAttribute("style", "width:" + width + "px");
+        // app.setAttribute("style", "height:" + height + "px");
 
         document.addEventListener('uvReady', function (e) { 
 
@@ -50,6 +49,7 @@
             
             // uv.loadManifest();
         }, false);
+
     </script>
 
     <!-- uncomment the following for GA tracking when embedded on third party sites -->

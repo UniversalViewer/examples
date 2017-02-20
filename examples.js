@@ -362,7 +362,7 @@ $(function() {
 
     function init() {
         if (isLocalhost){
-            if (!scriptIncluded) $('body').append('<script type="text/javascript" id="embedUV" src="/src/lib/embed.js"><\/script>');
+            if (!scriptIncluded) $('body').append('<script type="text/javascript" id="embedUV" src="/src/embed.js"><\/script>');
         } else {
             // built version
 
