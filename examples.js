@@ -362,7 +362,7 @@ $(function() {
 
     function init() {
         if (isLocalhost){
-            if (!scriptIncluded) $('body').append('<script type="text/javascript" id="embedUV" src="/src/embed.js"><\/script>');
+           // if (!scriptIncluded) $('body').append('<script type="text/javascript" id="embedUV" src="/src/embed.js"><\/script>');
         } else {
             // built version
 
@@ -381,7 +381,7 @@ $(function() {
                 });
             }
 
-            $('body').append('<script type="text/javascript" id="embedUV" src="' + uvVersion + '/lib/embed.js"><\/script>');
+            //$('body').append('<script type="text/javascript" id="embedUV" src="' + uvVersion + '/lib/embed.js"><\/script>');
         }
 
         $('#setOptionsBtn').on('click', function(e){
