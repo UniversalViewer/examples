@@ -34,9 +34,9 @@
         // app.setAttribute("style", "width:" + width + "px");
         // app.setAttribute("style", "height:" + height + "px");
 
-        document.addEventListener('uvReady', function (e) { 
+        window.addEventListener('uvReady', function (e) { 
 
-            var uv = new document.UV({
+            var uv = new UV({
                 target: document.querySelector('#app'),
                 data: {
                     iiifResourceURI: "uri"
