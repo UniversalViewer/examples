@@ -130,7 +130,6 @@ $(function() {
 
     function reload() {
 
-        //var jsonp = getJSONPSetting();
         //var testids = $('#testids').is(':checked');
         //var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
         var manifest = $('#manifest').val();
@@ -139,7 +138,6 @@ $(function() {
         clearHashParams();
 
         var qs = document.location.search.replace('?', '');
-        //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'jsonp', jsonp);
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'testids', testids);
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
         qs = Utils.Urls.updateURIKeyValuePair(qs, 'manifest', manifest);
@@ -158,40 +156,6 @@ $(function() {
 
     function getLocale() {
         return bootstrapper.params.localeName;
-    }
-
-    function getJSONPSetting() {
-        if ($('#jsonp').is(':checked')) {
-            return true;
-        }
-        if ($('#cors').is(':checked')) {
-            return false;
-        }
-        return null;
-    }
-
-    function setJSONPEnabled() {
-
-        var jsonp = getJSONPSetting();
-
-        var qs = Utils.Urls.getQuerystringParameter('jsonp');
-
-        if (qs === 'false'){
-            jsonp = false;
-        } else if (qs === 'true') {
-            jsonp = true;
-        }
-
-        if (jsonp === true){
-            $('.uv').attr('data-jsonp', 'true');
-            $('#jsonp').attr('checked', 'true');
-        } else if (jsonp === false){
-            $('.uv').attr('data-jsonp', 'false');
-            $('#cors').attr('checked', 'true');
-        } else {
-            $('.uv').removeAttr('data-jsonp');
-            $('#cors-or-jsonp-auto').attr('checked', 'true');
-        }
     }
 
     function setSelectedManifest(){
@@ -390,8 +354,6 @@ $(function() {
         });
 
         uvEventHandlers();
-
-        setJSONPEnabled();
 
         if ($('#manifestSelect option').length || $('#manifestSelect optgroup').length){
             setSelectedManifest();
