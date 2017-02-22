@@ -25,25 +25,25 @@ $(function() {
         });
     }
 
-    function getConfigName(){
+    function getConfigName() {
         return bootstrapper.config.name + '.' + getLocale();
     }
 
-    function formatSchema(schema){
+    function formatSchema(schema) {
         collapse(jmespath.search(schema, 'properties.*'));
         collapse(jmespath.search(schema, 'properties.modules.properties.*'));
         hide(jmespath.search(schema, 'properties.[localisation]'));
     }
 
-    function collapse(nodes){
+    function collapse(nodes) {
         setOption(nodes, 'collapsed', true);
     }
 
-    function hide(nodes){
+    function hide(nodes) {
         setOption(nodes, 'hidden', true);
     }
 
-    function setOption(nodes, option, value){
+    function setOption(nodes, option, value) {
         for (var i = 0; i < nodes.length; i++){
             var node = nodes[i];
 
@@ -80,7 +80,7 @@ $(function() {
 
                 $manifestSelect.append('<optgroup label="' + collection.label + '">');
 
-                for (var j = 0; j < collection.manifests.length; j++){
+                for (var j = 0; j < collection.manifests.length; j++) {
                     var manifest = collection.manifests[j];
 
                     if (manifest.visible !== false){
@@ -134,7 +134,6 @@ $(function() {
         //var testids = $('#testids').is(':checked');
         //var defaultToFullScreen = $('#defaultToFullScreen').is(':checked');
         var manifest = $('#manifest').val();
-        var locale = $('#locales').val() || 'en-GB';
 
         // clear hash params
         clearHashParams();
@@ -144,7 +143,7 @@ $(function() {
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'testids', testids);
         //qs = Utils.Urls.UpdateURIKeyValuePair(qs, 'defaultToFullScreen', defaultToFullScreen);
         qs = Utils.Urls.updateURIKeyValuePair(qs, 'manifest', manifest);
-        qs = Utils.Urls.updateURIKeyValuePair(qs, 'locale', locale);
+        //qs = Utils.Urls.updateURIKeyValuePair(qs, 'locale', locale);
 
         if (window.location.search === '?' + qs){
             window.location.reload();
@@ -158,22 +157,7 @@ $(function() {
     }
 
     function getLocale() {
-        return getDefaultLocale($('#locales').val());
-    }
-
-    function getDefaultLocale(l) {
-        var parsed = [];
-        var l = l.split(',');
-
-        for (var i = 0; i < l.length; i++) {
-            var v = l[i].split(':');
-            parsed.push({
-                name: v[0],
-                label: (v[1]) ? v[1] : ''
-            });
-        }
-
-        return parsed[0].name;
+        return bootstrapper.params.localeName;
     }
 
     function getJSONPSetting() {
@@ -232,22 +216,6 @@ $(function() {
 
     function updateDragDrop(){
         $('#dragndrop').attr('href', location.origin + location.pathname + '?manifest=' + $('#manifest').val());
-    }
-
-    // called when the page loads to set the initial data-locale
-    function setInitialLocale() {
-        var locale = Utils.Urls.getQuerystringParameter('locale');
-        if (locale){
-            $('.uv').attr('data-locale', locale);
-        }
-    }
-
-    // called when the UV loads to set
-    // the locale options
-    function setSelectedLocale(locale) {
-        $('#locale').val(getDefaultLocale(locale));
-
-        $('#locales').val(locale);
     }
 
     function setTestIds(){
@@ -337,16 +305,6 @@ $(function() {
             closeEditor();
 
             bootstrapper = obj.bootstrapper;
-            var locales = bootstrapper.config.localisation.locales;
-
-            $('#locale').empty();
-
-            for (var i = 0; i < locales.length; i++){
-                var l = locales[i];
-                $('#locale').append('<option value="' + l.name + '">' + l.label + '</option>');
-            }
-
-            setSelectedLocale(bootstrapper.params.locale);
 
             loadConfigSchema(function(schema) {
                 if (schema){
@@ -361,35 +319,25 @@ $(function() {
     }
 
     function init() {
-        if (isLocalhost){
-           // if (!scriptIncluded) $('body').append('<script type="text/javascript" id="embedUV" src="/src/embed.js"><\/script>');
-        } else {
-            // built version
 
-            if (!isGithub){
-                // remove '/examples' from paths
-                $('.uv').updateAttr('data-config', '/examples/', '/');
+        // if hosted on something like an azure website without the /examples path
+        if (!isLocalhost && !isGithub) {
+            // remove '/examples' from paths
+            $('.uv').updateAttr('data-config', '/examples/', '/');
 
-                $('.uv').updateAttr('data-uri', '/examples/', '/');
+            $('.uv').updateAttr('data-uri', '/examples/', '/');
 
-                $('#locale option').each(function() {
-                    $(this).updateAttr('value', '/examples/', '/');
-                });
-
-                $('#manifestSelect option').each(function() {
-                    $(this).updateAttr('value', '/examples/', '/');
-                });
-            }
-
-            //$('body').append('<script type="text/javascript" id="embedUV" src="' + uvVersion + '/lib/embed.js"><\/script>');
+            $('#manifestSelect option').each(function() {
+                $(this).updateAttr('value', '/examples/', '/');
+            });
         }
 
-        $('#setOptionsBtn').on('click', function(e){
+        $('#setOptionsBtn').on('click', function(e) {
             e.preventDefault();
             reload();
         });
 
-        $('#manifestSelect').on('change', function(){
+        $('#manifestSelect').on('change', function() {
             $('#manifest').val($('#manifestSelect option:selected').val());
             updateDragDrop();
         });
@@ -404,36 +352,18 @@ $(function() {
             }
         });
 
-        $('#setManifestBtn').on('click', function(e){
+        $('#setManifestBtn').on('click', function(e) {
             e.preventDefault();
-            reload();
-        });
-
-        $('#locale').on('change', function(){
-            $('#locales').val($('#locale option:selected').val());
-        });
-
-        $('#setLocalesBtn').on('click', function(e){
-            e.preventDefault();
-            reload();
-        });
-
-        $('#resetLocalesBtn').on('click', function(e){
-            e.preventDefault();
-            $('#locale').text('');
-            $('.uv').removeAttr('data-locale');
             reload();
         });
 
         $('#editBtn').on('click', function(e) {
             e.preventDefault();
-
             openEditor();
         });
 
         $('#closeBtn').on('click', function(e) {
             e.preventDefault();
-
             closeEditor();
         });
 
@@ -455,9 +385,7 @@ $(function() {
 
         $('#resetBtn').on('click', function(e){
             e.preventDefault();
-
             sessionStorage.clear();
-
             reload();
         });
 
@@ -469,16 +397,12 @@ $(function() {
             setSelectedManifest();
         }
 
-        setInitialLocale();
         //setDefaultToFullScreen();
         loadViewer();
     }
 
-    var isLocalhost = document.location.href.indexOf('localhost') != -1;
-    var isGithub = document.location.href.indexOf('github') != -1;
-
-    // if the embed script has been included in the page for testing, don't append it.
-    var scriptIncluded = $('#embedUV').length;
+    var isLocalhost = document.location.href.indexOf('localhost') !== -1;
+    var isGithub = document.location.href.indexOf('github') !== -1;
 
     loadManifests(function() {
         init();
