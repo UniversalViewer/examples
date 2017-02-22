@@ -2240,7 +2240,7 @@ define('modules/uv-shared-module/BaseCommands',["require", "exports"], function 
     BaseCommands.WINDOW_UNLOAD = BaseCommands.namespace + 'onWindowUnload';
     exports.BaseCommands = BaseCommands;
 });
-//# sourceMappingURL=BaseCommands.js.map;
+//# sourceMappingURL=BaseCommands.js.map
 define('Params',["require", "exports"], function (require, exports) {
     "use strict";
     // do not change order, index is important!
@@ -2256,7 +2256,7 @@ define('Params',["require", "exports"], function (require, exports) {
         Params[Params["anchor"] = 7] = "anchor";
     })(Params = exports.Params || (exports.Params = {}));
 });
-//# sourceMappingURL=Params.js.map;
+//# sourceMappingURL=Params.js.map
 define('BootstrapParams',["require", "exports", "./Params"], function (require, exports, Params_1) {
     "use strict";
     var BootstrapParams = (function () {
@@ -2314,7 +2314,7 @@ define('BootstrapParams',["require", "exports", "./Params"], function (require, 
     }());
     exports.BootstrapParams = BootstrapParams;
 });
-//# sourceMappingURL=BootstrapParams.js.map;
+//# sourceMappingURL=BootstrapParams.js.map
 define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCommands", "./BootstrapParams"], function (require, exports, BaseCommands_1, BootstrapParams_1) {
     "use strict";
     // The Bootstrapper is concerned with loading the manifest/collection (iiifResource)
@@ -2476,7 +2476,7 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
     }());
     exports.Bootstrapper = Bootstrapper;
 });
-//# sourceMappingURL=Bootstrapper.js.map;
+//# sourceMappingURL=Bootstrapper.js.map
 define('modules/uv-shared-module/Panel',["require", "exports", "./BaseCommands"], function (require, exports, BaseCommands_1) {
     "use strict";
     var Panel = (function () {
@@ -2507,7 +2507,7 @@ define('modules/uv-shared-module/Panel',["require", "exports", "./BaseCommands"]
     }());
     exports.Panel = Panel;
 });
-//# sourceMappingURL=Panel.js.map;
+//# sourceMappingURL=Panel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2558,7 +2558,7 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
     }(Panel_1.Panel));
     exports.BaseView = BaseView;
 });
-//# sourceMappingURL=BaseView.js.map;
+//# sourceMappingURL=BaseView.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2696,7 +2696,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
     }(BaseView_1.BaseView));
     exports.Dialogue = Dialogue;
 });
-//# sourceMappingURL=Dialogue.js.map;
+//# sourceMappingURL=Dialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2768,7 +2768,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
     }(Dialogue_1.Dialogue));
     exports.ClickThroughDialogue = ClickThroughDialogue;
 });
-//# sourceMappingURL=ClickThroughDialogue.js.map;
+//# sourceMappingURL=ClickThroughDialogue.js.map
 define('modules/uv-shared-module/InformationArgs',["require", "exports"], function (require, exports) {
     "use strict";
     var InformationArgs = (function () {
@@ -2780,7 +2780,7 @@ define('modules/uv-shared-module/InformationArgs',["require", "exports"], functi
     }());
     exports.InformationArgs = InformationArgs;
 });
-//# sourceMappingURL=InformationArgs.js.map;
+//# sourceMappingURL=InformationArgs.js.map
 define('modules/uv-shared-module/InformationType',["require", "exports"], function (require, exports) {
     "use strict";
     var InformationType;
@@ -2789,7 +2789,7 @@ define('modules/uv-shared-module/InformationType',["require", "exports"], functi
         InformationType[InformationType["DEGRADED_RESOURCE"] = 1] = "DEGRADED_RESOURCE";
     })(InformationType = exports.InformationType || (exports.InformationType = {}));
 });
-//# sourceMappingURL=InformationType.js.map;
+//# sourceMappingURL=InformationType.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2897,7 +2897,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
     }(Dialogue_1.Dialogue));
     exports.LoginDialogue = LoginDialogue;
 });
-//# sourceMappingURL=LoginDialogue.js.map;
+//# sourceMappingURL=LoginDialogue.js.map
 define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], function (require, exports) {
     "use strict";
     var LoginWarningMessages = (function () {
@@ -2908,7 +2908,7 @@ define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], f
     LoginWarningMessages.FORBIDDEN = "forbiddenResourceMessage";
     exports.LoginWarningMessages = LoginWarningMessages;
 });
-//# sourceMappingURL=LoginWarningMessages.js.map;
+//# sourceMappingURL=LoginWarningMessages.js.map
 define('modules/uv-shared-module/Metric',["require", "exports"], function (require, exports) {
     "use strict";
     var Metric = (function () {
@@ -2920,7 +2920,7 @@ define('modules/uv-shared-module/Metric',["require", "exports"], function (requi
     }());
     exports.Metric = Metric;
 });
-//# sourceMappingURL=Metric.js.map;
+//# sourceMappingURL=Metric.js.map
 define('modules/uv-shared-module/Metrics',["require", "exports", "./Metric"], function (require, exports, Metric_1) {
     "use strict";
     var Metrics = (function () {
@@ -2932,7 +2932,7 @@ define('modules/uv-shared-module/Metrics',["require", "exports", "./Metric"], fu
     Metrics.LAPTOP = new Metric_1.Metric(640, Infinity);
     exports.Metrics = Metrics;
 });
-//# sourceMappingURL=Metrics.js.map;
+//# sourceMappingURL=Metrics.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3014,7 +3014,7 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
     }(Dialogue_1.Dialogue));
     exports.RestrictedDialogue = RestrictedDialogue;
 });
-//# sourceMappingURL=RestrictedDialogue.js.map;
+//# sourceMappingURL=RestrictedDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3085,7 +3085,7 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
     }(Dialogue_1.Dialogue));
     exports.GenericDialogue = GenericDialogue;
 });
-//# sourceMappingURL=GenericDialogue.js.map;
+//# sourceMappingURL=GenericDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3155,7 +3155,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
     }(BaseView_1.BaseView));
     exports.Shell = Shell;
 });
-//# sourceMappingURL=Shell.js.map;
+//# sourceMappingURL=Shell.js.map
 define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../BootstrapParams", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "./LoginWarningMessages", "../../modules/uv-shared-module/Metrics", "../../Params", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell"], function (require, exports, BaseCommands_1, BootstrapParams_1, ClickThroughDialogue_1, InformationArgs_1, InformationType_1, LoginDialogue_1, LoginWarningMessages_1, Metrics_1, Params_1, RestrictedDialogue_1, Shell_1) {
     "use strict";
     var BaseExtension = (function () {
@@ -4252,7 +4252,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
     }());
     exports.BaseExtension = BaseExtension;
 });
-//# sourceMappingURL=BaseExtension.js.map;
+//# sourceMappingURL=BaseExtension.js.map
 define('modules/uv-shared-module/Bookmark',["require", "exports"], function (require, exports) {
     "use strict";
     var Bookmark = (function () {
@@ -4262,7 +4262,7 @@ define('modules/uv-shared-module/Bookmark',["require", "exports"], function (req
     }());
     exports.Bookmark = Bookmark;
 });
-//# sourceMappingURL=Bookmark.js.map;
+//# sourceMappingURL=Bookmark.js.map
 define('extensions/uv-seadragon-extension/Commands',["require", "exports"], function (require, exports) {
     "use strict";
     var Commands = (function () {
@@ -4318,7 +4318,7 @@ define('extensions/uv-seadragon-extension/Commands',["require", "exports"], func
     Commands.ZOOM_OUT = Commands.namespace + 'onZoomOut';
     exports.Commands = Commands;
 });
-//# sourceMappingURL=Commands.js.map;
+//# sourceMappingURL=Commands.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4396,7 +4396,7 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
     }(BaseView_1.BaseView));
     exports.GalleryView = GalleryView;
 });
-//# sourceMappingURL=GalleryView.js.map;
+//# sourceMappingURL=GalleryView.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4601,7 +4601,7 @@ define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./Base
     }(BaseView_1.BaseView));
     exports.BaseExpandPanel = BaseExpandPanel;
 });
-//# sourceMappingURL=BaseExpandPanel.js.map;
+//# sourceMappingURL=BaseExpandPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4670,7 +4670,7 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseComman
     }(BaseExpandPanel_1.BaseExpandPanel));
     exports.LeftPanel = LeftPanel;
 });
-//# sourceMappingURL=LeftPanel.js.map;
+//# sourceMappingURL=LeftPanel.js.map
 define('extensions/uv-seadragon-extension/Mode',["require", "exports"], function (require, exports) {
     "use strict";
     var Mode = (function () {
@@ -4686,7 +4686,7 @@ define('extensions/uv-seadragon-extension/Mode',["require", "exports"], function
     Mode.page = new Mode("page");
     exports.Mode = Mode;
 });
-//# sourceMappingURL=Mode.js.map;
+//# sourceMappingURL=Mode.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4925,7 +4925,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
     }(BaseView_1.BaseView));
     exports.ThumbsView = ThumbsView;
 });
-//# sourceMappingURL=ThumbsView.js.map;
+//# sourceMappingURL=ThumbsView.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5020,7 +5020,7 @@ define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", ".
     }(ThumbsView_1.ThumbsView));
     exports.ThumbsView = ThumbsView;
 });
-//# sourceMappingURL=ThumbsView.js.map;
+//# sourceMappingURL=ThumbsView.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5093,7 +5093,7 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
     }(BaseView_1.BaseView));
     exports.TreeView = TreeView;
 });
-//# sourceMappingURL=TreeView.js.map;
+//# sourceMappingURL=TreeView.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5582,7 +5582,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
     }(LeftPanel_1.LeftPanel));
     exports.ContentLeftPanel = ContentLeftPanel;
 });
-//# sourceMappingURL=ContentLeftPanel.js.map;
+//# sourceMappingURL=ContentLeftPanel.js.map
 define('modules/uv-shared-module/Point',["require", "exports"], function (require, exports) {
     "use strict";
     var Point = (function () {
@@ -5594,7 +5594,7 @@ define('modules/uv-shared-module/Point',["require", "exports"], function (requir
     }());
     exports.Point = Point;
 });
-//# sourceMappingURL=Point.js.map;
+//# sourceMappingURL=Point.js.map
 define('extensions/uv-seadragon-extension/CroppedImageDimensions',["require", "exports", "../../modules/uv-shared-module/Point"], function (require, exports, Point_1) {
     "use strict";
     var Size = Utils.Measurements.Size;
@@ -5608,7 +5608,7 @@ define('extensions/uv-seadragon-extension/CroppedImageDimensions',["require", "e
     }());
     exports.CroppedImageDimensions = CroppedImageDimensions;
 });
-//# sourceMappingURL=CroppedImageDimensions.js.map;
+//# sourceMappingURL=CroppedImageDimensions.js.map
 define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
     "use strict";
     var DownloadOption = (function () {
@@ -5631,7 +5631,7 @@ define('modules/uv-shared-module/DownloadOption',["require", "exports"], functio
     DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
     exports.DownloadOption = DownloadOption;
 });
-//# sourceMappingURL=DownloadOption.js.map;
+//# sourceMappingURL=DownloadOption.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5758,7 +5758,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
     }(Dialogue_1.Dialogue));
     exports.DownloadDialogue = DownloadDialogue;
 });
-//# sourceMappingURL=DownloadDialogue.js.map;
+//# sourceMappingURL=DownloadDialogue.js.map
 define('extensions/uv-seadragon-extension/DownloadType',["require", "exports"], function (require, exports) {
     "use strict";
     var DownloadType = (function () {
@@ -5775,7 +5775,7 @@ define('extensions/uv-seadragon-extension/DownloadType',["require", "exports"], 
     DownloadType.UNKNOWN = "unknown";
     exports.DownloadType = DownloadType;
 });
-//# sourceMappingURL=DownloadType.js.map;
+//# sourceMappingURL=DownloadType.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6268,7 +6268,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
     }(DownloadDialogue_1.DownloadDialogue));
     exports.DownloadDialogue = DownloadDialogue;
 });
-//# sourceMappingURL=DownloadDialogue.js.map;
+//# sourceMappingURL=DownloadDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6312,7 +6312,7 @@ define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "export
     }(Dialogue_1.Dialogue));
     exports.ExternalContentDialogue = ExternalContentDialogue;
 });
-//# sourceMappingURL=ExternalContentDialogue.js.map;
+//# sourceMappingURL=ExternalContentDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6503,7 +6503,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
     }(BaseView_1.BaseView));
     exports.FooterPanel = FooterPanel;
 });
-//# sourceMappingURL=FooterPanel.js.map;
+//# sourceMappingURL=FooterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6550,7 +6550,7 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
     }(FooterPanel_1.FooterPanel));
     exports.FooterPanel = FooterPanel;
 });
-//# sourceMappingURL=MobileFooter.js.map;
+//# sourceMappingURL=MobileFooter.js.map
 define('modules/uv-shared-module/AutoComplete',["require", "exports"], function (require, exports) {
     "use strict";
     var AutoComplete = (function () {
@@ -6772,7 +6772,7 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
     }());
     exports.AutoComplete = AutoComplete;
 });
-//# sourceMappingURL=AutoComplete.js.map;
+//# sourceMappingURL=AutoComplete.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7298,7 +7298,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
     }(FooterPanel_1.FooterPanel));
     exports.FooterPanel = FooterPanel;
 });
-//# sourceMappingURL=FooterPanel.js.map;
+//# sourceMappingURL=FooterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7348,7 +7348,7 @@ define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-
     }(Dialogue_1.Dialogue));
     exports.HelpDialogue = HelpDialogue;
 });
-//# sourceMappingURL=HelpDialogue.js.map;
+//# sourceMappingURL=HelpDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7430,7 +7430,7 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
     }(Dialogue_1.Dialogue));
     exports.MoreInfoDialogue = MoreInfoDialogue;
 });
-//# sourceMappingURL=MoreInfoDialogue.js.map;
+//# sourceMappingURL=MoreInfoDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7494,7 +7494,7 @@ define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseComma
     }(BaseExpandPanel_1.BaseExpandPanel));
     exports.RightPanel = RightPanel;
 });
-//# sourceMappingURL=RightPanel.js.map;
+//# sourceMappingURL=RightPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7567,7 +7567,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
     }(RightPanel_1.RightPanel));
     exports.MoreInfoRightPanel = MoreInfoRightPanel;
 });
-//# sourceMappingURL=MoreInfoRightPanel.js.map;
+//# sourceMappingURL=MoreInfoRightPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7657,7 +7657,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
     }(Dialogue_1.Dialogue));
     exports.MultiSelectDialogue = MultiSelectDialogue;
 });
-//# sourceMappingURL=MultiSelectDialogue.js.map;
+//# sourceMappingURL=MultiSelectDialogue.js.map
 define('extensions/uv-seadragon-extension/MultiSelectionArgs',["require", "exports"], function (require, exports) {
     "use strict";
     var MultiSelectionArgs = (function () {
@@ -7667,7 +7667,7 @@ define('extensions/uv-seadragon-extension/MultiSelectionArgs',["require", "expor
     }());
     exports.MultiSelectionArgs = MultiSelectionArgs;
 });
-//# sourceMappingURL=MultiSelectionArgs.js.map;
+//# sourceMappingURL=MultiSelectionArgs.js.map
 define('modules/uv-shared-module/Information',["require", "exports"], function (require, exports) {
     "use strict";
     var Information = (function () {
@@ -7679,7 +7679,7 @@ define('modules/uv-shared-module/Information',["require", "exports"], function (
     }());
     exports.Information = Information;
 });
-//# sourceMappingURL=Information.js.map;
+//# sourceMappingURL=Information.js.map
 define('modules/uv-shared-module/InformationAction',["require", "exports"], function (require, exports) {
     "use strict";
     var InformationAction = (function () {
@@ -7689,7 +7689,7 @@ define('modules/uv-shared-module/InformationAction',["require", "exports"], func
     }());
     exports.InformationAction = InformationAction;
 });
-//# sourceMappingURL=InformationAction.js.map;
+//# sourceMappingURL=InformationAction.js.map
 define('modules/uv-shared-module/InformationFactory',["require", "exports", "./BaseCommands", "./Information", "./InformationAction", "./InformationType"], function (require, exports, BaseCommands_1, Information_1, InformationAction_1, InformationType_1) {
     "use strict";
     var InformationFactory = (function () {
@@ -7716,7 +7716,7 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
     }());
     exports.InformationFactory = InformationFactory;
 });
-//# sourceMappingURL=InformationFactory.js.map;
+//# sourceMappingURL=InformationFactory.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7859,7 +7859,7 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseComm
     }(BaseView_1.BaseView));
     exports.HeaderPanel = HeaderPanel;
 });
-//# sourceMappingURL=HeaderPanel.js.map;
+//# sourceMappingURL=HeaderPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8358,7 +8358,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
     }(HeaderPanel_1.HeaderPanel));
     exports.PagingHeaderPanel = PagingHeaderPanel;
 });
-//# sourceMappingURL=PagingHeaderPanel.js.map;
+//# sourceMappingURL=PagingHeaderPanel.js.map
 define('extensions/uv-seadragon-extension/Bounds',["require", "exports"], function (require, exports) {
     "use strict";
     var Bounds = (function () {
@@ -8379,7 +8379,7 @@ define('extensions/uv-seadragon-extension/Bounds',["require", "exports"], functi
     }());
     exports.Bounds = Bounds;
 });
-//# sourceMappingURL=Bounds.js.map;
+//# sourceMappingURL=Bounds.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8489,7 +8489,7 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
     }(BaseView_1.BaseView));
     exports.CenterPanel = CenterPanel;
 });
-//# sourceMappingURL=CenterPanel.js.map;
+//# sourceMappingURL=CenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9277,7 +9277,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
     }(CenterPanel_1.CenterPanel));
     exports.SeadragonCenterPanel = SeadragonCenterPanel;
 });
-//# sourceMappingURL=SeadragonCenterPanel.js.map;
+//# sourceMappingURL=SeadragonCenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9360,7 +9360,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
     }(Dialogue_1.Dialogue));
     exports.SettingsDialogue = SettingsDialogue;
 });
-//# sourceMappingURL=SettingsDialogue.js.map;
+//# sourceMappingURL=SettingsDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9485,7 +9485,7 @@ define('extensions/uv-seadragon-extension/SettingsDialogue',["require", "exports
     }(SettingsDialogue_1.SettingsDialogue));
     exports.SettingsDialogue = SettingsDialogue;
 });
-//# sourceMappingURL=SettingsDialogue.js.map;
+//# sourceMappingURL=SettingsDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9776,7 +9776,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
     }(Dialogue_1.Dialogue));
     exports.ShareDialogue = ShareDialogue;
 });
-//# sourceMappingURL=ShareDialogue.js.map;
+//# sourceMappingURL=ShareDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9819,7 +9819,7 @@ define('extensions/uv-seadragon-extension/ShareDialogue',["require", "exports", 
     }(ShareDialogue_1.ShareDialogue));
     exports.ShareDialogue = ShareDialogue;
 });
-//# sourceMappingURL=ShareDialogue.js.map;
+//# sourceMappingURL=ShareDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -10650,7 +10650,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
     }(BaseExtension_1.BaseExtension));
     exports.Extension = Extension;
 });
-//# sourceMappingURL=Extension.js.map;
+//# sourceMappingURL=Extension.js.map
 define('extensions/uv-mediaelement-extension/Commands',["require", "exports"], function (require, exports) {
     "use strict";
     var Commands = (function () {
@@ -10664,7 +10664,7 @@ define('extensions/uv-mediaelement-extension/Commands',["require", "exports"], f
     Commands.MEDIA_PLAYED = Commands.namespace + 'onMediaPlayed';
     exports.Commands = Commands;
 });
-//# sourceMappingURL=Commands.js.map;
+//# sourceMappingURL=Commands.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -10699,7 +10699,7 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
     }(DownloadDialogue_1.DownloadDialogue));
     exports.DownloadDialogue = DownloadDialogue;
 });
-//# sourceMappingURL=DownloadDialogue.js.map;
+//# sourceMappingURL=DownloadDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -10733,7 +10733,7 @@ define('extensions/uv-mediaelement-extension/ShareDialogue',["require", "exports
     }(ShareDialogue_1.ShareDialogue));
     exports.ShareDialogue = ShareDialogue;
 });
-//# sourceMappingURL=ShareDialogue.js.map;
+//# sourceMappingURL=ShareDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -10900,7 +10900,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
     }(CenterPanel_1.CenterPanel));
     exports.MediaElementCenterPanel = MediaElementCenterPanel;
 });
-//# sourceMappingURL=MediaElementCenterPanel.js.map;
+//# sourceMappingURL=MediaElementCenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -10926,7 +10926,7 @@ define('modules/uv-resourcesleftpanel-module/ThumbsView',["require", "exports", 
     }(ThumbsView_1.ThumbsView));
     exports.ThumbsView = ThumbsView;
 });
-//# sourceMappingURL=ThumbsView.js.map;
+//# sourceMappingURL=ThumbsView.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11038,7 +11038,7 @@ define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "ex
     }(LeftPanel_1.LeftPanel));
     exports.ResourcesLeftPanel = ResourcesLeftPanel;
 });
-//# sourceMappingURL=ResourcesLeftPanel.js.map;
+//# sourceMappingURL=ResourcesLeftPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11064,7 +11064,7 @@ define('extensions/uv-mediaelement-extension/SettingsDialogue',["require", "expo
     }(SettingsDialogue_1.SettingsDialogue));
     exports.SettingsDialogue = SettingsDialogue;
 });
-//# sourceMappingURL=SettingsDialogue.js.map;
+//# sourceMappingURL=SettingsDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11193,7 +11193,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
     }(BaseExtension_1.BaseExtension));
     exports.Extension = Extension;
 });
-//# sourceMappingURL=Extension.js.map;
+//# sourceMappingURL=Extension.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11234,7 +11234,7 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
     }(DownloadDialogue_1.DownloadDialogue));
     exports.DownloadDialogue = DownloadDialogue;
 });
-//# sourceMappingURL=DownloadDialogue.js.map;
+//# sourceMappingURL=DownloadDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11268,7 +11268,7 @@ define('extensions/uv-pdf-extension/ShareDialogue',["require", "exports", "../..
     }(ShareDialogue_1.ShareDialogue));
     exports.ShareDialogue = ShareDialogue;
 });
-//# sourceMappingURL=ShareDialogue.js.map;
+//# sourceMappingURL=ShareDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11330,7 +11330,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
     }(CenterPanel_1.CenterPanel));
     exports.PDFCenterPanel = PDFCenterPanel;
 });
-//# sourceMappingURL=PDFCenterPanel.js.map;
+//# sourceMappingURL=PDFCenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11356,7 +11356,7 @@ define('extensions/uv-pdf-extension/SettingsDialogue',["require", "exports", "..
     }(SettingsDialogue_1.SettingsDialogue));
     exports.SettingsDialogue = SettingsDialogue;
 });
-//# sourceMappingURL=SettingsDialogue.js.map;
+//# sourceMappingURL=SettingsDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11466,7 +11466,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
     }(BaseExtension_1.BaseExtension));
     exports.Extension = Extension;
 });
-//# sourceMappingURL=Extension.js.map;
+//# sourceMappingURL=Extension.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11501,7 +11501,7 @@ define('extensions/uv-virtex-extension/DownloadDialogue',["require", "exports", 
     }(DownloadDialogue_1.DownloadDialogue));
     exports.DownloadDialogue = DownloadDialogue;
 });
-//# sourceMappingURL=DownloadDialogue.js.map;
+//# sourceMappingURL=DownloadDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11535,7 +11535,7 @@ define('extensions/uv-virtex-extension/ShareDialogue',["require", "exports", "..
     }(ShareDialogue_1.ShareDialogue));
     exports.ShareDialogue = ShareDialogue;
 });
-//# sourceMappingURL=ShareDialogue.js.map;
+//# sourceMappingURL=ShareDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11561,7 +11561,7 @@ define('extensions/uv-virtex-extension/SettingsDialogue',["require", "exports", 
     }(SettingsDialogue_1.SettingsDialogue));
     exports.SettingsDialogue = SettingsDialogue;
 });
-//# sourceMappingURL=SettingsDialogue.js.map;
+//# sourceMappingURL=SettingsDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11629,7 +11629,7 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
     }(CenterPanel_1.CenterPanel));
     exports.VirtexCenterPanel = VirtexCenterPanel;
 });
-//# sourceMappingURL=VirtexCenterPanel.js.map;
+//# sourceMappingURL=VirtexCenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11723,7 +11723,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
     }(BaseExtension_1.BaseExtension));
     exports.Extension = Extension;
 });
-//# sourceMappingURL=Extension.js.map;
+//# sourceMappingURL=Extension.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11792,7 +11792,7 @@ define('UV',["require", "exports", "./Bootstrapper", "./extensions/uv-seadragon-
 //         static MESSAGE: string = 'message';
 //     }
 // } 
-//# sourceMappingURL=UV.js.map;
+//# sourceMappingURL=UV.js.map
 if (typeof jQuery === "function") {
     define('jquery', [], function () {
         return jQuery;
@@ -11807,8 +11807,6 @@ require([
         window.dispatchEvent(uvReady);
     }
 });
-//# sourceMappingURL=app.js.map;
-define("app", function(){});
-
-
 //# sourceMappingURL=app.js.map
+define("app", function(){});
+//# sourceMappingURL=build.js.map
