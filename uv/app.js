@@ -2143,79 +2143,608 @@ var requirejs, require, define;
 
 define("requireLib", function(){});
 
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('../node_modules/base-component/dist/base-component.bundle.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.TinyEmitter = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-function E () {
-	// Keep this empty so it's easier to inherit from
-  // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-}
+window.browserDetect = {
+    init: function () {
+        this.browser = this.searchString(this.dataBrowser) || "Other";
+        this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
+        // detect IE 11
+        if (this.browser == 'Explorer' && this.version == '7' && navigator.userAgent.match(/Trident/i)) {
+            this.version = this.searchVersionIE();
+        }
+    },
 
-E.prototype = {
-	on: function (name, callback, ctx) {
-    var e = this.e || (this.e = {});
+    searchString: function (data) {
+        for (var i = 0 ; i < data.length ; i++) {
+            var dataString = data[i].string;
+            this.versionSearchString = data[i].subString;
 
-    (e[name] || (e[name] = [])).push({
-      fn: callback,
-      ctx: ctx
-    });
+            if (dataString.indexOf(data[i].subString) != -1) {
+                return data[i].identity;
+            }
+        }
+    },
 
-    return this;
-  },
+    searchVersion: function (dataString) {
+        var index = dataString.indexOf(this.versionSearchString);
+        if (index == -1) return;
+        return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+    },
 
-  once: function (name, callback, ctx) {
-    var self = this;
-    function listener () {
-      self.off(name, listener);
-      callback.apply(ctx, arguments);
-    };
+    searchVersionIE: function() {
+        var ua = navigator.userAgent.toString().toLowerCase(),
+            match = /(trident)(?:.*rv:([\w.]+))?/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ['', null, -1],
+            ver;
+        try {
+            ver = (match[2]).split('.')[0]; // version
+        }
+        catch (err) {
+            ver = 'unknown'; //
+        }
+        return ver;
+    },
 
-    listener._ = callback
-    return this.on(name, listener, ctx);
-  },
+    dataBrowser:
+        [
+            { string: navigator.userAgent, subString: "Chrome", identity: "Chrome" },
+            { string: navigator.userAgent, subString: "MSIE", identity: "Explorer" },
+            { string: navigator.userAgent, subString: "Trident", identity: "Explorer" },
+            { string: navigator.userAgent, subString: "Firefox", identity: "Firefox" },
+            { string: navigator.userAgent, subString: "Safari", identity: "Safari" },
+            { string: navigator.userAgent, subString: "Opera", identity: "Opera" }
+        ]
 
-  emit: function (name) {
-    var data = [].slice.call(arguments, 1);
-    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-    var i = 0;
-    var len = evtArr.length;
-
-    for (i; i < len; i++) {
-      evtArr[i].fn.apply(evtArr[i].ctx, data);
-    }
-
-    return this;
-  },
-
-  off: function (name, callback) {
-    var e = this.e || (this.e = {});
-    var evts = e[name];
-    var liveEvents = [];
-
-    if (evts && callback) {
-      for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-          liveEvents.push(evts[i]);
-      }
-    }
-
-    // Remove event from queue to prevent memory leak
-    // Suggested by https://github.com/lazd
-    // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-
-    (liveEvents.length)
-      ? e[name] = liveEvents
-      : delete e[name];
-
-    return this;
-  }
 };
 
-module.exports = E;
+window.browserDetect.init();
+define("lib/browserdetect.js", function(){});
 
+(function(a){(jQuery.browser=jQuery.browser||{}).mobile=/(android|bb\d+|meego).+mobile|avantgo|bada\/|android|ipad|playbook|silk|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);
+define("lib/detectmobilebrowser.js", function(){});
+
+/*!
+ * jQuery-ajaxTransport-XDomainRequest - v1.0.4 - 2015-03-05
+ * https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest
+ * Copyright (c) 2015 Jason Moon (@JSONMOON)
+ * Licensed MIT (/blob/master/LICENSE.txt)
+ */
+(function(factory) {
+    //if (typeof define === 'function' && define.amd) {
+    //    // AMD. Register as anonymous module.
+    //    define(['jquery'], factory);
+    //} else if (typeof exports === 'object') {
+    //    // CommonJS
+    //    module.exports = factory(require('jquery'));
+    //} else {
+        // Browser globals.
+        factory(jQuery);
+    //}
+}(function($) {
+
+// Only continue if we're on IE8/IE9 with jQuery 1.5+ (contains the ajaxTransport function)
+    if ($.support.cors || !$.ajaxTransport || !window.XDomainRequest) {
+        return $;
+    }
+
+    var httpRegEx = /^(https?:)?\/\//i;
+    var getOrPostRegEx = /^get|post$/i;
+    var sameSchemeRegEx = new RegExp('^(\/\/|' + location.protocol + ')', 'i');
+
+// ajaxTransport exists in jQuery 1.5+
+    $.ajaxTransport('* text html xml json', function(options, userOptions, jqXHR) {
+
+        // Only continue if the request is: asynchronous, uses GET or POST method, has HTTP or HTTPS protocol, and has the same scheme as the calling page
+        if (!options.crossDomain || !options.async || !getOrPostRegEx.test(options.type) || !httpRegEx.test(options.url) || !sameSchemeRegEx.test(options.url)) {
+            return;
+        }
+
+        var xdr = null;
+
+        return {
+            send: function(headers, complete) {
+                var postData = '';
+                var userType = (userOptions.dataType || '').toLowerCase();
+
+                xdr = new XDomainRequest();
+                if (/^\d+$/.test(userOptions.timeout)) {
+                    xdr.timeout = userOptions.timeout;
+                }
+
+                xdr.ontimeout = function() {
+                    complete(500, 'timeout');
+                };
+
+                xdr.onload = function() {
+                    var allResponseHeaders = 'Content-Length: ' + xdr.responseText.length + '\r\nContent-Type: ' + xdr.contentType;
+                    var status = {
+                        code: 200,
+                        message: 'success'
+                    };
+                    var responses = {
+                        text: xdr.responseText
+                    };
+                    try {
+                        if (userType === 'html' || /text\/html/i.test(xdr.contentType)) {
+                            responses.html = xdr.responseText;
+                        } else if (userType === 'json' || (userType !== 'text' && /\/json/i.test(xdr.contentType))) {
+                            try {
+                                responses.json = $.parseJSON(xdr.responseText);
+                            } catch(e) {
+                                status.code = 500;
+                                status.message = 'parseerror';
+                                //throw 'Invalid JSON: ' + xdr.responseText;
+                            }
+                        } else if (userType === 'xml' || (userType !== 'text' && /\/xml/i.test(xdr.contentType))) {
+                            var doc = new ActiveXObject('Microsoft.XMLDOM');
+                            doc.async = false;
+                            try {
+                                doc.loadXML(xdr.responseText);
+                            } catch(e) {
+                                doc = undefined;
+                            }
+                            if (!doc || !doc.documentElement || doc.getElementsByTagName('parsererror').length) {
+                                status.code = 500;
+                                status.message = 'parseerror';
+                                throw 'Invalid XML: ' + xdr.responseText;
+                            }
+                            responses.xml = doc;
+                        }
+                    } catch(parseMessage) {
+                        throw parseMessage;
+                    } finally {
+                        complete(status.code, status.message, responses, allResponseHeaders);
+                    }
+                };
+
+                // set an empty handler for 'onprogress' so requests don't get aborted
+                xdr.onprogress = function(){};
+                xdr.onerror = function() {
+                    complete(401, 'error', {
+                        text: xdr.responseText
+                    });
+                };
+
+                if (userOptions.data) {
+                    postData = ($.type(userOptions.data) === 'string') ? userOptions.data : $.param(userOptions.data);
+                }
+                xdr.open(options.type, options.url);
+                xdr.send(postData);
+            },
+            abort: function() {
+                if (xdr) {
+                    xdr.abort();
+                }
+            }
+        };
+    });
+
+    return $;
+
+}));
+
+define("lib/jquery.xdomainrequest.js", function(){});
+
+/* Modernizr 2.8.3 (Custom Build) | MIT & BSD
+ * Build: http://modernizr.com/download/#-input-inputtypes-cssclasses-load
+ */
+/* Modernizr 2.8.3 (Custom Build) | MIT & BSD
+ * Build: http://modernizr.com/download/#-input-inputtypes-cssclasses-cors-load
+ * (add Non-core detects: cors)
+ */
+;window.Modernizr=function(a,b,c){function v(a){j.cssText=a}function w(a,b){return v(prefixes.join(a+";")+(b||""))}function x(a,b){return typeof a===b}function y(a,b){return!!~(""+a).indexOf(b)}function z(a,b,d){for(var e in a){var f=b[a[e]];if(f!==c)return d===!1?a[e]:x(f,"function")?f.bind(d||b):f}return!1}function A(){e.input=function(c){for(var d=0,e=c.length;d<e;d++)p[c[d]]=c[d]in k;return p.list&&(p.list=!!b.createElement("datalist")&&!!a.HTMLDataListElement),p}("autocomplete autofocus list placeholder max min multiple pattern required step".split(" ")),e.inputtypes=function(a){for(var d=0,e,f,h,i=a.length;d<i;d++)k.setAttribute("type",f=a[d]),e=k.type!=="text",e&&(k.value=l,k.style.cssText="position:absolute;visibility:hidden;",/^range$/.test(f)&&k.style.WebkitAppearance!==c?(g.appendChild(k),h=b.defaultView,e=h.getComputedStyle&&h.getComputedStyle(k,null).WebkitAppearance!=="textfield"&&k.offsetHeight!==0,g.removeChild(k)):/^(search|tel)$/.test(f)||(/^(url|email)$/.test(f)?e=k.checkValidity&&k.checkValidity()===!1:e=k.value!=l)),o[a[d]]=!!e;return o}("search tel url email datetime date month week time datetime-local number range color".split(" "))}var d="2.8.3",e={},f=!0,g=b.documentElement,h="modernizr",i=b.createElement(h),j=i.style,k=b.createElement("input"),l=":)",m={}.toString,n={},o={},p={},q=[],r=q.slice,s,t={}.hasOwnProperty,u;!x(t,"undefined")&&!x(t.call,"undefined")?u=function(a,b){return t.call(a,b)}:u=function(a,b){return b in a&&x(a.constructor.prototype[b],"undefined")},Function.prototype.bind||(Function.prototype.bind=function(b){var c=this;if(typeof c!="function")throw new TypeError;var d=r.call(arguments,1),e=function(){if(this instanceof e){var a=function(){};a.prototype=c.prototype;var f=new a,g=c.apply(f,d.concat(r.call(arguments)));return Object(g)===g?g:f}return c.apply(b,d.concat(r.call(arguments)))};return e});for(var B in n)u(n,B)&&(s=B.toLowerCase(),e[s]=n[B](),q.push((e[s]?"":"no-")+s));return e.input||A(),e.addTest=function(a,b){if(typeof a=="object")for(var d in a)u(a,d)&&e.addTest(d,a[d]);else{a=a.toLowerCase();if(e[a]!==c)return e;b=typeof b=="function"?b():b,typeof f!="undefined"&&f&&(g.className+=" "+(b?"":"no-")+a),e[a]=b}return e},v(""),i=k=null,e._version=d,g.className=g.className.replace(/(^|\s)no-js(\s|$)/,"$1$2")+(f?" js "+q.join(" "):""),e}(this,this.document),function(a,b,c){function d(a){return"[object Function]"==o.call(a)}function e(a){return"string"==typeof a}function f(){}function g(a){return!a||"loaded"==a||"complete"==a||"uninitialized"==a}function h(){var a=p.shift();q=1,a?a.t?m(function(){("c"==a.t?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){"img"!=a&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l=b.createElement(a),o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};1===y[c]&&(r=1,y[c]=[]),"object"==a?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),"img"!=a&&(r||2===y[c]?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i("c"==b?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),1==p.length&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&"[object Opera]"==o.call(a.opera),l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return"[object Array]"==o.call(a)},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,h){var i=b(a),j=i.autoCallback;i.url.split(".").pop().split("?").shift(),i.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]),i.instead?i.instead(a,e,f,g,h):(y[i.url]?i.noexec=!0:y[i.url]=1,f.load(i.url,i.forceCSS||!i.forceJS&&"css"==i.url.split(".").pop().split("?").shift()?"c":c,i.noexec,i.attrs,i.timeout),(d(e)||d(j))&&f.load(function(){k(),e&&e(i.origUrl,h,g),j&&j(i.origUrl,h,g),y[i.url]=2})))}function h(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var i,j,l=this.yepnope.loader;if(e(a))g(a,0,l,0);else if(w(a))for(i=0;i<a.length;i++)j=a[i],e(j)?g(j,0,l,0):w(j)?B(j):Object(j)===j&&h(j,l);else Object(a)===a&&h(a,l)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,null==b.readyState&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}}(this,document),Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0))},Modernizr.addTest("cors",!!(window.XMLHttpRequest&&"withCredentials"in new XMLHttpRequest));
+define("lib/modernizr.js", function(){});
+
+/**
+ * Copyright (c) 2010 by Gabriel Birke
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the 'Software'), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+function Sanitize(){
+    var i, e, options;
+    options = arguments[0] || {};
+    this.config = {};
+    this.config.elements = options.elements ? options.elements : [];
+    this.config.attributes = options.attributes ? options.attributes : {};
+    this.config.attributes[Sanitize.ALL] = this.config.attributes[Sanitize.ALL] ? this.config.attributes[Sanitize.ALL] : [];
+    this.config.allow_comments = options.allow_comments ? options.allow_comments : false;
+    this.allowed_elements = {};
+    this.config.protocols = options.protocols ? options.protocols : {};
+    this.config.add_attributes = options.add_attributes ? options.add_attributes  : {};
+    this.dom = options.dom ? options.dom : document;
+    for(i=0;i<this.config.elements.length;i++) {
+        this.allowed_elements[this.config.elements[i]] = true;
+    }
+    this.config.remove_element_contents = {};
+    this.config.remove_all_contents = false;
+    if(options.remove_contents) {
+
+        if(options.remove_contents instanceof Array) {
+            for(i=0;i<options.remove_contents.length;i++) {
+                this.config.remove_element_contents[options.remove_contents[i]] = true;
+            }
+        }
+        else {
+            this.config.remove_all_contents = true;
+        }
+    }
+    this.transformers = options.transformers ? options.transformers : [];
+}
+
+Sanitize.REGEX_PROTOCOL = /^([A-Za-z0-9\+\-\.\&\;\*\s]*?)(?:\:|&*0*58|&*x0*3a)/i;
+
+// emulate Ruby symbol with string constant
+Sanitize.RELATIVE = '__RELATIVE__';
+Sanitize.ALL = '__ALL__';
+
+Sanitize.prototype.clean_node = function(container) {
+    var fragment = this.dom.createDocumentFragment();
+    this.current_element = fragment;
+    this.whitelist_nodes = [];
+
+
+
+    /**
+     * Utility function to check if an element exists in an array
+     */
+    function _array_index(needle, haystack) {
+        var i;
+        for(i=0; i < haystack.length; i++) {
+            if(haystack[i] == needle)
+                return i;
+        }
+        return -1;
+    }
+
+    function _merge_arrays_uniq() {
+        var result = [];
+        var uniq_hash = {};
+        var i,j;
+        for(i=0;i<arguments.length;i++) {
+            if(!arguments[i] || !arguments[i].length)
+                continue;
+            for(j=0;j<arguments[i].length;j++) {
+                if(uniq_hash[arguments[i][j]])
+                    continue;
+                uniq_hash[arguments[i][j]] = true;
+                result.push(arguments[i][j]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Clean function that checks the different node types and cleans them up accordingly
+     * @param elem DOM Node to clean
+     */
+    function _clean(elem) {
+        var clone;
+        switch(elem.nodeType) {
+            // Element
+            case 1:
+                _clean_element.call(this, elem);
+                break;
+            // Text
+            case 3:
+                clone = elem.cloneNode(false);
+                this.current_element.appendChild(clone);
+                break;
+            // Entity-Reference (normally not used)
+            case 5:
+                clone = elem.cloneNode(false);
+                this.current_element.appendChild(clone);
+                break;
+            // Comment
+            case 8:
+                if(this.config.allow_comments) {
+                    clone = elem.cloneNode(false);
+                    this.current_element.appendChild(clone);
+                }
+                break;
+            default:
+                if (console && console.log) console.log("unknown node type", elem.nodeType);
+                break;
+        }
+
+    }
+
+    function _clean_element(elem) {
+        var i, j, clone, parent_element, name, allowed_attributes, attr, attr_name, attr_node, protocols, del, attr_ok;
+        var transform = _transform_element.call(this, elem);
+
+        elem = transform.node;
+        name = elem.nodeName.toLowerCase();
+
+        // check if element itself is allowed
+        parent_element = this.current_element;
+        if(this.allowed_elements[name] || transform.whitelist) {
+            this.current_element = this.dom.createElement(elem.nodeName);
+            parent_element.appendChild(this.current_element);
+
+            // clean attributes
+            var attrs = this.config.attributes;
+            allowed_attributes = _merge_arrays_uniq(attrs[name], attrs[Sanitize.ALL], transform.attr_whitelist);
+            for(i=0;i<allowed_attributes.length;i++) {
+                attr_name = allowed_attributes[i];
+                attr = elem.attributes[attr_name];
+                if(attr) {
+                    attr_ok = true;
+                    // Check protocol attributes for valid protocol
+                    if(this.config.protocols[name] && this.config.protocols[name][attr_name]) {
+                        protocols = this.config.protocols[name][attr_name];
+                        del = attr.value.toLowerCase().match(Sanitize.REGEX_PROTOCOL);
+                        if(del) {
+                            attr_ok = (_array_index(del[1], protocols) != -1);
+                        }
+                        else {
+                            attr_ok = (_array_index(Sanitize.RELATIVE, protocols) != -1);
+                        }
+                    }
+                    if(attr_ok) {
+                        attr_node = document.createAttribute(attr_name);
+                        attr_node.value = attr.value;
+                        this.current_element.setAttributeNode(attr_node);
+                    }
+                }
+            }
+
+            // Add attributes
+            if(this.config.add_attributes[name]) {
+                for(attr_name in this.config.add_attributes[name]) {
+                    attr_node = document.createAttribute(attr_name);
+                    attr_node.value = this.config.add_attributes[name][attr_name];
+                    this.current_element.setAttributeNode(attr_node);
+                }
+            }
+        } // End checking if element is allowed
+        // If this node is in the dynamic whitelist array (built at runtime by
+        // transformers), let it live with all of its attributes intact.
+        else if(_array_index(elem, this.whitelist_nodes) != -1) {
+            this.current_element = elem.cloneNode(true);
+            // Remove child nodes, they will be sanitiazied and added by other code
+            while(this.current_element.childNodes.length > 0) {
+                this.current_element.removeChild(this.current_element.firstChild);
+            }
+            parent_element.appendChild(this.current_element);
+        }
+
+        // iterate over child nodes
+        if(!this.config.remove_all_contents && !this.config.remove_element_contents[name]) {
+            for(i=0;i<elem.childNodes.length;i++) {
+                _clean.call(this, elem.childNodes[i]);
+            }
+        }
+
+        // some versions of IE don't support normalize.
+        if(this.current_element.normalize) {
+            this.current_element.normalize();
+        }
+        this.current_element = parent_element;
+    } // END clean_element function
+
+    function _transform_element(node) {
+        var output = {
+            attr_whitelist:[],
+            node: node,
+            whitelist: false
+        };
+        var i, j, transform;
+        for(i=0;i<this.transformers.length;i++) {
+            transform = this.transformers[i]({
+                allowed_elements: this.allowed_elements,
+                config: this.config,
+                node: node,
+                node_name: node.nodeName.toLowerCase(),
+                whitelist_nodes: this.whitelist_nodes,
+                dom: this.dom
+            });
+            if (transform == null)
+                continue;
+            else if(typeof transform == 'object') {
+                if(transform.whitelist_nodes && transform.whitelist_nodes instanceof Array) {
+                    for(j=0;j<transform.whitelist_nodes.length;j++) {
+                        if(_array_index(transform.whitelist_nodes[j], this.whitelist_nodes) == -1) {
+                            this.whitelist_nodes.push(transform.whitelist_nodes[j]);
+                        }
+                    }
+                }
+                output.whitelist = transform.whitelist ? true : false;
+                if(transform.attr_whitelist) {
+                    output.attr_whitelist = _merge_arrays_uniq(output.attr_whitelist, transform.attr_whitelist);
+                }
+                output.node = transform.node ? transform.node : output.node;
+            }
+            else {
+                throw new Error("transformer output must be an object or null");
+            }
+        }
+        return output;
+    }
+
+
+
+    for(i=0;i<container.childNodes.length;i++) {
+        _clean.call(this, container.childNodes[i]);
+    }
+
+    if(fragment.normalize) {
+        fragment.normalize();
+    }
+
+    return fragment;
+
+};
+
+if ( typeof define === "function" ) {
+    define( "sanitize", [], function () { return Sanitize; } );
+}
+define("lib/sanitize.js", function(){});
+
+( function ( window, doc, undef ) {
+  // Takes a preloaded css obj (changes in different browsers) and injects it into the head
+  yepnope.injectCss = function( href, cb, attrs, timeout, /* Internal use */ err, internal ) {
+
+    // Create stylesheet link
+    var link = document.createElement( "link" ),
+        onload = function() {
+          if ( ! done ) {
+            done = 1;
+            link.removeAttribute("id");
+            setTimeout( cb, 0 );
+          }
+        },
+        id = "yn" + (+new Date()),
+        ref, done, i;
+
+    cb = internal ? yepnope.executeStack : ( cb || function(){} );
+    timeout = timeout || yepnope.errorTimeout;
+    // Add attributes
+    link.href = href;
+    link.rel  = "stylesheet";
+    link.type = "text/css";
+    link.id = id;
+
+    // Add our extra attributes to the link element
+    for ( i in attrs ) {
+      link.setAttribute( i, attrs[ i ] );
+    }
+
+
+    if ( ! err ) {
+      ref = document.getElementsByTagName('base')[0] || document.getElementsByTagName('script')[0];
+      ref.parentNode.insertBefore( link, ref );
+      link.onload = onload;
+
+      function poll() {
+        try {
+            var sheets = document.styleSheets;
+            for(var j=0, k=sheets.length; j<k; j++) {
+                if(sheets[j].ownerNode.id == id) {
+                    // this throws an exception, I believe, if not full loaded (was originally just "sheets[j].cssRules;")
+                    if (sheets[j].cssRules.length)
+                        return onload();
+                }
+            }
+            // if we get here, its not in document.styleSheets (we never saw the ID)
+            throw new Error;
+        } catch(e) {
+            // Keep polling
+            setTimeout(poll, 20);
+        }
+      }
+      poll();
+    }
+  }
+})( this, this.document );
+define("lib/yepnope.css.js", function(){});
+
+var exjs;!function(r){r.version="0.4.0"}(exjs||(exjs={}));var exjs;!function(r){Array.isArray||(Array.isArray=function(r){return"[object Array]"===Object.prototype.toString.call(r)})}(exjs||(exjs={}));var exjs;!function(r){var e=function(){function r(){}return r.prototype.getEnumerator=function(){return{moveNext:function(){return!1},current:void 0}},r.prototype.aggregate=function(r,e){for(var t=r,n=this.getEnumerator();n.moveNext();)t=e(t,n.current);return t},r.prototype.all=function(r){if(r)for(var e=this.getEnumerator(),t=0;e.moveNext();){if(!r(e.current,t))return!1;t++}return!0},r.prototype.any=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();){if(!r)return!0;if(r(e.current,t))return!0;t++}return!1},r.prototype.append=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},r.prototype.apply=function(r){throw new Error("Not implemented")},r.prototype.at=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();){if(t===r)return e.current;t++}},r.prototype.average=function(r){var e=0,t=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var n=this.getEnumerator();n.moveNext();)t+=r(n.current),e++;return 0===e?0:t/e},r.prototype.concat=function(r){throw new Error("Not implemented")},r.prototype.count=function(r){for(var e=0,t=this.getEnumerator();t.moveNext();)(!r||r(t.current))&&e++;return e},r.prototype.difference=function(r,e){return e=e||function(r,e){return r===e},r instanceof Array&&(r=r.en()),{intersection:this.intersect(r,e).toArray().en(),aNotB:this.except(r,e).toArray().en(),bNotA:r.except(this,e).toArray().en()}},r.prototype.distinct=function(r){throw new Error("Not implemented")},r.prototype.except=function(r,e){throw new Error("Not implemented")},r.prototype.first=function(r){for(var e=this.getEnumerator();e.moveNext();)if(!r||r(e.current))return e.current},r.prototype.firstIndex=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();t++)if(!r||r(e.current))return t;return-1},r.prototype.forEach=function(r){for(var e=this.getEnumerator();e.moveNext();)r(e.current)},r.prototype.groupBy=function(r,e){throw new Error("Not implemented")},r.prototype.intersect=function(r,e){throw new Error("Not implemented")},r.prototype.join=function(r,e,t,n,o){throw new Error("Not implemented")},r.prototype.last=function(r){for(var e,t=this.getEnumerator();t.moveNext();)(!r||r(t.current))&&(e=t.current);return e},r.prototype.lastIndex=function(r){for(var e=-1,t=this.getEnumerator(),n=0;t.moveNext();n++)(!r||r(t.current))&&(e=n);return e},r.prototype.max=function(r){var e=this.getEnumerator();if(!e.moveNext())return 0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=r(e.current);e.moveNext();)t=Math.max(t,r(e.current));return t},r.prototype.min=function(r){var e=this.getEnumerator();if(!e.moveNext())return 0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=r(e.current);e.moveNext();)t=Math.min(t,r(e.current));return t},r.prototype.orderBy=function(r,e){throw new Error("Not implemented")},r.prototype.orderByDescending=function(r,e){throw new Error("Not implemented")},r.prototype.prepend=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},r.prototype.reverse=function(){throw new Error("Not implemented")},r.prototype.select=function(r){throw new Error("Not implemented")},r.prototype.selectMany=function(r){throw new Error("Not implemented")},r.prototype.skip=function(r){throw new Error("Not implemented")},r.prototype.skipWhile=function(r){throw new Error("Not implemented")},r.prototype.standardDeviation=function(r){var e=this.average(r),t=0,n=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var o=this.getEnumerator();o.moveNext();){var u=r(o.current)-e;t+=u*u,n++}return Math.sqrt(t/n)},r.prototype.sum=function(r){var e=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=this.getEnumerator();t.moveNext();)e+=r(t.current);return e},r.prototype.take=function(r){throw new Error("Not implemented")},r.prototype.takeWhile=function(r){throw new Error("Not implemented")},r.prototype.traverse=function(r){throw new Error("Not implemented")},r.prototype.traverseUnique=function(r,e){throw new Error("Not implemented")},r.prototype.toArray=function(){for(var r=[],e=this.getEnumerator();e.moveNext();)r.push(e.current);return r},r.prototype.toMap=function(r,e){throw new Error("Not implemented")},r.prototype.toList=function(){throw new Error("Not implemented")},r.prototype.union=function(r,e){throw new Error("Not implemented")},r.prototype.where=function(r){throw new Error("Not implemented")},r.prototype.zip=function(r,e){throw new Error("Not implemented")},r}();r.Enumerable=e}(exjs||(exjs={}));var Symbol,exjs;!function(r){function e(r){var e;return{next:function(){var t={done:!0,value:void 0};return r&&(e=e||r.getEnumerator())?(t.done=!e.moveNext(),t.value=e.current,t):t}}}Symbol&&Symbol.iterator&&(r.Enumerable.prototype[Symbol.iterator]=function(){return e(this)})}(exjs||(exjs={}));var exjs;!function(r){var e=function(){function e(r){this.size=0,this._keys=[],this._values=[];var e;if(r instanceof Array?e=r.en():r&&r.getEnumerator instanceof Function&&(e=r),e)for(var t=e.getEnumerator();t&&t.moveNext();)this.set(t.current[0],t.current[1])}return e.prototype.clear=function(){this._keys.length=0,this._values.length=0,this.size=0},e.prototype["delete"]=function(r){var e=this._keys.indexOf(r);return e>-1?(this._keys.splice(e,1),this._values.splice(e,1),this.size--,!0):!1},e.prototype.entries=function(){var e=this;return r.range(0,this.size).select(function(r){return[e._keys[r],e._values[r]]})},e.prototype.forEach=function(r,e){null==e&&(e=this);for(var t=0,n=this._keys,o=this._values,u=n.length;u>t;t++)r.call(e,o[t],n[t],this)},e.prototype.get=function(r){var e=this._keys.indexOf(r);return this._values[e]},e.prototype.has=function(r){return this._keys.indexOf(r)>-1},e.prototype.keys=function(){return this._keys.en()},e.prototype.set=function(r,e){var t=this._keys.indexOf(r);t>-1?this._values[t]=e:(this._keys.push(r),this._values.push(e),this.size++)},e.prototype.values=function(){return this._values.en()},e}();r.Map3=e,r.Enumerable.prototype.toMap=function(r,t){for(var n=new e,o=this.getEnumerator();o.moveNext();)n.set(r(o.current),t(o.current));return n},r.List&&(r.List.prototype.toMap=r.Enumerable.prototype.toMap)}(exjs||(exjs={})),function(r){r.Map||(r.Map=exjs.Map3)}("undefined"==typeof window?global:window);var exjs;!function(r){function e(e){var t=new r.Enumerable;return t.getEnumerator=function(){var r={current:void 0,moveNext:function(){return e(r)}};return r},t}r.anonymous=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n,o=1,u={current:void 0,moveNext:function(){if(2>o){if(t=t||r.getEnumerator(),t.moveNext())return u.current=t.current,!0;o++}return n=n||e.en().getEnumerator(),n.moveNext()?(u.current=n.current,!0):(u.current=void 0,!1)}};return u}r.Enumerable.prototype.append=function(){for(var t=this,n=[],o=0;o<arguments.length;o++)n[o-0]=arguments[o];var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n)},u},r.List&&(r.List.prototype.append=r.Enumerable.prototype.append)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()?(e(o.current=t.current,n),n++,!0):!1}};return o}r.Enumerable.prototype.apply=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.apply=r.Enumerable.prototype.apply)}(exjs||(exjs={}));var __extends=this&&this.__extends||function(r,e){function t(){this.constructor=r}for(var n in e)e.hasOwnProperty(n)&&(r[n]=e[n]);r.prototype=null===e?Object.create(e):(t.prototype=e.prototype,new t)},exjs;!function(r){function e(r){var e=r.length,t={moveNext:void 0,current:void 0},n=-1;return t.moveNext=function(){return n++,n>=e?(t.current=void 0,!1):(t.current=r[n],!0)},t}function t(){return this&&Array.isArray(this)?new n(this):new r.Enumerable}var n=function(r){function t(t){r.call(this),this.getEnumerator=function(){return e(t)},this.toArray=function(){return t.slice(0)}}return __extends(t,r),t}(r.Enumerable);try{Object.defineProperty(Array.prototype,"en",{value:t,enumerable:!1,writable:!1,configurable:!1})}catch(o){Array.prototype.en=t}}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=!1,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),o.current=void 0,t.moveNext()?(o.current=t.current,!0):n?!1:(n=!0,t=e.getEnumerator(),t.moveNext()?(o.current=t.current,!0):!1)}};return o}r.Enumerable.prototype.concat=function(t){var n=this,o=t instanceof Array?t.en():t,u=new r.Enumerable;return u.getEnumerator=function(){return e(n,o)},u},r.List&&(r.List.prototype.concat=r.Enumerable.prototype.concat)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=[],o={current:void 0,moveNext:function(){if(t||(t=r.getEnumerator()),o.current=void 0,!e){for(;t.moveNext();)if(n.indexOf(t.current)<0)return n.push(o.current=t.current),!0;return!1}for(;t.moveNext();){for(var u=0,i=n.length,c=!1;i>u&&!c;u++)c=!!e(n[u],t.current);if(!c)return n.push(o.current=t.current),!0}return!1}};return o}r.Enumerable.prototype.distinct=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.distinct=r.Enumerable.prototype.distinct)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,t){t=t||function(r,e){return r===e};var n,o={current:void 0,moveNext:function(){for(n||(n=r.getEnumerator()),o.current=void 0;n.moveNext();){for(var u=!1,i=e.getEnumerator();i.moveNext()&&!u;)u=t(n.current,i.current);if(!u)return o.current=n.current,!0}return!1}};return o}r.Enumerable.prototype.except=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.except=r.Enumerable.prototype.except)}(exjs||(exjs={})),Function.prototype.fromJson=function(r,e){function t(r,e){if(null==r)return r;if(e instanceof Function)return e(r);if(e instanceof Array){if(e=e[0],!(e instanceof Function&&r instanceof Array))return;for(var t=[],n=0;n<r.length;n++)t.push(e(r[n]));return t}}var n=new this;if(null==r)return n;var o=[];for(var u in e){var i=t(r[u],e[u]);void 0!==i&&(n[u]=i,o.push(u))}for(var u in this.$jsonMappings)if(!(o.indexOf(u)>-1)){var i=t(r[u],this.$jsonMappings[u]);void 0!==i&&(n[u]=i,o.push(u))}for(var u in r)o.indexOf(u)>-1||(n[u]=r[u]);return n};var exjs;!function(r){function e(r,e,n){var o,u=0,i={current:void 0,moveNext:function(){return o||(o=t(r,e,n)),i.current=void 0,u>=o.length?!1:(i.current=o[u],u++,!0)}};return i}function t(r,e,t){t=t||function(r,e){return r===e};for(var o,u=[],i=[],c=r.getEnumerator();c.moveNext();){o=e(c.current);for(var a=-1,p=0,s=i.length;s>p;p++)if(t(o,i[p])){a=p;break}var f;0>a?(i.push(o),u.push(f=new n(o))):f=u[a],f._add(c.current)}return u}var n=function(r){function e(e){var t=this;r.call(this),this.key=e,this._arr=[],this.getEnumerator=function(){return t._arr.en().getEnumerator()}}return __extends(e,r),e.prototype._add=function(r){this._arr.push(r)},e}(r.Enumerable);r.Enumerable.prototype.groupBy=function(t,n){var o=this,u=new r.Enumerable;return u.getEnumerator=function(){return e(o,t,n)},u},r.List&&(r.List.prototype.groupBy=r.Enumerable.prototype.groupBy)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n){n=n||function(r,e){return r===e};var o,u={current:void 0,moveNext:function(){for(o||(o=r.en(e).distinct().getEnumerator()),u.current=void 0;o.moveNext();){for(var i=!1,c=t.getEnumerator();c.moveNext()&&!i;)i=n(o.current,c.current);if(i)return u.current=o.current,!0}return!1}};return u}r.Enumerable.prototype.intersect=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.intersect=r.Enumerable.prototype.intersect)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n,o,u,i){i=i||function(r,e){return r===e};var c,a,p=0,s={current:void 0,moveNext:function(){if(s.current=void 0,!c){if(c=e.getEnumerator(),!c.moveNext())return!1;a=r.en(t).toArray()}var f;do{for(;p<a.length;p++)if(f=a[p],i(n(c.current),o(f)))return p++,s.current=u(c.current,f),!0;p=0}while(c.moveNext());return!1}};return s}r.Enumerable.prototype.join=function(t,n,o,u,i){var c=this,a=t instanceof Array?t.en():t,p=new r.Enumerable;return p.getEnumerator=function(){return e(c,a,n,o,u,i)},p},r.List&&(r.List.prototype.join=r.Enumerable.prototype.join)}(exjs||(exjs={}));var exjs;!function(r){function e(){this.constructor=t}r.Enumerable.prototype.toList=function(){for(var r=new t,e=this.getEnumerator();e.moveNext();)r.push(e.current);return r};var t=function(r){function e(){r.apply(this,arguments)}return __extends(e,r),e.prototype.toString=function(){throw new Error("Not implemented")},e.prototype.toLocaleString=function(){throw new Error("Not implemented")},e.prototype.pop=function(){throw new Error("Not implemented")},e.prototype.push=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},e.prototype.shift=function(){throw new Error("Not implemented")},e.prototype.slice=function(r,e){throw new Error("Not implemented")},e.prototype.sort=function(r){throw new Error("Not implemented")},e.prototype.splice=function(){throw new Error("Not implemented")},e.prototype.unshift=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},e.prototype.indexOf=function(r,e){throw new Error("Not implemented")},e.prototype.lastIndexOf=function(r,e){throw new Error("Not implemented")},e.prototype.every=function(r,e){throw new Error("Not implemented")},e.prototype.some=function(r,e){throw new Error("Not implemented")},e.prototype.forEach=function(r,e){throw new Error("Not implemented")},e.prototype.map=function(r,e){throw new Error("Not implemented")},e.prototype.filter=function(r,e){throw new Error("Not implemented")},e.prototype.reduce=function(r,e){throw new Error("Not implemented")},e.prototype.reduceRight=function(r,e){throw new Error("Not implemented")},e.prototype.remove=function(r){throw new Error("Not implemented")},e.prototype.removeWhere=function(r){throw new Error("Not implemented")},e}(r.Enumerable);r.List=t;for(var n in Array)Array.hasOwnProperty(n)&&(t[n]=Array[n]);e.prototype=Array.prototype,t.prototype=new e;for(var o in r.Enumerable.prototype)"getEnumerator"!==o&&(t.prototype[o]=r.Enumerable.prototype[o]);t.prototype.getEnumerator=function(){var r=this,e=r.length,t={moveNext:void 0,current:void 0},n=-1;return t.moveNext=function(){return n++,n>=e?(t.current=void 0,!1):(t.current=r[n],!0)},t},t.prototype.remove=function(r){return this.removeWhere(function(e){return e===r}).any()},t.prototype.removeWhere=function(r){for(var e,t=[],n=this.length-1;n>=0;n--)e=this[n],r(e,n)===!0&&(this.splice(n,1),t.push(e));return t.en().reverse()}}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,n,o){return new t(r,e,n,o)}var t=function(e){function t(r,t,n,o){e.call(this),this.Source=r,o=o||function(r,e){return r>e?1:e>r?-1:0};var u=n===!0?-1:1;this.Sorter=function(r,e){return u*o(t(r),t(e))}}return __extends(t,e),t.prototype.getEnumerator=function(){var e,t=this.Source,n=this.Sorter,o=0,u={current:void 0,moveNext:function(){return e||(e=r.en(t).toArray(),e.sort(n)),u.current=void 0,o>=e.length?!1:(u.current=e[o],o++,!0)}};return u},t.prototype.thenBy=function(r,e){return new n(this,r,!1,e)},t.prototype.thenByDescending=function(r,e){return new n(this,r,!0,e)},t}(r.Enumerable),n=function(r){function e(e,t,n,o){r.call(this,e,t,n,o);var u=e.Sorter,i=this.Sorter;this.Sorter=function(r,e){return u(r,e)||i(r,e)}}return __extends(e,r),e}(t),o=r.Enumerable.prototype;o.orderBy=function(r,t){return e(this,r,!1,t)},o.orderByDescending=function(r,t){return e(this,r,!0,t)},r.List&&(r.List.prototype.orderBy=r.Enumerable.prototype.orderBy,r.List.prototype.orderByDescending=r.Enumerable.prototype.orderByDescending)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n,o=1,u={current:void 0,moveNext:function(){if(2>o){if(t=t||e.en().getEnumerator(),t.moveNext())return u.current=t.current,!0;o++}return n=n||r.getEnumerator(),n.moveNext()?(u.current=n.current,!0):(u.current=void 0,!1)}};return u}r.Enumerable.prototype.prepend=function(){for(var t=this,n=[],o=0;o<arguments.length;o++)n[o-0]=arguments[o];var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n)},u},r.List&&(r.List.prototype.prepend=r.Enumerable.prototype.prepend)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,t){var n=r-t,o={current:void 0,moveNext:function(){return n+=t,n>=e?!1:(o.current=n,!0)}};return o}function t(t,n,o){if(t=t||0,n=n||0,t>n)throw new Error("Start cannot be greater than end.");null==o&&(o=1);var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n,o)},u}r.range=t}(exjs||(exjs={}));var exjs;!function(r){function e(e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.en(e).toArray(),n=t.length),n--,o.current=t[n],n>=0}};return o}r.Enumerable.prototype.reverse=function(){var t=this,n=new r.Enumerable;return n.getEnumerator=function(){return e(t)},n},r.List&&(r.List.prototype.reverse=r.Enumerable.prototype.reverse)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){if(e=e||0,0===e)return Math.round(r);var t=Math.pow(10,e);return Math.round(r*t)/t}r.round=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()?(o.current=e(t.current,n),n++,!0):!1}};return o}function t(e,t){var n,o,u={current:void 0,moveNext:function(){for(u.current=void 0,n||(n=e.getEnumerator());!o||!o.moveNext();){if(!n.moveNext())return!1;o=r.selectorEnumerator(t(n.current))}return u.current=o.current,!0}};return u}r.Enumerable.prototype.select=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.selectMany=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.select=r.Enumerable.prototype.select,r.List.prototype.selectMany=r.Enumerable.prototype.selectMany)}(exjs||(exjs={}));var exjs;!function(r){function e(r){return Array.isArray(r)?r.en().getEnumerator():null!=r&&"function"==typeof r.getEnumerator?r.getEnumerator():null}r.selectorEnumerator=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n={current:void 0,moveNext:function(){if(!t){t=r.getEnumerator();for(var o=0;e>o;o++)if(!t.moveNext())return!1}return t.moveNext()?(n.current=t.current,!0):(n.current=void 0,!1)}};return n}function t(r,e){var t,n={current:void 0,moveNext:function(){if(!t){t=r.getEnumerator();for(var o=0;t.moveNext();o++)if(!e(n.current=t.current,o))return!0;return n.current=void 0,!1}return t.moveNext()?(n.current=t.current,!0):(n.current=void 0,!1)}};return n}r.Enumerable.prototype.skip=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.skipWhile=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.skip=r.Enumerable.prototype.skip,r.List.prototype.skipWhile=r.Enumerable.prototype.skipWhile)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),n++,n>e?!1:(o.current=void 0,t.moveNext()?(o.current=t.current,!0):!1)}};return o}function t(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()&&e(t.current,n)?(n++,o.current=t.current,!0):(o.current=void 0,!1)}};return o}r.Enumerable.prototype.take=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.takeWhile=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.take=r.Enumerable.prototype.take,r.List.prototype.takeWhile=r.Enumerable.prototype.takeWhile)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t){var n,o=!1,u=[],i={current:void 0,moveNext:function(){if(o){if(null==n)return!1;u.push(n),n=r.selectorEnumerator(t(i.current))}else n=e.getEnumerator(),o=!0;for(;!(n&&n.moveNext()||u.length<1);)n=u.pop();return i.current=null==n?void 0:n.current,void 0!==i.current}};return i}function t(e,t,n){var o,u=!1,i=[],c={current:void 0,moveNext:function(){if(u){if(null==o)return!1;i.push(o),o=r.selectorEnumerator(t(c.current))}else o=e.getEnumerator(),u=!0;do{for(;!(o&&o.moveNext()||i.length<1);)o=i.pop();c.current=null==o?void 0:o.current}while(n(c.current));return void 0!==c.current}};return c}r.Enumerable.prototype.traverse=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.traverseUnique=function(e,n){var o=this,u=[],i=new r.Enumerable;return n?i.getEnumerator=function(){return t(o,e,function(r){return u.some(function(e){return n(r,e)})?!0:(u.push(r),!1)})}:i.getEnumerator=function(){return t(o,e,function(r){return u.indexOf(r)>-1?!0:(u.push(r),!1)})},i},r.List&&(r.List.prototype.traverse=r.Enumerable.prototype.traverse,r.List.prototype.traverseUnique=r.Enumerable.prototype.traverseUnique)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n){n=n||function(r,e){return r===e};var o,u,i=[],c={current:void 0,moveNext:function(){if(o||(o=r.en(e).distinct().getEnumerator()),c.current=void 0,!u&&o.moveNext())return i.push(c.current=o.current),!0;for(u=u||r.en(t).distinct().getEnumerator();u.moveNext();){for(var a=0,p=!1,s=i.length;s>a&&!p;a++)p=n(i[a],u.current);if(!p)return c.current=u.current,!0}return!1}};return c}r.Enumerable.prototype.union=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.union=r.Enumerable.prototype.union)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n={current:void 0,moveNext:function(){t||(t=r.getEnumerator());for(var o;t.moveNext();)if(e(o=t.current))return n.current=o,!0;return!1}};return n}r.Enumerable.prototype.where=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.where=r.Enumerable.prototype.where)}(exjs||(exjs={}));var exjs;!function(r){function e(e){var n=new r.Enumerable;return n.getEnumerator=function(){return t(e)},n}function t(r){var e=r.getEnumerator(),t={current:void 0,moveNext:void 0};return t.moveNext=function(){return e.moveNext()?(t.current=e.current,!0):(t.current=void 0,!1)},t}r.en=e}(exjs||(exjs={}));var ex=exjs.en,exjs;!function(r){function e(r,e,t){var n,o,u={current:void 0,moveNext:function(){return n||(n=r.getEnumerator()),o||(o=e.getEnumerator()),u.current=void 0,n.moveNext()&&o.moveNext()?(u.current=t(n.current,o.current),!0):!1}};return u}r.Enumerable.prototype.zip=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.zip=r.Enumerable.prototype.zip)}(exjs||(exjs={}));
+//# sourceMappingURL=ex.es3.min.js.map
+
+define("../node_modules/exjs/dist/ex.es3.min.js", function(){});
+
+// base-component v1.0.9 https://github.com/viewdir/base-component#readme
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('../node_modules/base-component/dist/base-component.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.baseComponent = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/> 
+
+var _Components;
+(function (_Components) {
+    var BaseComponent = (function () {
+        function BaseComponent(options) {
+            this.options = options;
+            this.options.data = $.extend(this.data(), options.data);
+        }
+        BaseComponent.prototype._init = function () {
+            this._$element = $(this.options.target);
+            if (!this._$element.length) {
+                console.warn('element not found');
+                return false;
+            }
+            this._$element.empty();
+            return true;
+        };
+        BaseComponent.prototype.data = function () {
+            return {};
+        };
+        BaseComponent.prototype.on = function (name, callback, ctx) {
+            var e = this._e || (this._e = {});
+            (e[name] || (e[name] = [])).push({
+                fn: callback,
+                ctx: ctx
+            });
+        };
+        BaseComponent.prototype.fire = function (name) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            var data = [].slice.call(arguments, 1);
+            var evtArr = ((this._e || (this._e = {}))[name] || []).slice();
+            var i = 0;
+            var len = evtArr.length;
+            for (i; i < len; i++) {
+                evtArr[i].fn.apply(evtArr[i].ctx, data);
+            }
+        };
+        BaseComponent.prototype._resize = function () {
+        };
+        BaseComponent.prototype.set = function (data) {
+        };
+        return BaseComponent;
+    }());
+    _Components.BaseComponent = BaseComponent;
+})(_Components || (_Components = {}));
+(function (g) {
+    if (!g._Components) {
+        g._Components = _Components;
+    }
+})(global);
+
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])(1)
 });
-!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define([],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.baseComponent=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var _Components;!function(_Components){function applyMixins(derivedCtor,baseCtors){baseCtors.forEach(function(baseCtor){Object.getOwnPropertyNames(baseCtor.prototype).forEach(function(name){derivedCtor.prototype[name]=baseCtor.prototype[name]})})}var BaseComponent=function(){function BaseComponent(options){this.options=options,this.options.data=$.extend(this.data(),options.data)}return BaseComponent.prototype._init=function(){return this._$element=$(this.options.target),this._$element.length?(this._$element.empty(),!0):(console.warn("element not found"),!1)},BaseComponent.prototype.data=function(){return{}},BaseComponent.prototype.fire=function(event){for(var args=[],_i=1;_i<arguments.length;_i++)args[_i-1]=arguments[_i];return this.emit(event,args)},BaseComponent.prototype._resize=function(){},BaseComponent.prototype.set=function(data){},BaseComponent}();_Components.BaseComponent=BaseComponent,_Components.applyMixins=applyMixins,applyMixins(BaseComponent,[TinyEmitter])}(_Components||(_Components={})),function(g){g._Components||(g._Components=_Components)}(global)}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
+// key-codes v0.0.5 https://github.com/edsilv/key-codes
+!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('../node_modules/key-codes/dist/key-codes.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.keyCodes=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var KeyCodes;!function(KeyCodes){var KeyDown;!function(KeyDown){KeyDown.Backspace=8,KeyDown.Tab=9,KeyDown.Enter=13,KeyDown.Shift=16,KeyDown.Ctrl=17,KeyDown.Alt=18,KeyDown.PauseBreak=19,KeyDown.CapsLock=20,KeyDown.Escape=27,KeyDown.Spacebar=32,KeyDown.PageUp=33,KeyDown.PageDown=34,KeyDown.End=35,KeyDown.Home=36,KeyDown.LeftArrow=37,KeyDown.UpArrow=38,KeyDown.RightArrow=39,KeyDown.DownArrow=40,KeyDown.PrintScrn=44,KeyDown.Insert=45,KeyDown.Delete=46,KeyDown.Zero=48,KeyDown.One=49,KeyDown.Two=50,KeyDown.Three=51,KeyDown.Four=52,KeyDown.Five=53,KeyDown.Six=54,KeyDown.Seven=55,KeyDown.Eight=56,KeyDown.Nine=57,KeyDown.a=65,KeyDown.b=66,KeyDown.c=67,KeyDown.d=68,KeyDown.e=69,KeyDown.f=70,KeyDown.g=71,KeyDown.h=72,KeyDown.i=73,KeyDown.j=74,KeyDown.k=75,KeyDown.l=76,KeyDown.m=77,KeyDown.n=78,KeyDown.o=79,KeyDown.p=80,KeyDown.q=81,KeyDown.r=82,KeyDown.s=83,KeyDown.t=84,KeyDown.u=85,KeyDown.v=86,KeyDown.w=87,KeyDown.x=88,KeyDown.y=89,KeyDown.z=90,KeyDown.LeftWindowKey=91,KeyDown.RightWindowKey=92,KeyDown.SelectKey=93,KeyDown.Numpad0=96,KeyDown.Numpad1=97,KeyDown.Numpad2=98,KeyDown.Numpad3=99,KeyDown.Numpad4=100,KeyDown.Numpad5=101,KeyDown.Numpad6=102,KeyDown.Numpad7=103,KeyDown.Numpad8=104,KeyDown.Numpad9=105,KeyDown.Multiply=106,KeyDown.NumpadPlus=107,KeyDown.NumpadMinus=109,KeyDown.DecimalPoint=110,KeyDown.Divide=111,KeyDown.F1=112,KeyDown.F2=113,KeyDown.F3=114,KeyDown.F4=115,KeyDown.F5=116,KeyDown.F6=117,KeyDown.F7=118,KeyDown.F8=119,KeyDown.F9=120,KeyDown.F10=121,KeyDown.F11=122,KeyDown.F12=123,KeyDown.NumLock=144,KeyDown.ScrollLock=145,KeyDown.Semicolon=186,KeyDown.Equals=187,KeyDown.Comma=188,KeyDown.LessThan=188,KeyDown.Dash=189,KeyDown.Period=190,KeyDown.GreaterThan=190,KeyDown.ForwardSlash=191,KeyDown.QuestionMark=191,KeyDown.GraveAccent=192,KeyDown.Tilde=192,KeyDown.OpenCurlyBracket=219,KeyDown.OpenSquareBracket=219,KeyDown.BackSlash=220,KeyDown.VerticalPipe=220,KeyDown.CloseCurlyBracket=221,KeyDown.CloseSquareBracket=221,KeyDown.Quote=222,KeyDown.CommandFF=224}(KeyDown=KeyCodes.KeyDown||(KeyCodes.KeyDown={}))}(KeyCodes||(KeyCodes={})),function(KeyCodes){var KeyPress;!function(KeyPress){KeyPress.Backspace=8,KeyPress.Enter=13,KeyPress.Spacebar=32,KeyPress.Hash=35,KeyPress.GraveAccent=39,KeyPress.DoubleQuote=34,KeyPress.Asterisk=42,KeyPress.Plus=43,KeyPress.Comma=44,KeyPress.Minus=45,KeyPress.Period=46,KeyPress.ForwardSlash=47,KeyPress.Zero=48,KeyPress.One=49,KeyPress.Two=50,KeyPress.Three=51,KeyPress.Four=52,KeyPress.Five=53,KeyPress.Six=54,KeyPress.Seven=55,KeyPress.Eight=56,KeyPress.Nine=57,KeyPress.Colon=58,KeyPress.Semicolon=59,KeyPress.LessThan=60,KeyPress.Equals=61,KeyPress.GreaterThan=62,KeyPress.QuestionMark=63,KeyPress.At=64,KeyPress.OpenSquareBracket=91,KeyPress.BackSlash=92,KeyPress.CloseSquareBracket=93,KeyPress.a=97,KeyPress.b=98,KeyPress.c=99,KeyPress.d=100,KeyPress.e=101,KeyPress.f=102,KeyPress.g=103,KeyPress.h=104,KeyPress.i=105,KeyPress.j=106,KeyPress.k=107,KeyPress.l=108,KeyPress.m=109,KeyPress.n=110,KeyPress.o=111,KeyPress.p=112,KeyPress.q=113,KeyPress.r=114,KeyPress.s=115,KeyPress.t=116,KeyPress.u=117,KeyPress.v=118,KeyPress.w=119,KeyPress.x=120,KeyPress.y=121,KeyPress.z=122,KeyPress.OpenCurlyBracket=123,KeyPress.VerticalPipe=124,KeyPress.CloseCurlyBracket=125,KeyPress.Tilde=126}(KeyPress=KeyCodes.KeyPress||(KeyCodes.KeyPress={}))}(KeyCodes||(KeyCodes={})),function(g){g.KeyCodes||(g.KeyCodes=KeyCodes)}(global)}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
+// extensions v0.1.11 https://github.com/edsilv/extensions
+!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('../node_modules/extensions/dist/extensions.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.extensions=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){Array.prototype.clone=function(){return this.slice(0)},Array.prototype.includes||(Array.prototype.includes=function(val){return this.indexOf(val)!==-1}),Array.prototype.insert=function(item,index){this.splice(index,0,item)},Array.prototype.move=function(fromIndex,toIndex){this.splice(toIndex,0,this.splice(fromIndex,1)[0])},Array.prototype.remove=function(item){var index=this.indexOf(item);index>-1&&this.splice(index,1)},Array.prototype.removeAt=function(index){this.splice(index,1)},Math.clamp||(Math.clamp=function(value,min,max){return Math.min(Math.max(value,min),max)}),Math.radians||(Math.radians=function(degrees){return Math.TAU*(degrees/360)}),Math.distanceBetween=function(x1,y1,x2,y2){return Math.sqrt(2*(x2-x1)+2*(y2-y1))},Math.lerp=function(start,stop,amount){return start+(stop-start)*amount},Math.mag=function(a,b,c){return Math.sqrt(a*a+b*b+c*c)},Math.map=function(value,start1,stop1,start2,stop2){return start2+(stop2-start2)*((value-start1)/(stop1-start1))},Math.median=function(values){values.sort(function(a,b){return a-b});var half=Math.floor(values.length/2);return values.length%2?values[half]:(values[half-1]+values[half])/2},Math.normalise=function(num,min,max){return(num-min)/(max-min)},Math.degrees||(Math.degrees=function(radians){return 360*radians/Math.TAU}),Math.randomBetween=function(low,high){return high||(high=low,low=0),low>=high?low:low+(high-low)*Math.random()},Math.roundToDecimalPlace=function(num,dec){return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec)},Math.TAU=2*Math.PI,String.prototype.b64_to_utf8=function(){return decodeURIComponent(escape(window.atob(this)))},String.format=function(){for(var s=arguments[0],i=0;i<arguments.length-1;i++){var reg=new RegExp("\\{"+i+"\\}","gm");s=s.replace(reg,arguments[i+1])}return s},String.prototype.includes||(String.prototype.includes=function(str){return this.indexOf(str)!==-1}),String.prototype.isAlphanumeric=function(){return/^[a-zA-Z0-9]*$/.test(this)},String.prototype.ltrim=function(){return this.replace(/^\s+/,"")},String.prototype.rtrim=function(){return this.replace(/\s+$/,"")},String.prototype.toCssClass=function(){return this.replace(/[^a-z0-9]/g,function(s){var c=s.charCodeAt(0);return 32==c?"-":c>=65&&c<=90?"_"+s.toLowerCase():"__"+("000"+c.toString(16)).slice(-4)})},String.prototype.toFileName=function(){return this.replace(/[^a-z0-9]/gi,"_").toLowerCase()},String.prototype.utf8_to_b64=function(){return window.btoa(unescape(encodeURIComponent(this)))}},{}]},{},[1])(1)});
+// http-status-codes v0.0.5 https://github.com/edsilv/http-status-codes
+!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('../node_modules/http-status-codes/dist/http-status-codes.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.httpStatusCodes=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var HTTPStatusCode;!function(HTTPStatusCode){HTTPStatusCode.CONTINUE=100,HTTPStatusCode.SWITCHING_PROTOCOLS=101,HTTPStatusCode.PROCESSING=102,HTTPStatusCode.OK=200,HTTPStatusCode.CREATED=201,HTTPStatusCode.ACCEPTED=202,HTTPStatusCode.NON_AUTHORITATIVE_INFORMATION=203,HTTPStatusCode.NO_CONTENT=204,HTTPStatusCode.RESET_CONTENT=205,HTTPStatusCode.PARTIAL_CONTENT=206,HTTPStatusCode.MULTI_STATUS=207,HTTPStatusCode.MULTIPLE_CHOICES=300,HTTPStatusCode.MOVED_PERMANENTLY=301,HTTPStatusCode.MOVED_TEMPORARILY=302,HTTPStatusCode.SEE_OTHER=303,HTTPStatusCode.NOT_MODIFIED=304,HTTPStatusCode.USE_PROXY=305,HTTPStatusCode.TEMPORARY_REDIRECT=307,HTTPStatusCode.BAD_REQUEST=400,HTTPStatusCode.UNAUTHORIZED=401,HTTPStatusCode.PAYMENT_REQUIRED=402,HTTPStatusCode.FORBIDDEN=403,HTTPStatusCode.NOT_FOUND=404,HTTPStatusCode.METHOD_NOT_ALLOWED=405,HTTPStatusCode.NOT_ACCEPTABLE=406,HTTPStatusCode.PROXY_AUTHENTICATION_REQUIRED=407,HTTPStatusCode.REQUEST_TIME_OUT=408,HTTPStatusCode.CONFLICT=409,HTTPStatusCode.GONE=410,HTTPStatusCode.LENGTH_REQUIRED=411,HTTPStatusCode.PRECONDITION_FAILED=412,HTTPStatusCode.REQUEST_ENTITY_TOO_LARGE=413,HTTPStatusCode.REQUEST_URI_TOO_LARGE=414,HTTPStatusCode.UNSUPPORTED_MEDIA_TYPE=415,HTTPStatusCode.REQUESTED_RANGE_NOT_SATISFIABLE=416,HTTPStatusCode.EXPECTATION_FAILED=417,HTTPStatusCode.IM_A_TEAPOT=418,HTTPStatusCode.UNPROCESSABLE_ENTITY=422,HTTPStatusCode.LOCKED=423,HTTPStatusCode.FAILED_DEPENDENCY=424,HTTPStatusCode.UNORDERED_COLLECTION=425,HTTPStatusCode.UPGRADE_REQUIRED=426,HTTPStatusCode.PRECONDITION_REQUIRED=428,HTTPStatusCode.TOO_MANY_REQUESTS=429,HTTPStatusCode.REQUEST_HEADER_FIELDS_TOO_LARGE=431,HTTPStatusCode.INTERNAL_SERVER_ERROR=500,HTTPStatusCode.NOT_IMPLEMENTED=501,HTTPStatusCode.BAD_GATEWAY=502,HTTPStatusCode.SERVICE_UNAVAILABLE=503,HTTPStatusCode.GATEWAY_TIME_OUT=504,HTTPStatusCode.HTTP_VERSION_NOT_SUPPORTED=505,HTTPStatusCode.VARIANT_ALSO_NEGOTIATES=506,HTTPStatusCode.INSUFFICIENT_STORAGE=507,HTTPStatusCode.BANDWIDTH_LIMIT_EXCEEDED=509,HTTPStatusCode.NOT_EXTENDED=510,HTTPStatusCode.NETWORK_AUTHENTICATION_REQUIRED=511}(HTTPStatusCode||(HTTPStatusCode={})),function(g){g.HTTPStatusCode||(g.HTTPStatusCode=HTTPStatusCode)}(global)}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
+// jquery-plugins v0.0.25 https://github.com/edsilv/jquery-plugins
+!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('../node_modules/jquery-plugins/dist/jquery-plugins.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.jqueryPlugins=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){!function($){function documentHandler(){var $current=this===document?$(this):$(this).contents();$current.mousemove(function(e){jQuery.mlp={x:e.pageX,y:e.pageY}}),$current.find("iframe").load(documentHandler)}$.fn.checkboxButton=function(onClick){return this.each(function(){var $this=$(this);$this.on("click",function(e){var tagName=e.target.tagName,$checkbox=$(this).find(":checkbox");"INPUT"!==tagName&&(e.preventDefault(),$checkbox.prop("checked",!$checkbox.prop("checked")));var checked=$checkbox.is(":checked");onClick.call(this,checked)})})},$.fn.disable=function(){return this.each(function(){var $this=$(this);$this.addClass("disabled"),$this.data("tabindex",$this.attr("tabindex")),$this.removeAttr("tabindex")})},$.fn.ellipsis=function(chars){return this.each(function(){var $self=$(this),text=$self.text();if(text.length>chars){var trimmedText=text.substr(0,chars);trimmedText=trimmedText.substr(0,Math.min(trimmedText.length,trimmedText.lastIndexOf(" "))),$self.empty().html(trimmedText+"&hellip;")}})},$.fn.ellipsisFill=function(text){var textPassed=!0;return text||(textPassed=!1),this.each(function(){var $self=$(this);textPassed||(text=$self.text()),$self.empty();var $spanElem=$('<span title="'+text+'"></span>');if($self.append($spanElem),$self.css("overflow","hidden"),$spanElem.css("white-space","nowrap"),$spanElem.html(text),$spanElem.width()>$self.width())for(var lastText=null;$spanElem.width()>$self.width();){var t=$spanElem.html();if(t=t.substring(0,t.lastIndexOf(" "))+"&hellip;",t===lastText)break;$spanElem.html(t),lastText=t}})},$.fn.ellipsisHtmlFixed=function(chars,cb){return this.each(function(){var $self=$(this),expandedText=$self.html(),$trunc=$("<span></span>");if($trunc.html($self.html().replace(/\s[\s]*/g," ").trim()),!($trunc.text().trim().length<=chars)){for(;$trunc.text().trim().length>chars;)$trunc.removeLastWord(chars);var collapsedText=$trunc.html(),expanded=!1;$self.toggle=function(){$self.empty();var $toggleButton=$('<a href="#" class="toggle"></a>');expanded?($self.html(expandedText+" "),$toggleButton.text("less"),$toggleButton.toggleClass("less","more")):($self.html(collapsedText+"&hellip; "),$toggleButton.text("more"),$toggleButton.toggleClass("more","less")),$toggleButton.one("click",function(e){e.preventDefault(),$self.toggle()}),expanded=!expanded,$self.append($toggleButton),cb&&cb()},$self.toggle()}})},$.fn.enable=function(){return this.each(function(){var $self=$(this);$self.removeClass("disabled"),$self.attr("tabindex",$self.data("tabindex"))})},$.fn.equaliseHeight=function(reset,average){var maxHeight=-1,minHeight=Number.MAX_VALUE,heights=[];reset&&this.each(function(){$(this).height("auto")}),this.each(function(){var currentHeight=$(this).height();heights.push(currentHeight),maxHeight=maxHeight>currentHeight?maxHeight:currentHeight,minHeight=minHeight<currentHeight?minHeight:currentHeight});var finalHeight=maxHeight;return average&&(finalHeight=Math.median(heights)),this.each(function(){$(this).height(finalHeight)}),this},$.fn.getVisibleElementWithGreatestTabIndex=function(){var $self=$(this),maxTabIndex=0,$elementWithGreatestTabIndex=null;return $self.find("*:visible[tabindex]").each(function(index,el){var $el=$(el),tabIndex=parseInt($el.attr("tabindex"));tabIndex>maxTabIndex&&(maxTabIndex=tabIndex,$elementWithGreatestTabIndex=$el)}),$elementWithGreatestTabIndex},$.fn.horizontalMargins=function(){var $self=$(this);return parseInt($self.css("marginLeft"))+parseInt($self.css("marginRight"))},$.fn.leftMargin=function(){var $self=$(this);return parseInt($self.css("marginLeft"))},$.fn.rightMargin=function(){var $self=$(this);return parseInt($self.css("marginRight"))},$.fn.horizontalPadding=function(){var $self=$(this);return parseInt($self.css("paddingLeft"))+parseInt($self.css("paddingRight"))},$.fn.leftPadding=function(){var $self=$(this);return parseInt($self.css("paddingLeft"))},$.fn.rightPadding=function(){var $self=$(this);return parseInt($self.css("paddingRight"))},$.mlp={x:0,y:0},$(documentHandler),$.fn.ismouseover=function(){var result=!1;return this.eq(0).each(function(){var $current=$(this).is("iframe")?$(this).contents().find("body"):$(this),offset=$current.offset();result=offset.left<=$.mlp.x&&offset.left+$current.outerWidth()>$.mlp.x&&offset.top<=$.mlp.y&&offset.top+$current.outerHeight()>$.mlp.y}),result};var timer,on=$.fn.on;$.fn.on=function(){var args=Array.apply(null,arguments),last=args[args.length-1];if(isNaN(last)||1===last&&args.pop())return on.apply(this,args);var delay=args.pop(),fn=args.pop();return args.push(function(){var self=this,params=arguments;clearTimeout(timer),timer=setTimeout(function(){fn.apply(self,params)},delay)}),on.apply(this,args)},$.fn.onEnter=function(cb){return this.each(function(){var $this=$(this);$this.on("keyup",function(e){13===e.keyCode&&(e.preventDefault(),cb())})})},$.fn.onPressed=function(cb){return this.each(function(){var $this=$(this);$this.on("touchstart click",function(e){e.preventDefault(),cb(e)}),$this.on("keyup",function(e){13===e.keyCode&&(e.preventDefault(),cb(e))})})},$.fn.removeLastWord=function(chars,depth){return void 0===chars&&(chars=8),void 0===depth&&(depth=0),this.each(function(){var $self=$(this);if($self.contents().length>0){var $lastElement=$self.contents().last();if(3===$lastElement[0].nodeType){var words=$lastElement.text().trim().split(" ");if(words.length>1)return words.splice(words.length-1,1),void($lastElement[0].data=words.join(" "));if("undefined"!=typeof chars&&1===words.length&&words[0].length>chars)return void($lastElement[0].data=words.join(" ").substring(0,chars))}$lastElement.removeLastWord(chars,depth+1)}else depth>0&&$self.remove()})},$.fn.swapClass=function(removeClass,addClass){return this.each(function(){$(this).removeClass(removeClass).addClass(addClass)})},$.fn.targetBlank=function(){return this.each(function(){$(this).find("a").prop("target","_blank")})},$.fn.toggleClass=function(class1,class2){return this.each(function(){var $this=$(this);$this.hasClass(class1)?$(this).removeClass(class1).addClass(class2):$(this).removeClass(class2).addClass(class1)})},$.fn.toggleExpandText=function(chars,lessText,moreText,cb){return this.each(function(){var $self=$(this),expandedText=$self.html();if(!(chars>expandedText.length)){var expanded=!1,collapsedText=expandedText.substr(0,chars);collapsedText=collapsedText.substr(0,Math.min(collapsedText.length,collapsedText.lastIndexOf(" "))),$self.toggle=function(){$self.empty();var $toggleButton=$('<a href="#" class="toggle"></a>');expanded?($self.html(expandedText+"&nbsp;"),$toggleButton.text(lessText),$toggleButton.toggleClass("less","more")):($self.html(collapsedText+"&nbsp;"),$toggleButton.text(moreText),$toggleButton.toggleClass("more","less")),$toggleButton.one("click",function(e){e.preventDefault(),$self.toggle()}),expanded=!expanded,$self.append($toggleButton),cb&&cb()},$self.toggle()}})},$.fn.toggleExpandTextByLines=function(lines,lessText,moreText,cb){return this.each(function(){for(var $self=$(this),expandedText=$self.html(),$buttonPad=$('<span>&hellip; <a href="#" class="toggle more">morepad</a></span>'),stringsByLine=[expandedText],lastHeight=$self.height();$self.text().length>0;){$self.removeLastWord();var html=$self.html();$self.append($buttonPad),lastHeight>$self.height()&&(stringsByLine.unshift(html),lastHeight=$self.height()),$buttonPad.remove()}if(stringsByLine.length<=lines)return void $self.html(expandedText);var collapsedText=stringsByLine[lines-1],expanded=!1;$self.toggle=function(){$self.empty();var $toggleButton=$('<a href="#" class="toggle"></a>');expanded?($self.html(expandedText+" "),$toggleButton.text(lessText),$toggleButton.toggleClass("less","more")):($self.html(collapsedText+"&hellip; "),$toggleButton.text(moreText),$toggleButton.toggleClass("more","less")),$toggleButton.one("click",function(e){e.preventDefault(),$self.toggle()}),expanded=!expanded,$self.append($toggleButton),cb&&cb()},$self.toggle()})},$.fn.toggleText=function(text1,text2){return this.each(function(){var $self=$(this);$self.text()===text1?$(this).text(text2):$(this).text(text1)})},$.fn.updateAttr=function(attrName,oldVal,newVal){return this.each(function(){var $self=$(this),attr=$self.attr(attrName);attr&&0===attr.indexOf(oldVal)&&(attr=attr.replace(oldVal,newVal),$self.attr(attrName,attr))})},$.fn.verticalMargins=function(){var $self=$(this);return parseInt($self.css("marginTop"))+parseInt($self.css("marginBottom"))},$.fn.verticalPadding=function(){var $self=$(this);return parseInt($self.css("paddingTop"))+parseInt($self.css("paddingBottom"))}}(jQuery)},{}]},{},[1])(1)});
+/*! Tiny Pub/Sub - v0.7.0 - 2015-04-21
+* https://github.com/cowboy/jquery-tiny-pubsub
+* Copyright (c) 2015 "Cowboy" Ben Alman; Licensed MIT */
+!function(a){var b=null;a.initPubSub=function(){b=a({})},a.subscribe=function(){b||a.initPubSub(),b.on.apply(b,arguments)},a.unsubscribe=function(){b||a.initPubSub(),b.off.apply(b,arguments)},a.disposePubSub=function(){b=null},a.publish=function(){b||a.initPubSub(),b.trigger.apply(b,arguments)}}(jQuery);
+define("../node_modules/jquery-tiny-pubsub/dist/ba-tiny-pubsub.min.js", function(){});
+
+// manifold v1.1.11 https://github.com/viewdir/manifold#readme
+!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('../node_modules/manifold/dist/manifold.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.manifold=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var Manifold;!function(Manifold){var StringValue=function(){function StringValue(value){this.value="",value&&(this.value=value.toLowerCase())}return StringValue.prototype.toString=function(){return this.value},StringValue}();Manifold.StringValue=StringValue}(Manifold||(Manifold={}));var Manifold,__extends=this&&this.__extends||function(){var extendStatics=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(d,b){d.__proto__=b}||function(d,b){for(var p in b)b.hasOwnProperty(p)&&(d[p]=b[p])};return function(d,b){function __(){this.constructor=d}extendStatics(d,b),d.prototype=null===b?Object.create(b):(__.prototype=b.prototype,new __)}}();!function(Manifold){var TreeSortType=function(_super){function TreeSortType(){return null!==_super&&_super.apply(this,arguments)||this}return __extends(TreeSortType,_super),TreeSortType.prototype.date=function(){return new TreeSortType(TreeSortType.DATE.toString())},TreeSortType.prototype.none=function(){return new TreeSortType(TreeSortType.NONE.toString())},TreeSortType}(Manifold.StringValue);TreeSortType.DATE=new TreeSortType("date"),TreeSortType.NONE=new TreeSortType("none"),Manifold.TreeSortType=TreeSortType}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Bootstrapper=function(){function Bootstrapper(options){this._options=options,this._options.locale=this._options.locale||"en-GB"}return Bootstrapper.prototype.bootstrap=function(){var that=this;return new Promise(function(resolve,reject){var msie=that._msieversion();if(msie>0&&msie<11)if(9===msie){var settings={url:that._options.iiifResourceUri,type:"GET",dataType:"jsonp",jsonp:"callback",jsonpCallback:"manifestCallback"};$.ajax(settings),global.manifestCallback=function(json){that._loaded(that,JSON.stringify(json),resolve,reject)}}else 10===msie&&$.getJSON(that._options.iiifResourceUri,function(json){that._loaded(that,JSON.stringify(json),resolve,reject)});else manifesto.loadManifest(that._options.iiifResourceUri).then(function(json){that._loaded(that,json,resolve,reject)})})},Bootstrapper.prototype._loaded=function(bootstrapper,json,resolve,reject){var iiifResource=manifesto.create(json,{locale:bootstrapper._options.locale});if(bootstrapper._options.iiifResource||(bootstrapper._options.iiifResource=iiifResource),iiifResource.getIIIFResourceType().toString()===manifesto.IIIFResourceType.collection().toString()){var collections=iiifResource.getCollections();collections&&collections.length?iiifResource.getCollectionByIndex(bootstrapper._options.collectionIndex).then(function(collection){collection||reject("Collection index not found"),0===collection.getTotalManifests()&&0===bootstrapper._options.manifestIndex&&collection.getTotalCollections()>0&&(bootstrapper._options.collectionIndex=0,bootstrapper._options.iiifResourceUri=collection.id,bootstrapper.bootstrap()),collection.getManifestByIndex(bootstrapper._options.manifestIndex).then(function(manifest){bootstrapper._options.manifest=manifest;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)})}):iiifResource.getManifestByIndex(bootstrapper._options.manifestIndex).then(function(manifest){bootstrapper._options.manifest=manifest;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)})}else{bootstrapper._options.manifest=iiifResource;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)}},Bootstrapper.prototype._msieversion=function(){var ua=global.navigator.userAgent,msie=ua.indexOf("MSIE ");return msie>0?parseInt(ua.substring(msie+5,ua.indexOf(".",msie))):0},Bootstrapper}();Manifold.Bootstrapper=Bootstrapper}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var ExternalResource=function(){function ExternalResource(resource,dataUriFunc){this.isResponseHandled=!1,resource.externalResource=this,this.dataUri=dataUriFunc(resource),this._parseAuthServices(resource)}return ExternalResource.prototype._parseAuthServices=function(resource){this.clickThroughService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.clickThrough().toString()),this.loginService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.login().toString()),this.restrictedService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.restricted().toString()),this.clickThroughService?(this.logoutService=this.clickThroughService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.clickThroughService.getService(manifesto.ServiceProfile.token().toString())):this.loginService?(this.logoutService=this.loginService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.loginService.getService(manifesto.ServiceProfile.token().toString())):this.restrictedService&&(this.logoutService=this.restrictedService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.restrictedService.getService(manifesto.ServiceProfile.token().toString()))},ExternalResource.prototype.isAccessControlled=function(){return!!(this.clickThroughService||this.loginService||this.restrictedService)},ExternalResource.prototype.hasServiceDescriptor=function(){return this.dataUri.endsWith("info.json")},ExternalResource.prototype.getData=function(accessToken){var that=this;return that.data={},new Promise(function(resolve,reject){var type="GET";if(!that.hasServiceDescriptor()){if(!that.isAccessControlled())return that.status=HTTPStatusCode.OK,void resolve(that);type="HEAD"}$.ajax({url:that.dataUri,type:type,dataType:"json",beforeSend:function(xhr){accessToken&&xhr.setRequestHeader("Authorization","Bearer "+accessToken.accessToken)}}).done(function(data){if(data){var uri=unescape(data["@id"]);that.data=data,that._parseAuthServices(that.data),uri.endsWith("/info.json")&&(uri=uri.substr(0,uri.lastIndexOf("/")));var dataUri=that.dataUri;dataUri.endsWith("/info.json")&&(dataUri=dataUri.substr(0,dataUri.lastIndexOf("/"))),uri!==dataUri&&that.loginService?that.status=HTTPStatusCode.MOVED_TEMPORARILY:that.status=HTTPStatusCode.OK,resolve(that)}else that.status=HTTPStatusCode.OK,resolve(that)}).fail(function(error){that.status=error.status,that.error=error,error.responseJSON&&that._parseAuthServices(error.responseJSON),resolve(that)})})},ExternalResource}();Manifold.ExternalResource=ExternalResource}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Helper=function(){function Helper(options){this.options=options,this.iiifResource=this.options.iiifResource,this.iiifResourceUri=this.options.iiifResourceUri,this.manifest=this.options.manifest,this.collectionIndex=this.options.collectionIndex||0,this.manifestIndex=this.options.manifestIndex||0,this.sequenceIndex=this.options.sequenceIndex||0,this.canvasIndex=this.options.canvasIndex||0}return Helper.prototype.getAutoCompleteService=function(){var service=this.getSearchWithinService();return service?service.getService(manifesto.ServiceProfile.autoComplete()):null},Helper.prototype.getAttribution=function(){return Manifesto.TranslationCollection.getValue(this.manifest.getAttribution())},Helper.prototype.getCanvases=function(){return this.getCurrentSequence().getCanvases()},Helper.prototype.getCanvasById=function(id){return this.getCurrentSequence().getCanvasById(id)},Helper.prototype.getCanvasesById=function(ids){for(var canvases=[],i=0;i<ids.length;i++){var id=ids[i];canvases.push(this.getCanvasById(id))}return canvases},Helper.prototype.getCanvasByIndex=function(index){return this.getCurrentSequence().getCanvasByIndex(index)},Helper.prototype.getCanvasIndexById=function(id){return this.getCurrentSequence().getCanvasIndexById(id)},Helper.prototype.getCanvasIndexByLabel=function(label){var foliated=this.getManifestType().toString()===manifesto.ManifestType.manuscript().toString();return this.getCurrentSequence().getCanvasIndexByLabel(label,foliated)},Helper.prototype.getCanvasRange=function(canvas,path){var ranges=this.getCanvasRanges(canvas);if(path){for(var i=0;i<ranges.length;i++){var range=ranges[i];if(range.path===path)return range}return null}return ranges[0]},Helper.prototype.getCanvasRanges=function(canvas){return canvas.ranges?canvas.ranges:(canvas.ranges=this.manifest.getAllRanges().en().where(function(range){return range.getCanvasIds().en().any(function(c){return c===canvas.id})}).toArray(),canvas.ranges)},Helper.prototype.getCollectionIndex=function(iiifResource){var index=null;return iiifResource.parentCollection&&(index=iiifResource.parentCollection.index),index},Helper.prototype.getCurrentCanvas=function(){return this.getCurrentSequence().getCanvasByIndex(this.canvasIndex)},Helper.prototype.getCurrentElement=function(){return this.getCanvasByIndex(this.canvasIndex)},Helper.prototype.getCurrentSequence=function(){return this.getSequenceByIndex(this.sequenceIndex)},Helper.prototype.getElementType=function(element){return element||(element=this.getCurrentCanvas()),element.getType()},Helper.prototype.getFirstPageIndex=function(){return 0},Helper.prototype.getInfoUri=function(canvas){var images=canvas.getImages();if(images&&images.length){for(var infoUri=null,firstImage=images[0],resource=firstImage.getResource(),services=resource.getServices(),i=0;i<services.length;i++){var service=services[i],id=service.id;id.endsWith("/")||(id+="/"),manifesto.Utils.isImageProfile(service.getProfile())&&(infoUri=id+"info.json")}return infoUri}var service=canvas.getService(manifesto.ServiceProfile.ixif());return service?service.getInfoUri():canvas.id},Helper.prototype.getLabel=function(){return Manifesto.TranslationCollection.getValue(this.manifest.getLabel())},Helper.prototype.getLastCanvasLabel=function(alphanumeric){return this.getCurrentSequence().getLastCanvasLabel(alphanumeric)},Helper.prototype.getLastPageIndex=function(){return this.getTotalCanvases()-1},Helper.prototype.getLicense=function(){return this.manifest.getLicense()},Helper.prototype.getLogo=function(){return this.manifest.getLogo()},Helper.prototype.getManifestType=function(){var manifestType=this.manifest.getManifestType();return""===manifestType.toString()&&(manifestType=manifesto.ManifestType.monograph()),manifestType},Helper.prototype.getMetadata=function(options){var metadataGroups=[],manifestMetadata=this.manifest.getMetadata(),manifestGroup=new Manifold.MetadataGroup(this.manifest);if(manifestMetadata&&manifestMetadata.length&&manifestGroup.addMetadata(manifestMetadata,!0),this.manifest.getDescription().length){var metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.label=[new Manifesto.Translation("description",this.options.locale)],metadataItem.value=this.manifest.getDescription(),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getAttribution().length){var metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.label=[new Manifesto.Translation("attribution",this.options.locale)],metadataItem.value=this.manifest.getAttribution(),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getLicense()){var item={label:"license",value:options&&options.licenseFormatter?options.licenseFormatter.format(this.manifest.getLicense()):this.manifest.getLicense()},metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.parse(item),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getLogo()){var item={label:"logo",value:'<img src="'+this.manifest.getLogo()+'"/>'},metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.parse(item),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}return metadataGroups.push(manifestGroup),options?this._parseMetadataOptions(options,metadataGroups):metadataGroups},Helper.prototype._parseMetadataOptions=function(options,metadataGroups){var sequence=this.getCurrentSequence(),sequenceMetadata=sequence.getMetadata();if(sequenceMetadata&&sequenceMetadata.length){var sequenceGroup=new Manifold.MetadataGroup(sequence);sequenceGroup.addMetadata(sequenceMetadata),metadataGroups.push(sequenceGroup)}if(options.range){var rangeGroups=this._getRangeMetadata([],options.range);rangeGroups=rangeGroups.reverse(),metadataGroups=metadataGroups.concat(rangeGroups)}if(options.canvases&&options.canvases.length)for(var i=0;i<options.canvases.length;i++){var canvas=options.canvases[i],canvasMetadata=canvas.getMetadata();if(canvasMetadata&&canvasMetadata.length){var canvasGroup=new Manifold.MetadataGroup(canvas);canvasGroup.addMetadata(canvas.getMetadata()),metadataGroups.push(canvasGroup)}for(var images=canvas.getImages(),j=0;j<images.length;j++){var image=images[j],imageMetadata=image.getMetadata();if(imageMetadata&&imageMetadata.length){var imageGroup=new Manifold.MetadataGroup(image);imageGroup.addMetadata(imageMetadata),metadataGroups.push(imageGroup)}}}return metadataGroups},Helper.prototype._getRangeMetadata=function(metadataGroups,range){var rangeMetadata=range.getMetadata();if(rangeMetadata&&rangeMetadata.length){var rangeGroup=new Manifold.MetadataGroup(range);rangeGroup.addMetadata(rangeMetadata),metadataGroups.push(rangeGroup)}return range.parentRange?this._getRangeMetadata(metadataGroups,range.parentRange):metadataGroups},Helper.prototype.getMultiSelectState=function(){return this._multiSelectState||(this._multiSelectState=new Manifold.MultiSelectState,this._multiSelectState.ranges=this.getRanges().slice(0),this._multiSelectState.canvases=this.getCurrentSequence().getCanvases().slice(0)),this._multiSelectState},Helper.prototype.getRanges=function(){return this.manifest.getAllRanges()},Helper.prototype.getRangeByPath=function(path){return this.manifest.getRangeByPath(path)},Helper.prototype.getRangeCanvases=function(range){var ids=range.getCanvasIds();return this.getCanvasesById(ids)},Helper.prototype.getRelated=function(){return this.manifest.getRelated()},Helper.prototype.getResources=function(){var element=this.getCurrentElement();return element.getResources()},Helper.prototype.getSearchWithinService=function(){return this.manifest.getService(manifesto.ServiceProfile.searchWithin())},Helper.prototype.getSeeAlso=function(){return this.manifest.getSeeAlso()},Helper.prototype.getSequenceByIndex=function(index){return this.manifest.getSequenceByIndex(index)},Helper.prototype.getShareServiceUrl=function(){var url=null,shareService=this.manifest.getService(manifesto.ServiceProfile.shareExtensions());return shareService&&(shareService.length&&(shareService=shareService[0]),url=shareService.__jsonld.shareUrl),url},Helper.prototype.getSortedTreeNodesByDate=function(sortedTree,tree){var all=tree.nodes.en().traverseUnique(function(node){return node.nodes}).where(function(n){return n.data.type===manifesto.TreeNodeType.collection().toString()||n.data.type===manifesto.TreeNodeType.manifest().toString()}).toArray(),manifests=tree.nodes.en().traverseUnique(function(n){return n.nodes}).where(function(n){return n.data.type===manifesto.TreeNodeType.manifest().toString()}).toArray();this.createDecadeNodes(sortedTree,all),this.sortDecadeNodes(sortedTree),this.createYearNodes(sortedTree,all),this.sortYearNodes(sortedTree),this.createMonthNodes(sortedTree,manifests),this.sortMonthNodes(sortedTree),this.createDateNodes(sortedTree,manifests),this.pruneDecadeNodes(sortedTree)},Helper.prototype.getStartCanvasIndex=function(){return this.getCurrentSequence().getStartCanvasIndex()},Helper.prototype.getThumbs=function(width,height){return this.getCurrentSequence().getThumbs(width,height)},Helper.prototype.getTopRanges=function(){return this.manifest.getTopRanges()},Helper.prototype.getTotalCanvases=function(){return this.getCurrentSequence().getTotalCanvases()},Helper.prototype.getTrackingLabel=function(){return this.manifest.getTrackingLabel()},Helper.prototype.getTree=function(topRangeIndex,sortType){void 0===topRangeIndex&&(topRangeIndex=0),void 0===sortType&&(sortType=Manifold.TreeSortType.NONE);var tree;if(this.iiifResource.isCollection())tree=this.iiifResource.getDefaultTree();else{var topRanges=this.iiifResource.getTopRanges(),root=new manifesto.TreeNode;if(root.label="root",root.data=this.iiifResource,!topRanges.length)return root;var range=topRanges[topRangeIndex];tree=range.getTree(root)}var sortedTree=new manifesto.TreeNode;switch(sortType.toString()){case Manifold.TreeSortType.DATE.toString():if(this.treeHasNavDates(tree)){this.getSortedTreeNodesByDate(sortedTree,tree);break}default:sortedTree=tree}return sortedTree},Helper.prototype.treeHasNavDates=function(tree){var node=tree.nodes.en().traverseUnique(function(node){return node.nodes}).where(function(n){return!isNaN(n.navDate)}).first();return!!node},Helper.prototype.getViewingDirection=function(){var viewingDirection=this.getCurrentSequence().getViewingDirection();return viewingDirection.toString()||(viewingDirection=this.manifest.getViewingDirection()),viewingDirection},Helper.prototype.getViewingHint=function(){var viewingHint=this.getCurrentSequence().getViewingHint();return viewingHint.toString()||(viewingHint=this.manifest.getViewingHint()),viewingHint},Helper.prototype.hasParentCollection=function(){return!!this.manifest.parentCollection},Helper.prototype.hasRelatedPage=function(){var related=this.getRelated();return!!related&&(related.length&&(related=related[0]),"text/html"===related.format)},Helper.prototype.hasResources=function(){return this.getResources().length>0},Helper.prototype.isBottomToTop=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.bottomToTop().toString()},Helper.prototype.isCanvasIndexOutOfRange=function(index){return this.getCurrentSequence().isCanvasIndexOutOfRange(index)},Helper.prototype.isContinuous=function(){return this.getViewingHint().toString()===manifesto.ViewingHint.continuous().toString()},Helper.prototype.isFirstCanvas=function(index){return"undefined"!=typeof index?this.getCurrentSequence().isFirstCanvas(index):this.getCurrentSequence().isFirstCanvas(this.canvasIndex)},Helper.prototype.isHorizontallyAligned=function(){return this.isLeftToRight()||this.isRightToLeft()},Helper.prototype.isLastCanvas=function(index){return"undefined"!=typeof index?this.getCurrentSequence().isLastCanvas(index):this.getCurrentSequence().isLastCanvas(this.canvasIndex)},Helper.prototype.isLeftToRight=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.leftToRight().toString()},Helper.prototype.isMultiCanvas=function(){return this.getCurrentSequence().isMultiCanvas()},Helper.prototype.isMultiSequence=function(){return this.manifest.isMultiSequence()},Helper.prototype.isPaged=function(){return this.getViewingHint().toString()===manifesto.ViewingHint.paged().toString()},Helper.prototype.isPagingAvailable=function(){return this.isPagingEnabled()&&this.getTotalCanvases()>2},Helper.prototype.isPagingEnabled=function(){return this.manifest.isPagingEnabled()||this.getCurrentSequence().isPagingEnabled()},Helper.prototype.isRightToLeft=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.rightToLeft().toString()},Helper.prototype.isTopToBottom=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.topToBottom().toString()},Helper.prototype.isTotalCanvasesEven=function(){return this.getCurrentSequence().isTotalCanvasesEven()},Helper.prototype.isUIEnabled=function(name){var uiExtensions=this.manifest.getService(manifesto.ServiceProfile.uiExtensions());if(uiExtensions){var disableUI=uiExtensions.getProperty("disableUI");if(disableUI&&(disableUI.indexOf(name)!==-1||disableUI.indexOf(name.toLowerCase())!==-1))return!1}return!0},Helper.prototype.isVerticallyAligned=function(){return this.isTopToBottom()||this.isBottomToTop()},Helper.prototype.createDateNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),month=this.getNodeMonth(node),dateNode=new manifesto.TreeNode;dateNode.id=node.id,dateNode.label=this.getNodeDisplayDate(node),dateNode.data=node.data,dateNode.data.type=manifesto.TreeNodeType.manifest().toString(),dateNode.data.year=year,dateNode.data.month=month;var decadeNode=this.getDecadeNode(rootNode,year);if(decadeNode){var yearNode=this.getYearNode(decadeNode,year);if(yearNode){var monthNode=this.getMonthNode(yearNode,month);monthNode&&monthNode.addNode(dateNode)}}}},Helper.prototype.createDecadeNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),endYear=Number(year.toString().substr(0,3)+"9");if(!this.getDecadeNode(rootNode,year)){var decadeNode=new manifesto.TreeNode;decadeNode.label=year+" - "+endYear,decadeNode.navDate=node.navDate,decadeNode.data.startYear=year,decadeNode.data.endYear=endYear,rootNode.addNode(decadeNode)}}},Helper.prototype.createMonthNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),month=this.getNodeMonth(node),decadeNode=this.getDecadeNode(rootNode,year),yearNode=null;if(decadeNode&&(yearNode=this.getYearNode(decadeNode,year)),decadeNode&&yearNode&&!this.getMonthNode(yearNode,month)){var monthNode=new manifesto.TreeNode;monthNode.label=this.getNodeDisplayMonth(node),monthNode.navDate=node.navDate,monthNode.data.year=year,monthNode.data.month=month,yearNode.addNode(monthNode)}}},Helper.prototype.createYearNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),decadeNode=this.getDecadeNode(rootNode,year);if(decadeNode&&!this.getYearNode(decadeNode,year)){var yearNode=new manifesto.TreeNode;yearNode.label=year.toString(),yearNode.navDate=node.navDate,yearNode.data.year=year,decadeNode.addNode(yearNode)}}},Helper.prototype.getDecadeNode=function(rootNode,year){for(var i=0;i<rootNode.nodes.length;i++){var n=rootNode.nodes[i];if(year>=n.data.startYear&&year<=n.data.endYear)return n}return null},Helper.prototype.getMonthNode=function(yearNode,month){for(var i=0;i<yearNode.nodes.length;i++){var n=yearNode.nodes[i];if(month===this.getNodeMonth(n))return n}return null},Helper.prototype.getNodeDisplayDate=function(node){return node.navDate.toDateString()},Helper.prototype.getNodeDisplayMonth=function(node){var months=["January","February","March","April","May","June","July","August","September","October","November","December"];return months[node.navDate.getMonth()]},Helper.prototype.getNodeMonth=function(node){return node.navDate.getMonth()},Helper.prototype.getNodeYear=function(node){return node.navDate.getFullYear()},Helper.prototype.getYearNode=function(decadeNode,year){for(var i=0;i<decadeNode.nodes.length;i++){var n=decadeNode.nodes[i];if(year===this.getNodeYear(n))return n}return null},Helper.prototype.pruneDecadeNodes=function(rootNode){for(var pruned=[],i=0;i<rootNode.nodes.length;i++){var n=rootNode.nodes[i];n.nodes.length||pruned.push(n)}for(var j=0;j<pruned.length;j++){var p=pruned[j],index=rootNode.nodes.indexOf(p);index>-1&&rootNode.nodes.splice(index,1)}},Helper.prototype.sortDecadeNodes=function(rootNode){rootNode.nodes=rootNode.nodes.sort(function(a,b){return a.data.startYear-b.data.startYear})},Helper.prototype.sortMonthNodes=function(rootNode){for(var _this=this,i=0;i<rootNode.nodes.length;i++)for(var decadeNode=rootNode.nodes[i],j=0;j<decadeNode.nodes.length;j++){var monthNode=decadeNode.nodes[j];monthNode.nodes=monthNode.nodes.sort(function(a,b){return _this.getNodeMonth(a)-_this.getNodeMonth(b)})}},Helper.prototype.sortYearNodes=function(rootNode){for(var _this=this,i=0;i<rootNode.nodes.length;i++){var decadeNode=rootNode.nodes[i];decadeNode.nodes=decadeNode.nodes.sort(function(a,b){return _this.getNodeYear(a)-_this.getNodeYear(b)})}},Helper}();Manifold.Helper=Helper}(Manifold||(Manifold={}));var Manifold;!function(Manifold){function loadManifest(options){var bootstrapper=new Manifold.Bootstrapper(options);return bootstrapper.bootstrap()}Manifold.loadManifest=loadManifest}(Manifold||(Manifold={})),function(g){g.Manifold||(g.Manifold=Manifold)}(global);var Manifold;!function(Manifold){var MetadataGroup=function(){function MetadataGroup(resource,label){this.items=[],this.resource=resource,this.label=label}return MetadataGroup.prototype.addItem=function(item){this.items.push(item)},MetadataGroup.prototype.addMetadata=function(metadata,isRootLevel){void 0===isRootLevel&&(isRootLevel=!1);for(var i=0;i<metadata.length;i++){var item=metadata[i];item.isRootLevel=isRootLevel,this.addItem(item)}},MetadataGroup}();Manifold.MetadataGroup=MetadataGroup}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var MetadataOptions=function(){function MetadataOptions(){}return MetadataOptions}();Manifold.MetadataOptions=MetadataOptions}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var MultiSelectState=function(){function MultiSelectState(){this.isEnabled=!1,this.ranges=[],this.canvases=[]}return MultiSelectState.prototype.allCanvasesSelected=function(){return this.canvases.length>0&&this.getAllSelectedCanvases().length===this.canvases.length},MultiSelectState.prototype.allRangesSelected=function(){return this.ranges.length>0&&this.getAllSelectedRanges().length===this.ranges.length},MultiSelectState.prototype.allSelected=function(){return this.allRangesSelected()&&this.allCanvasesSelected()},MultiSelectState.prototype.getAll=function(){return this.canvases.concat(this.ranges)},MultiSelectState.prototype.getAllSelectedCanvases=function(){return this.canvases.en().where(function(c){return c.multiSelected}).toArray()},MultiSelectState.prototype.getAllSelectedRanges=function(){return this.ranges.en().where(function(r){return r.multiSelected}).toArray()},MultiSelectState.prototype.getCanvasById=function(id){return this.canvases.en().where(function(c){return c.id===id}).first()},MultiSelectState.prototype.getCanvasesByIds=function(ids){for(var canvases=[],i=0;i<ids.length;i++){var id=ids[i];canvases.push(this.getCanvasById(id))}return canvases},MultiSelectState.prototype.getRangeCanvases=function(range){var ids=range.getCanvasIds();return this.getCanvasesByIds(ids)},MultiSelectState.prototype.selectAll=function(selected){this.selectRanges(this.ranges,selected),this.selectCanvases(this.canvases,selected)},MultiSelectState.prototype.selectCanvas=function(canvas,selected){var c=this.canvases.en().where(function(c){return c.id===canvas.id}).first();c.multiSelected=selected},MultiSelectState.prototype.selectAllCanvases=function(selected){this.selectCanvases(this.canvases,selected)},MultiSelectState.prototype.selectCanvases=function(canvases,selected){for(var j=0;j<canvases.length;j++){var canvas=canvases[j];canvas.multiSelected=selected}},MultiSelectState.prototype.selectRange=function(range,selected){var r=this.ranges.en().where(function(r){return r.id===range.id}).first();r.multiSelected=selected;var canvases=this.getRangeCanvases(r);this.selectCanvases(canvases,selected)},MultiSelectState.prototype.selectAllRanges=function(selected){this.selectRanges(this.ranges,selected)},MultiSelectState.prototype.selectRanges=function(ranges,selected){for(var i=0;i<ranges.length;i++){var range=ranges[i];range.multiSelected=selected;var canvases=this.getCanvasesByIds(range.getCanvasIds());this.selectCanvases(canvases,selected)}},MultiSelectState.prototype.setEnabled=function(enabled){this.isEnabled=enabled;for(var items=this.getAll(),i=0;i<items.length;i++){var item=items[i];item.multiSelectEnabled=this.isEnabled,enabled||(item.multiSelected=!1)}},MultiSelectState}();Manifold.MultiSelectState=MultiSelectState}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var SearchResult=function(){function SearchResult(resource,canvasIndex){this.rects=[],this.canvasIndex=canvasIndex,this.addRect(resource)}return SearchResult.prototype.addRect=function(resource){var rect=new Manifold.SearchResultRect(resource);rect.canvasIndex=this.canvasIndex,rect.index=this.rects.length,this.rects.push(rect),this.rects.sort(function(a,b){return a.index-b.index})},SearchResult}();Manifold.SearchResult=SearchResult}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var SearchResultRect=function(){function SearchResultRect(result){this.isVisible=!0;var xywh=result.on.match(/.*xywh=(\d*),(\d*),(\d*),(\d*)/);this.x=Number(xywh[1]),this.y=Number(xywh[2]),this.width=Number(xywh[3]),this.height=Number(xywh[4]),this.chars=result.resource.chars}return SearchResultRect}();Manifold.SearchResultRect=SearchResultRect}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Translation=function(){function Translation(value,locale){this.value=value,this.locale=locale}return Translation}();Manifold.Translation=Translation}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var UriLabeller=function(){function UriLabeller(labels){this.labels=labels}return UriLabeller.prototype.format=function(url){if(url.indexOf("<a")!=-1)return url;var label=this.labels[url]?this.labels[url]:url;return'<a href="'+url+'">'+label+"</a>"},UriLabeller}();Manifold.UriLabeller=UriLabeller}(Manifold||(Manifold={}))}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
+// utils v0.0.37 https://github.com/edsilv/utils
+var Utils;!function(Utils){var Async=function(){function Async(){}return Async.waitFor=function(test,successCallback,failureCallback,interval,maxTries,numTries){interval||(interval=200),maxTries||(maxTries=100),numTries||(numTries=0),numTries+=1,numTries>maxTries?failureCallback&&failureCallback():test()?successCallback():setTimeout(function(){Async.waitFor(test,successCallback,failureCallback,interval,maxTries,numTries)},interval)},Async}();Utils.Async=Async}(Utils||(Utils={}));var Utils;!function(Utils){var Bools=function(){function Bools(){}return Bools.getBool=function(val,defaultVal){return null===val||"undefined"==typeof val?defaultVal:val},Bools}();Utils.Bools=Bools}(Utils||(Utils={}));var Utils;!function(Utils){var Clipboard=function(){function Clipboard(){}return Clipboard.copy=function(text){var $tempDiv=$("<div style='position:absolute;left:-9999px'>"),brRegex=/<br\s*[\/]?>/gi;text=text.replace(brRegex,"\n"),$("body").append($tempDiv),$tempDiv.append(text);var $tempInput=$("<textarea>");$tempDiv.append($tempInput),$tempInput.val($tempDiv.text()).select(),document.execCommand("copy"),$tempDiv.remove()},Clipboard.supportsCopy=function(){return document.queryCommandSupported&&document.queryCommandSupported("copy")},Clipboard}();Utils.Clipboard=Clipboard}(Utils||(Utils={}));var __extends=this&&this.__extends||function(d,b){function __(){this.constructor=d}for(var p in b)b.hasOwnProperty(p)&&(d[p]=b[p]);d.prototype=null===b?Object.create(b):(__.prototype=b.prototype,new __)},Utils;!function(Utils){var Collections;!function(Collections){function defaultCompare(a,b){return b>a?-1:a===b?0:1}function defaultEquals(a,b){return a===b}function defaultToString(item){return null===item?"COLLECTION_NULL":collections.isUndefined(item)?"COLLECTION_UNDEFINED":collections.isString(item)?"$s"+item:"$o"+item.toString()}function makeString(item,join){if(void 0===join&&(join=","),null===item)return"COLLECTION_NULL";if(collections.isUndefined(item))return"COLLECTION_UNDEFINED";if(collections.isString(item))return item.toString();var toret="{",first=!0;for(var prop in item)has(item,prop)&&(first?first=!1:toret+=join,toret=toret+prop+":"+item[prop]);return toret+"}"}function isFunction(func){return"function"==typeof func}function isUndefined(obj){return"undefined"==typeof obj}function isString(obj){return"[object String]"===Object.prototype.toString.call(obj)}function reverseCompareFunction(compareFunction){return collections.isFunction(compareFunction)?function(d,v){return-1*compareFunction(d,v)}:function(a,b){return b>a?1:a===b?0:-1}}function compareToEquals(compareFunction){return function(a,b){return 0===compareFunction(a,b)}}var collections=Collections,_hasOwnProperty=Object.prototype.hasOwnProperty,has=function(obj,prop){return _hasOwnProperty.call(obj,prop)};Collections.defaultCompare=defaultCompare,Collections.defaultEquals=defaultEquals,Collections.defaultToString=defaultToString,Collections.makeString=makeString,Collections.isFunction=isFunction,Collections.isUndefined=isUndefined,Collections.isString=isString,Collections.reverseCompareFunction=reverseCompareFunction,Collections.compareToEquals=compareToEquals;var arrays;!function(arrays){function indexOf(array,item,equalsFunction){for(var equals=equalsFunction||collections.defaultEquals,length=array.length,i=0;length>i;i++)if(equals(array[i],item))return i;return-1}function lastIndexOf(array,item,equalsFunction){for(var equals=equalsFunction||collections.defaultEquals,length=array.length,i=length-1;i>=0;i--)if(equals(array[i],item))return i;return-1}function contains(array,item,equalsFunction){return arrays.indexOf(array,item,equalsFunction)>=0}function remove(array,item,equalsFunction){var index=arrays.indexOf(array,item,equalsFunction);return 0>index?!1:(array.splice(index,1),!0)}function frequency(array,item,equalsFunction){for(var equals=equalsFunction||collections.defaultEquals,length=array.length,freq=0,i=0;length>i;i++)equals(array[i],item)&&freq++;return freq}function equals(array1,array2,equalsFunction){var equals=equalsFunction||collections.defaultEquals;if(array1.length!==array2.length)return!1;for(var length=array1.length,i=0;length>i;i++)if(!equals(array1[i],array2[i]))return!1;return!0}function copy(array){return array.concat()}function swap(array,i,j){if(0>i||i>=array.length||0>j||j>=array.length)return!1;var temp=array[i];return array[i]=array[j],array[j]=temp,!0}function toString(array){return"["+array.toString()+"]"}function forEach(array,callback){for(var lenght=array.length,i=0;lenght>i;i++)if(callback(array[i])===!1)return}arrays.indexOf=indexOf,arrays.lastIndexOf=lastIndexOf,arrays.contains=contains,arrays.remove=remove,arrays.frequency=frequency,arrays.equals=equals,arrays.copy=copy,arrays.swap=swap,arrays.toString=toString,arrays.forEach=forEach}(arrays=Collections.arrays||(Collections.arrays={}));var LinkedList=function(){function LinkedList(){this.firstNode=null,this.lastNode=null,this.nElements=0}return LinkedList.prototype.add=function(item,index){if(collections.isUndefined(index)&&(index=this.nElements),0>index||index>this.nElements||collections.isUndefined(item))return!1;var newNode=this.createNode(item);if(0===this.nElements)this.firstNode=newNode,this.lastNode=newNode;else if(index===this.nElements)this.lastNode.next=newNode,this.lastNode=newNode;else if(0===index)newNode.next=this.firstNode,this.firstNode=newNode;else{var prev=this.nodeAtIndex(index-1);newNode.next=prev.next,prev.next=newNode}return this.nElements++,!0},LinkedList.prototype.first=function(){return null!==this.firstNode?this.firstNode.element:void 0},LinkedList.prototype.last=function(){return null!==this.lastNode?this.lastNode.element:void 0},LinkedList.prototype.elementAtIndex=function(index){var node=this.nodeAtIndex(index);if(null!==node)return node.element},LinkedList.prototype.indexOf=function(item,equalsFunction){var equalsF=equalsFunction||collections.defaultEquals;if(collections.isUndefined(item))return-1;for(var currentNode=this.firstNode,index=0;null!==currentNode;){if(equalsF(currentNode.element,item))return index;index++,currentNode=currentNode.next}return-1},LinkedList.prototype.contains=function(item,equalsFunction){return this.indexOf(item,equalsFunction)>=0},LinkedList.prototype.remove=function(item,equalsFunction){var equalsF=equalsFunction||collections.defaultEquals;if(this.nElements<1||collections.isUndefined(item))return!1;for(var previous=null,currentNode=this.firstNode;null!==currentNode;){if(equalsF(currentNode.element,item))return currentNode===this.firstNode?(this.firstNode=this.firstNode.next,currentNode===this.lastNode&&(this.lastNode=null)):currentNode===this.lastNode?(this.lastNode=previous,previous.next=currentNode.next,currentNode.next=null):(previous.next=currentNode.next,currentNode.next=null),this.nElements--,!0;previous=currentNode,currentNode=currentNode.next}return!1},LinkedList.prototype.clear=function(){this.firstNode=null,this.lastNode=null,this.nElements=0},LinkedList.prototype.equals=function(other,equalsFunction){var eqF=equalsFunction||collections.defaultEquals;return other instanceof collections.LinkedList?this.size()!==other.size()?!1:this.equalsAux(this.firstNode,other.firstNode,eqF):!1},LinkedList.prototype.equalsAux=function(n1,n2,eqF){for(;null!==n1;){if(!eqF(n1.element,n2.element))return!1;n1=n1.next,n2=n2.next}return!0},LinkedList.prototype.removeElementAtIndex=function(index){if(!(0>index||index>=this.nElements)){var element;if(1===this.nElements)element=this.firstNode.element,this.firstNode=null,this.lastNode=null;else{var previous=this.nodeAtIndex(index-1);null===previous?(element=this.firstNode.element,this.firstNode=this.firstNode.next):previous.next===this.lastNode&&(element=this.lastNode.element,this.lastNode=previous),null!==previous&&(element=previous.next.element,previous.next=previous.next.next)}return this.nElements--,element}},LinkedList.prototype.forEach=function(callback){for(var currentNode=this.firstNode;null!==currentNode&&callback(currentNode.element)!==!1;)currentNode=currentNode.next},LinkedList.prototype.reverse=function(){for(var previous=null,current=this.firstNode,temp=null;null!==current;)temp=current.next,current.next=previous,previous=current,current=temp;temp=this.firstNode,this.firstNode=this.lastNode,this.lastNode=temp},LinkedList.prototype.toArray=function(){for(var array=[],currentNode=this.firstNode;null!==currentNode;)array.push(currentNode.element),currentNode=currentNode.next;return array},LinkedList.prototype.size=function(){return this.nElements},LinkedList.prototype.isEmpty=function(){return this.nElements<=0},LinkedList.prototype.toString=function(){return collections.arrays.toString(this.toArray())},LinkedList.prototype.nodeAtIndex=function(index){if(0>index||index>=this.nElements)return null;if(index===this.nElements-1)return this.lastNode;for(var node=this.firstNode,i=0;index>i;i++)node=node.next;return node},LinkedList.prototype.createNode=function(item){return{element:item,next:null}},LinkedList}();Collections.LinkedList=LinkedList;var Dictionary=function(){function Dictionary(toStrFunction){this.table={},this.nElements=0,this.toStr=toStrFunction||collections.defaultToString}return Dictionary.prototype.getValue=function(key){var pair=this.table["$"+this.toStr(key)];if(!collections.isUndefined(pair))return pair.value},Dictionary.prototype.setValue=function(key,value){if(!collections.isUndefined(key)&&!collections.isUndefined(value)){var ret,k="$"+this.toStr(key),previousElement=this.table[k];return collections.isUndefined(previousElement)?(this.nElements++,ret=void 0):ret=previousElement.value,this.table[k]={key:key,value:value},ret}},Dictionary.prototype.remove=function(key){var k="$"+this.toStr(key),previousElement=this.table[k];return collections.isUndefined(previousElement)?void 0:(delete this.table[k],this.nElements--,previousElement.value)},Dictionary.prototype.keys=function(){var array=[];for(var name in this.table)if(has(this.table,name)){var pair=this.table[name];array.push(pair.key)}return array},Dictionary.prototype.values=function(){var array=[];for(var name in this.table)if(has(this.table,name)){var pair=this.table[name];array.push(pair.value)}return array},Dictionary.prototype.forEach=function(callback){for(var name in this.table)if(has(this.table,name)){var pair=this.table[name],ret=callback(pair.key,pair.value);if(ret===!1)return}},Dictionary.prototype.containsKey=function(key){return!collections.isUndefined(this.getValue(key))},Dictionary.prototype.clear=function(){this.table={},this.nElements=0},Dictionary.prototype.size=function(){return this.nElements},Dictionary.prototype.isEmpty=function(){return this.nElements<=0},Dictionary.prototype.toString=function(){var toret="{";return this.forEach(function(k,v){toret=toret+"\n	"+k.toString()+" : "+v.toString()}),toret+"\n}"},Dictionary}();Collections.Dictionary=Dictionary;var LinkedDictionaryPair=function(){function LinkedDictionaryPair(key,value){this.key=key,this.value=value}return LinkedDictionaryPair.prototype.unlink=function(){this.prev.next=this.next,this.next.prev=this.prev},LinkedDictionaryPair}(),LinkedDictionary=function(_super){function LinkedDictionary(toStrFunction){_super.call(this,toStrFunction),this.head=new LinkedDictionaryPair(null,null),this.tail=new LinkedDictionaryPair(null,null),this.head.next=this.tail,this.tail.prev=this.head}return __extends(LinkedDictionary,_super),LinkedDictionary.prototype.appendToTail=function(entry){var lastNode=this.tail.prev;lastNode.next=entry,entry.prev=lastNode,entry.next=this.tail,this.tail.prev=entry},LinkedDictionary.prototype.getLinkedDictionaryPair=function(key){if(!collections.isUndefined(key)){var k="$"+this.toStr(key),pair=this.table[k];return pair}},LinkedDictionary.prototype.getValue=function(key){var pair=this.getLinkedDictionaryPair(key);return collections.isUndefined(pair)?void 0:pair.value},LinkedDictionary.prototype.remove=function(key){var pair=this.getLinkedDictionaryPair(key);return collections.isUndefined(pair)?void 0:(_super.prototype.remove.call(this,key),pair.unlink(),pair.value)},LinkedDictionary.prototype.clear=function(){_super.prototype.clear.call(this),this.head.next=this.tail,this.tail.prev=this.head},LinkedDictionary.prototype.replace=function(oldPair,newPair){var k="$"+this.toStr(newPair.key);newPair.next=oldPair.next,newPair.prev=oldPair.prev,this.remove(oldPair.key),newPair.prev.next=newPair,newPair.next.prev=newPair,this.table[k]=newPair,++this.nElements},LinkedDictionary.prototype.setValue=function(key,value){if(!collections.isUndefined(key)&&!collections.isUndefined(value)){var existingPair=this.getLinkedDictionaryPair(key),newPair=new LinkedDictionaryPair(key,value),k="$"+this.toStr(key);return collections.isUndefined(existingPair)?(this.appendToTail(newPair),this.table[k]=newPair,void++this.nElements):(this.replace(existingPair,newPair),existingPair.value)}},LinkedDictionary.prototype.keys=function(){var array=[];return this.forEach(function(key,value){array.push(key)}),array},LinkedDictionary.prototype.values=function(){var array=[];return this.forEach(function(key,value){array.push(value)}),array},LinkedDictionary.prototype.forEach=function(callback){for(var crawlNode=this.head.next;null!=crawlNode.next;){var ret=callback(crawlNode.key,crawlNode.value);if(ret===!1)return;crawlNode=crawlNode.next}},LinkedDictionary}(Dictionary);Collections.LinkedDictionary=LinkedDictionary;var MultiDictionary=function(){function MultiDictionary(toStrFunction,valuesEqualsFunction,allowDuplicateValues){void 0===allowDuplicateValues&&(allowDuplicateValues=!1),this.dict=new Dictionary(toStrFunction),this.equalsF=valuesEqualsFunction||collections.defaultEquals,this.allowDuplicate=allowDuplicateValues}return MultiDictionary.prototype.getValue=function(key){var values=this.dict.getValue(key);return collections.isUndefined(values)?[]:collections.arrays.copy(values)},MultiDictionary.prototype.setValue=function(key,value){if(collections.isUndefined(key)||collections.isUndefined(value))return!1;if(!this.containsKey(key))return this.dict.setValue(key,[value]),!0;var array=this.dict.getValue(key);return!this.allowDuplicate&&collections.arrays.contains(array,value,this.equalsF)?!1:(array.push(value),!0)},MultiDictionary.prototype.remove=function(key,value){if(collections.isUndefined(value)){var v=this.dict.remove(key);return!collections.isUndefined(v)}var array=this.dict.getValue(key);return collections.arrays.remove(array,value,this.equalsF)?(0===array.length&&this.dict.remove(key),!0):!1},MultiDictionary.prototype.keys=function(){return this.dict.keys()},MultiDictionary.prototype.values=function(){for(var values=this.dict.values(),array=[],i=0;i<values.length;i++)for(var v=values[i],j=0;j<v.length;j++)array.push(v[j]);return array},MultiDictionary.prototype.containsKey=function(key){return this.dict.containsKey(key)},MultiDictionary.prototype.clear=function(){this.dict.clear()},MultiDictionary.prototype.size=function(){return this.dict.size()},MultiDictionary.prototype.isEmpty=function(){return this.dict.isEmpty()},MultiDictionary}();Collections.MultiDictionary=MultiDictionary;var Heap=function(){function Heap(compareFunction){this.data=[],this.compare=compareFunction||collections.defaultCompare}return Heap.prototype.leftChildIndex=function(nodeIndex){return 2*nodeIndex+1},Heap.prototype.rightChildIndex=function(nodeIndex){return 2*nodeIndex+2},Heap.prototype.parentIndex=function(nodeIndex){return Math.floor((nodeIndex-1)/2)},Heap.prototype.minIndex=function(leftChild,rightChild){return rightChild>=this.data.length?leftChild>=this.data.length?-1:leftChild:this.compare(this.data[leftChild],this.data[rightChild])<=0?leftChild:rightChild},Heap.prototype.siftUp=function(index){for(var parent=this.parentIndex(index);index>0&&this.compare(this.data[parent],this.data[index])>0;)collections.arrays.swap(this.data,parent,index),index=parent,parent=this.parentIndex(index)},Heap.prototype.siftDown=function(nodeIndex){for(var min=this.minIndex(this.leftChildIndex(nodeIndex),this.rightChildIndex(nodeIndex));min>=0&&this.compare(this.data[nodeIndex],this.data[min])>0;)collections.arrays.swap(this.data,min,nodeIndex),nodeIndex=min,min=this.minIndex(this.leftChildIndex(nodeIndex),this.rightChildIndex(nodeIndex))},Heap.prototype.peek=function(){return this.data.length>0?this.data[0]:void 0},Heap.prototype.add=function(element){return collections.isUndefined(element)?void 0:(this.data.push(element),this.siftUp(this.data.length-1),!0)},Heap.prototype.removeRoot=function(){if(this.data.length>0){var obj=this.data[0];return this.data[0]=this.data[this.data.length-1],this.data.splice(this.data.length-1,1),this.data.length>0&&this.siftDown(0),obj}},Heap.prototype.contains=function(element){var equF=collections.compareToEquals(this.compare);return collections.arrays.contains(this.data,element,equF)},Heap.prototype.size=function(){return this.data.length},Heap.prototype.isEmpty=function(){return this.data.length<=0},Heap.prototype.clear=function(){this.data.length=0},Heap.prototype.forEach=function(callback){collections.arrays.forEach(this.data,callback)},Heap}();Collections.Heap=Heap;var Stack=function(){function Stack(){this.list=new LinkedList}return Stack.prototype.push=function(elem){return this.list.add(elem,0)},Stack.prototype.add=function(elem){return this.list.add(elem,0)},Stack.prototype.pop=function(){return this.list.removeElementAtIndex(0)},Stack.prototype.peek=function(){return this.list.first()},Stack.prototype.size=function(){return this.list.size()},Stack.prototype.contains=function(elem,equalsFunction){return this.list.contains(elem,equalsFunction)},Stack.prototype.isEmpty=function(){return this.list.isEmpty()},Stack.prototype.clear=function(){this.list.clear()},Stack.prototype.forEach=function(callback){this.list.forEach(callback)},Stack}();Collections.Stack=Stack;var Queue=function(){function Queue(){this.list=new LinkedList}return Queue.prototype.enqueue=function(elem){return this.list.add(elem)},Queue.prototype.add=function(elem){return this.list.add(elem)},Queue.prototype.dequeue=function(){if(0!==this.list.size()){var el=this.list.first();return this.list.removeElementAtIndex(0),el}},Queue.prototype.peek=function(){return 0!==this.list.size()?this.list.first():void 0},Queue.prototype.size=function(){return this.list.size()},Queue.prototype.contains=function(elem,equalsFunction){return this.list.contains(elem,equalsFunction)},Queue.prototype.isEmpty=function(){return this.list.size()<=0},Queue.prototype.clear=function(){this.list.clear()},Queue.prototype.forEach=function(callback){this.list.forEach(callback)},Queue}();Collections.Queue=Queue;var PriorityQueue=function(){function PriorityQueue(compareFunction){this.heap=new Heap(collections.reverseCompareFunction(compareFunction))}return PriorityQueue.prototype.enqueue=function(element){return this.heap.add(element)},PriorityQueue.prototype.add=function(element){return this.heap.add(element)},PriorityQueue.prototype.dequeue=function(){if(0!==this.heap.size()){var el=this.heap.peek();return this.heap.removeRoot(),el}},PriorityQueue.prototype.peek=function(){return this.heap.peek()},PriorityQueue.prototype.contains=function(element){return this.heap.contains(element)},PriorityQueue.prototype.isEmpty=function(){return this.heap.isEmpty()},PriorityQueue.prototype.size=function(){return this.heap.size()},PriorityQueue.prototype.clear=function(){this.heap.clear()},PriorityQueue.prototype.forEach=function(callback){this.heap.forEach(callback)},PriorityQueue}();Collections.PriorityQueue=PriorityQueue;var Set=function(){function Set(toStringFunction){this.dictionary=new Dictionary(toStringFunction)}return Set.prototype.contains=function(element){return this.dictionary.containsKey(element)},Set.prototype.add=function(element){return this.contains(element)||collections.isUndefined(element)?!1:(this.dictionary.setValue(element,element),!0)},Set.prototype.intersection=function(otherSet){var set=this;this.forEach(function(element){return otherSet.contains(element)||set.remove(element),!0})},Set.prototype.union=function(otherSet){var set=this;otherSet.forEach(function(element){return set.add(element),!0})},Set.prototype.difference=function(otherSet){var set=this;otherSet.forEach(function(element){return set.remove(element),!0})},Set.prototype.isSubsetOf=function(otherSet){if(this.size()>otherSet.size())return!1;var isSub=!0;return this.forEach(function(element){return otherSet.contains(element)?!0:(isSub=!1,!1)}),isSub},Set.prototype.remove=function(element){return this.contains(element)?(this.dictionary.remove(element),!0):!1},Set.prototype.forEach=function(callback){this.dictionary.forEach(function(k,v){return callback(v)})},Set.prototype.toArray=function(){return this.dictionary.values()},Set.prototype.isEmpty=function(){return this.dictionary.isEmpty()},Set.prototype.size=function(){return this.dictionary.size()},Set.prototype.clear=function(){this.dictionary.clear()},Set.prototype.toString=function(){return collections.arrays.toString(this.toArray())},Set}();Collections.Set=Set;var Bag=function(){function Bag(toStrFunction){this.toStrF=toStrFunction||collections.defaultToString,this.dictionary=new Dictionary(this.toStrF),this.nElements=0}return Bag.prototype.add=function(element,nCopies){if(void 0===nCopies&&(nCopies=1),collections.isUndefined(element)||0>=nCopies)return!1;if(this.contains(element))this.dictionary.getValue(element).copies+=nCopies;else{var node={value:element,copies:nCopies};this.dictionary.setValue(element,node)}return this.nElements+=nCopies,!0},Bag.prototype.count=function(element){return this.contains(element)?this.dictionary.getValue(element).copies:0},Bag.prototype.contains=function(element){return this.dictionary.containsKey(element)},Bag.prototype.remove=function(element,nCopies){if(void 0===nCopies&&(nCopies=1),collections.isUndefined(element)||0>=nCopies)return!1;if(this.contains(element)){var node=this.dictionary.getValue(element);return nCopies>node.copies?this.nElements-=node.copies:this.nElements-=nCopies,node.copies-=nCopies,node.copies<=0&&this.dictionary.remove(element),!0}return!1},Bag.prototype.toArray=function(){for(var a=[],values=this.dictionary.values(),vl=values.length,i=0;vl>i;i++)for(var node=values[i],element=node.value,copies=node.copies,j=0;copies>j;j++)a.push(element);return a},Bag.prototype.toSet=function(){for(var toret=new Set(this.toStrF),elements=this.dictionary.values(),l=elements.length,i=0;l>i;i++){var value=elements[i].value;toret.add(value)}return toret},Bag.prototype.forEach=function(callback){this.dictionary.forEach(function(k,v){for(var value=v.value,copies=v.copies,i=0;copies>i;i++)if(callback(value)===!1)return!1;return!0})},Bag.prototype.size=function(){return this.nElements},Bag.prototype.isEmpty=function(){return 0===this.nElements},Bag.prototype.clear=function(){this.nElements=0,this.dictionary.clear()},Bag}();Collections.Bag=Bag;var BSTree=function(){function BSTree(compareFunction){this.root=null,this.compare=compareFunction||collections.defaultCompare,this.nElements=0}return BSTree.prototype.add=function(element){return collections.isUndefined(element)?!1:null!==this.insertNode(this.createNode(element))?(this.nElements++,!0):!1},BSTree.prototype.clear=function(){this.root=null,this.nElements=0},BSTree.prototype.isEmpty=function(){return 0===this.nElements},BSTree.prototype.size=function(){return this.nElements},BSTree.prototype.contains=function(element){return collections.isUndefined(element)?!1:null!==this.searchNode(this.root,element)},BSTree.prototype.remove=function(element){var node=this.searchNode(this.root,element);return null===node?!1:(this.removeNode(node),this.nElements--,!0)},BSTree.prototype.inorderTraversal=function(callback){this.inorderTraversalAux(this.root,callback,{stop:!1})},BSTree.prototype.preorderTraversal=function(callback){this.preorderTraversalAux(this.root,callback,{stop:!1})},BSTree.prototype.postorderTraversal=function(callback){this.postorderTraversalAux(this.root,callback,{stop:!1})},BSTree.prototype.levelTraversal=function(callback){this.levelTraversalAux(this.root,callback)},BSTree.prototype.minimum=function(){return this.isEmpty()?void 0:this.minimumAux(this.root).element},BSTree.prototype.maximum=function(){return this.isEmpty()?void 0:this.maximumAux(this.root).element},BSTree.prototype.forEach=function(callback){this.inorderTraversal(callback)},BSTree.prototype.toArray=function(){var array=[];return this.inorderTraversal(function(element){return array.push(element),!0}),array},BSTree.prototype.height=function(){return this.heightAux(this.root)},BSTree.prototype.searchNode=function(node,element){for(var cmp=null;null!==node&&0!==cmp;)cmp=this.compare(element,node.element),0>cmp?node=node.leftCh:cmp>0&&(node=node.rightCh);return node},BSTree.prototype.transplant=function(n1,n2){null===n1.parent?this.root=n2:n1===n1.parent.leftCh?n1.parent.leftCh=n2:n1.parent.rightCh=n2,null!==n2&&(n2.parent=n1.parent)},BSTree.prototype.removeNode=function(node){if(null===node.leftCh)this.transplant(node,node.rightCh);else if(null===node.rightCh)this.transplant(node,node.leftCh);else{var y=this.minimumAux(node.rightCh);y.parent!==node&&(this.transplant(y,y.rightCh),y.rightCh=node.rightCh,y.rightCh.parent=y),this.transplant(node,y),y.leftCh=node.leftCh,y.leftCh.parent=y}},BSTree.prototype.inorderTraversalAux=function(node,callback,signal){null===node||signal.stop||(this.inorderTraversalAux(node.leftCh,callback,signal),signal.stop||(signal.stop=callback(node.element)===!1,signal.stop||this.inorderTraversalAux(node.rightCh,callback,signal)))},BSTree.prototype.levelTraversalAux=function(node,callback){var queue=new Queue;for(null!==node&&queue.enqueue(node);!queue.isEmpty();){if(node=queue.dequeue(),callback(node.element)===!1)return;null!==node.leftCh&&queue.enqueue(node.leftCh),null!==node.rightCh&&queue.enqueue(node.rightCh)}},BSTree.prototype.preorderTraversalAux=function(node,callback,signal){null===node||signal.stop||(signal.stop=callback(node.element)===!1,signal.stop||(this.preorderTraversalAux(node.leftCh,callback,signal),signal.stop||this.preorderTraversalAux(node.rightCh,callback,signal)))},BSTree.prototype.postorderTraversalAux=function(node,callback,signal){null===node||signal.stop||(this.postorderTraversalAux(node.leftCh,callback,signal),signal.stop||(this.postorderTraversalAux(node.rightCh,callback,signal),signal.stop||(signal.stop=callback(node.element)===!1)))},BSTree.prototype.minimumAux=function(node){for(;null!==node.leftCh;)node=node.leftCh;return node},BSTree.prototype.maximumAux=function(node){for(;null!==node.rightCh;)node=node.rightCh;return node},BSTree.prototype.heightAux=function(node){return null===node?-1:Math.max(this.heightAux(node.leftCh),this.heightAux(node.rightCh))+1},BSTree.prototype.insertNode=function(node){for(var parent=null,position=this.root,cmp=null;null!==position;){if(cmp=this.compare(node.element,position.element),0===cmp)return null;0>cmp?(parent=position,position=position.leftCh):(parent=position,position=position.rightCh)}return node.parent=parent,null===parent?this.root=node:this.compare(node.element,parent.element)<0?parent.leftCh=node:parent.rightCh=node,node},BSTree.prototype.createNode=function(element){return{element:element,leftCh:null,rightCh:null,parent:null}},BSTree}();Collections.BSTree=BSTree}(Collections=Utils.Collections||(Utils.Collections={}))}(Utils||(Utils={}));var Utils;!function(Utils){var Colors=function(){function Colors(){}return Colors.float32ColorToARGB=function(float32Color){var a=(4278190080&float32Color)>>>24,r=(16711680&float32Color)>>>16,g=(65280&float32Color)>>>8,b=255&float32Color,result=[a,r,g,b];return result},Colors._componentToHex=function(c){var hex=c.toString(16);return 1==hex.length?"0"+hex:hex},Colors.rgbToHexString=function(rgb){return Colors.coalesce(rgb),"#"+Colors._componentToHex(rgb[0])+Colors._componentToHex(rgb[1])+Colors._componentToHex(rgb[2])},Colors.argbToHexString=function(argb){return"#"+Colors._componentToHex(argb[0])+Colors._componentToHex(argb[1])+Colors._componentToHex(argb[2])+Colors._componentToHex(argb[3])},Colors.coalesce=function(arr){for(var i=1;i<arr.length;i++)"undefined"==typeof arr[i]&&(arr[i]=arr[i-1])},Colors}();Utils.Colors=Colors}(Utils||(Utils={}));var Utils;!function(Utils){var Dates=function(){function Dates(){}return Dates.getTimeStamp=function(){return(new Date).getTime()},Dates}();Utils.Dates=Dates}(Utils||(Utils={}));var Utils;!function(Utils){var Device=function(){function Device(){}return Device.getPixelRatio=function(ctx){var dpr=window.devicePixelRatio||1,bsr=ctx.webkitBackingStorePixelRatio||ctx.mozBackingStorePixelRatio||ctx.msBackingStorePixelRatio||ctx.oBackingStorePixelRatio||ctx.backingStorePixelRatio||1;return dpr/bsr},Device.isTouch=function(){return!!("ontouchstart"in window)||window.navigator.msMaxTouchPoints>0},Device}();Utils.Device=Device}(Utils||(Utils={}));var Utils;!function(Utils){var Documents=function(){function Documents(){}return Documents.isInIFrame=function(){try{return window.self!==window.top}catch(e){return!0}},Documents.supportsFullscreen=function(){var doc=document.documentElement,support=doc.requestFullscreen||doc.mozRequestFullScreen||doc.webkitRequestFullScreen||doc.msRequestFullscreen;return void 0!=support},Documents.isHidden=function(){var prop=Documents.getHiddenProp();return prop?document[prop]:!1},Documents.getHiddenProp=function(){var prefixes=["webkit","moz","ms","o"];if("hidden"in document)return"hidden";for(var i=0;i<prefixes.length;i++)if(prefixes[i]+"Hidden"in document)return prefixes[i]+"Hidden";return null},Documents}();Utils.Documents=Documents}(Utils||(Utils={}));var Utils;!function(Utils){var Events=function(){function Events(){}return Events.debounce=function(fn,debounceDuration){return debounceDuration=debounceDuration||100,function(){if(!fn.debouncing){var args=Array.prototype.slice.apply(arguments);fn.lastReturnVal=fn.apply(window,args),fn.debouncing=!0}return clearTimeout(fn.debounceTimeout),fn.debounceTimeout=setTimeout(function(){fn.debouncing=!1},debounceDuration),fn.lastReturnVal}},Events}();Utils.Events=Events}(Utils||(Utils={}));var Utils;!function(Utils){var Files=function(){function Files(){}return Files.simplifyMimeType=function(mime){switch(mime){case"text/plain":return"txt";case"image/jpeg":return"jpg";case"application/msword":return"doc";case"application/vnd.openxmlformats-officedocument.wordprocessingml.document":return"docx";default:var parts=mime.split("/");return parts[parts.length-1]}},Files}();Utils.Files=Files}(Utils||(Utils={}));var Utils;!function(Utils){var Keyboard=function(){function Keyboard(){}return Keyboard.getCharCode=function(e){var charCode="number"==typeof e.which?e.which:e.keyCode;return charCode},Keyboard}();Utils.Keyboard=Keyboard}(Utils||(Utils={}));var Utils;!function(Utils){var Maths;!function(Maths){var Vector=function(){function Vector(x,y){this.X=x,this.Y=y}return Vector.prototype.get=function(){return new Vector(this.X,this.Y)},Vector.prototype.set=function(x,y){this.X=x,this.Y=y},Vector.prototype.add=function(v){this.X+=v.X,this.Y+=v.Y},Vector.add=function(v1,v2){return new Vector(v1.X+v2.X,v1.Y+v2.Y)},Vector.prototype.sub=function(v){this.X-=v.X,this.Y-=v.Y},Vector.sub=function(v1,v2){return new Vector(v1.X-v2.X,v1.Y-v2.Y)},Vector.prototype.mult=function(n){this.X=this.X*n,this.Y=this.Y*n},Vector.mult=function(v1,v2){return new Vector(v1.X*v2.X,v1.Y*v2.Y)},Vector.multN=function(v1,n){return new Vector(v1.X*n,v1.Y*n)},Vector.prototype.Div=function(n){this.X=this.X/n,this.Y=this.Y/n},Vector.div=function(v1,v2){return new Vector(v1.X/v2.X,v1.Y/v2.Y)},Vector.divN=function(v1,n){return new Vector(v1.X/n,v1.Y/n)},Vector.prototype.mag=function(){return Math.sqrt(this.X*this.X+this.Y*this.Y)},Vector.prototype.magSq=function(){return this.X*this.X+this.Y*this.Y},Vector.prototype.normalise=function(){var m=this.mag();0!=m&&1!=m&&this.Div(m)},Vector.prototype.limit=function(max){this.magSq()>max*max&&(this.normalise(),
+this.mult(max))},Vector.prototype.equals=function(v){return this.X==v.X&&this.Y==v.Y},Vector.prototype.heading=function(){var angle=Math.atan2(-this.Y,this.X);return-1*angle},Vector.random2D=function(){return Vector.fromAngle(Math.random()*Math.TAU)},Vector.fromAngle=function(angle){return new Vector(Math.cos(angle),Math.sin(angle))},Vector}();Maths.Vector=Vector}(Maths=Utils.Maths||(Utils.Maths={}))}(Utils||(Utils={}));var Utils;!function(Utils){var Measurements;!function(Measurements){var Size=function(){function Size(width,height){this.width=width,this.height=height}return Size}();Measurements.Size=Size;var Dimensions=function(){function Dimensions(){}return Dimensions.fitRect=function(width1,height1,width2,height2){var width,height,scale,ratio1=height1/width1,ratio2=height2/width2;return ratio2>ratio1&&(scale=width2/width1,width=width1*scale,height=height1*scale),ratio1>ratio2&&(scale=height2/height1,width=width1*scale,height=height1*scale),new Size(Math.floor(width),Math.floor(height))},Dimensions.hitRect=function(x,y,w,h,mx,my){return mx>x&&x+w>mx&&my>y&&y+h>my},Dimensions}();Measurements.Dimensions=Dimensions}(Measurements=Utils.Measurements||(Utils.Measurements={}))}(Utils||(Utils={}));var Utils;!function(Utils){var Numbers=function(){function Numbers(){}return Numbers.numericalInput=function(event){return 46==event.keyCode||8==event.keyCode||9==event.keyCode||27==event.keyCode||65==event.keyCode&&event.ctrlKey===!0||event.keyCode>=35&&event.keyCode<=39?!0:event.shiftKey||(event.keyCode<48||event.keyCode>57)&&(event.keyCode<96||event.keyCode>105)?(event.preventDefault(),!1):!0},Numbers}();Utils.Numbers=Numbers}(Utils||(Utils={}));var Utils;!function(Utils){var Storage=function(){function Storage(){}return Storage.clear=function(storageType){switch(void 0===storageType&&(storageType=Utils.StorageType.memory),storageType.value){case Utils.StorageType.memory.value:this._memoryStorage={};break;case Utils.StorageType.session.value:sessionStorage.clear();break;case Utils.StorageType.local.value:localStorage.clear()}},Storage.clearExpired=function(storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);for(var items=this.getItems(storageType),i=0;i<items.length;i++){var item=items[i];this._isExpired(item)&&this.remove(item.key)}},Storage.get=function(key,storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);var data;switch(storageType.value){case Utils.StorageType.memory.value:data=this._memoryStorage[key];break;case Utils.StorageType.session.value:data=sessionStorage.getItem(key);break;case Utils.StorageType.local.value:data=localStorage.getItem(key)}if(!data)return null;var item=JSON.parse(data);return this._isExpired(item)?null:(item.key=key,item)},Storage._isExpired=function(item){return!((new Date).getTime()<item.expiresAt)},Storage.getItems=function(storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);var items=[];switch(storageType.value){case Utils.StorageType.memory.value:for(var keys=Object.keys(this._memoryStorage),i=0;i<keys.length;i++){var item=this.get(keys[i],Utils.StorageType.memory);item&&items.push(item)}break;case Utils.StorageType.session.value:for(var i=0;i<sessionStorage.length;i++){var key=sessionStorage.key(i),item=this.get(key,Utils.StorageType.session);item&&items.push(item)}break;case Utils.StorageType.local.value:for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i),item=this.get(key,Utils.StorageType.local);item&&items.push(item)}}return items},Storage.remove=function(key,storageType){switch(void 0===storageType&&(storageType=Utils.StorageType.memory),storageType.value){case Utils.StorageType.memory.value:delete this._memoryStorage[key];break;case Utils.StorageType.session.value:sessionStorage.removeItem(key);break;case Utils.StorageType.local.value:localStorage.removeItem(key)}},Storage.set=function(key,value,expirationSecs,storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);var expirationMS=1e3*expirationSecs,record=new Utils.StorageItem;switch(record.value=value,record.expiresAt=(new Date).getTime()+expirationMS,storageType.value){case Utils.StorageType.memory.value:this._memoryStorage[key]=JSON.stringify(record);break;case Utils.StorageType.session.value:sessionStorage.setItem(key,JSON.stringify(record));break;case Utils.StorageType.local.value:localStorage.setItem(key,JSON.stringify(record))}return record},Storage._memoryStorage={},Storage}();Utils.Storage=Storage}(Utils||(Utils={}));var Utils;!function(Utils){var StorageItem=function(){function StorageItem(){}return StorageItem}();Utils.StorageItem=StorageItem}(Utils||(Utils={}));var Utils;!function(Utils){var StorageType=function(){function StorageType(value){this.value=value}return StorageType.prototype.toString=function(){return this.value},StorageType.memory=new StorageType("memory"),StorageType.session=new StorageType("session"),StorageType.local=new StorageType("local"),StorageType}();Utils.StorageType=StorageType}(Utils||(Utils={}));var Utils;!function(Utils){var Strings=function(){function Strings(){}return Strings.ellipsis=function(text,chars){if(text.length<=chars)return text;var trimmedText=text.substr(0,chars),lastSpaceIndex=trimmedText.lastIndexOf(" ");return-1!=lastSpaceIndex&&(trimmedText=trimmedText.substr(0,Math.min(trimmedText.length,lastSpaceIndex))),trimmedText+"&hellip;"},Strings.htmlDecode=function(encoded){var div=document.createElement("div");return div.innerHTML=encoded,div.firstChild.nodeValue},Strings}();Utils.Strings=Strings}(Utils||(Utils={}));var Utils;!function(Utils){var Urls=function(){function Urls(){}return Urls.getHashParameter=function(key,doc){doc||(doc=window.document);var regex=new RegExp("#.*[?&]"+key+"=([^&]+)(&|$)"),match=regex.exec(doc.location.hash);return match?decodeURIComponent(match[1].replace(/\+/g," ")):null},Urls.setHashParameter=function(key,value,doc){doc||(doc=window.document);var kvp=this.updateURIKeyValuePair(doc.location.hash.replace("#?",""),key,value),newHash="#?"+kvp,url=doc.URL,index=url.indexOf("#");-1!=index&&(url=url.substr(0,url.indexOf("#"))),doc.location.replace(url+newHash)},Urls.getQuerystringParameter=function(key,w){return w||(w=window),this.getQuerystringParameterFromString(key,w.location.search)},Urls.getQuerystringParameterFromString=function(key,querystring){key=key.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");var regex=new RegExp("[\\?&]"+key+"=([^&#]*)"),match=regex.exec(querystring);return match?decodeURIComponent(match[1].replace(/\+/g," ")):null},Urls.setQuerystringParameter=function(key,value,doc){doc||(doc=window.document);var kvp=this.updateURIKeyValuePair(doc.location.hash.replace("#?",""),key,value);window.location.search=kvp},Urls.updateURIKeyValuePair=function(uriSegment,key,value){key=encodeURIComponent(key),value=encodeURIComponent(value);var kvp=uriSegment.split("&");""==kvp[0]&&kvp.shift();for(var x,i=kvp.length;i--;)if(x=kvp[i].split("="),x[0]==key){x[1]=value,kvp[i]=x.join("=");break}return 0>i&&(kvp[kvp.length]=[key,value].join("=")),kvp.join("&")},Urls.getUrlParts=function(url){var a=document.createElement("a");return a.href=url,a},Urls.convertToRelativeUrl=function(url){var parts=this.getUrlParts(url),relUri=parts.pathname+parts.searchWithin;return relUri.startsWith("/")||(relUri="/"+relUri),relUri},Urls}();Utils.Urls=Urls}(Utils||(Utils={}));
+define("../node_modules/utils/dist/utils.min.js", function(){});
+
 define('modules/uv-shared-module/BaseCommands',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BaseCommands = (function () {
         function BaseCommands() {
         }
@@ -2314,6 +2843,7 @@ define('modules/uv-shared-module/BaseCommands',["require", "exports"], function 
 //# sourceMappingURL=BaseCommands.js.map
 define('Params',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     // do not change order, index is important!
     var Params;
     (function (Params) {
@@ -2330,6 +2860,7 @@ define('Params',["require", "exports"], function (require, exports) {
 //# sourceMappingURL=Params.js.map
 define('BootstrapParams',["require", "exports", "./Params"], function (require, exports, Params_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BootstrapParams = (function () {
         function BootstrapParams() {
             this.paramMap = ['c', 'm', 's', 'cv', 'xywh', 'r', 'h', 'a']; // todo: move xywh, r, h, a to their respective extensions
@@ -2341,8 +2872,6 @@ define('BootstrapParams',["require", "exports", "./Params"], function (require, 
             this.isLightbox = Utils.Urls.getQuerystringParameter('isLightbox') === 'true';
             this.isOnlyInstance = Utils.Urls.getQuerystringParameter('isOnlyInstance') === 'true';
             this.isReload = Utils.Urls.getQuerystringParameter('isReload') === 'true';
-            var jsonpParam = Utils.Urls.getQuerystringParameter('jsonp');
-            this.jsonp = jsonpParam === null ? null : !(jsonpParam === 'false' || jsonpParam === '0');
             this.manifestUri = Utils.Urls.getQuerystringParameter('manifestUri');
             var locale = Utils.Urls.getQuerystringParameter('locale') || 'en-GB';
             this.setLocale(locale);
@@ -2357,12 +2886,15 @@ define('BootstrapParams',["require", "exports", "./Params"], function (require, 
         BootstrapParams.prototype.getParam = function (param) {
             if (this.hashParamsAvailable()) {
                 // get param from parent document
-                var p = parseInt(Utils.Urls.getHashParameter(this.paramMap[param], parent.document));
-                if (p || p === 0)
-                    return p;
+                var p_1 = Utils.Urls.getHashParameter(this.paramMap[param], parent.document);
+                if (p_1)
+                    return parseInt(p_1);
             }
             // get param from iframe querystring
-            return parseInt(Utils.Urls.getQuerystringParameter(this.paramMap[param])) || 0;
+            var p = Utils.Urls.getQuerystringParameter(this.paramMap[param]);
+            if (p)
+                return parseInt(p);
+            return 0;
         };
         BootstrapParams.prototype.hashParamsAvailable = function () {
             return (this.isHomeDomain && !this.isReload && this.isOnlyInstance);
@@ -2388,6 +2920,7 @@ define('BootstrapParams',["require", "exports", "./Params"], function (require, 
 //# sourceMappingURL=BootstrapParams.js.map
 define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCommands", "./BootstrapParams"], function (require, exports, BaseCommands_1, BootstrapParams_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     // The Bootstrapper is concerned with loading the manifest/collection (iiifResource)
     // then determining which extension to use and instantiating it.
     var Bootstrapper = (function () {
@@ -2453,13 +2986,12 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
                         });
                     });
                 });
-            })["catch"](function () {
+            }).catch(function () {
                 this.notFound();
             });
         };
         Bootstrapper.prototype.isCORSEnabled = function () {
-            // No jsonp setting? Then use autodetection. Otherwise, use explicit setting.
-            return (null === this.params.jsonp) ? Modernizr.cors : !this.params.jsonp;
+            return Modernizr.cors;
         };
         Bootstrapper.prototype.notFound = function () {
             try {
@@ -2550,6 +3082,7 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
 //# sourceMappingURL=Bootstrapper.js.map
 define('modules/uv-shared-module/Panel',["require", "exports", "./BaseCommands"], function (require, exports, BaseCommands_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Panel = (function () {
         function Panel($element, fitToParentWidth, fitToParentHeight) {
             this.isResized = false;
@@ -2591,6 +3124,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], function (require, exports, Panel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BaseView = (function (_super) {
         __extends(BaseView, _super);
         function BaseView($element, fitToParentWidth, fitToParentHeight) {
@@ -2642,6 +3176,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", "./BaseCommands"], function (require, exports, BaseView_1, BaseCommands_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Dialogue = (function (_super) {
         __extends(Dialogue, _super);
         function Dialogue($element) {
@@ -2780,6 +3315,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ClickThroughDialogue = (function (_super) {
         __extends(ClickThroughDialogue, _super);
         function ClickThroughDialogue($element) {
@@ -2796,7 +3332,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
                 _this.resource = params.resource;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -2842,6 +3378,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
 //# sourceMappingURL=ClickThroughDialogue.js.map
 define('modules/uv-shared-module/InformationArgs',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var InformationArgs = (function () {
         function InformationArgs(informationType, param) {
             this.informationType = informationType;
@@ -2854,6 +3391,7 @@ define('modules/uv-shared-module/InformationArgs',["require", "exports"], functi
 //# sourceMappingURL=InformationArgs.js.map
 define('modules/uv-shared-module/InformationType',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var InformationType;
     (function (InformationType) {
         InformationType[InformationType["AUTH_CORS_ERROR"] = 0] = "AUTH_CORS_ERROR";
@@ -2873,6 +3411,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var LoginDialogue = (function (_super) {
         __extends(LoginDialogue, _super);
         function LoginDialogue($element) {
@@ -2891,7 +3430,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
                 _this.resource = e.resource;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -2971,6 +3510,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
 //# sourceMappingURL=LoginDialogue.js.map
 define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var LoginWarningMessages = (function () {
         function LoginWarningMessages() {
         }
@@ -2982,6 +3522,7 @@ define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], f
 //# sourceMappingURL=LoginWarningMessages.js.map
 define('modules/uv-shared-module/Metric',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Metric = (function () {
         function Metric(minWidth, maxWidth) {
             this.minWidth = minWidth;
@@ -2994,6 +3535,7 @@ define('modules/uv-shared-module/Metric',["require", "exports"], function (requi
 //# sourceMappingURL=Metric.js.map
 define('modules/uv-shared-module/Metrics',["require", "exports", "./Metric"], function (require, exports, Metric_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Metrics = (function () {
         function Metrics() {
         }
@@ -3016,6 +3558,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RestrictedDialogue = (function (_super) {
         __extends(RestrictedDialogue, _super);
         function RestrictedDialogue($element) {
@@ -3033,7 +3576,7 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
                 _this.resource = e.resource;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -3098,6 +3641,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./BaseCommands", "./Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var GenericDialogue = (function (_super) {
         __extends(GenericDialogue, _super);
         function GenericDialogue($element) {
@@ -3113,7 +3657,7 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
                 _this.acceptCallback = params.acceptCallback;
                 _this.showMessage(params);
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$message = $('<p></p>');
@@ -3169,6 +3713,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands", "./BaseView", "./GenericDialogue"], function (require, exports, BaseCommands_1, BaseView_1, GenericDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Shell = (function (_super) {
         __extends(Shell, _super);
         function Shell($element) {
@@ -3229,6 +3774,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
 //# sourceMappingURL=Shell.js.map
 define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../BootstrapParams", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "./LoginWarningMessages", "../../modules/uv-shared-module/Metrics", "../../Params", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell"], function (require, exports, BaseCommands_1, BootstrapParams_1, ClickThroughDialogue_1, InformationArgs_1, InformationType_1, LoginDialogue_1, LoginWarningMessages_1, Metrics_1, Params_1, RestrictedDialogue_1, Shell_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BaseExtension = (function () {
         function BaseExtension(bootstrapper) {
             this.isCreated = false;
@@ -3237,7 +3783,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             this.tabbing = false;
             this.bootstrapper = bootstrapper;
             this.config = this.bootstrapper.config;
-            this.jsonp = this.bootstrapper.params.jsonp;
             this.locale = this.bootstrapper.params.getLocaleName();
             this.isHomeDomain = this.bootstrapper.params.isHomeDomain;
             this.isReload = this.bootstrapper.params.isReload;
@@ -3297,8 +3842,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 };
                 var visibilityProp = Utils.Documents.getHiddenProp();
                 if (visibilityProp) {
-                    var evtname = visibilityProp.replace(/[H|h]idden/, '') + 'visibilitychange';
-                    document.addEventListener(evtname, function () {
+                    var event_1 = visibilityProp.replace(/[H|h]idden/, '') + 'visibilitychange';
+                    document.addEventListener(event_1, function () {
                         // resize after a tab has been shown (fixes safari layout issue)
                         if (!Utils.Documents.isHidden()) {
                             _this.resize();
@@ -3309,8 +3854,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     this.$element.on('drop', (function (e) {
                         e.preventDefault();
                         var dropUrl = e.originalEvent.dataTransfer.getData("URL");
-                        var url = Utils.Urls.getUrlParts(dropUrl);
-                        var manifestUri = Utils.Urls.getQuerystringParameterFromString('manifest', url.search);
+                        var a = Utils.Urls.getUrlParts(dropUrl);
+                        var manifestUri = Utils.Urls.getQuerystringParameterFromString('manifest', a.search);
                         //var canvasUri = Utils.Urls.getQuerystringParameterFromString('canvas', url.search);
                         if (manifestUri) {
                             _this.triggerSocket(BaseCommands_1.BaseCommands.DROP, manifestUri);
@@ -3644,7 +4189,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.getDependencies = function (cb) {
             var that = this;
-            // todo: use compiler flag (when available)
             var depsUri = 'lib/' + this.name + '-dependencies';
             // check if the deps are already loaded
             var scripts = $('script[data-requiremodule]')
@@ -3653,7 +4197,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 return (attr.indexOf(that.name) != -1 && attr.indexOf('dependencies') != -1);
             });
             if (!scripts.length) {
-                require([depsUri], function (deps) {
+                requirejs([depsUri], function (deps) {
                     var baseUri = 'lib/';
                     // for each dependency, prepend baseUri.
                     for (var i = 0; i < deps.dependencies.length; i++) {
@@ -3669,7 +4213,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         BaseExtension.prototype.loadDependencies = function (deps) {
             var that = this;
             if (deps) {
-                require(deps.dependencies, function () {
+                requirejs(deps.dependencies, function () {
                     that.dependenciesLoaded();
                 });
             }
@@ -3689,10 +4233,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         BaseExtension.prototype.setParams = function () {
             if (!this.isHomeDomain)
                 return;
-            this.setParam(Params_1.Params.collectionIndex, this.helper.collectionIndex);
-            this.setParam(Params_1.Params.manifestIndex, this.helper.manifestIndex);
-            this.setParam(Params_1.Params.sequenceIndex, this.helper.sequenceIndex);
-            this.setParam(Params_1.Params.canvasIndex, this.helper.canvasIndex);
+            this.setParam(Params_1.Params.collectionIndex, this.helper.collectionIndex.toString());
+            this.setParam(Params_1.Params.manifestIndex, this.helper.manifestIndex.toString());
+            this.setParam(Params_1.Params.sequenceIndex, this.helper.sequenceIndex.toString());
+            this.setParam(Params_1.Params.canvasIndex, this.helper.canvasIndex.toString());
         };
         BaseExtension.prototype.setDefaultFocus = function () {
             var _this = this;
@@ -3854,7 +4398,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             if (this.locales)
                 return this.locales;
             // use data-locales to prioritise
-            var items = this.config.localisation.locales.clone();
+            var items = this.config.localisation.locales.slice(0);
             var sorting = this.bootstrapper.params.locales;
             var result = [];
             // loop through sorting array
@@ -3887,27 +4431,28 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         BaseExtension.prototype.getAlternateLocale = function () {
             var locales = this.getLocales();
             var alternateLocale;
+            var locale;
             for (var i = 0; i < locales.length; i++) {
-                var l = locales[i];
-                if (l.name !== this.locale) {
-                    alternateLocale = l;
+                locale = locales[i];
+                if (locale.name !== this.locale) {
+                    alternateLocale = locale;
                 }
             }
-            return l;
+            return locale;
         };
         BaseExtension.prototype.changeLocale = function (locale) {
             // if the current locale is "en-GB:English,cy-GB:Welsh"
             // and "cy-GB" is passed, it becomes "cy-GB:Welsh,en-GB:English"
             // re-order locales so the passed locale is first
             var locales = this.locales.clone();
-            var index = locales.indexOfTest(function (l) {
+            var index = locales.findIndex(function (l) {
                 return l.name === locale;
             });
             locales.move(index, 0);
             // convert to comma-separated string
-            var str = this.serializeLocales(locales);
+            var l = this.serializeLocales(locales);
             var p = new BootstrapParams_1.BootstrapParams();
-            p.setLocale(str);
+            p.setLocale(l);
             this.reload(p);
         };
         BaseExtension.prototype.serializeLocales = function (locales) {
@@ -3934,15 +4479,14 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             // todo: use getThumb (when implemented)
             var canvas = this.helper.getCurrentCanvas();
             var thumbnail = canvas.getProperty('thumbnail');
-            if (!thumbnail || !_.isString(thumbnail)) {
+            if (!thumbnail || !(typeof (thumbnail) === 'string')) {
                 thumbnail = canvas.getCanonicalImageUri(this.config.options.bookmarkThumbWidth);
             }
             preview.image = thumbnail;
             return preview;
         };
         BaseExtension.prototype.getPagedIndices = function (canvasIndex) {
-            if (typeof (canvasIndex) === 'undefined')
-                canvasIndex = this.helper.canvasIndex;
+            if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
             return [canvasIndex];
         };
         BaseExtension.prototype.getCurrentCanvases = function () {
@@ -3980,13 +4524,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             var _this = this;
             var indices = this.getPagedIndices();
             var resourcesToLoad = [];
-            _.each(indices, function (index) {
+            $.each(indices, function (index, item) {
                 var canvas = _this.helper.getCanvasByIndex(index);
                 var r = new Manifold.ExternalResource(canvas, _this.helper.getInfoUri);
                 r.index = index;
                 // used to reload resources with isResponseHandled = true.
                 if (resources) {
-                    var found = _.find(resources, function (f) {
+                    var found = resources.find(function (f) {
                         return f.dataUri === r.dataUri;
                     });
                     if (found) {
@@ -4027,7 +4571,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         // get hash or data-attribute params depending on whether the UV is embedded.
         BaseExtension.prototype.getParam = function (key) {
-            var value;
+            var value = null;
             // deep linking is only allowed when hosted on home domain.
             if (this.isDeepLinkingEnabled()) {
                 // todo: use a static type on bootstrapper.params
@@ -4054,7 +4598,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             this.helper.canvasIndex = canvasIndex;
             $.publish(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, [canvasIndex]);
             $.publish(BaseCommands_1.BaseCommands.OPEN_EXTERNAL_RESOURCE);
-            this.setParam(Params_1.Params.canvasIndex, canvasIndex);
+            this.setParam(Params_1.Params.canvasIndex, canvasIndex.toString());
         };
         BaseExtension.prototype.showMessage = function (message, acceptCallback, buttonText, allowClose) {
             this.closeActiveDialogue();
@@ -4209,7 +4753,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                             reject(token.errorDescription);
                         }
                         else {
-                            resolve(null);
+                            resolve(undefined);
                         }
                     }
                     else {
@@ -4250,7 +4794,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         BaseExtension.prototype.getStoredAccessToken = function (resource, storageStrategy) {
             return new Promise(function (resolve, reject) {
                 var foundItems = [];
-                var item;
+                var item = null;
                 // try to match on the tokenService, if the resource has one:
                 if (resource.tokenService) {
                     item = Utils.Storage.get(resource.tokenService.id, new Utils.StorageType(storageStrategy));
@@ -4264,7 +4808,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     var items = Utils.Storage.getItems(new Utils.StorageType(storageStrategy));
                     for (var i = 0; i < items.length; i++) {
                         item = items[i];
-                        if (item.key.contains(domain)) {
+                        if (item.key.includes(domain)) {
                             foundItems.push(item);
                         }
                     }
@@ -4275,7 +4819,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 });
                 var foundToken;
                 if (foundItems.length) {
-                    foundToken = foundItems.last().value;
+                    foundToken = foundItems[foundItems.length - 1].value;
                 }
                 resolve(foundToken);
             });
@@ -4326,6 +4870,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
 //# sourceMappingURL=BaseExtension.js.map
 define('modules/uv-shared-module/Bookmark',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Bookmark = (function () {
         function Bookmark() {
         }
@@ -4336,6 +4881,7 @@ define('modules/uv-shared-module/Bookmark',["require", "exports"], function (req
 //# sourceMappingURL=Bookmark.js.map
 define('extensions/uv-seadragon-extension/Commands',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Commands = (function () {
         function Commands() {
         }
@@ -4402,6 +4948,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, BaseCommands_1, BaseView_1, Commands_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var GalleryView = (function (_super) {
         __extends(GalleryView, _super);
         function GalleryView($element) {
@@ -4441,7 +4988,7 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
         };
         GalleryView.prototype.databind = function () {
             this.component.options.data = this.galleryData;
-            this.component.set(null); // todo: should be passing options.data
+            this.component.set(new Object()); // todo: should be passing options.data
             this.resize();
         };
         GalleryView.prototype.show = function () {
@@ -4480,6 +5027,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./BaseView"], function (require, exports, BaseView_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BaseExpandPanel = (function (_super) {
         __extends(BaseExpandPanel, _super);
         function BaseExpandPanel($element) {
@@ -4685,6 +5233,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseCommands", "./BaseExpandPanel"], function (require, exports, BaseCommands_1, BaseExpandPanel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var LeftPanel = (function (_super) {
         __extends(LeftPanel, _super);
         function LeftPanel($element) {
@@ -4744,6 +5293,7 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseComman
 //# sourceMappingURL=LeftPanel.js.map
 define('extensions/uv-seadragon-extension/Mode',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Mode = (function () {
         function Mode(value) {
             this.value = value;
@@ -4770,6 +5320,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseCommands", "./BaseView"], function (require, exports, BaseCommands_1, BaseView_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
@@ -4840,6 +5391,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
                         }
                         return String.format(that.content.searchResult, searchResults);
                     }
+                    return '';
                 }
             });
             // use unevent to detect scroll stop.
@@ -4851,7 +5403,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
         ThumbsView.prototype.databind = function () {
             if (!this.thumbs)
                 return;
-            this._thumbsCache = null; // delete cache
+            this._$thumbsCache = null; // delete cache
             this.createThumbs();
             // do initial load to show padlocks
             this.loadThumbs(0);
@@ -4883,8 +5435,6 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
             this.setLabel();
             this.isCreated = true;
         };
-        ThumbsView.prototype.selectAll = function (selected) {
-        };
         ThumbsView.prototype.scrollStop = function () {
             var scrollPos = 1 / ((this.$thumbs.height() - this.$element.height()) / this.$element.scrollTop());
             if (scrollPos > 1)
@@ -4893,11 +5443,9 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
             this.loadThumbs(thumbRangeMid);
         };
         ThumbsView.prototype.loadThumbs = function (index) {
+            if (index === void 0) { index = this.extension.helper.canvasIndex; }
             if (!this.thumbs || !this.thumbs.length)
                 return;
-            if (_.isUndefined(index)) {
-                index = this.extension.helper.canvasIndex;
-            }
             var thumbRangeMid = index;
             var thumbLoadRange = this.options.thumbsLoadRange;
             var thumbRange = {
@@ -4918,16 +5466,16 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
                         var src = $thumb.attr('data-src');
                         src += '?t=' + Utils.Dates.getTimeStamp();
                         //console.log(i, src);
-                        var img = $('<img src="' + src + '" />');
+                        var $img = $('<img src="' + src + '" />');
                         // fade in on load.
-                        $(img).hide().load(function () {
+                        $img.hide().load(function () {
                             $(this).fadeIn(fadeDuration, function () {
                                 $(this).parent().swapClass('loading', 'loaded');
                             });
                         }).error(function () {
                             $(this).parent().swapClass('loading', 'loadingFailed');
                         });
-                        $wrap.append(img);
+                        $wrap.append($img);
                     }
                     else {
                         $wrap.addClass('hidden');
@@ -4949,7 +5497,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
         };
         ThumbsView.prototype.isPDF = function () {
             // todo: use constants
-            return (this.extension.helper.getElementType().toString().contains("pdf"));
+            return (this.extension.helper.getElementType().toString().includes("pdf"));
         };
         ThumbsView.prototype.setLabel = function () {
             $(this.$thumbs).find('span.index').hide();
@@ -4977,10 +5525,10 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
             this.loadThumbs(index);
         };
         ThumbsView.prototype.getAllThumbs = function () {
-            if (!this._thumbsCache) {
-                this._thumbsCache = this.$thumbs.find('.thumb');
+            if (!this._$thumbsCache) {
+                this._$thumbsCache = this.$thumbs.find('.thumb');
             }
-            return this._thumbsCache;
+            return this._$thumbsCache;
         };
         ThumbsView.prototype.getThumbByIndex = function (canvasIndex) {
             return this.$thumbs.find('[data-index="' + canvasIndex + '"]');
@@ -5009,6 +5557,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/ThumbsView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, ThumbsView_1, Commands_1, Mode_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView() {
@@ -5019,7 +5568,7 @@ define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", ".
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
             // todo: this should be a setting
-            $.subscribe(Commands_1.Commands.MODE_CHANGED, function (e, mode) {
+            $.subscribe(Commands_1.Commands.MODE_CHANGED, function () {
                 _this.setLabel();
             });
             $.subscribe(Commands_1.Commands.SEARCH_PREVIEW_START, function (e, canvasIndex) {
@@ -5104,6 +5653,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, BaseView_1, Commands_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
@@ -5118,7 +5668,6 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             this.$element.append(this.$tree);
         };
         TreeView.prototype.setup = function () {
-            var that = this;
             this.component = new IIIFComponents.TreeComponent({
                 target: this.$tree[0],
                 data: this.treeData
@@ -5126,18 +5675,16 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             // todo: casting as <any> is necessary because IBaseComponent doesn't implement ITinyEmitter
             // it is mixed-in a runtime. figure out how to add .on etc to IBaseComponent without needing
             // to implement it in BaseComponent.
-            this.component.on('treeNodeSelected', function (args) {
-                var node = args[0];
+            this.component.on('treeNodeSelected', function (node) {
                 $.publish(Commands_1.Commands.TREE_NODE_SELECTED, [node]);
             });
-            this.component.on('treeNodeMultiSelected', function (args) {
-                var node = args[0];
+            this.component.on('treeNodeMultiSelected', function (node) {
                 $.publish(Commands_1.Commands.TREE_NODE_MULTISELECTED, [node]);
             });
         };
         TreeView.prototype.databind = function () {
             this.component.options.data = this.treeData;
-            this.component.set(null); // todo: should be passing options.data
+            this.component.set(new Object()); // todo: should be passing options.data
             this.resize();
         };
         TreeView.prototype.show = function () {
@@ -5177,6 +5724,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "./GalleryView", "../uv-shared-module/LeftPanel", "../uv-shared-module/Metrics", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseCommands_1, Commands_1, GalleryView_1, LeftPanel_1, Metrics_1, Mode_1, ThumbsView_1, TreeView_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ContentLeftPanel = (function (_super) {
         __extends(ContentLeftPanel, _super);
         function ContentLeftPanel($element) {
@@ -5191,7 +5739,6 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             var _this = this;
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
-            var that = this;
             $.subscribe(BaseCommands_1.BaseCommands.SETTINGS_CHANGED, function () {
                 _this.databind();
             });
@@ -5217,7 +5764,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function (e, index) {
+            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -5390,7 +5937,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             this.$treeButton.prop('title', title);
         };
         ContentLeftPanel.prototype.updateTreeTabBySelection = function () {
-            var title;
+            var title = null;
             var topRanges = this.extension.helper.getTopRanges();
             if (topRanges.length > 1) {
                 if (this.treeView) {
@@ -5417,7 +5964,8 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         ContentLeftPanel.prototype.databindThumbsView = function () {
             if (!this.thumbsView)
                 return;
-            var width, height;
+            var width;
+            var height;
             var viewingDirection = this.getViewingDirection().toString();
             if (viewingDirection === manifesto.ViewingDirection.topToBottom().toString() || viewingDirection === manifesto.ViewingDirection.bottomToTop().toString()) {
                 width = this.config.options.oneColThumbWidth;
@@ -5434,7 +5982,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             // add a search result icon for pages with results
             var searchResults = this.extension.searchResults;
             if (searchResults && searchResults.length) {
-                for (var i = 0; i < searchResults.length; i++) {
+                var _loop_1 = function (i) {
                     var searchResult = searchResults[i];
                     // find the thumb with the same canvasIndex and add the searchResult
                     var thumb = thumbs.en().where(function (t) { return t.index === searchResult.canvasIndex; }).first();
@@ -5442,6 +5990,9 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                     var data = $.extend(true, {}, thumb.data);
                     data.searchResults = searchResult.rects.length;
                     thumb.data = data;
+                };
+                for (var i = 0; i < searchResults.length; i++) {
+                    _loop_1(i);
                 }
             }
             this.thumbsView.thumbs = thumbs;
@@ -5620,8 +6171,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         };
         ContentLeftPanel.prototype.selectCurrentTreeNode = function () {
             if (this.treeView) {
-                var id;
-                var node;
+                var node = null;
                 var currentCanvasTopRangeIndex = this.getCurrentCanvasTopRangeIndex();
                 var selectedTopRangeIndex = this.getSelectedTopRangeIndex();
                 var usingCorrectTree = currentCanvasTopRangeIndex === selectedTopRangeIndex;
@@ -5656,6 +6206,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
 //# sourceMappingURL=ContentLeftPanel.js.map
 define('modules/uv-shared-module/Point',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Point = (function () {
         function Point(x, y) {
             this.x = x;
@@ -5668,6 +6219,7 @@ define('modules/uv-shared-module/Point',["require", "exports"], function (requir
 //# sourceMappingURL=Point.js.map
 define('extensions/uv-seadragon-extension/CroppedImageDimensions',["require", "exports", "../../modules/uv-shared-module/Point"], function (require, exports, Point_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Size = Utils.Measurements.Size;
     var CroppedImageDimensions = (function () {
         function CroppedImageDimensions() {
@@ -5682,6 +6234,7 @@ define('extensions/uv-seadragon-extension/CroppedImageDimensions',["require", "e
 //# sourceMappingURL=CroppedImageDimensions.js.map
 define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadOption = (function () {
         function DownloadOption(value) {
             this.value = value;
@@ -5715,6 +6268,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseCommands_1, Dialogue_1, DownloadOption_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -5729,7 +6283,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             $.subscribe(this.openCommand, function (e, $triggerButton) {
                 _this.open($triggerButton);
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             // create ui.
@@ -5756,7 +6310,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
                 this.$downloadOptions.empty();
                 // add each file src
                 var canvas = this.extension.helper.getCurrentCanvas();
-                var renderingFound = false;
+                var renderingFound_1 = false;
                 $.each(canvas.getRenderings(), function (index, rendering) {
                     var renderingFormat = rendering.getFormat();
                     var format = '';
@@ -5764,10 +6318,10 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
                         format = renderingFormat.toString();
                     }
                     _this.addEntireFileDownloadOption(rendering.id, Manifesto.TranslationCollection.getValue(rendering.getLabel()), format);
-                    renderingFound = true;
+                    renderingFound_1 = true;
                 });
-                if (!renderingFound) {
-                    this.addEntireFileDownloadOption(canvas.id, null, null);
+                if (!renderingFound_1) {
+                    this.addEntireFileDownloadOption(canvas.id, '', '');
                 }
             }
         };
@@ -5813,7 +6367,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
                 case DownloadOption_1.DownloadOption.entireFileAsOriginal:
                     // check if ui-extensions disable it
                     var uiExtensions = this.extension.helper.manifest.getService(manifesto.ServiceProfile.uiExtensions());
-                    if (!this.extension.helper.isUIEnabled('mediaDownload')) {
+                    if (uiExtensions && !this.extension.helper.isUIEnabled('mediaDownload')) {
                         return false;
                     }
             }
@@ -5832,6 +6386,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
 //# sourceMappingURL=DownloadDialogue.js.map
 define('extensions/uv-seadragon-extension/DownloadType',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadType = (function () {
         function DownloadType() {
         }
@@ -5857,8 +6412,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-dialogues-module/DownloadDialogue", "./Commands", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseCommands_1, DownloadDialogue_1, Commands_1, DownloadOption_1, DownloadType_1) {
+define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "./Commands", "../../modules/uv-dialogues-module/DownloadDialogue", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseCommands_1, Commands_1, DownloadDialogue_1, DownloadOption_1, DownloadType_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Size = Utils.Measurements.Size;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
@@ -5931,6 +6487,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                         //     $.publish(Commands.PRINT);
                         // } else {
                         window.open(_this.renderingUrls[id]);
+                        //}
                     }
                 }
                 else {
@@ -6258,9 +6815,11 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
         };
         DownloadDialogue.prototype.getCanvasMimeType = function (canvas) {
             var resource = this.getCanvasImageResource(canvas);
-            var format = resource.getFormat();
-            if (format) {
-                return format.toString();
+            if (resource) {
+                var format = resource.getFormat();
+                if (format) {
+                    return format.toString();
+                }
             }
             return null;
         };
@@ -6352,6 +6911,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ExternalContentDialogue = (function (_super) {
         __extends(ExternalContentDialogue, _super);
         function ExternalContentDialogue($element) {
@@ -6367,7 +6927,7 @@ define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "export
                 _this.open();
                 _this.$iframe.prop('src', params.uri);
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$iframe = $('<iframe></iframe>');
@@ -6396,6 +6956,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseCommands", "./BaseView", "./Metrics"], function (require, exports, BaseCommands_1, BaseView_1, Metrics_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -6587,6 +7148,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "exports", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, FooterPanel_1, Commands_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -6624,6 +7186,7 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
 //# sourceMappingURL=MobileFooter.js.map
 define('modules/uv-shared-module/AutoComplete',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var AutoComplete = (function () {
         function AutoComplete(element, autoCompleteFunc, parseResultsFunc, onSelect, delay, minChars, positionAbove) {
             if (delay === void 0) { delay = 300; }
@@ -6654,9 +7217,9 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
             // callback after set period.
             var typewatch = (function () {
                 var timer = 0;
-                return function (callback, ms) {
+                return function (cb, ms) {
                     clearTimeout(timer);
-                    timer = setTimeout(callback, ms);
+                    timer = setTimeout(cb, ms);
                 };
             })();
             var that = this;
@@ -6714,7 +7277,7 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
                         var val = that._getTerms();
                         // if there are more than x chars and no spaces
                         // update the autocomplete list.
-                        if (val && val.length > that._minChars && !val.contains(' ')) {
+                        if (val && val.length > that._minChars && !val.includes(' ')) {
                             that._search(val);
                         }
                         else {
@@ -6735,13 +7298,13 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
             this._hideResults();
         }
         AutoComplete.prototype._isValidKeyDown = function (e) {
-            var isValid = this._validKeyDownCodes.contains(Utils.Keyboard.getCharCode(e));
+            var isValid = this._validKeyDownCodes.includes(Utils.Keyboard.getCharCode(e));
             return isValid;
         };
         AutoComplete.prototype._isValidKeyPress = function (e) {
             var charCode = Utils.Keyboard.getCharCode(e);
             var key = String.fromCharCode(charCode);
-            var isValid = key.isAlphanumeric() || this._validKeyPressCodes.contains(charCode);
+            var isValid = key.isAlphanumeric() || this._validKeyPressCodes.includes(charCode);
             return isValid;
         };
         AutoComplete.prototype._getTerms = function () {
@@ -6854,8 +7417,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseCommands", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseCommands_1, FooterPanel_1, Commands_1, Mode_1) {
+define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseCommands_1, Commands_1, FooterPanel_1, Mode_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -6867,14 +7431,14 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var _this = this;
             this.setConfig('searchFooterPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function () {
                 _this.canvasIndexChanged();
                 _this.setCurrentSearchResultPlacemarker();
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
             // todo: this should be a setting
-            $.subscribe(Commands_1.Commands.MODE_CHANGED, function (e, mode) {
+            $.subscribe(Commands_1.Commands.MODE_CHANGED, function () {
                 _this.settingsChanged();
             });
             $.subscribe(Commands_1.Commands.SEARCH, function (e, terms) {
@@ -6958,7 +7522,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 var placemarkers = that.getSearchResultPlacemarkers();
                 placemarkers.removeClass('hover');
             });
-            this.$placemarkerDetails.on('click', function (e) {
+            this.$placemarkerDetails.on('click', function () {
                 $.publish(Commands_1.Commands.VIEW_PAGE, [_this.currentPlacemarkerIndex]);
             });
             this.$previousResultButton.on('click', function (e) {
@@ -7036,10 +7600,6 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             }
             return (currentCanvasIndex > firstSearchResultCanvasIndex);
         };
-        FooterPanel.prototype.isCanvasIndexLessThanFirstSearchResultIndex = function () {
-            var searchResults = this.extension.searchResults;
-            return this.extension.helper.canvasIndex <= searchResults[0].canvasIndex;
-        };
         FooterPanel.prototype.isNextButtonEnabled = function () {
             var currentCanvasIndex = this.extension.helper.canvasIndex;
             var lastSearchResultCanvasIndex = this.getLastSearchResultCanvasIndex();
@@ -7066,11 +7626,15 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         };
         FooterPanel.prototype.getFirstSearchResultCanvasIndex = function () {
             var searchResults = this.getSearchResults();
+            if (!searchResults)
+                return -1;
             var firstSearchResultCanvasIndex = searchResults[0].canvasIndex;
             return firstSearchResultCanvasIndex;
         };
         FooterPanel.prototype.getLastSearchResultCanvasIndex = function () {
             var searchResults = this.getSearchResults();
+            if (!searchResults)
+                return -1;
             var lastSearchResultCanvasIndex = searchResults[searchResults.length - 1].canvasIndex;
             return lastSearchResultCanvasIndex;
         };
@@ -7078,7 +7642,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             return this.extension.getLastSearchResultRectIndex();
         };
         FooterPanel.prototype.updateNextButton = function () {
-            var searchResults = this.extension.searchResults;
+            var searchResults = this.getSearchResults();
             if (searchResults && searchResults.length) {
                 if (this.isNextButtonEnabled()) {
                     this.$nextResultButton.removeClass('disabled');
@@ -7089,7 +7653,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             }
         };
         FooterPanel.prototype.updatePrevButton = function () {
-            var searchResults = this.extension.searchResults;
+            var searchResults = this.getSearchResults();
             if (searchResults && searchResults.length) {
                 if (this.isPreviousButtonEnabled()) {
                     this.$previousResultButton.removeClass('disabled');
@@ -7133,8 +7697,8 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             $current.addClass('current');
         };
         FooterPanel.prototype.positionSearchResultPlacemarkers = function () {
-            var results = this.extension.searchResults;
-            if (!results.length)
+            var searchResults = this.getSearchResults();
+            if (!searchResults || !searchResults.length)
                 return;
             // clear all existing placemarkers
             var placemarkers = this.getSearchResultPlacemarkers();
@@ -7144,8 +7708,8 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var lineLeft = this.$line.position().left;
             var that = this;
             // for each page with a result, place a marker along the line.
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
+            for (var i = 0; i < searchResults.length; i++) {
+                var result = searchResults[i];
                 var distance = result.canvasIndex * pageWidth;
                 var $placemarker = $('<div class="searchResultPlacemarker" data-index="' + result.canvasIndex + '"></div>');
                 $placemarker[0].ontouchstart = function (e) { that.onPlacemarkerTouchStart.call(this, that); };
@@ -7153,10 +7717,10 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 $placemarker.mouseenter(function (e) { that.onPlacemarkerMouseEnter.call(this, that); });
                 $placemarker.mouseleave(function (e) { that.onPlacemarkerMouseLeave.call(this, e, that); });
                 this.$searchResultsContainer.append($placemarker);
-                var top = lineTop - $placemarker.height();
+                var top_1 = lineTop - $placemarker.height();
                 var left = lineLeft + distance - ($placemarker.width() / 2);
                 $placemarker.css({
-                    top: top,
+                    top: top_1,
                     left: left
                 });
             }
@@ -7182,8 +7746,8 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             $placemarker.addClass('hover');
             var canvasIndex = parseInt($placemarker.attr('data-index'));
             $.publish(Commands_1.Commands.SEARCH_PREVIEW_START, [canvasIndex]);
-            var placemarkers = that.getSearchResultPlacemarkers();
-            var elemIndex = placemarkers.index($placemarker[0]);
+            var $placemarkers = that.getSearchResultPlacemarkers();
+            var elemIndex = $placemarkers.index($placemarker[0]);
             that.currentPlacemarkerIndex = canvasIndex;
             that.$placemarkerDetails.show();
             var title = "{0} {1}";
@@ -7191,7 +7755,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             if (mode.toString() === Mode_1.Mode.page.toString()) {
                 var canvas = that.extension.helper.getCanvasByIndex(canvasIndex);
                 var label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
-                if (label === "") {
+                if (!label) {
                     label = this.extension.helper.manifest.options.defaultLabel;
                 }
                 title = String.format(title, that.content.pageCaps, label);
@@ -7200,18 +7764,19 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 title = String.format(title, that.content.imageCaps, canvasIndex + 1);
             }
             that.$placemarkerDetailsTop.html(title);
-            var result = that.extension.searchResults[elemIndex];
-            var terms = Utils.Strings.ellipsis(that.terms, that.options.elideDetailsTermsCount);
-            var instancesFoundText;
-            if (result.rects.length === 1) {
-                instancesFoundText = that.content.instanceFound;
-                instancesFoundText = String.format(instancesFoundText, terms);
+            var searchResults = that.getSearchResults();
+            if (searchResults) {
+                var result = searchResults[elemIndex];
+                var terms = Utils.Strings.ellipsis(that.terms, that.options.elideDetailsTermsCount);
+                var instancesFoundText = that.content.instanceFound;
+                if (result.rects.length === 1) {
+                    instancesFoundText = String.format(instancesFoundText, terms);
+                }
+                else {
+                    instancesFoundText = String.format(instancesFoundText, result.rects.length, terms);
+                }
+                that.$placemarkerDetailsBottom.html(instancesFoundText);
             }
-            else {
-                instancesFoundText = that.content.instancesFound;
-                instancesFoundText = String.format(instancesFoundText, result.rects.length, terms);
-            }
-            that.$placemarkerDetailsBottom.html(instancesFoundText);
             var pos = $placemarker.position();
             var top = pos.top - that.$placemarkerDetails.height();
             var left = pos.left;
@@ -7240,7 +7805,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             }
         };
         FooterPanel.prototype.setPageMarkerPosition = function () {
-            if (this.extension.helper.canvasIndex == null)
+            if (this.extension.helper.canvasIndex === null)
                 return;
             // position placemarker showing current page.
             var pageLineRatio = this.getPageLineRatio();
@@ -7273,8 +7838,8 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         FooterPanel.prototype.clearSearchResults = function () {
             this.extension.searchResults = [];
             // clear all existing placemarkers
-            var placemarkers = this.getSearchResultPlacemarkers();
-            placemarkers.remove();
+            var $placemarkers = this.getSearchResultPlacemarkers();
+            $placemarkers.remove();
             // clear search input field.
             this.$searchText.val(this.content.enterKeyword);
             // hide pager.
@@ -7303,11 +7868,13 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             if (this.isPageModeEnabled()) {
                 var canvas = this.extension.helper.getCanvasByIndex(index);
                 var label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
-                if (label === "") {
+                if (!label) {
                     label = this.content.defaultLabel;
                 }
                 var lastCanvasOrderLabel = this.extension.helper.getLastCanvasLabel(true);
-                this.$pagePositionLabel.html(String.format(displaying, this.content.page, this.extension.sanitize(label), this.extension.sanitize(lastCanvasOrderLabel)));
+                if (lastCanvasOrderLabel) {
+                    this.$pagePositionLabel.html(String.format(displaying, this.content.page, this.extension.sanitize(label), this.extension.sanitize(lastCanvasOrderLabel)));
+                }
             }
             else {
                 this.$pagePositionLabel.html(String.format(displaying, this.content.image, index + 1, this.extension.helper.getTotalCanvases()));
@@ -7334,12 +7901,12 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             });
             var $number = this.$searchPagerContainer.find('.number');
             $number.text(this.extension.getTotalSearchResultRects());
-            var foundFor = this.$searchResultsInfo.find('.foundFor');
+            var $foundFor = this.$searchResultsInfo.find('.foundFor');
             if (results.length === 1) {
-                foundFor.html(this.content.resultFoundFor);
+                $foundFor.html(this.content.resultFoundFor);
             }
             else {
-                foundFor.html(this.content.resultsFoundFor);
+                $foundFor.html(this.content.resultsFoundFor);
             }
             var $terms = this.$searchPagerContainer.find('.terms');
             $terms.html(Utils.Strings.ellipsis(terms, this.options.elideResultsTermsCount));
@@ -7349,7 +7916,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
         };
         FooterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            var searchResults = this.extension.searchResults;
+            var searchResults = this.getSearchResults();
             if (searchResults && searchResults.length) {
                 this.positionSearchResultPlacemarkers();
             }
@@ -7382,6 +7949,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var HelpDialogue = (function (_super) {
         __extends(HelpDialogue, _super);
         function HelpDialogue($element) {
@@ -7393,10 +7961,10 @@ define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-
             _super.prototype.create.call(this);
             this.openCommand = BaseCommands_1.BaseCommands.SHOW_HELP_DIALOGUE;
             this.closeCommand = BaseCommands_1.BaseCommands.HIDE_HELP_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
+            $.subscribe(this.openCommand, function () {
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -7432,6 +8000,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MoreInfoDialogue = (function (_super) {
         __extends(MoreInfoDialogue, _super);
         function MoreInfoDialogue($element) {
@@ -7446,7 +8015,7 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
             $.subscribe(this.openCommand, function (e, $triggerButton) {
                 _this.open($triggerButton);
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.config.content = this.extension.config.modules.moreInfoRightPanel.content;
@@ -7465,7 +8034,7 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
         };
         MoreInfoDialogue.prototype.open = function ($triggerButton) {
             _super.prototype.open.call(this, $triggerButton);
-            this.component.set(null); // todo: should be passing data
+            this.component.set(new Object()); // todo: should be passing data
         };
         MoreInfoDialogue.prototype._getData = function () {
             var _this = this;
@@ -7514,6 +8083,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseCommands", "./BaseExpandPanel"], function (require, exports, BaseCommands_1, BaseExpandPanel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RightPanel = (function (_super) {
         __extends(RightPanel, _super);
         function RightPanel($element) {
@@ -7578,6 +8148,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/RightPanel"], function (require, exports, BaseCommands_1, RightPanel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MoreInfoRightPanel = (function (_super) {
         __extends(MoreInfoRightPanel, _super);
         function MoreInfoRightPanel($element) {
@@ -7587,7 +8158,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             var _this = this;
             this.setConfig('moreInfoRightPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function () {
                 _this.databind();
             });
             this.setTitle(this.config.content.title);
@@ -7604,7 +8175,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
         };
         MoreInfoRightPanel.prototype.databind = function () {
             this.component.options.data = this._getData();
-            this.component.set(null); // todo: should be passing data
+            this.component.set(new Object()); // todo: should be passing data
         };
         MoreInfoRightPanel.prototype._getData = function () {
             var _this = this;
@@ -7651,6 +8222,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "exports", "../../extensions/uv-seadragon-extension/Commands", "../../modules/uv-shared-module/Dialogue", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, Commands_1, Dialogue_1, Mode_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MultiSelectDialogue = (function (_super) {
         __extends(MultiSelectDialogue, _super);
         function MultiSelectDialogue($element) {
@@ -7663,13 +8235,13 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             var that = this;
             this.openCommand = Commands_1.Commands.SHOW_MULTISELECT_DIALOGUE;
             this.closeCommand = Commands_1.Commands.HIDE_MULTISELECT_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
+            $.subscribe(this.openCommand, function () {
                 _this.open();
                 var multiSelectState = _this.extension.helper.getMultiSelectState();
                 multiSelectState.setEnabled(true);
-                _this.component.set(null); // todo: should be passing data
+                _this.component.set(new Object()); // todo: should be passing data
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
                 var multiSelectState = _this.extension.helper.getMultiSelectState();
                 multiSelectState.setEnabled(false);
@@ -7702,8 +8274,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             });
             var $selectButton = this.$gallery.find('a.select');
             $selectButton.addClass('btn btn-primary');
-            this.component.on('multiSelectionMade', function (args) {
-                var ids = args[0];
+            this.component.on('multiSelectionMade', function (ids) {
                 $.publish(Commands_1.Commands.MULTISELECTION_MADE, [ids]);
                 that.close();
             });
@@ -7731,6 +8302,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
 //# sourceMappingURL=MultiSelectDialogue.js.map
 define('extensions/uv-seadragon-extension/MultiSelectionArgs',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MultiSelectionArgs = (function () {
         function MultiSelectionArgs() {
         }
@@ -7741,6 +8313,7 @@ define('extensions/uv-seadragon-extension/MultiSelectionArgs',["require", "expor
 //# sourceMappingURL=MultiSelectionArgs.js.map
 define('modules/uv-shared-module/Information',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Information = (function () {
         function Information(message, actions) {
             this.message = message;
@@ -7753,6 +8326,7 @@ define('modules/uv-shared-module/Information',["require", "exports"], function (
 //# sourceMappingURL=Information.js.map
 define('modules/uv-shared-module/InformationAction',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var InformationAction = (function () {
         function InformationAction() {
         }
@@ -7763,6 +8337,7 @@ define('modules/uv-shared-module/InformationAction',["require", "exports"], func
 //# sourceMappingURL=InformationAction.js.map
 define('modules/uv-shared-module/InformationFactory',["require", "exports", "./BaseCommands", "./Information", "./InformationAction", "./InformationType"], function (require, exports, BaseCommands_1, Information_1, InformationAction_1, InformationType_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var InformationFactory = (function () {
         function InformationFactory(extension) {
             this.extension = extension;
@@ -7800,6 +8375,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseCommands", "./BaseView", "../uv-shared-module/InformationFactory"], function (require, exports, BaseCommands_1, BaseView_1, InformationFactory_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -7943,6 +8519,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "../uv-shared-module/HeaderPanel", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseCommands_1, Commands_1, HeaderPanel_1, Mode_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var PagingHeaderPanel = (function (_super) {
         __extends(PagingHeaderPanel, _super);
         function PagingHeaderPanel($element) {
@@ -7960,17 +8537,17 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.canvasIndexChanged(canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.SETTINGS_CHANGED, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.SETTINGS_CHANGED, function () {
                 _this.modeChanged();
                 _this.updatePagingToggle();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGE_FAILED, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.CANVAS_INDEX_CHANGE_FAILED, function () {
                 _this.setSearchFieldValue(_this.extension.helper.canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function () {
                 _this.openGallery();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_START, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 _this.closeGallery();
             });
             this.$prevOptions = $('<div class="prevOptions"></div>');
@@ -8005,7 +8582,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                         for (var i = 0; i < canvases.length; i++) {
                             var canvas = canvases[i];
                             var label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
-                            if (label.startsWith(term)) {
+                            if (label && label.startsWith(term)) {
                                 results.push(label);
                             }
                         }
@@ -8276,7 +8853,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         };
         PagingHeaderPanel.prototype.setSearchFieldValue = function (index) {
             var canvas = this.extension.helper.getCanvasByIndex(index);
-            var value;
+            var value = null;
             if (this.isPageModeEnabled()) {
                 var orderLabel = Manifesto.TranslationCollection.getValue(canvas.getLabel());
                 if (orderLabel === "-") {
@@ -8288,7 +8865,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             }
             else {
                 index += 1;
-                value = index;
+                value = index.toString();
             }
             if (this.options.autoCompleteBoxEnabled) {
                 this.$autoCompleteBox.val(value);
@@ -8307,7 +8884,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 $.publish(Commands_1.Commands.PAGE_SEARCH, [value]);
             }
             else {
-                var index;
+                var index = void 0;
                 if (this.options.autoCompleteBoxEnabled) {
                     index = parseInt(this.$autoCompleteBox.val(), 10);
                 }
@@ -8432,6 +9009,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
 //# sourceMappingURL=PagingHeaderPanel.js.map
 define('extensions/uv-seadragon-extension/Bounds',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Bounds = (function () {
         function Bounds(x, y, w, h) {
             this.x = x;
@@ -8463,6 +9041,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", "./BaseView"], function (require, exports, Shell_1, BaseView_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var CenterPanel = (function (_super) {
         __extends(CenterPanel, _super);
         function CenterPanel($element) {
@@ -8573,6 +9152,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Bounds", "../uv-shared-module/CenterPanel", "../../extensions/uv-seadragon-extension/Commands", "../uv-shared-module/Metrics", "../../Params"], function (require, exports, BaseCommands_1, Bounds_1, CenterPanel_1, Commands_1, Metrics_1, Params_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SeadragonCenterPanel = (function (_super) {
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
@@ -8675,7 +9255,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.createUI = function () {
             var _this = this;
-            var that = this;
             this.$spinner = $('<div class="spinner"></div>');
             this.$content.append(this.$spinner);
             this.updateAttribution();
@@ -8769,24 +9348,24 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$viewportNavButtonsContainer = this.$viewer.find('.openseadragon-container > div:not(.openseadragon-canvas):first');
             this.$viewportNavButtons = this.$viewportNavButtonsContainer.find('.viewportNavButton');
             this.$canvas = $(this.viewer.canvas);
-            this.$canvas.on('contextmenu', function (e) { return false; });
+            this.$canvas.on('contextmenu', function () { return false; });
             this.$navigator = this.$viewer.find(".navigator");
             this.setNavigatorVisible();
             // events
-            this.$element.on('mousemove', function (e) {
+            this.$element.on('mousemove', function () {
                 if (_this.controlsVisible)
                     return;
                 _this.controlsVisible = true;
                 _this.viewer.setControlsEnabled(true);
             });
-            this.$element.on('mouseleave', function (e) {
+            this.$element.on('mouseleave', function () {
                 if (!_this.controlsVisible)
                     return;
                 _this.controlsVisible = false;
                 _this.viewer.setControlsEnabled(false);
             });
             // when mouse move stopped
-            this.$element.on('mousemove', function (e) {
+            this.$element.on('mousemove', function () {
                 // if over element, hide controls.
                 if (!_this.$viewer.find('.navigator').ismouseover()) {
                     if (!_this.controlsVisible)
@@ -9078,9 +9657,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.enableNextButton();
             this.$nextButton.show();
         };
-        SeadragonCenterPanel.prototype.serialiseBounds = function (bounds) {
-            return bounds.x + ',' + bounds.y + ',' + bounds.width + ',' + bounds.height;
-        };
         SeadragonCenterPanel.prototype.fitToBounds = function (bounds, immediate) {
             if (immediate === void 0) { immediate = true; }
             var rect = new OpenSeadragon.Rect();
@@ -9095,8 +9671,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 return null;
             var canvas = this.extension.helper.getCurrentCanvas();
             var dimensions = this.extension.getCroppedImageDimensions(canvas, this.viewer);
-            var bounds = new Bounds_1.Bounds(dimensions.regionPos.x, dimensions.regionPos.y, dimensions.region.width, dimensions.region.height);
-            return bounds.toString();
+            if (dimensions) {
+                var bounds = new Bounds_1.Bounds(dimensions.regionPos.x, dimensions.regionPos.y, dimensions.region.width, dimensions.region.height);
+                return bounds.toString();
+            }
+            return null;
         };
         SeadragonCenterPanel.prototype.getViewportBounds = function () {
             if (!this.viewer || !this.viewer.viewport)
@@ -9137,7 +9716,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.getSearchResultsForCurrentImages = function () {
             var searchResultsForCurrentImages = [];
             var searchResults = this.extension.searchResults;
-            if (!searchResults.length)
+            if (!searchResults || !searchResults.length)
                 return searchResultsForCurrentImages;
             var indices = this.extension.getPagedIndices();
             for (var i = 0; i < indices.length; i++) {
@@ -9173,8 +9752,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.nextSearchResult = function () {
             var searchResultRects = this.getSearchResultRectsForCurrentImages();
-            var currentSearchResultRectIndex = this.getSearchResultRectIndex(this.extension.currentSearchResultRect);
-            var foundRect;
+            var searchResultRect = this.extension.currentSearchResultRect;
+            if (!searchResultRect)
+                return;
+            var currentSearchResultRectIndex = this.getSearchResultRectIndex(searchResultRect);
+            var foundRect = null;
             for (var i = currentSearchResultRectIndex + 1; i < searchResultRects.length; i++) {
                 var rect = searchResultRects[i];
                 // this was removed as users found it confusing.
@@ -9184,15 +9766,16 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 //} else {
                 foundRect = rect;
                 break;
+                //}
             }
             if (foundRect && this.isZoomToSearchResultEnabled()) {
                 // if the rect's canvasIndex is greater than the current canvasIndex
-                if (rect.canvasIndex > this.extension.helper.canvasIndex) {
-                    this.extension.currentSearchResultRect = rect;
-                    $.publish(Commands_1.Commands.SEARCH_RESULT_CANVAS_CHANGED, [rect]);
+                if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
+                    this.extension.currentSearchResultRect = foundRect;
+                    $.publish(Commands_1.Commands.SEARCH_RESULT_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
-                    this.zoomToSearchResult(rect);
+                    this.zoomToSearchResult(foundRect);
                 }
             }
             else {
@@ -9201,8 +9784,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.prevSearchResult = function () {
             var searchResultRects = this.getSearchResultRectsForCurrentImages();
-            var currentSearchResultRectIndex = this.getSearchResultRectIndex(this.extension.currentSearchResultRect);
-            var foundRect;
+            var currentSearchResultRect = this.extension.currentSearchResultRect;
+            if (!currentSearchResultRect)
+                return;
+            var currentSearchResultRectIndex = this.getSearchResultRectIndex(currentSearchResultRect);
+            var foundRect = null;
             for (var i = currentSearchResultRectIndex - 1; i >= 0; i--) {
                 var rect = searchResultRects[i];
                 // this was removed as users found it confusing.
@@ -9212,15 +9798,16 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 //} else {
                 foundRect = rect;
                 break;
+                //}
             }
             if (foundRect && this.isZoomToSearchResultEnabled()) {
                 // if the rect's canvasIndex is less than the current canvasIndex
-                if (rect.canvasIndex < this.extension.helper.canvasIndex) {
-                    this.extension.currentSearchResultRect = rect;
-                    $.publish(Commands_1.Commands.SEARCH_RESULT_CANVAS_CHANGED, [rect]);
+                if (foundRect.canvasIndex < this.extension.helper.canvasIndex) {
+                    this.extension.currentSearchResultRect = foundRect;
+                    $.publish(Commands_1.Commands.SEARCH_RESULT_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
-                    this.zoomToSearchResult(rect);
+                    this.zoomToSearchResult(foundRect);
                 }
             }
             else {
@@ -9239,7 +9826,8 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             if (!searchResultRects.length)
                 return null;
             // if the previous SearchResultRect had a canvasIndex higher than the current canvasIndex
-            if (this.extension.previousSearchResultRect && this.extension.previousSearchResultRect.canvasIndex > this.extension.helper.canvasIndex) {
+            var previousSearchResultRect = this.extension.previousSearchResultRect;
+            if (previousSearchResultRect && previousSearchResultRect.canvasIndex > this.extension.helper.canvasIndex) {
                 return searchResultRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).last();
             }
             // get the first rect with the current canvasindex.
@@ -9261,7 +9849,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var newRects = [];
             var resource = this.extension.resources.en().where(function (x) { return x.index === searchResult.canvasIndex; }).first();
             var index = this.extension.resources.indexOf(resource);
-            var width = this.extension.resources[index].width;
             var offsetX = 0;
             if (index > 0) {
                 offsetX = this.extension.resources[index - 1].width;
@@ -9361,6 +9948,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -9372,10 +9960,10 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             _super.prototype.create.call(this);
             this.openCommand = BaseCommands_1.BaseCommands.SHOW_SETTINGS_DIALOGUE;
             this.closeCommand = BaseCommands_1.BaseCommands.HIDE_SETTINGS_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
+            $.subscribe(this.openCommand, function () {
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -9444,6 +10032,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-seadragon-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -9569,6 +10158,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -9576,10 +10166,10 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             _this.aspectRatio = .75;
             _this.isEmbedViewVisible = false;
             _this.isShareViewVisible = false;
-            _this.maxHeight = _this.maxWidth * _this.aspectRatio;
             _this.maxWidth = 8000;
-            _this.minHeight = _this.minWidth * _this.aspectRatio;
+            _this.maxHeight = _this.maxWidth * _this.aspectRatio;
             _this.minWidth = 200;
+            _this.minHeight = _this.minWidth * _this.aspectRatio;
             return _this;
         }
         ShareDialogue.prototype.create = function () {
@@ -9597,7 +10187,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
                     _this.openEmbedView();
                 }
             });
-            $.subscribe(this.closeCommand, function (e) {
+            $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             $.subscribe(BaseCommands_1.BaseCommands.SHOW_EMBED_DIALOGUE, function (e, $triggerButton) {
@@ -9730,9 +10320,12 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             this.updateTermsOfUseButton();
         };
         ShareDialogue.prototype.updateShareOptions = function () {
-            this.$shareInput.val(this.getShareUrl());
-            this.$shareLink.prop('href', this.getShareUrl());
-            this.$shareLink.text(this.getShareUrl());
+            var shareUrl = this.getShareUrl();
+            if (shareUrl) {
+                this.$shareInput.val(shareUrl);
+                this.$shareLink.prop('href', shareUrl);
+                this.$shareLink.text(shareUrl);
+            }
             if ($.browser.mobile) {
                 this.$shareInput.hide();
                 this.$shareLink.show();
@@ -9795,6 +10388,8 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
         };
         ShareDialogue.prototype.updateShareFrame = function () {
             var shareUrl = this.extension.helper.getShareServiceUrl();
+            if (!shareUrl)
+                return;
             if (Utils.Bools.getBool(this.config.options.shareFrameEnabled, true) && shareUrl) {
                 this.$shareFrame.prop('src', shareUrl);
                 this.$shareFrame.show();
@@ -9858,8 +10453,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue", "./Commands"], function (require, exports, ShareDialogue_1, Commands_1) {
+define('extensions/uv-seadragon-extension/ShareDialogue',["require", "exports", "./Commands", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, Commands_1, ShareDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -9903,6 +10499,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-shared-module/Metrics", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../Params", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, Commands_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, Metrics_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Params_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SearchResult = Manifold.SearchResult;
     var Size = Utils.Measurements.Size;
     var Extension = (function (_super) {
@@ -9917,7 +10514,6 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            var that = this;
             $.subscribe(BaseCommands_1.BaseCommands.METRIC_CHANGED, function () {
                 if (_this.metric === Metrics_1.Metrics.MOBILE_LANDSCAPE) {
                     var settings = {};
@@ -9930,44 +10526,44 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
-            $.subscribe(Commands_1.Commands.CLEAR_SEARCH, function (e) {
+            $.subscribe(Commands_1.Commands.CLEAR_SEARCH, function () {
                 _this.searchResults = null;
                 $.publish(Commands_1.Commands.SEARCH_RESULTS_CLEARED);
                 _this.triggerSocket(Commands_1.Commands.CLEAR_SEARCH);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.DOWN_ARROW, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.DOWN_ARROW, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseCommands.END, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.END, function () {
                 _this.viewPage(_this.helper.getLastPageIndex());
             });
-            $.subscribe(Commands_1.Commands.FIRST, function (e) {
+            $.subscribe(Commands_1.Commands.FIRST, function () {
                 _this.triggerSocket(Commands_1.Commands.FIRST);
                 _this.viewPage(_this.helper.getFirstPageIndex());
             });
-            $.subscribe(Commands_1.Commands.GALLERY_DECREASE_SIZE, function (e) {
+            $.subscribe(Commands_1.Commands.GALLERY_DECREASE_SIZE, function () {
                 _this.triggerSocket(Commands_1.Commands.GALLERY_DECREASE_SIZE);
             });
-            $.subscribe(Commands_1.Commands.GALLERY_INCREASE_SIZE, function (e) {
+            $.subscribe(Commands_1.Commands.GALLERY_INCREASE_SIZE, function () {
                 _this.triggerSocket(Commands_1.Commands.GALLERY_INCREASE_SIZE);
             });
-            $.subscribe(Commands_1.Commands.GALLERY_THUMB_SELECTED, function (e) {
+            $.subscribe(Commands_1.Commands.GALLERY_THUMB_SELECTED, function () {
                 _this.triggerSocket(Commands_1.Commands.GALLERY_THUMB_SELECTED);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.HOME, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.HOME, function () {
                 _this.viewPage(_this.helper.getFirstPageIndex());
             });
             $.subscribe(Commands_1.Commands.IMAGE_SEARCH, function (e, index) {
                 _this.triggerSocket(Commands_1.Commands.IMAGE_SEARCH, index);
                 _this.viewPage(index);
             });
-            $.subscribe(Commands_1.Commands.LAST, function (e) {
+            $.subscribe(Commands_1.Commands.LAST, function () {
                 _this.triggerSocket(Commands_1.Commands.LAST);
                 _this.viewPage(_this.helper.getLastPageIndex());
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFT_ARROW, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
                     _this.viewPage(_this.getPrevPageIndex());
                 }
@@ -9975,20 +10571,20 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_START, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 if (_this.metric !== Metrics_1.Metrics.MOBILE_LANDSCAPE) {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.MINUS, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.MINUS, function () {
                 _this.centerPanel.setFocus();
             });
             $.subscribe(Commands_1.Commands.MODE_CHANGED, function (e, mode) {
@@ -10006,7 +10602,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 args.sequence = _this.helper.getCurrentSequence().id;
                 _this.triggerSocket(Commands_1.Commands.MULTISELECTION_MADE, args);
             });
-            $.subscribe(Commands_1.Commands.NEXT, function (e) {
+            $.subscribe(Commands_1.Commands.NEXT, function () {
                 _this.triggerSocket(Commands_1.Commands.NEXT);
                 _this.viewPage(_this.getNextPageIndex());
             });
@@ -10021,29 +10617,29 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.triggerSocket(Commands_1.Commands.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
                 _this.prevSearchResult();
             });
-            $.subscribe(Commands_1.Commands.OPEN_THUMBS_VIEW, function (e) {
+            $.subscribe(Commands_1.Commands.OPEN_THUMBS_VIEW, function () {
                 _this.triggerSocket(Commands_1.Commands.OPEN_THUMBS_VIEW);
             });
-            $.subscribe(Commands_1.Commands.OPEN_TREE_VIEW, function (e) {
+            $.subscribe(Commands_1.Commands.OPEN_TREE_VIEW, function () {
                 _this.triggerSocket(Commands_1.Commands.OPEN_TREE_VIEW);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.PAGE_DOWN, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.PAGE_DOWN, function () {
                 _this.viewPage(_this.getNextPageIndex());
             });
             $.subscribe(Commands_1.Commands.PAGE_SEARCH, function (e, value) {
                 _this.triggerSocket(Commands_1.Commands.PAGE_SEARCH, value);
                 _this.viewLabel(value);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.PAGE_UP, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.PAGE_UP, function () {
                 _this.viewPage(_this.getPrevPageIndex());
             });
             $.subscribe(Commands_1.Commands.PAGING_TOGGLED, function (e, obj) {
                 _this.triggerSocket(Commands_1.Commands.PAGING_TOGGLED, obj);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.PLUS, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.PLUS, function () {
                 _this.centerPanel.setFocus();
             });
-            $.subscribe(Commands_1.Commands.PREV, function (e) {
+            $.subscribe(Commands_1.Commands.PREV, function () {
                 _this.triggerSocket(Commands_1.Commands.PREV);
                 _this.viewPage(_this.getPrevPageIndex());
             });
@@ -10053,7 +10649,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(Commands_1.Commands.PRINT, function () {
                 _this.print();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.RIGHT_ARROW, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.RIGHT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
                     _this.viewPage(_this.getNextPageIndex());
                 }
@@ -10065,8 +10661,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.triggerSocket(Commands_1.Commands.SEADRAGON_ANIMATION);
             });
             $.subscribe(Commands_1.Commands.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
-                if (_this.centerPanel && _this.centerPanel.currentBounds) {
-                    _this.setParam(Params_1.Params.xywh, _this.centerPanel.getViewportBounds().toString());
+                var bounds = _this.centerPanel.getViewportBounds();
+                if (_this.centerPanel && bounds) {
+                    _this.setParam(Params_1.Params.xywh, bounds.toString());
                 }
                 var canvas = _this.helper.getCurrentCanvas();
                 _this.triggerSocket(Commands_1.Commands.CURRENT_VIEW_URI, {
@@ -10088,16 +10685,16 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(Commands_1.Commands.SEADRAGON_ROTATION, function (e, rotation) {
                 _this.triggerSocket(Commands_1.Commands.SEADRAGON_ROTATION);
                 _this.currentRotation = rotation;
-                _this.setParam(Params_1.Params.rotation, rotation);
+                _this.setParam(Params_1.Params.rotation, rotation.toString());
             });
             $.subscribe(Commands_1.Commands.SEARCH, function (e, terms) {
                 _this.triggerSocket(Commands_1.Commands.SEARCH, terms);
                 _this.searchWithin(terms);
             });
-            $.subscribe(Commands_1.Commands.SEARCH_PREVIEW_FINISH, function (e) {
+            $.subscribe(Commands_1.Commands.SEARCH_PREVIEW_FINISH, function () {
                 _this.triggerSocket(Commands_1.Commands.SEARCH_PREVIEW_FINISH);
             });
-            $.subscribe(Commands_1.Commands.SEARCH_PREVIEW_START, function (e) {
+            $.subscribe(Commands_1.Commands.SEARCH_PREVIEW_START, function () {
                 _this.triggerSocket(Commands_1.Commands.SEARCH_PREVIEW_START);
             });
             $.subscribe(Commands_1.Commands.SEARCH_RESULTS, function (e, obj) {
@@ -10106,7 +10703,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(Commands_1.Commands.SEARCH_RESULT_CANVAS_CHANGED, function (e, rect) {
                 _this.viewPage(rect.canvasIndex);
             });
-            $.subscribe(Commands_1.Commands.SEARCH_RESULTS_EMPTY, function (e) {
+            $.subscribe(Commands_1.Commands.SEARCH_RESULTS_EMPTY, function () {
                 _this.triggerSocket(Commands_1.Commands.SEARCH_RESULTS_EMPTY);
             });
             $.subscribe(BaseCommands_1.BaseCommands.THUMB_SELECTED, function (e, thumb) {
@@ -10116,12 +10713,12 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.triggerSocket(Commands_1.Commands.TREE_NODE_SELECTED, node.data.path);
                 _this.treeNodeSelected(node);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.UP_ARROW, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.UP_ARROW, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseCommands.UPDATE_SETTINGS, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.UPDATE_SETTINGS, function () {
                 _this.viewPage(_this.helper.canvasIndex, true);
                 var settings = _this.getSettings();
                 $.publish(BaseCommands_1.BaseCommands.SETTINGS_CHANGED, [settings]);
@@ -10230,7 +10827,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             if (this.isPagingSettingEnabled() && !isReload) {
                 var indices = this.getPagedIndices(canvasIndex);
                 // if the page is already displayed, only advance canvasIndex.
-                if (indices.contains(this.helper.canvasIndex)) {
+                if (indices.includes(this.helper.canvasIndex)) {
                     this.viewCanvas(canvasIndex);
                     return;
                 }
@@ -10315,6 +10912,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.prevSearchResult = function () {
             var foundResult;
+            if (!this.searchResults)
+                return;
             // get the first result with a canvasIndex less than the current index.
             for (var i = this.searchResults.length - 1; i >= 0; i--) {
                 var result = this.searchResults[i];
@@ -10327,10 +10926,12 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.nextSearchResult = function () {
             var foundResult;
+            if (!this.searchResults)
+                return;
             // get the first result with an index greater than the current index.
             for (var i = 0; i < this.searchResults.length; i++) {
                 var result = this.searchResults[i];
-                if (result.canvasIndex >= this.getNextPageIndex()) {
+                if (result && result.canvasIndex >= this.getNextPageIndex()) {
                     foundResult = result;
                     this.viewPage(result.canvasIndex);
                     break;
@@ -10464,6 +11065,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             if (!viewer.viewport)
                 return null;
             var dimensions = this.getCroppedImageDimensions(canvas, viewer);
+            if (!dimensions)
+                return null;
             // construct uri
             // {baseuri}/{id}/{region}/{size}/{rotation}/{quality}.jpg
             var baseUri = this.getImageBaseUri(canvas);
@@ -10505,7 +11108,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return uri.substr(0, uri.lastIndexOf("/"));
         };
         Extension.prototype.getInfoUri = function (canvas) {
-            var infoUri;
+            var infoUri = null;
             var images = canvas.getImages();
             if (images && images.length) {
                 var firstImage = images[0];
@@ -10534,13 +11137,12 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
-            if (_.isUndefined(canvasIndex))
-                canvasIndex = this.helper.canvasIndex;
+            if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
             var index;
             if (this.isPagingSettingEnabled()) {
                 var indices = this.getPagedIndices(canvasIndex);
                 if (this.helper.isRightToLeft()) {
-                    index = indices.last() - 1;
+                    index = indices[indices.length - 1] - 1;
                 }
                 else {
                     index = indices[0] - 1;
@@ -10567,8 +11169,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return false;
         };
         Extension.prototype.getNextPageIndex = function (canvasIndex) {
-            if (_.isUndefined(canvasIndex))
-                canvasIndex = this.helper.canvasIndex;
+            if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
             var index;
             if (this.isPagingSettingEnabled()) {
                 var indices = this.getPagedIndices(canvasIndex);
@@ -10576,7 +11177,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     index = indices[0] + 1;
                 }
                 else {
-                    index = indices.last() + 1;
+                    index = indices[indices.length - 1] + 1;
                 }
             }
             else {
@@ -10616,6 +11217,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             this.searchResults = [];
             var that = this;
             var searchUri = this.getSearchWithinServiceUri();
+            if (!searchUri)
+                return;
             searchUri = String.format(searchUri, terms);
             this.getSearchResults(searchUri, terms, this.searchResults, function (results) {
                 _this.isSearching = false;
@@ -10650,9 +11253,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.parseSearchJson = function (resultsToParse, searchResults) {
             var parsedResults = [];
-            for (var i = 0; i < resultsToParse.resources.length; i++) {
+            var _loop_1 = function (i) {
                 var resource = resultsToParse.resources[i];
-                var canvasIndex = this.helper.getCanvasIndexById(resource.on.match(/(.*)#/)[1]);
+                var canvasIndex = this_1.helper.getCanvasIndexById(resource.on.match(/(.*)#/)[1]);
                 var searchResult = new SearchResult(resource, canvasIndex);
                 var match = parsedResults.en().where(function (x) { return x.canvasIndex === searchResult.canvasIndex; }).first();
                 // if there's already a SearchResult for the canvas index, add a rect to it, otherwise create a new SearchResult
@@ -10662,6 +11265,10 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 else {
                     parsedResults.push(searchResult);
                 }
+            };
+            var this_1 = this;
+            for (var i = 0; i < resultsToParse.resources.length; i++) {
+                _loop_1(i);
             }
             // sort by canvasIndex
             parsedResults.sort(function (a, b) {
@@ -10670,7 +11277,10 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return parsedResults;
         };
         Extension.prototype.getSearchResultRects = function () {
-            return this.searchResults.en().selectMany(function (x) { return x.rects; }).toArray();
+            if (this.searchResults) {
+                return this.searchResults.en().selectMany(function (x) { return x.rects; }).toArray();
+            }
+            return [];
         };
         Extension.prototype.getCurrentSearchResultRectIndex = function () {
             var searchResultRects = this.getSearchResultRects();
@@ -10687,8 +11297,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return this.getTotalSearchResultRects() - 1;
         };
         Extension.prototype.getPagedIndices = function (canvasIndex) {
-            if (_.isUndefined(canvasIndex))
-                canvasIndex = this.helper.canvasIndex;
+            if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
             var indices = [];
             // if it's a continuous manifest, get all resources.
             if (this.helper.isContinuous()) {
@@ -10724,6 +11333,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
 //# sourceMappingURL=Extension.js.map
 define('extensions/uv-mediaelement-extension/Commands',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Commands = (function () {
         function Commands() {
         }
@@ -10748,6 +11358,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -10781,42 +11392,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-mediaelement-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
-    "use strict";
-    var ShareDialogue = (function (_super) {
-        __extends(ShareDialogue, _super);
-        function ShareDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        ShareDialogue.prototype.create = function () {
-            this.setConfig('shareDialogue');
-            _super.prototype.create.call(this);
-        };
-        ShareDialogue.prototype.update = function () {
-            _super.prototype.update.call(this);
-            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
-            this.$code.val(this.code);
-        };
-        ShareDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return ShareDialogue;
-    }(ShareDialogue_1.ShareDialogue));
-    exports.ShareDialogue = ShareDialogue;
-});
-//# sourceMappingURL=ShareDialogue.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-mediaelement-extension/Commands", "../uv-shared-module/CenterPanel"], function (require, exports, BaseCommands_1, Commands_1, CenterPanel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
@@ -10829,7 +11407,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             // events.
             // only full screen video
             if (this.extension.isVideo()) {
-                $.subscribe(BaseCommands_1.BaseCommands.TOGGLE_FULLSCREEN, function (e) {
+                $.subscribe(BaseCommands_1.BaseCommands.TOGGLE_FULLSCREEN, function () {
                     if (that.bootstrapper.isFullScreen) {
                         that.$container.css('backgroundColor', '#000');
                         that.player.enterFullScreen(false);
@@ -10875,19 +11453,19 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                         alwaysShowControls: false,
                         autosizeProgress: false,
                         success: function (media) {
-                            media.addEventListener('canplay', function (e) {
+                            media.addEventListener('canplay', function () {
                                 that.resize();
                             });
-                            media.addEventListener('play', function (e) {
+                            media.addEventListener('play', function () {
                                 $.publish(Commands_1.Commands.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                             });
-                            media.addEventListener('pause', function (e) {
+                            media.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
                                     $.publish(Commands_1.Commands.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                                 }
                             });
-                            media.addEventListener('ended', function (e) {
+                            media.addEventListener('ended', function () {
                                 $.publish(Commands_1.Commands.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                             });
                             media.setSrc(sources);
@@ -10895,6 +11473,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                                 media.load();
                             }
                             catch (e) {
+                                // do nothing
                             }
                         }
                     });
@@ -10916,19 +11495,19 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                         defaultVideoWidth: that.mediaWidth,
                         defaultVideoHeight: that.mediaHeight,
                         success: function (media) {
-                            media.addEventListener('canplay', function (e) {
+                            media.addEventListener('canplay', function () {
                                 that.resize();
                             });
-                            media.addEventListener('play', function (e) {
+                            media.addEventListener('play', function () {
                                 $.publish(Commands_1.Commands.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                             });
-                            media.addEventListener('pause', function (e) {
+                            media.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
                                     $.publish(Commands_1.Commands.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                                 }
                             });
-                            media.addEventListener('ended', function (e) {
+                            media.addEventListener('ended', function () {
                                 $.publish(Commands_1.Commands.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                             });
                             //media.setSrc(sources);
@@ -10936,6 +11515,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                                 media.load();
                             }
                             catch (e) {
+                                // do nothing
                             }
                         }
                     });
@@ -10984,6 +11564,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-resourcesleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/ThumbsView"], function (require, exports, ThumbsView_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView() {
@@ -11010,6 +11591,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/LeftPanel", "./ThumbsView"], function (require, exports, BaseCommands_1, LeftPanel_1, ThumbsView_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ResourcesLeftPanel = (function (_super) {
         __extends(ResourcesLeftPanel, _super);
         function ResourcesLeftPanel($element) {
@@ -11054,14 +11636,21 @@ define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "ex
             for (var i = 0; i < annotations.length; i++) {
                 var annotation = annotations[i];
                 var resource = annotation.getResource();
-                var $listItem = $('<li><a href="' + resource.id + '" target="_blank">' + Manifesto.TranslationCollection.getValue(resource.getLabel()) + ' (' + Utils.Files.simplifyMimeType(resource.getFormat().toString()) + ')' + '</li>');
-                this.$resources.append($listItem);
+                if (resource) {
+                    var label = Manifesto.TranslationCollection.getValue(resource.getLabel());
+                    if (label) {
+                        var mime = Utils.Files.simplifyMimeType(resource.getFormat().toString());
+                        var $listItem = $('<li><a href="' + resource.id + '" target="_blank">' + label + ' (' + mime + ')' + '</li>');
+                        this.$resources.append($listItem);
+                    }
+                }
             }
         };
         ResourcesLeftPanel.prototype.dataBindThumbsView = function () {
             if (!this.thumbsView)
                 return;
-            var width, height;
+            var width;
+            var height;
             var viewingDirection = this.extension.helper.getViewingDirection().toString();
             if (viewingDirection === manifesto.ViewingDirection.topToBottom().toString() || viewingDirection === manifesto.ViewingDirection.bottomToTop().toString()) {
                 width = this.config.options.oneColThumbWidth;
@@ -11071,10 +11660,10 @@ define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "ex
                 width = this.config.options.twoColThumbWidth;
                 height = this.config.options.twoColThumbHeight;
             }
-            if (typeof width === "undefined") {
+            if (typeof (width) === "undefined") {
                 width = 100;
             }
-            if (typeof height === "undefined") {
+            if (typeof (height) === "undefined") {
                 height = 100;
             }
             this.thumbsView.thumbs = this.extension.helper.getThumbs(width, height);
@@ -11122,6 +11711,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-mediaelement-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -11146,8 +11736,44 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "./ShareDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, Commands_1, DownloadDialogue_1, ShareDialogue_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MediaElementCenterPanel_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, Shell_1) {
+define('extensions/uv-mediaelement-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var ShareDialogue = (function (_super) {
+        __extends(ShareDialogue, _super);
+        function ShareDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        ShareDialogue.prototype.create = function () {
+            this.setConfig('shareDialogue');
+            _super.prototype.create.call(this);
+        };
+        ShareDialogue.prototype.update = function () {
+            _super.prototype.update.call(this);
+            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
+            this.$code.val(this.code);
+        };
+        ShareDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return ShareDialogue;
+    }(ShareDialogue_1.ShareDialogue));
+    exports.ShareDialogue = ShareDialogue;
+});
+//# sourceMappingURL=ShareDialogue.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, Commands_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MediaElementCenterPanel_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -11166,22 +11792,22 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             $.subscribe(BaseCommands_1.BaseCommands.THUMB_SELECTED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 Shell_1.Shell.$rightPanel.show();
                 _this.resize();
             });
-            $.subscribe(Commands_1.Commands.MEDIA_ENDED, function (e) {
+            $.subscribe(Commands_1.Commands.MEDIA_ENDED, function () {
                 _this.triggerSocket(Commands_1.Commands.MEDIA_ENDED);
             });
-            $.subscribe(Commands_1.Commands.MEDIA_PAUSED, function (e) {
+            $.subscribe(Commands_1.Commands.MEDIA_PAUSED, function () {
                 _this.triggerSocket(Commands_1.Commands.MEDIA_PAUSED);
             });
-            $.subscribe(Commands_1.Commands.MEDIA_PLAYED, function (e) {
+            $.subscribe(Commands_1.Commands.MEDIA_PLAYED, function () {
                 _this.triggerSocket(Commands_1.Commands.MEDIA_PLAYED);
             });
         };
@@ -11277,6 +11903,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -11316,42 +11943,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-pdf-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
-    "use strict";
-    var ShareDialogue = (function (_super) {
-        __extends(ShareDialogue, _super);
-        function ShareDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        ShareDialogue.prototype.create = function () {
-            this.setConfig('shareDialogue');
-            _super.prototype.create.call(this);
-        };
-        ShareDialogue.prototype.update = function () {
-            _super.prototype.update.call(this);
-            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
-            this.$code.val(this.code);
-        };
-        ShareDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return ShareDialogue;
-    }(ShareDialogue_1.ShareDialogue));
-    exports.ShareDialogue = ShareDialogue;
-});
-//# sourceMappingURL=ShareDialogue.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/CenterPanel", "../../Params"], function (require, exports, BaseCommands_1, CenterPanel_1, Params_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var PDFCenterPanel = (function (_super) {
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
@@ -11414,6 +12008,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-pdf-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -11438,8 +12033,44 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./ShareDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, ShareDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, Shell_1) {
+define('extensions/uv-pdf-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var ShareDialogue = (function (_super) {
+        __extends(ShareDialogue, _super);
+        function ShareDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        ShareDialogue.prototype.create = function () {
+            this.setConfig('shareDialogue');
+            _super.prototype.create.call(this);
+        };
+        ShareDialogue.prototype.update = function () {
+            _super.prototype.update.call(this);
+            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
+            this.$code.val(this.code);
+        };
+        ShareDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return ShareDialogue;
+    }(ShareDialogue_1.ShareDialogue));
+    exports.ShareDialogue = ShareDialogue;
+});
+//# sourceMappingURL=ShareDialogue.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -11451,21 +12082,21 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             $.subscribe(BaseCommands_1.BaseCommands.THUMB_SELECTED, function (e, thumb) {
                 _this.viewCanvas(thumb.index);
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function (e) {
+            $.subscribe(BaseCommands_1.BaseCommands.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 Shell_1.Shell.$rightPanel.show();
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseCommands.SHOW_OVERLAY, function (e, params) {
+            $.subscribe(BaseCommands_1.BaseCommands.SHOW_OVERLAY, function () {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.hide();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseCommands.HIDE_OVERLAY, function (e, params) {
+            $.subscribe(BaseCommands_1.BaseCommands.HIDE_OVERLAY, function () {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.show();
                 }
@@ -11550,6 +12181,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-virtex-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -11583,8 +12215,36 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+define('extensions/uv-virtex-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        SettingsDialogue.prototype.create = function () {
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+        };
+        return SettingsDialogue;
+    }(SettingsDialogue_1.SettingsDialogue));
+    exports.SettingsDialogue = SettingsDialogue;
+});
+//# sourceMappingURL=SettingsDialogue.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('extensions/uv-virtex-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -11617,34 +12277,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-virtex-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
-    "use strict";
-    var SettingsDialogue = (function (_super) {
-        __extends(SettingsDialogue, _super);
-        function SettingsDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        SettingsDialogue.prototype.create = function () {
-            this.setConfig('settingsDialogue');
-            _super.prototype.create.call(this);
-        };
-        return SettingsDialogue;
-    }(SettingsDialogue_1.SettingsDialogue));
-    exports.SettingsDialogue = SettingsDialogue;
-});
-//# sourceMappingURL=SettingsDialogue.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/CenterPanel"], function (require, exports, BaseCommands_1, CenterPanel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var VirtexCenterPanel = (function (_super) {
         __extends(VirtexCenterPanel, _super);
         function VirtexCenterPanel($element) {
@@ -11682,10 +12317,14 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.extension.getExternalResources(resources).then(function () {
                 _this.$viewport.empty();
                 var canvas = _this.extension.helper.getCurrentCanvas();
-                _this.viewport = virtex.create({
-                    element: "#content .virtex",
-                    object: canvas.id,
-                    showStats: _this.options.showStats
+                var $element = $("#content .virtex");
+                _this.viewport = new Virtex.Viewport({
+                    target: $element[0],
+                    data: {
+                        file: canvas.id,
+                        type: new Virtex.FileType("application/vnd.threejs+json"),
+                        showStats: _this.options.showStats
+                    }
                 });
                 _this.resize();
             });
@@ -11711,8 +12350,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "./ShareDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, ShareDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, Shell_1, VirtexCenterPanel_1) {
+define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1, VirtexCenterPanel_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -11807,6 +12447,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('UV',["require", "exports", "./Bootstrapper", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension"], function (require, exports, Bootstrapper_1, Extension_1, Extension_2, Extension_3, Extension_4) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var UV = (function (_super) {
         __extends(UV, _super);
         function UV(options) {
@@ -11855,8 +12496,7 @@ define('UV',["require", "exports", "./Bootstrapper", "./extensions/uv-seadragon-
         };
         return UV;
     }(_Components.BaseComponent));
-    exports.__esModule = true;
-    exports["default"] = UV;
+    exports.default = UV;
 });
 // namespace UV {
 //     export class Events {
@@ -11869,11 +12509,30 @@ if (typeof jQuery === "function") {
         return jQuery;
     });
 }
-var uvReady = new Event('uvReady');
-require(['../node_modules/base-component/dist/base-component.bundle.js', 'UV'], function (basecomponent, UV) {
-    window.UV = UV["default"];
+requirejs([
+    './lib/browserdetect.js',
+    './lib/detectmobilebrowser.js',
+    './lib/jquery.xdomainrequest.js',
+    './lib/modernizr.js',
+    './lib/sanitize.js',
+    './lib/yepnope.css.js',
+    '../node_modules/exjs/dist/ex.es3.min.js',
+    '../node_modules/base-component/dist/base-component.js',
+    '../node_modules/key-codes/dist/key-codes.min.js',
+    '../node_modules/extensions/dist/extensions.min.js',
+    '../node_modules/http-status-codes/dist/http-status-codes.min.js',
+    '../node_modules/jquery-plugins/dist/jquery-plugins.min.js',
+    '../node_modules/jquery-tiny-pubsub/dist/ba-tiny-pubsub.min.js',
+    '../node_modules/manifold/dist/manifold.min.js',
+    '../node_modules/utils/dist/utils.min.js',
+    'UV'
+], function (browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifold, utils, UV) {
+    window.UV = UV.default;
+    var uvReady = new Event('uvReady');
     window.dispatchEvent(uvReady);
 });
 //# sourceMappingURL=app.js.map
 define("app", function(){});
+
+
 //# sourceMappingURL=build.js.map
