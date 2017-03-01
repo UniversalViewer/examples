@@ -3060,11 +3060,10 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
             }
         };
         Bootstrapper.prototype.injectCss = function (extension, config, cb) {
-            // todo: use a compiler flag when available
-            //const cssPath: string = 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
-            //yepnope.injectCss(cssPath, function() {
-            cb();
-            //});
+            var cssPath = 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
+            yepnope.injectCss(cssPath, function () {
+                cb();
+            });
         };
         Bootstrapper.prototype.createExtension = function (extension, config) {
             this.config = config;
@@ -4812,7 +4811,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                         }
                     }
                 }
-                // sort by expiresAt
+                // sort by expiresAt, earliest to most recent.
                 foundItems = _.sortBy(foundItems, function (item) {
                     return item.expiresAt;
                 });
