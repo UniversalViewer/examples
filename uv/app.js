@@ -2143,6 +2143,9 @@ var requirejs, require, define;
 
 define("requireLib", function(){});
 
+!function(){function t(t){this.message=t}var r="undefined"!=typeof exports?exports:self,e="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";t.prototype=new Error,t.prototype.name="InvalidCharacterError",r.btoa||(r.btoa=function(r){for(var o,n,a=String(r),i=0,c=e,d="";a.charAt(0|i)||(c="=",i%1);d+=c.charAt(63&o>>8-i%1*8)){if(n=a.charCodeAt(i+=.75),n>255)throw new t("'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.");o=o<<8|n}return d}),r.atob||(r.atob=function(r){var o=String(r).replace(/=+$/,"");if(o.length%4==1)throw new t("'atob' failed: The string to be decoded is not correctly encoded.");for(var n,a,i=0,c=0,d="";a=o.charAt(c++);~a&&(n=i%4?64*n+a:a,i++%4)?d+=String.fromCharCode(255&n>>(-2*i&6)):0)a=e.indexOf(a);return d})}();
+define("lib/base64.min.js", function(){});
+
 window.browserDetect = {
     init: function () {
         this.browser = this.searchString(this.dataBrowser) || "Other";
@@ -2986,11 +2989,9 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
                     return;
                 }
                 extension.helper = helper;
-                _this.featureDetect(function () {
-                    _this.configure(extension, function (config) {
-                        _this.injectCss(extension, config, function () {
-                            _this.createExtension(extension, config);
-                        });
+                _this.configure(extension, function (config) {
+                    _this.injectCss(extension, config, function () {
+                        _this.createExtension(extension, config);
                     });
                 });
             }).catch(function () {
@@ -3006,15 +3007,6 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
                 return;
             }
             catch (e) { }
-        };
-        Bootstrapper.prototype.featureDetect = function (cb) {
-            yepnope({
-                test: window.btoa && window.atob,
-                nope: 'lib/base64.min.js',
-                complete: function () {
-                    cb();
-                }
-            });
         };
         Bootstrapper.prototype.configure = function (extension, cb) {
             var _this = this;
@@ -3069,10 +3061,10 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
         };
         Bootstrapper.prototype.injectCss = function (extension, config, cb) {
             // todo: use a compiler flag when available
-            var cssPath = 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
-            yepnope.injectCss(cssPath, function () {
-                cb();
-            });
+            //const cssPath: string = 'themes/' + config.options.theme + '/css/' + extension.name + '/theme.css';
+            //yepnope.injectCss(cssPath, function() {
+            cb();
+            //});
         };
         Bootstrapper.prototype.createExtension = function (extension, config) {
             this.config = config;
@@ -4055,7 +4047,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             });
             $.subscribe(BaseCommands_1.BaseCommands.LOAD_FAILED, function () {
                 _this.triggerSocket(BaseCommands_1.BaseCommands.LOAD_FAILED);
-                if (!_.isNull(that.lastCanvasIndex) && that.lastCanvasIndex !== that.helper.canvasIndex) {
+                if (!that.lastCanvasIndex == null && that.lastCanvasIndex !== that.helper.canvasIndex) {
                     _this.viewCanvas(that.lastCanvasIndex);
                 }
             });
@@ -4415,7 +4407,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             // if limitLocales is disabled,
             // loop through remaining items and add to results.
             $.each(sorting, function (index, sortItem) {
-                var match = _.filter(items, function (item) { return item.name === sortItem.name; });
+                var match = items.filter(function (item) { return item.name === sortItem.name; });
                 if (match.length) {
                     var m = match[0];
                     if (sortItem.label)
@@ -4554,7 +4546,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             var storageStrategy = this.config.options.tokenStorage;
             return new Promise(function (resolve) {
                 manifesto.Utils.loadExternalResources(resourcesToLoad, storageStrategy, _this.clickThrough, _this.restricted, _this.login, _this.getAccessToken, _this.storeAccessToken, _this.getStoredAccessToken, _this.handleExternalResourceResponse).then(function (r) {
-                    _this.resources = $.map(r, function (resource) {
+                    _this.resources = r.map(function (resource) {
                         resource.data.index = resource.index;
                         return _.toPlainObject(resource.data);
                     });
@@ -6851,9 +6843,9 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             var finalWidth = size.width;
             var finalHeight = size.height;
             // if the maxWidth is less than the advertised width
-            if (!_.isUndefined(maxSize.width) && maxSize.width < size.width) {
+            if (!(typeof (maxSize.width) === 'undefined') && maxSize.width < size.width) {
                 finalWidth = maxSize.width;
-                if (!_.isUndefined(maxSize.height)) {
+                if (!(typeof (maxSize.height) === 'undefined')) {
                     finalHeight = maxSize.height;
                 }
                 else {
@@ -6875,7 +6867,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                         this.extension.isPagingSettingEnabled() && this.extension.resources && this.extension.resources.length === 1) {
                         var maxSize = this.getCanvasMaxDimensions(this.extension.helper.getCurrentCanvas());
                         if (maxSize) {
-                            if (_.isUndefined(maxSize.width)) {
+                            if (typeof (maxSize.width) === 'undefined') {
                                 return true;
                             }
                             else if (maxSize.width <= this.options.maxImageWidth) {
@@ -11002,7 +10994,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var regionHeight = height;
             if (canvas.externalResource.data && canvas.externalResource.data.profile && canvas.externalResource.data.profile[1]) {
                 var maxSize = new Size(canvas.externalResource.data.profile[1].maxWidth, canvas.externalResource.data.profile[1].maxHeight);
-                if (!_.isUndefined(maxSize.width) && !_.isUndefined(maxSize.height)) {
+                if (!(typeof (maxSize.width) === 'undefined') && !(typeof (maxSize.height) === 'undefined')) {
                     if (width > maxSize.width) {
                         var newWidth = maxSize.width;
                         height = Math.round(newWidth * (height / width));
@@ -11124,7 +11116,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 for (var i = 0; i < services.length; i++) {
                     var service = services[i];
                     var id = service.id;
-                    if (!_.endsWith(id, '/')) {
+                    if (!id.endsWith('/')) {
                         id += '/';
                     }
                     if (manifesto.Utils.isImageProfile(service.getProfile())) {
@@ -12517,6 +12509,7 @@ if (typeof jQuery === "function") {
     });
 }
 requirejs([
+    './lib/base64.min.js',
     './lib/browserdetect.js',
     './lib/detectmobilebrowser.js',
     './lib/jquery.xdomainrequest.js',
@@ -12534,7 +12527,7 @@ requirejs([
     './lib/manifold.min.js',
     './lib/utils.min.js',
     'UV'
-], function (browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, UV) {
+], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, UV) {
     window.UV = UV.default;
     var uvReady = new Event('uvReady');
     window.dispatchEvent(uvReady);
