@@ -3767,7 +3767,49 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
     exports.Shell = Shell;
 });
 //# sourceMappingURL=Shell.js.map
-define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../BootstrapParams", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "./LoginWarningMessages", "../../modules/uv-shared-module/Metrics", "../../Params", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell"], function (require, exports, BaseCommands_1, BootstrapParams_1, ClickThroughDialogue_1, InformationArgs_1, InformationType_1, LoginDialogue_1, LoginWarningMessages_1, Metrics_1, Params_1, RestrictedDialogue_1, Shell_1) {
+define('SynchronousRequire',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SynchronousRequire = (function () {
+        function SynchronousRequire() {
+        }
+        SynchronousRequire.load = function (deps, cb) {
+            var loaders = [];
+            for (var i = 0; i < deps.length; i++) {
+                var depLoader = new DependencyLoader(i, deps[i], cb);
+                loaders.push(depLoader);
+            }
+            var sequence = Promise.resolve();
+            loaders.forEach(function (loader) {
+                sequence = sequence.then(function () {
+                    return loader.load();
+                });
+            });
+            return sequence;
+        };
+        return SynchronousRequire;
+    }());
+    exports.SynchronousRequire = SynchronousRequire;
+    var DependencyLoader = (function () {
+        function DependencyLoader(index, dep, cb) {
+            this._dep = dep;
+            this._cb = cb;
+            this._index = index;
+        }
+        DependencyLoader.prototype.load = function () {
+            var that = this;
+            return new Promise(function (resolve) {
+                requirejs([that._dep], function (dep) {
+                    that._cb(that._index, dep);
+                    resolve();
+                });
+            });
+        };
+        return DependencyLoader;
+    }());
+});
+//# sourceMappingURL=SynchronousRequire.js.map
+define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../BootstrapParams", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "./LoginWarningMessages", "../../modules/uv-shared-module/Metrics", "../../Params", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell", "../../SynchronousRequire"], function (require, exports, BaseCommands_1, BootstrapParams_1, ClickThroughDialogue_1, InformationArgs_1, InformationType_1, LoginDialogue_1, LoginWarningMessages_1, Metrics_1, Params_1, RestrictedDialogue_1, Shell_1, SynchronousRequire_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BaseExtension = (function () {
@@ -4189,14 +4231,21 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             var scripts = $('script[data-requiremodule]')
                 .filter(function () {
                 var attr = $(this).attr('data-requiremodule');
-                return (attr.indexOf(that.name) != -1 && attr.indexOf('dependencies') != -1);
+                return (attr.indexOf(that.name) !== -1 && attr.indexOf('dependencies') !== -1);
             });
             if (!scripts.length) {
                 requirejs([depsUri], function (deps) {
                     var baseUri = 'lib/';
                     // for each dependency, prepend baseUri.
-                    for (var i = 0; i < deps.dependencies.length; i++) {
-                        deps.dependencies[i] = baseUri + deps.dependencies[i];
+                    if (deps.sync) {
+                        for (var i = 0; i < deps.sync.length; i++) {
+                            deps.sync[i] = baseUri + deps.sync[i];
+                        }
+                    }
+                    if (deps.async) {
+                        for (var i = 0; i < deps.async.length; i++) {
+                            deps.async[i] = baseUri + deps.async[i];
+                        }
                     }
                     cb(deps);
                 });
@@ -4207,14 +4256,31 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.loadDependencies = function (deps) {
             var that = this;
-            if (deps) {
-                requirejs(deps.dependencies, function () {
+            if (!deps) {
+                that.dependenciesLoaded();
+            }
+            else if (deps.sync) {
+                // load each script synchronously.
+                // necessary for cases like this: https://github.com/mrdoob/three.js/issues/9602
+                // then load the async scripts
+                SynchronousRequire_1.SynchronousRequire.load(deps.sync, that.dependencyLoaded).then(function () {
+                    if (deps.async) {
+                        requirejs(deps.async, function () {
+                            that.dependenciesLoaded(arguments);
+                        });
+                    }
+                });
+            }
+            else if (deps.async) {
+                requirejs(deps.async, function () {
                     that.dependenciesLoaded(arguments);
                 });
             }
             else {
                 that.dependenciesLoaded();
             }
+        };
+        BaseExtension.prototype.dependencyLoaded = function (index, dep) {
         };
         BaseExtension.prototype.dependenciesLoaded = function () {
             var args = [];
@@ -12415,9 +12481,10 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
                 Shell_1.Shell.$rightPanel.hide();
             }
         };
-        Extension.prototype.dependenciesLoaded = function (args) {
-            window.THREE = args[0]; //https://github.com/mrdoob/three.js/issues/9602
-            _super.prototype.dependenciesLoaded.call(this, args);
+        Extension.prototype.dependencyLoaded = function (index, dep) {
+            if (index === 0) {
+                window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
+            }
         };
         Extension.prototype.isLeftPanelEnabled = function () {
             return Utils.Bools.getBool(this.config.options.leftPanelEnabled, true)
@@ -12520,6 +12587,21 @@ if (typeof jQuery === "function") {
         return jQuery;
     });
 }
+// IE CustomEvent Polyfill
+// https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+(function () {
+    if (typeof window.CustomEvent === "function")
+        return false;
+    function CustomEvent(event, params) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    window.CustomEvent = CustomEvent;
+    return;
+})();
 requirejs([
     './lib/base64.min.js',
     './lib/browserdetect.js',
@@ -12541,7 +12623,7 @@ requirejs([
     'UV'
 ], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, UV) {
     window.UV = UV.default;
-    var uvReady = new Event('uvReady');
+    var uvReady = new CustomEvent('uvReady');
     window.dispatchEvent(uvReady);
 });
 //# sourceMappingURL=app.js.map
