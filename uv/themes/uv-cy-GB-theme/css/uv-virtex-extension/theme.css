@@ -561,6 +561,9 @@
 #app .centerPanel .content .navigation a.imageBtn.zoomOut {
   background-image: url('../../img/uv-virtexcenterpanel-module/zoom_out.png');
 }
+#app .centerPanel .content .navigation a.imageBtn.vr {
+  color: #fff;
+}
 #app .centerPanel .content .virtex {
   background: none;
 }
