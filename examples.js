@@ -66,10 +66,8 @@ $(function() {
 
     function loadManifests(cb) {
 
-        var manifestsUri = formatUrl('{0}manifests.json');
-
         // load manifests
-        $.getJSON(manifestsUri, function(manifests){
+        $.getJSON('manifests.json', function(manifests){
 
             var $manifestSelect = $('#manifestSelect');
 
