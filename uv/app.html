@@ -30,20 +30,21 @@
         app.setAttribute("style", "width:" + width + "px");
         app.setAttribute("style", "height:" + height + "px");
 
-        window.addEventListener('uvReady', function (e) { 
+        window.addEventListener('uvReady', function(e) { 
+
+            var urlDataProvider = new UV.URLDataProvider();
 
             var uv = new UV({
                 target: document.querySelector('#app'),
-                data: {
-                    iiifResourceURI: "uri"
-                }
+                data: urlDataProvider.data()
             });
             
-            // uv.on('ready', function(args) {
-            //     alert(args);
-            // });
-            
-            // uv.loadManifest();
+            uv.on('reload', function(data) {
+                urlDataProvider.assign(data);
+                data.isReload = true;
+                uv.data(data);
+            });
+
         }, false);
     </script>
 

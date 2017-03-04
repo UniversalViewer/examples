@@ -26,26 +26,38 @@
         // app.setAttribute("style", "width:" + width + "px");
         // app.setAttribute("style", "height:" + height + "px");
 
-        window.addEventListener('uvReady', function (e) { 
+        $(function() {
 
-            var uv = new UV({
-                target: document.querySelector('#app'),
-                data: {
-                    iiifResourceURI: "uri"
-                }
-            });
+            var $UV = $('#app');
+
+
+            window.addEventListener('uvReady', function(e) { 
+
+                var urlDataProvider = new UV.URLDataProvider();
+
+                var uv = new UV({
+                    target: $UV[0],
+                    data: urlDataProvider.data()
+                });
+                
+            }, false);
+
+            // window.onresize = function() {
+            //     resize();
+            // }
+
+            // function resize() {
+            //     var windowWidth = window.innerWidth;
+            //     var windowHeight = window.innerHeight;
+            //     $UV.width(windowWidth);
+            //     $UV.height(windowHeight);
+            // }
             
-            // uv.on('ready', function(args) {
-            //     alert(args);
-            // });
-            
-            // uv.loadManifest();
-        }, false);
+            // resize();
+        });
 
     </script>
 
-    <!-- uncomment the following for GA tracking when embedded on third party sites -->
-    <!--<script type="text/javascript" src="/examples/events.js"></script>-->
 
 </body>
 </html>
