@@ -2656,7 +2656,7 @@ define("lib/sanitize.js", function(){});
 })( this, this.document );
 define("lib/yepnope.css.js", function(){});
 
-var exjs;!function(r){r.version="0.4.0"}(exjs||(exjs={}));var exjs;!function(r){Array.isArray||(Array.isArray=function(r){return"[object Array]"===Object.prototype.toString.call(r)})}(exjs||(exjs={}));var exjs;!function(r){var e=function(){function r(){}return r.prototype.getEnumerator=function(){return{moveNext:function(){return!1},current:void 0}},r.prototype.aggregate=function(r,e){for(var t=r,n=this.getEnumerator();n.moveNext();)t=e(t,n.current);return t},r.prototype.all=function(r){if(r)for(var e=this.getEnumerator(),t=0;e.moveNext();){if(!r(e.current,t))return!1;t++}return!0},r.prototype.any=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();){if(!r)return!0;if(r(e.current,t))return!0;t++}return!1},r.prototype.append=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},r.prototype.apply=function(r){throw new Error("Not implemented")},r.prototype.at=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();){if(t===r)return e.current;t++}},r.prototype.average=function(r){var e=0,t=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var n=this.getEnumerator();n.moveNext();)t+=r(n.current),e++;return 0===e?0:t/e},r.prototype.concat=function(r){throw new Error("Not implemented")},r.prototype.count=function(r){for(var e=0,t=this.getEnumerator();t.moveNext();)(!r||r(t.current))&&e++;return e},r.prototype.difference=function(r,e){return e=e||function(r,e){return r===e},r instanceof Array&&(r=r.en()),{intersection:this.intersect(r,e).toArray().en(),aNotB:this.except(r,e).toArray().en(),bNotA:r.except(this,e).toArray().en()}},r.prototype.distinct=function(r){throw new Error("Not implemented")},r.prototype.except=function(r,e){throw new Error("Not implemented")},r.prototype.first=function(r){for(var e=this.getEnumerator();e.moveNext();)if(!r||r(e.current))return e.current},r.prototype.firstIndex=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();t++)if(!r||r(e.current))return t;return-1},r.prototype.forEach=function(r){for(var e=this.getEnumerator();e.moveNext();)r(e.current)},r.prototype.groupBy=function(r,e){throw new Error("Not implemented")},r.prototype.intersect=function(r,e){throw new Error("Not implemented")},r.prototype.join=function(r,e,t,n,o){throw new Error("Not implemented")},r.prototype.last=function(r){for(var e,t=this.getEnumerator();t.moveNext();)(!r||r(t.current))&&(e=t.current);return e},r.prototype.lastIndex=function(r){for(var e=-1,t=this.getEnumerator(),n=0;t.moveNext();n++)(!r||r(t.current))&&(e=n);return e},r.prototype.max=function(r){var e=this.getEnumerator();if(!e.moveNext())return 0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=r(e.current);e.moveNext();)t=Math.max(t,r(e.current));return t},r.prototype.min=function(r){var e=this.getEnumerator();if(!e.moveNext())return 0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=r(e.current);e.moveNext();)t=Math.min(t,r(e.current));return t},r.prototype.orderBy=function(r,e){throw new Error("Not implemented")},r.prototype.orderByDescending=function(r,e){throw new Error("Not implemented")},r.prototype.prepend=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},r.prototype.reverse=function(){throw new Error("Not implemented")},r.prototype.select=function(r){throw new Error("Not implemented")},r.prototype.selectMany=function(r){throw new Error("Not implemented")},r.prototype.skip=function(r){throw new Error("Not implemented")},r.prototype.skipWhile=function(r){throw new Error("Not implemented")},r.prototype.standardDeviation=function(r){var e=this.average(r),t=0,n=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var o=this.getEnumerator();o.moveNext();){var u=r(o.current)-e;t+=u*u,n++}return Math.sqrt(t/n)},r.prototype.sum=function(r){var e=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=this.getEnumerator();t.moveNext();)e+=r(t.current);return e},r.prototype.take=function(r){throw new Error("Not implemented")},r.prototype.takeWhile=function(r){throw new Error("Not implemented")},r.prototype.traverse=function(r){throw new Error("Not implemented")},r.prototype.traverseUnique=function(r,e){throw new Error("Not implemented")},r.prototype.toArray=function(){for(var r=[],e=this.getEnumerator();e.moveNext();)r.push(e.current);return r},r.prototype.toMap=function(r,e){throw new Error("Not implemented")},r.prototype.toList=function(){throw new Error("Not implemented")},r.prototype.union=function(r,e){throw new Error("Not implemented")},r.prototype.where=function(r){throw new Error("Not implemented")},r.prototype.zip=function(r,e){throw new Error("Not implemented")},r}();r.Enumerable=e}(exjs||(exjs={}));var Symbol,exjs;!function(r){function e(r){var e;return{next:function(){var t={done:!0,value:void 0};return r&&(e=e||r.getEnumerator())?(t.done=!e.moveNext(),t.value=e.current,t):t}}}Symbol&&Symbol.iterator&&(r.Enumerable.prototype[Symbol.iterator]=function(){return e(this)})}(exjs||(exjs={}));var exjs;!function(r){var e=function(){function e(r){this.size=0,this._keys=[],this._values=[];var e;if(r instanceof Array?e=r.en():r&&r.getEnumerator instanceof Function&&(e=r),e)for(var t=e.getEnumerator();t&&t.moveNext();)this.set(t.current[0],t.current[1])}return e.prototype.clear=function(){this._keys.length=0,this._values.length=0,this.size=0},e.prototype["delete"]=function(r){var e=this._keys.indexOf(r);return e>-1?(this._keys.splice(e,1),this._values.splice(e,1),this.size--,!0):!1},e.prototype.entries=function(){var e=this;return r.range(0,this.size).select(function(r){return[e._keys[r],e._values[r]]})},e.prototype.forEach=function(r,e){null==e&&(e=this);for(var t=0,n=this._keys,o=this._values,u=n.length;u>t;t++)r.call(e,o[t],n[t],this)},e.prototype.get=function(r){var e=this._keys.indexOf(r);return this._values[e]},e.prototype.has=function(r){return this._keys.indexOf(r)>-1},e.prototype.keys=function(){return this._keys.en()},e.prototype.set=function(r,e){var t=this._keys.indexOf(r);t>-1?this._values[t]=e:(this._keys.push(r),this._values.push(e),this.size++)},e.prototype.values=function(){return this._values.en()},e}();r.Map3=e,r.Enumerable.prototype.toMap=function(r,t){for(var n=new e,o=this.getEnumerator();o.moveNext();)n.set(r(o.current),t(o.current));return n},r.List&&(r.List.prototype.toMap=r.Enumerable.prototype.toMap)}(exjs||(exjs={})),function(r){r.Map||(r.Map=exjs.Map3)}("undefined"==typeof window?global:window);var exjs;!function(r){function e(e){var t=new r.Enumerable;return t.getEnumerator=function(){var r={current:void 0,moveNext:function(){return e(r)}};return r},t}r.anonymous=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n,o=1,u={current:void 0,moveNext:function(){if(2>o){if(t=t||r.getEnumerator(),t.moveNext())return u.current=t.current,!0;o++}return n=n||e.en().getEnumerator(),n.moveNext()?(u.current=n.current,!0):(u.current=void 0,!1)}};return u}r.Enumerable.prototype.append=function(){for(var t=this,n=[],o=0;o<arguments.length;o++)n[o-0]=arguments[o];var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n)},u},r.List&&(r.List.prototype.append=r.Enumerable.prototype.append)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()?(e(o.current=t.current,n),n++,!0):!1}};return o}r.Enumerable.prototype.apply=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.apply=r.Enumerable.prototype.apply)}(exjs||(exjs={}));var __extends=this&&this.__extends||function(r,e){function t(){this.constructor=r}for(var n in e)e.hasOwnProperty(n)&&(r[n]=e[n]);r.prototype=null===e?Object.create(e):(t.prototype=e.prototype,new t)},exjs;!function(r){function e(r){var e=r.length,t={moveNext:void 0,current:void 0},n=-1;return t.moveNext=function(){return n++,n>=e?(t.current=void 0,!1):(t.current=r[n],!0)},t}function t(){return this&&Array.isArray(this)?new n(this):new r.Enumerable}var n=function(r){function t(t){r.call(this),this.getEnumerator=function(){return e(t)},this.toArray=function(){return t.slice(0)}}return __extends(t,r),t}(r.Enumerable);try{Object.defineProperty(Array.prototype,"en",{value:t,enumerable:!1,writable:!1,configurable:!1})}catch(o){Array.prototype.en=t}}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=!1,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),o.current=void 0,t.moveNext()?(o.current=t.current,!0):n?!1:(n=!0,t=e.getEnumerator(),t.moveNext()?(o.current=t.current,!0):!1)}};return o}r.Enumerable.prototype.concat=function(t){var n=this,o=t instanceof Array?t.en():t,u=new r.Enumerable;return u.getEnumerator=function(){return e(n,o)},u},r.List&&(r.List.prototype.concat=r.Enumerable.prototype.concat)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=[],o={current:void 0,moveNext:function(){if(t||(t=r.getEnumerator()),o.current=void 0,!e){for(;t.moveNext();)if(n.indexOf(t.current)<0)return n.push(o.current=t.current),!0;return!1}for(;t.moveNext();){for(var u=0,i=n.length,c=!1;i>u&&!c;u++)c=!!e(n[u],t.current);if(!c)return n.push(o.current=t.current),!0}return!1}};return o}r.Enumerable.prototype.distinct=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.distinct=r.Enumerable.prototype.distinct)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,t){t=t||function(r,e){return r===e};var n,o={current:void 0,moveNext:function(){for(n||(n=r.getEnumerator()),o.current=void 0;n.moveNext();){for(var u=!1,i=e.getEnumerator();i.moveNext()&&!u;)u=t(n.current,i.current);if(!u)return o.current=n.current,!0}return!1}};return o}r.Enumerable.prototype.except=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.except=r.Enumerable.prototype.except)}(exjs||(exjs={})),Function.prototype.fromJson=function(r,e){function t(r,e){if(null==r)return r;if(e instanceof Function)return e(r);if(e instanceof Array){if(e=e[0],!(e instanceof Function&&r instanceof Array))return;for(var t=[],n=0;n<r.length;n++)t.push(e(r[n]));return t}}var n=new this;if(null==r)return n;var o=[];for(var u in e){var i=t(r[u],e[u]);void 0!==i&&(n[u]=i,o.push(u))}for(var u in this.$jsonMappings)if(!(o.indexOf(u)>-1)){var i=t(r[u],this.$jsonMappings[u]);void 0!==i&&(n[u]=i,o.push(u))}for(var u in r)o.indexOf(u)>-1||(n[u]=r[u]);return n};var exjs;!function(r){function e(r,e,n){var o,u=0,i={current:void 0,moveNext:function(){return o||(o=t(r,e,n)),i.current=void 0,u>=o.length?!1:(i.current=o[u],u++,!0)}};return i}function t(r,e,t){t=t||function(r,e){return r===e};for(var o,u=[],i=[],c=r.getEnumerator();c.moveNext();){o=e(c.current);for(var a=-1,p=0,s=i.length;s>p;p++)if(t(o,i[p])){a=p;break}var f;0>a?(i.push(o),u.push(f=new n(o))):f=u[a],f._add(c.current)}return u}var n=function(r){function e(e){var t=this;r.call(this),this.key=e,this._arr=[],this.getEnumerator=function(){return t._arr.en().getEnumerator()}}return __extends(e,r),e.prototype._add=function(r){this._arr.push(r)},e}(r.Enumerable);r.Enumerable.prototype.groupBy=function(t,n){var o=this,u=new r.Enumerable;return u.getEnumerator=function(){return e(o,t,n)},u},r.List&&(r.List.prototype.groupBy=r.Enumerable.prototype.groupBy)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n){n=n||function(r,e){return r===e};var o,u={current:void 0,moveNext:function(){for(o||(o=r.en(e).distinct().getEnumerator()),u.current=void 0;o.moveNext();){for(var i=!1,c=t.getEnumerator();c.moveNext()&&!i;)i=n(o.current,c.current);if(i)return u.current=o.current,!0}return!1}};return u}r.Enumerable.prototype.intersect=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.intersect=r.Enumerable.prototype.intersect)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n,o,u,i){i=i||function(r,e){return r===e};var c,a,p=0,s={current:void 0,moveNext:function(){if(s.current=void 0,!c){if(c=e.getEnumerator(),!c.moveNext())return!1;a=r.en(t).toArray()}var f;do{for(;p<a.length;p++)if(f=a[p],i(n(c.current),o(f)))return p++,s.current=u(c.current,f),!0;p=0}while(c.moveNext());return!1}};return s}r.Enumerable.prototype.join=function(t,n,o,u,i){var c=this,a=t instanceof Array?t.en():t,p=new r.Enumerable;return p.getEnumerator=function(){return e(c,a,n,o,u,i)},p},r.List&&(r.List.prototype.join=r.Enumerable.prototype.join)}(exjs||(exjs={}));var exjs;!function(r){function e(){this.constructor=t}r.Enumerable.prototype.toList=function(){for(var r=new t,e=this.getEnumerator();e.moveNext();)r.push(e.current);return r};var t=function(r){function e(){r.apply(this,arguments)}return __extends(e,r),e.prototype.toString=function(){throw new Error("Not implemented")},e.prototype.toLocaleString=function(){throw new Error("Not implemented")},e.prototype.pop=function(){throw new Error("Not implemented")},e.prototype.push=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},e.prototype.shift=function(){throw new Error("Not implemented")},e.prototype.slice=function(r,e){throw new Error("Not implemented")},e.prototype.sort=function(r){throw new Error("Not implemented")},e.prototype.splice=function(){throw new Error("Not implemented")},e.prototype.unshift=function(){for(var r=[],e=0;e<arguments.length;e++)r[e-0]=arguments[e];throw new Error("Not implemented")},e.prototype.indexOf=function(r,e){throw new Error("Not implemented")},e.prototype.lastIndexOf=function(r,e){throw new Error("Not implemented")},e.prototype.every=function(r,e){throw new Error("Not implemented")},e.prototype.some=function(r,e){throw new Error("Not implemented")},e.prototype.forEach=function(r,e){throw new Error("Not implemented")},e.prototype.map=function(r,e){throw new Error("Not implemented")},e.prototype.filter=function(r,e){throw new Error("Not implemented")},e.prototype.reduce=function(r,e){throw new Error("Not implemented")},e.prototype.reduceRight=function(r,e){throw new Error("Not implemented")},e.prototype.remove=function(r){throw new Error("Not implemented")},e.prototype.removeWhere=function(r){throw new Error("Not implemented")},e}(r.Enumerable);r.List=t;for(var n in Array)Array.hasOwnProperty(n)&&(t[n]=Array[n]);e.prototype=Array.prototype,t.prototype=new e;for(var o in r.Enumerable.prototype)"getEnumerator"!==o&&(t.prototype[o]=r.Enumerable.prototype[o]);t.prototype.getEnumerator=function(){var r=this,e=r.length,t={moveNext:void 0,current:void 0},n=-1;return t.moveNext=function(){return n++,n>=e?(t.current=void 0,!1):(t.current=r[n],!0)},t},t.prototype.remove=function(r){return this.removeWhere(function(e){return e===r}).any()},t.prototype.removeWhere=function(r){for(var e,t=[],n=this.length-1;n>=0;n--)e=this[n],r(e,n)===!0&&(this.splice(n,1),t.push(e));return t.en().reverse()}}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,n,o){return new t(r,e,n,o)}var t=function(e){function t(r,t,n,o){e.call(this),this.Source=r,o=o||function(r,e){return r>e?1:e>r?-1:0};var u=n===!0?-1:1;this.Sorter=function(r,e){return u*o(t(r),t(e))}}return __extends(t,e),t.prototype.getEnumerator=function(){var e,t=this.Source,n=this.Sorter,o=0,u={current:void 0,moveNext:function(){return e||(e=r.en(t).toArray(),e.sort(n)),u.current=void 0,o>=e.length?!1:(u.current=e[o],o++,!0)}};return u},t.prototype.thenBy=function(r,e){return new n(this,r,!1,e)},t.prototype.thenByDescending=function(r,e){return new n(this,r,!0,e)},t}(r.Enumerable),n=function(r){function e(e,t,n,o){r.call(this,e,t,n,o);var u=e.Sorter,i=this.Sorter;this.Sorter=function(r,e){return u(r,e)||i(r,e)}}return __extends(e,r),e}(t),o=r.Enumerable.prototype;o.orderBy=function(r,t){return e(this,r,!1,t)},o.orderByDescending=function(r,t){return e(this,r,!0,t)},r.List&&(r.List.prototype.orderBy=r.Enumerable.prototype.orderBy,r.List.prototype.orderByDescending=r.Enumerable.prototype.orderByDescending)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n,o=1,u={current:void 0,moveNext:function(){if(2>o){if(t=t||e.en().getEnumerator(),t.moveNext())return u.current=t.current,!0;o++}return n=n||r.getEnumerator(),n.moveNext()?(u.current=n.current,!0):(u.current=void 0,!1)}};return u}r.Enumerable.prototype.prepend=function(){for(var t=this,n=[],o=0;o<arguments.length;o++)n[o-0]=arguments[o];var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n)},u},r.List&&(r.List.prototype.prepend=r.Enumerable.prototype.prepend)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,t){var n=r-t,o={current:void 0,moveNext:function(){return n+=t,n>=e?!1:(o.current=n,!0)}};return o}function t(t,n,o){if(t=t||0,n=n||0,t>n)throw new Error("Start cannot be greater than end.");null==o&&(o=1);var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n,o)},u}r.range=t}(exjs||(exjs={}));var exjs;!function(r){function e(e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.en(e).toArray(),n=t.length),n--,o.current=t[n],n>=0}};return o}r.Enumerable.prototype.reverse=function(){var t=this,n=new r.Enumerable;return n.getEnumerator=function(){return e(t)},n},r.List&&(r.List.prototype.reverse=r.Enumerable.prototype.reverse)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){if(e=e||0,0===e)return Math.round(r);var t=Math.pow(10,e);return Math.round(r*t)/t}r.round=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()?(o.current=e(t.current,n),n++,!0):!1}};return o}function t(e,t){var n,o,u={current:void 0,moveNext:function(){for(u.current=void 0,n||(n=e.getEnumerator());!o||!o.moveNext();){if(!n.moveNext())return!1;o=r.selectorEnumerator(t(n.current))}return u.current=o.current,!0}};return u}r.Enumerable.prototype.select=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.selectMany=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.select=r.Enumerable.prototype.select,r.List.prototype.selectMany=r.Enumerable.prototype.selectMany)}(exjs||(exjs={}));var exjs;!function(r){function e(r){return Array.isArray(r)?r.en().getEnumerator():null!=r&&"function"==typeof r.getEnumerator?r.getEnumerator():null}r.selectorEnumerator=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n={current:void 0,moveNext:function(){if(!t){t=r.getEnumerator();for(var o=0;e>o;o++)if(!t.moveNext())return!1}return t.moveNext()?(n.current=t.current,!0):(n.current=void 0,!1)}};return n}function t(r,e){var t,n={current:void 0,moveNext:function(){if(!t){t=r.getEnumerator();for(var o=0;t.moveNext();o++)if(!e(n.current=t.current,o))return!0;return n.current=void 0,!1}return t.moveNext()?(n.current=t.current,!0):(n.current=void 0,!1)}};return n}r.Enumerable.prototype.skip=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.skipWhile=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.skip=r.Enumerable.prototype.skip,r.List.prototype.skipWhile=r.Enumerable.prototype.skipWhile)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),n++,n>e?!1:(o.current=void 0,t.moveNext()?(o.current=t.current,!0):!1)}};return o}function t(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()&&e(t.current,n)?(n++,o.current=t.current,!0):(o.current=void 0,!1)}};return o}r.Enumerable.prototype.take=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.takeWhile=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.take=r.Enumerable.prototype.take,r.List.prototype.takeWhile=r.Enumerable.prototype.takeWhile)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t){var n,o=!1,u=[],i={current:void 0,moveNext:function(){if(o){if(null==n)return!1;u.push(n),n=r.selectorEnumerator(t(i.current))}else n=e.getEnumerator(),o=!0;for(;!(n&&n.moveNext()||u.length<1);)n=u.pop();return i.current=null==n?void 0:n.current,void 0!==i.current}};return i}function t(e,t,n){var o,u=!1,i=[],c={current:void 0,moveNext:function(){if(u){if(null==o)return!1;i.push(o),o=r.selectorEnumerator(t(c.current))}else o=e.getEnumerator(),u=!0;do{for(;!(o&&o.moveNext()||i.length<1);)o=i.pop();c.current=null==o?void 0:o.current}while(n(c.current));return void 0!==c.current}};return c}r.Enumerable.prototype.traverse=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.traverseUnique=function(e,n){var o=this,u=[],i=new r.Enumerable;return n?i.getEnumerator=function(){return t(o,e,function(r){return u.some(function(e){return n(r,e)})?!0:(u.push(r),!1)})}:i.getEnumerator=function(){return t(o,e,function(r){return u.indexOf(r)>-1?!0:(u.push(r),!1)})},i},r.List&&(r.List.prototype.traverse=r.Enumerable.prototype.traverse,r.List.prototype.traverseUnique=r.Enumerable.prototype.traverseUnique)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n){n=n||function(r,e){return r===e};var o,u,i=[],c={current:void 0,moveNext:function(){if(o||(o=r.en(e).distinct().getEnumerator()),c.current=void 0,!u&&o.moveNext())return i.push(c.current=o.current),!0;for(u=u||r.en(t).distinct().getEnumerator();u.moveNext();){for(var a=0,p=!1,s=i.length;s>a&&!p;a++)p=n(i[a],u.current);if(!p)return c.current=u.current,!0}return!1}};return c}r.Enumerable.prototype.union=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.union=r.Enumerable.prototype.union)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n={current:void 0,moveNext:function(){t||(t=r.getEnumerator());for(var o;t.moveNext();)if(e(o=t.current))return n.current=o,!0;return!1}};return n}r.Enumerable.prototype.where=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.where=r.Enumerable.prototype.where)}(exjs||(exjs={}));var exjs;!function(r){function e(e){var n=new r.Enumerable;return n.getEnumerator=function(){return t(e)},n}function t(r){var e=r.getEnumerator(),t={current:void 0,moveNext:void 0};return t.moveNext=function(){return e.moveNext()?(t.current=e.current,!0):(t.current=void 0,!1)},t}r.en=e}(exjs||(exjs={}));var ex=exjs.en,exjs;!function(r){function e(r,e,t){var n,o,u={current:void 0,moveNext:function(){return n||(n=r.getEnumerator()),o||(o=e.getEnumerator()),u.current=void 0,n.moveNext()&&o.moveNext()?(u.current=t(n.current,o.current),!0):!1}};return u}r.Enumerable.prototype.zip=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.zip=r.Enumerable.prototype.zip)}(exjs||(exjs={}));
+var __extends=this&&this.__extends||function(){var r=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(r,e){r.__proto__=e}||function(r,e){for(var t in e)e.hasOwnProperty(t)&&(r[t]=e[t])};return function(e,t){function n(){this.constructor=e}r(e,t),e.prototype=null===t?Object.create(t):(n.prototype=t.prototype,new n)}}(),exjs;!function(r){r.version="0.5.0"}(exjs||(exjs={}));var exjs;!function(r){Array.isArray||(Array.isArray=function(r){return"[object Array]"===Object.prototype.toString.call(r)})}(exjs||(exjs={}));var exjs;!function(r){var e=function(){function r(){}return r.prototype.getEnumerator=function(){return{moveNext:function(){return!1},current:void 0}},r.prototype.aggregate=function(r,e){for(var t=r,n=this.getEnumerator();n.moveNext();)t=e(t,n.current);return t},r.prototype.all=function(r){if(r)for(var e=this.getEnumerator(),t=0;e.moveNext();){if(!r(e.current,t))return!1;t++}return!0},r.prototype.any=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();){if(!r)return!0;if(r(e.current,t))return!0;t++}return!1},r.prototype.append=function(){for(var r=[],e=0;e<arguments.length;e++)r[e]=arguments[e];throw new Error("Not implemented")},r.prototype.apply=function(r){throw new Error("Not implemented")},r.prototype.at=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();){if(t===r)return e.current;t++}},r.prototype.average=function(r){var e=0,t=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var n=this.getEnumerator();n.moveNext();)t+=r(n.current),e++;return 0===e?0:t/e},r.prototype.concat=function(r){throw new Error("Not implemented")},r.prototype.count=function(r){for(var e=0,t=this.getEnumerator();t.moveNext();)r&&!r(t.current)||e++;return e},r.prototype.difference=function(r,e){return e=e||function(r,e){return r===e},r instanceof Array&&(r=r.en()),{intersection:this.intersect(r,e).toArray().en(),aNotB:this.except(r,e).toArray().en(),bNotA:r.except(this,e).toArray().en()}},r.prototype.distinct=function(r){throw new Error("Not implemented")},r.prototype.except=function(r,e){throw new Error("Not implemented")},r.prototype.first=function(r){for(var e=this.getEnumerator();e.moveNext();)if(!r||r(e.current))return e.current},r.prototype.firstIndex=function(r){for(var e=this.getEnumerator(),t=0;e.moveNext();t++)if(!r||r(e.current))return t;return-1},r.prototype.forEach=function(r){for(var e=this.getEnumerator();e.moveNext();)r(e.current)},r.prototype.groupBy=function(r,e){throw new Error("Not implemented")},r.prototype.intersect=function(r,e){throw new Error("Not implemented")},r.prototype.join=function(r,e,t,n,o){throw new Error("Not implemented")},r.prototype.last=function(r){for(var e,t=this.getEnumerator();t.moveNext();)r&&!r(t.current)||(e=t.current);return e},r.prototype.lastIndex=function(r){for(var e=-1,t=this.getEnumerator(),n=0;t.moveNext();n++)r&&!r(t.current)||(e=n);return e},r.prototype.max=function(r){var e=this.getEnumerator();if(!e.moveNext())return 0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=r(e.current);e.moveNext();)t=Math.max(t,r(e.current));return t},r.prototype.min=function(r){var e=this.getEnumerator();if(!e.moveNext())return 0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=r(e.current);e.moveNext();)t=Math.min(t,r(e.current));return t},r.prototype.orderBy=function(r,e){throw new Error("Not implemented")},r.prototype.orderByDescending=function(r,e){throw new Error("Not implemented")},r.prototype.prepend=function(){for(var r=[],e=0;e<arguments.length;e++)r[e]=arguments[e];throw new Error("Not implemented")},r.prototype.reverse=function(){throw new Error("Not implemented")},r.prototype.select=function(r){throw new Error("Not implemented")},r.prototype.selectMany=function(r){throw new Error("Not implemented")},r.prototype.skip=function(r){throw new Error("Not implemented")},r.prototype.skipWhile=function(r){throw new Error("Not implemented")},r.prototype.standardDeviation=function(r){var e=this.average(r),t=0,n=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var o=this.getEnumerator();o.moveNext();){var u=r(o.current)-e;t+=u*u,n++}return Math.sqrt(t/n)},r.prototype.sum=function(r){var e=0;r=r||function(r){if("number"!=typeof r)throw new Error("Object is not a number.");return r};for(var t=this.getEnumerator();t.moveNext();)e+=r(t.current);return e},r.prototype.take=function(r){throw new Error("Not implemented")},r.prototype.takeWhile=function(r){throw new Error("Not implemented")},r.prototype.traverse=function(r){throw new Error("Not implemented")},r.prototype.traverseUnique=function(r,e){throw new Error("Not implemented")},r.prototype.toArray=function(){for(var r=[],e=this.getEnumerator();e.moveNext();)r.push(e.current);return r},r.prototype.toMap=function(r,e){throw new Error("Not implemented")},r.prototype.toList=function(){throw new Error("Not implemented")},r.prototype.union=function(r,e){throw new Error("Not implemented")},r.prototype.where=function(r){throw new Error("Not implemented")},r.prototype.zip=function(r,e){throw new Error("Not implemented")},r}();r.Enumerable=e}(exjs||(exjs={}));var exjs;!function(r){var e=function(){function e(r){this.size=0,this._keys=[],this._values=[];var e;if(r instanceof Array?e=r.en():r&&r.getEnumerator instanceof Function&&(e=r),e)for(var t=e.getEnumerator();t&&t.moveNext();)this.set(t.current[0],t.current[1])}return e.prototype.clear=function(){this._keys.length=0,this._values.length=0,this.size=0},e.prototype.delete=function(r){var e=this._keys.indexOf(r);return e>-1&&(this._keys.splice(e,1),this._values.splice(e,1),this.size--,!0)},e.prototype.entries=function(){var e=this;return r.range(0,this.size).select(function(r){return[e._keys[r],e._values[r]]})},e.prototype.forEach=function(r,e){null==e&&(e=this);for(var t=0,n=this._keys,o=this._values,u=n.length;t<u;t++)r.call(e,o[t],n[t],this)},e.prototype.get=function(r){var e=this._keys.indexOf(r);return this._values[e]},e.prototype.has=function(r){return this._keys.indexOf(r)>-1},e.prototype.keys=function(){return this._keys.en()},e.prototype.set=function(r,e){var t=this._keys.indexOf(r);t>-1?this._values[t]=e:(this._keys.push(r),this._values.push(e),this.size++)},e.prototype.values=function(){return this._values.en()},e}();r.Map3=e,r.Enumerable.prototype.toMap=function(r,t){for(var n=new e,o=this.getEnumerator();o.moveNext();)n.set(r(o.current),t(o.current));return n},r.List&&(r.List.prototype.toMap=r.Enumerable.prototype.toMap)}(exjs||(exjs={})),function(r){r.Map||(r.Map=exjs.Map3)}("undefined"==typeof window?global:window);var exjs;!function(r){function e(e){var t=new r.Enumerable;return t.getEnumerator=function(){var r={current:void 0,moveNext:function(){return e(r)}};return r},t}r.anonymous=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n,o=1,u={current:void 0,moveNext:function(){if(o<2){if(t=t||r.getEnumerator(),t.moveNext())return u.current=t.current,!0;o++}return n=n||e.en().getEnumerator(),n.moveNext()?(u.current=n.current,!0):(u.current=void 0,!1)}};return u}r.Enumerable.prototype.append=function(){for(var t=this,n=[],o=0;o<arguments.length;o++)n[o]=arguments[o];var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n)},u},r.List&&(r.List.prototype.append=r.Enumerable.prototype.append)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),!!t.moveNext()&&(e(o.current=t.current,n),n++,!0)}};return o}r.Enumerable.prototype.apply=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.apply=r.Enumerable.prototype.apply)}(exjs||(exjs={}));var exjs;!function(r){function e(r){var e=r.length,t={moveNext:void 0,current:void 0},n=-1;return t.moveNext=function(){return n++,n>=e?(t.current=void 0,!1):(t.current=r[n],!0)},t}function t(){return this&&Array.isArray(this)?new n(this):new r.Enumerable}var n=function(r){function t(t){var n=r.call(this)||this;return n.getEnumerator=function(){return e(t)},n.toArray=function(){return t.slice(0)},n}return __extends(t,r),t}(r.Enumerable);try{Object.defineProperty(Array.prototype,"en",{value:t,enumerable:!1,writable:!1,configurable:!1})}catch(r){Array.prototype.en=t}}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=!1,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),o.current=void 0,t.moveNext()?(o.current=t.current,!0):!n&&(n=!0,t=e.getEnumerator(),!!t.moveNext()&&(o.current=t.current,!0))}};return o}r.Enumerable.prototype.concat=function(t){var n=this,o=t instanceof Array?t.en():t,u=new r.Enumerable;return u.getEnumerator=function(){return e(n,o)},u},r.List&&(r.List.prototype.concat=r.Enumerable.prototype.concat)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=[],o={current:void 0,moveNext:function(){if(t||(t=r.getEnumerator()),o.current=void 0,!e){for(;t.moveNext();)if(n.indexOf(t.current)<0)return n.push(o.current=t.current),!0;return!1}for(;t.moveNext();){for(var u=0,i=n.length,c=!1;u<i&&!c;u++)c=!!e(n[u],t.current);if(!c)return n.push(o.current=t.current),!0}return!1}};return o}r.Enumerable.prototype.distinct=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.distinct=r.Enumerable.prototype.distinct)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,t){t=t||function(r,e){return r===e};var n,o={current:void 0,moveNext:function(){for(n||(n=r.getEnumerator()),o.current=void 0;n.moveNext();){for(var u=!1,i=e.getEnumerator();i.moveNext()&&!u;)u=t(n.current,i.current);if(!u)return o.current=n.current,!0}return!1}};return o}r.Enumerable.prototype.except=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.except=r.Enumerable.prototype.except)}(exjs||(exjs={})),Function.prototype.fromJson=function(r,e){function t(r,e){if(null==r)return r;if(e instanceof Function)return e(r);if(e instanceof Array){if(e=e[0],!(e instanceof Function&&r instanceof Array))return;for(var t=[],n=0;n<r.length;n++)t.push(e(r[n]));return t}}var n=new this;if(null==r)return n;var o=[];for(var u in e){var i=t(r[u],e[u]);void 0!==i&&(n[u]=i,o.push(u))}for(var u in this.$jsonMappings)if(!(o.indexOf(u)>-1)){var i=t(r[u],this.$jsonMappings[u]);void 0!==i&&(n[u]=i,o.push(u))}for(var u in r)o.indexOf(u)>-1||(n[u]=r[u]);return n};var exjs;!function(r){function e(r,e,n){var o,u=0,i={current:void 0,moveNext:function(){return o||(o=t(r,e,n)),i.current=void 0,!(u>=o.length)&&(i.current=o[u],u++,!0)}};return i}function t(r,e,t){t=t||function(r,e){return r===e};for(var o,u=[],i=[],c=r.getEnumerator();c.moveNext();){o=e(c.current);for(var a=-1,p=0,f=i.length;p<f;p++)if(t(o,i[p])){a=p;break}var s;a<0?(i.push(o),u.push(s=new n(o))):s=u[a],s._add(c.current)}return u}var n=function(r){function e(e){var t=r.call(this)||this;return t.key=e,t._arr=[],t.getEnumerator=function(){return t._arr.en().getEnumerator()},t}return __extends(e,r),e.prototype._add=function(r){this._arr.push(r)},e}(r.Enumerable);r.Enumerable.prototype.groupBy=function(t,n){var o=this,u=new r.Enumerable;return u.getEnumerator=function(){return e(o,t,n)},u},r.List&&(r.List.prototype.groupBy=r.Enumerable.prototype.groupBy)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n){n=n||function(r,e){return r===e};var o,u={current:void 0,moveNext:function(){for(o||(o=r.en(e).distinct().getEnumerator()),u.current=void 0;o.moveNext();){for(var i=!1,c=t.getEnumerator();c.moveNext()&&!i;)i=n(o.current,c.current);if(i)return u.current=o.current,!0}return!1}};return u}r.Enumerable.prototype.intersect=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.intersect=r.Enumerable.prototype.intersect)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n,o,u,i){i=i||function(r,e){return r===e};var c,a,p=0,f={current:void 0,moveNext:function(){if(f.current=void 0,!c){if(c=e.getEnumerator(),!c.moveNext())return!1;a=r.en(t).toArray()}var s;do{for(;p<a.length;p++)if(s=a[p],i(n(c.current),o(s)))return p++,f.current=u(c.current,s),!0;p=0}while(c.moveNext());return!1}};return f}r.Enumerable.prototype.join=function(t,n,o,u,i){var c=this,a=t instanceof Array?t.en():t,p=new r.Enumerable;return p.getEnumerator=function(){return e(c,a,n,o,u,i)},p},r.List&&(r.List.prototype.join=r.Enumerable.prototype.join)}(exjs||(exjs={}));var exjs;!function(r){function e(){this.constructor=t}r.Enumerable.prototype.toList=function(){for(var r=new t,e=this.getEnumerator();e.moveNext();)r.push(e.current);return r};var t=function(r){function e(){return null!==r&&r.apply(this,arguments)||this}return __extends(e,r),e.prototype.toString=function(){throw new Error("Not implemented")},e.prototype.toLocaleString=function(){throw new Error("Not implemented")},e.prototype.pop=function(){throw new Error("Not implemented")},e.prototype.push=function(){for(var r=[],e=0;e<arguments.length;e++)r[e]=arguments[e];throw new Error("Not implemented")},e.prototype.shift=function(){throw new Error("Not implemented")},e.prototype.slice=function(r,e){throw new Error("Not implemented")},e.prototype.sort=function(r){throw new Error("Not implemented")},e.prototype.splice=function(){throw new Error("Not implemented")},e.prototype.unshift=function(){for(var r=[],e=0;e<arguments.length;e++)r[e]=arguments[e];throw new Error("Not implemented")},e.prototype.indexOf=function(r,e){throw new Error("Not implemented")},e.prototype.lastIndexOf=function(r,e){throw new Error("Not implemented")},e.prototype.every=function(r,e){throw new Error("Not implemented")},e.prototype.some=function(r,e){throw new Error("Not implemented")},e.prototype.forEach=function(r,e){throw new Error("Not implemented")},e.prototype.map=function(r,e){throw new Error("Not implemented")},e.prototype.filter=function(r,e){throw new Error("Not implemented")},e.prototype.reduce=function(r,e){throw new Error("Not implemented")},e.prototype.reduceRight=function(r,e){throw new Error("Not implemented")},e.prototype.remove=function(r){throw new Error("Not implemented")},e.prototype.removeWhere=function(r){throw new Error("Not implemented")},e}(r.Enumerable);r.List=t;for(var n in Array)Array.hasOwnProperty(n)&&(t[n]=Array[n]);e.prototype=Array.prototype,t.prototype=new e;for(var o in r.Enumerable.prototype)"getEnumerator"!==o&&(t.prototype[o]=r.Enumerable.prototype[o]);t.prototype.getEnumerator=function(){var r=this,e=r.length,t={moveNext:void 0,current:void 0},n=-1;return t.moveNext=function(){return n++,n>=e?(t.current=void 0,!1):(t.current=r[n],!0)},t},t.prototype.remove=function(r){return this.removeWhere(function(e){return e===r}).any()},t.prototype.removeWhere=function(r){for(var e,t=[],n=this.length-1;n>=0;n--)e=this[n],r(e,n)===!0&&(this.splice(n,1),t.push(e));return t.en().reverse()}}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,n,o){return new t(r,e,n,o)}var t=function(e){function t(r,t,n,o){var u=e.call(this)||this;u.Source=r,o=o||function(r,e){return r>e?1:r<e?-1:0};var i=n===!0?-1:1;return u.Sorter=function(r,e){return i*o(t(r),t(e))},u}return __extends(t,e),t.prototype.getEnumerator=function(){var e,t=this.Source,n=this.Sorter,o=0,u={current:void 0,moveNext:function(){return e||(e=r.en(t).toArray(),e.sort(n)),u.current=void 0,!(o>=e.length)&&(u.current=e[o],o++,!0)}};return u},t.prototype.thenBy=function(r,e){return new n(this,r,!1,e)},t.prototype.thenByDescending=function(r,e){return new n(this,r,!0,e)},t}(r.Enumerable),n=function(r){function e(e,t,n,o){var u=r.call(this,e,t,n,o)||this,i=e.Sorter,c=u.Sorter;return u.Sorter=function(r,e){return i(r,e)||c(r,e)},u}return __extends(e,r),e}(t),o=r.Enumerable.prototype;o.orderBy=function(r,t){return e(this,r,!1,t)},o.orderByDescending=function(r,t){return e(this,r,!0,t)},r.List&&(r.List.prototype.orderBy=r.Enumerable.prototype.orderBy,r.List.prototype.orderByDescending=r.Enumerable.prototype.orderByDescending)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n,o=1,u={current:void 0,moveNext:function(){if(o<2){if(t=t||e.en().getEnumerator(),t.moveNext())return u.current=t.current,!0;o++}return n=n||r.getEnumerator(),n.moveNext()?(u.current=n.current,!0):(u.current=void 0,!1)}};return u}r.Enumerable.prototype.prepend=function(){for(var t=this,n=[],o=0;o<arguments.length;o++)n[o]=arguments[o];var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n)},u},r.List&&(r.List.prototype.prepend=r.Enumerable.prototype.prepend)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e,t){var n=r-t,o={current:void 0,moveNext:function(){return n+=t,!(n>=e)&&(o.current=n,!0)}};return o}function t(t,n,o){if(t=t||0,n=n||0,t>n)throw new Error("Start cannot be greater than end.");null==o&&(o=1);var u=new r.Enumerable;return u.getEnumerator=function(){return e(t,n,o)},u}r.range=t}(exjs||(exjs={}));var exjs;!function(r){function e(e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.en(e).toArray(),n=t.length),n--,o.current=t[n],n>=0}};return o}r.Enumerable.prototype.reverse=function(){var t=this,n=new r.Enumerable;return n.getEnumerator=function(){return e(t)},n},r.List&&(r.List.prototype.reverse=r.Enumerable.prototype.reverse)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){if(e=e||0,0===e)return Math.round(r);var t=Math.pow(10,e);return Math.round(r*t)/t}r.round=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),!!t.moveNext()&&(o.current=e(t.current,n),n++,!0)}};return o}function t(e,t){var n,o,u={current:void 0,moveNext:function(){for(u.current=void 0,n||(n=e.getEnumerator());!o||!o.moveNext();){if(!n.moveNext())return!1;o=r.selectorEnumerator(t(n.current))}return u.current=o.current,!0}};return u}r.Enumerable.prototype.select=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.selectMany=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.select=r.Enumerable.prototype.select,r.List.prototype.selectMany=r.Enumerable.prototype.selectMany)}(exjs||(exjs={}));var exjs;!function(r){function e(r){return Array.isArray(r)?r.en().getEnumerator():null!=r&&"function"==typeof r.getEnumerator?r.getEnumerator():null}r.selectorEnumerator=e}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n={current:void 0,moveNext:function(){if(!t){t=r.getEnumerator();for(var o=0;o<e;o++)if(!t.moveNext())return!1}return t.moveNext()?(n.current=t.current,!0):(n.current=void 0,!1)}};return n}function t(r,e){var t,n={current:void 0,moveNext:function(){if(!t){t=r.getEnumerator();for(var o=0;t.moveNext();o++)if(!e(n.current=t.current,o))return!0;return n.current=void 0,!1}return t.moveNext()?(n.current=t.current,!0):(n.current=void 0,!1)}};return n}r.Enumerable.prototype.skip=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.skipWhile=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.skip=r.Enumerable.prototype.skip,r.List.prototype.skipWhile=r.Enumerable.prototype.skipWhile)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),n++,!(n>e)&&(o.current=void 0,!!t.moveNext()&&(o.current=t.current,!0))}};return o}function t(r,e){var t,n=0,o={current:void 0,moveNext:function(){return t||(t=r.getEnumerator()),t.moveNext()&&e(t.current,n)?(n++,o.current=t.current,!0):(o.current=void 0,!1)}};return o}r.Enumerable.prototype.take=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.takeWhile=function(e){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return t(n,e)},o},r.List&&(r.List.prototype.take=r.Enumerable.prototype.take,r.List.prototype.takeWhile=r.Enumerable.prototype.takeWhile)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t){var n,o=!1,u=[],i={current:void 0,moveNext:function(){if(o){if(null==n)return!1;u.push(n),n=r.selectorEnumerator(t(i.current))}else n=e.getEnumerator(),o=!0;for(;!(n&&n.moveNext()||u.length<1);)n=u.pop();return i.current=null==n?void 0:n.current,void 0!==i.current}};return i}function t(e,t,n){var o,u=!1,i=[],c={current:void 0,moveNext:function(){if(u){if(null==o)return!1;i.push(o),o=r.selectorEnumerator(t(c.current))}else o=e.getEnumerator(),u=!0;do{for(;!(o&&o.moveNext()||i.length<1);)o=i.pop();c.current=null==o?void 0:o.current}while(n(c.current));return void 0!==c.current}};return c}r.Enumerable.prototype.traverse=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.Enumerable.prototype.traverseUnique=function(e,n){var o=this,u=[],i=new r.Enumerable;return n?i.getEnumerator=function(){return t(o,e,function(r){return!!u.some(function(e){return n(r,e)})||(u.push(r),!1)})}:i.getEnumerator=function(){return t(o,e,function(r){return u.indexOf(r)>-1||(u.push(r),!1)})},i},r.List&&(r.List.prototype.traverse=r.Enumerable.prototype.traverse,r.List.prototype.traverseUnique=r.Enumerable.prototype.traverseUnique)}(exjs||(exjs={}));var exjs;!function(r){function e(e,t,n){n=n||function(r,e){return r===e};var o,u,i=[],c={current:void 0,moveNext:function(){if(o||(o=r.en(e).distinct().getEnumerator()),c.current=void 0,!u&&o.moveNext())return i.push(c.current=o.current),!0;for(u=u||r.en(t).distinct().getEnumerator();u.moveNext();){for(var a=0,p=!1,f=i.length;a<f&&!p;a++)p=n(i[a],u.current);if(!p)return c.current=u.current,!0}return!1}};return c}r.Enumerable.prototype.union=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.union=r.Enumerable.prototype.union)}(exjs||(exjs={}));var exjs;!function(r){function e(r,e){var t,n={current:void 0,moveNext:function(){t||(t=r.getEnumerator());for(var o;t.moveNext();)if(e(o=t.current))return n.current=o,!0;return!1}};return n}r.Enumerable.prototype.where=function(t){var n=this,o=new r.Enumerable;return o.getEnumerator=function(){return e(n,t)},o},r.List&&(r.List.prototype.where=r.Enumerable.prototype.where)}(exjs||(exjs={}));var exjs;!function(r){function e(e){var n=new r.Enumerable;return n.getEnumerator=function(){return t(e)},n}function t(r){var e=r.getEnumerator(),t={current:void 0,moveNext:void 0};return t.moveNext=function(){return e.moveNext()?(t.current=e.current,!0):(t.current=void 0,!1)},t}r.en=e}(exjs||(exjs={}));var ex=exjs.en,exjs;!function(r){function e(r,e,t){var n,o,u={current:void 0,moveNext:function(){return n||(n=r.getEnumerator()),o||(o=e.getEnumerator()),u.current=void 0,!(!n.moveNext()||!o.moveNext())&&(u.current=t(n.current,o.current),!0)}};return u}r.Enumerable.prototype.zip=function(t,n){var o=this,u=t instanceof Array?t.en():t,i=new r.Enumerable;return i.getEnumerator=function(){return e(o,u,n)},i},r.List&&(r.List.prototype.zip=r.Enumerable.prototype.zip)}(exjs||(exjs={}));
 //# sourceMappingURL=ex.es3.min.js.map
 
 define("lib/ex.es3.min.js", function(){});
@@ -2746,144 +2746,71 @@ resolve(resources)})["catch"](function(error){reject(error)})})},Utils.authorize
 var punycode,key,maxInt=2147483647,base=36,tMin=1,tMax=26,skew=38,damp=700,initialBias=72,initialN=128,delimiter="-",regexPunycode=/^xn--/,regexNonASCII=/[^\x20-\x7E]/,regexSeparators=/[\x2E\u3002\uFF0E\uFF61]/g,errors={overflow:"Overflow: input needs wider integers to process","not-basic":"Illegal input >= 0x80 (not a basic code point)","invalid-input":"Invalid input"},baseMinusTMin=base-tMin,floor=Math.floor,stringFromCharCode=String.fromCharCode;if(punycode={version:"1.4.1",ucs2:{decode:ucs2decode,encode:ucs2encode},decode:decode,encode:encode,toASCII:toASCII,toUnicode:toUnicode},"function"==typeof define&&"object"==typeof define.amd&&define.amd)define("punycode",function(){return punycode});else if(freeExports&&freeModule)if(module.exports==freeExports)freeModule.exports=punycode;else for(key in punycode)punycode.hasOwnProperty(key)&&(freeExports[key]=punycode[key]);else root.punycode=punycode}(this)}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}],17:[function(require,module,exports){"use strict";function hasOwnProperty(obj,prop){return Object.prototype.hasOwnProperty.call(obj,prop)}module.exports=function(qs,sep,eq,options){sep=sep||"&",eq=eq||"=";var obj={};if("string"!=typeof qs||0===qs.length)return obj;var regexp=/\+/g;qs=qs.split(sep);var maxKeys=1e3;options&&"number"==typeof options.maxKeys&&(maxKeys=options.maxKeys);var len=qs.length;maxKeys>0&&len>maxKeys&&(len=maxKeys);for(var i=0;i<len;++i){var kstr,vstr,k,v,x=qs[i].replace(regexp,"%20"),idx=x.indexOf(eq);idx>=0?(kstr=x.substr(0,idx),vstr=x.substr(idx+1)):(kstr=x,vstr=""),k=decodeURIComponent(kstr),v=decodeURIComponent(vstr),hasOwnProperty(obj,k)?isArray(obj[k])?obj[k].push(v):obj[k]=[obj[k],v]:obj[k]=v}return obj};var isArray=Array.isArray||function(xs){return"[object Array]"===Object.prototype.toString.call(xs)}},{}],18:[function(require,module,exports){"use strict";function map(xs,f){if(xs.map)return xs.map(f);for(var res=[],i=0;i<xs.length;i++)res.push(f(xs[i],i));return res}var stringifyPrimitive=function(v){switch(typeof v){case"string":return v;case"boolean":return v?"true":"false";case"number":return isFinite(v)?v:"";default:return""}};module.exports=function(obj,sep,eq,name){return sep=sep||"&",eq=eq||"=",null===obj&&(obj=void 0),"object"==typeof obj?map(objectKeys(obj),function(k){var ks=encodeURIComponent(stringifyPrimitive(k))+eq;return isArray(obj[k])?map(obj[k],function(v){return ks+encodeURIComponent(stringifyPrimitive(v))}).join(sep):ks+encodeURIComponent(stringifyPrimitive(obj[k]))}).join(sep):name?encodeURIComponent(stringifyPrimitive(name))+eq+encodeURIComponent(stringifyPrimitive(obj)):""};var isArray=Array.isArray||function(xs){return"[object Array]"===Object.prototype.toString.call(xs)},objectKeys=Object.keys||function(obj){var res=[];for(var key in obj)Object.prototype.hasOwnProperty.call(obj,key)&&res.push(key);return res}},{}],19:[function(require,module,exports){"use strict";exports.decode=exports.parse=require("./decode"),exports.encode=exports.stringify=require("./encode")},{"./decode":17,"./encode":18}],20:[function(require,module,exports){"use strict";function Duplex(options){return this instanceof Duplex?(Readable.call(this,options),Writable.call(this,options),options&&options.readable===!1&&(this.readable=!1),options&&options.writable===!1&&(this.writable=!1),this.allowHalfOpen=!0,options&&options.allowHalfOpen===!1&&(this.allowHalfOpen=!1),void this.once("end",onend)):new Duplex(options)}function onend(){this.allowHalfOpen||this._writableState.ended||processNextTick(onEndNT,this)}function onEndNT(self){self.end()}var objectKeys=Object.keys||function(obj){var keys=[];for(var key in obj)keys.push(key);return keys};module.exports=Duplex;var processNextTick=require("process-nextick-args"),util=require("core-util-is");util.inherits=require("inherits");var Readable=require("./_stream_readable"),Writable=require("./_stream_writable");util.inherits(Duplex,Readable);for(var keys=objectKeys(Writable.prototype),v=0;v<keys.length;v++){var method=keys[v];Duplex.prototype[method]||(Duplex.prototype[method]=Writable.prototype[method])}},{"./_stream_readable":22,"./_stream_writable":24,"core-util-is":7,inherits:11,"process-nextick-args":14}],21:[function(require,module,exports){"use strict";function PassThrough(options){return this instanceof PassThrough?void Transform.call(this,options):new PassThrough(options)}module.exports=PassThrough;var Transform=require("./_stream_transform"),util=require("core-util-is");util.inherits=require("inherits"),util.inherits(PassThrough,Transform),PassThrough.prototype._transform=function(chunk,encoding,cb){cb(null,chunk)}},{"./_stream_transform":23,"core-util-is":7,inherits:11}],22:[function(require,module,exports){(function(process){"use strict";function prependListener(emitter,event,fn){return"function"==typeof emitter.prependListener?emitter.prependListener(event,fn):void(emitter._events&&emitter._events[event]?isArray(emitter._events[event])?emitter._events[event].unshift(fn):emitter._events[event]=[fn,emitter._events[event]]:emitter.on(event,fn))}function ReadableState(options,stream){Duplex=Duplex||require("./_stream_duplex"),options=options||{},this.objectMode=!!options.objectMode,stream instanceof Duplex&&(this.objectMode=this.objectMode||!!options.readableObjectMode);var hwm=options.highWaterMark,defaultHwm=this.objectMode?16:16384;this.highWaterMark=hwm||0===hwm?hwm:defaultHwm,this.highWaterMark=~~this.highWaterMark,this.buffer=new BufferList,this.length=0,this.pipes=null,this.pipesCount=0,this.flowing=null,this.ended=!1,this.endEmitted=!1,this.reading=!1,this.sync=!0,this.needReadable=!1,this.emittedReadable=!1,this.readableListening=!1,this.resumeScheduled=!1,this.defaultEncoding=options.defaultEncoding||"utf8",this.ranOut=!1,this.awaitDrain=0,this.readingMore=!1,this.decoder=null,this.encoding=null,options.encoding&&(StringDecoder||(StringDecoder=require("string_decoder/").StringDecoder),this.decoder=new StringDecoder(options.encoding),this.encoding=options.encoding)}function Readable(options){return Duplex=Duplex||require("./_stream_duplex"),this instanceof Readable?(this._readableState=new ReadableState(options,this),this.readable=!0,options&&"function"==typeof options.read&&(this._read=options.read),void Stream.call(this)):new Readable(options)}function readableAddChunk(stream,state,chunk,encoding,addToFront){var er=chunkInvalid(state,chunk);if(er)stream.emit("error",er);else if(null===chunk)state.reading=!1,onEofChunk(stream,state);else if(state.objectMode||chunk&&chunk.length>0)if(state.ended&&!addToFront){var e=new Error("stream.push() after EOF");stream.emit("error",e)}else if(state.endEmitted&&addToFront){var _e=new Error("stream.unshift() after end event");stream.emit("error",_e)}else{var skipAdd;!state.decoder||addToFront||encoding||(chunk=state.decoder.write(chunk),skipAdd=!state.objectMode&&0===chunk.length),addToFront||(state.reading=!1),skipAdd||(state.flowing&&0===state.length&&!state.sync?(stream.emit("data",chunk),stream.read(0)):(state.length+=state.objectMode?1:chunk.length,addToFront?state.buffer.unshift(chunk):state.buffer.push(chunk),state.needReadable&&emitReadable(stream))),maybeReadMore(stream,state)}else addToFront||(state.reading=!1);return needMoreData(state)}function needMoreData(state){return!state.ended&&(state.needReadable||state.length<state.highWaterMark||0===state.length)}function computeNewHighWaterMark(n){return n>=MAX_HWM?n=MAX_HWM:(n--,n|=n>>>1,n|=n>>>2,n|=n>>>4,n|=n>>>8,n|=n>>>16,n++),n}function howMuchToRead(n,state){return n<=0||0===state.length&&state.ended?0:state.objectMode?1:n!==n?state.flowing&&state.length?state.buffer.head.data.length:state.length:(n>state.highWaterMark&&(state.highWaterMark=computeNewHighWaterMark(n)),n<=state.length?n:state.ended?state.length:(state.needReadable=!0,0))}function chunkInvalid(state,chunk){var er=null;return Buffer.isBuffer(chunk)||"string"==typeof chunk||null===chunk||void 0===chunk||state.objectMode||(er=new TypeError("Invalid non-string/buffer chunk")),er}function onEofChunk(stream,state){if(!state.ended){if(state.decoder){var chunk=state.decoder.end();chunk&&chunk.length&&(state.buffer.push(chunk),state.length+=state.objectMode?1:chunk.length)}state.ended=!0,emitReadable(stream)}}function emitReadable(stream){var state=stream._readableState;state.needReadable=!1,state.emittedReadable||(debug("emitReadable",state.flowing),state.emittedReadable=!0,state.sync?processNextTick(emitReadable_,stream):emitReadable_(stream))}function emitReadable_(stream){debug("emit readable"),stream.emit("readable"),flow(stream)}function maybeReadMore(stream,state){state.readingMore||(state.readingMore=!0,processNextTick(maybeReadMore_,stream,state))}function maybeReadMore_(stream,state){for(var len=state.length;!state.reading&&!state.flowing&&!state.ended&&state.length<state.highWaterMark&&(debug("maybeReadMore read 0"),stream.read(0),len!==state.length);)len=state.length;state.readingMore=!1}function pipeOnDrain(src){return function(){var state=src._readableState;debug("pipeOnDrain",state.awaitDrain),state.awaitDrain&&state.awaitDrain--,0===state.awaitDrain&&EElistenerCount(src,"data")&&(state.flowing=!0,flow(src))}}function nReadingNextTick(self){debug("readable nexttick read 0"),self.read(0)}function resume(stream,state){state.resumeScheduled||(state.resumeScheduled=!0,processNextTick(resume_,stream,state))}function resume_(stream,state){state.reading||(debug("resume read 0"),stream.read(0)),state.resumeScheduled=!1,state.awaitDrain=0,stream.emit("resume"),flow(stream),state.flowing&&!state.reading&&stream.read(0)}function flow(stream){var state=stream._readableState;for(debug("flow",state.flowing);state.flowing&&null!==stream.read(););}function fromList(n,state){if(0===state.length)return null;var ret;return state.objectMode?ret=state.buffer.shift():!n||n>=state.length?(ret=state.decoder?state.buffer.join(""):1===state.buffer.length?state.buffer.head.data:state.buffer.concat(state.length),state.buffer.clear()):ret=fromListPartial(n,state.buffer,state.decoder),ret}function fromListPartial(n,list,hasStrings){var ret;return n<list.head.data.length?(ret=list.head.data.slice(0,n),list.head.data=list.head.data.slice(n)):ret=n===list.head.data.length?list.shift():hasStrings?copyFromBufferString(n,list):copyFromBuffer(n,list),ret}function copyFromBufferString(n,list){var p=list.head,c=1,ret=p.data;for(n-=ret.length;p=p.next;){var str=p.data,nb=n>str.length?str.length:n;if(ret+=nb===str.length?str:str.slice(0,n),n-=nb,0===n){nb===str.length?(++c,p.next?list.head=p.next:list.head=list.tail=null):(list.head=p,p.data=str.slice(nb));break}++c}return list.length-=c,ret}function copyFromBuffer(n,list){var ret=bufferShim.allocUnsafe(n),p=list.head,c=1;for(p.data.copy(ret),n-=p.data.length;p=p.next;){var buf=p.data,nb=n>buf.length?buf.length:n;if(buf.copy(ret,ret.length-n,0,nb),n-=nb,0===n){nb===buf.length?(++c,p.next?list.head=p.next:list.head=list.tail=null):(list.head=p,p.data=buf.slice(nb));break}++c}return list.length-=c,ret}function endReadable(stream){var state=stream._readableState;if(state.length>0)throw new Error('"endReadable()" called on non-empty stream');state.endEmitted||(state.ended=!0,processNextTick(endReadableNT,state,stream))}function endReadableNT(state,stream){state.endEmitted||0!==state.length||(state.endEmitted=!0,stream.readable=!1,stream.emit("end"))}function forEach(xs,f){for(var i=0,l=xs.length;i<l;i++)f(xs[i],i)}function indexOf(xs,x){for(var i=0,l=xs.length;i<l;i++)if(xs[i]===x)return i;return-1}module.exports=Readable;var Duplex,processNextTick=require("process-nextick-args"),isArray=require("isarray");Readable.ReadableState=ReadableState;var Stream,EElistenerCount=(require("events").EventEmitter,function(emitter,type){return emitter.listeners(type).length});!function(){try{Stream=require("stream")}catch(_){}finally{Stream||(Stream=require("events").EventEmitter)}}();var Buffer=require("buffer").Buffer,bufferShim=require("buffer-shims"),util=require("core-util-is");util.inherits=require("inherits");var debugUtil=require("util"),debug=void 0;debug=debugUtil&&debugUtil.debuglog?debugUtil.debuglog("stream"):function(){};var StringDecoder,BufferList=require("./internal/streams/BufferList");util.inherits(Readable,Stream),Readable.prototype.push=function(chunk,encoding){var state=this._readableState;return state.objectMode||"string"!=typeof chunk||(encoding=encoding||state.defaultEncoding,encoding!==state.encoding&&(chunk=bufferShim.from(chunk,encoding),encoding="")),readableAddChunk(this,state,chunk,encoding,!1)},Readable.prototype.unshift=function(chunk){var state=this._readableState;return readableAddChunk(this,state,chunk,"",!0)},Readable.prototype.isPaused=function(){return this._readableState.flowing===!1},Readable.prototype.setEncoding=function(enc){return StringDecoder||(StringDecoder=require("string_decoder/").StringDecoder),this._readableState.decoder=new StringDecoder(enc),this._readableState.encoding=enc,this};var MAX_HWM=8388608;Readable.prototype.read=function(n){debug("read",n),n=parseInt(n,10);var state=this._readableState,nOrig=n;if(0!==n&&(state.emittedReadable=!1),0===n&&state.needReadable&&(state.length>=state.highWaterMark||state.ended))return debug("read: emitReadable",state.length,state.ended),0===state.length&&state.ended?endReadable(this):emitReadable(this),null;if(n=howMuchToRead(n,state),0===n&&state.ended)return 0===state.length&&endReadable(this),null;var doRead=state.needReadable;debug("need readable",doRead),(0===state.length||state.length-n<state.highWaterMark)&&(doRead=!0,debug("length less than watermark",doRead)),state.ended||state.reading?(doRead=!1,debug("reading or ended",doRead)):doRead&&(debug("do read"),state.reading=!0,state.sync=!0,0===state.length&&(state.needReadable=!0),this._read(state.highWaterMark),state.sync=!1,state.reading||(n=howMuchToRead(nOrig,state)));var ret;return ret=n>0?fromList(n,state):null,null===ret?(state.needReadable=!0,n=0):state.length-=n,0===state.length&&(state.ended||(state.needReadable=!0),nOrig!==n&&state.ended&&endReadable(this)),null!==ret&&this.emit("data",ret),ret},Readable.prototype._read=function(n){this.emit("error",new Error("_read() is not implemented"))},Readable.prototype.pipe=function(dest,pipeOpts){function onunpipe(readable){debug("onunpipe"),readable===src&&cleanup()}function onend(){debug("onend"),dest.end()}function cleanup(){debug("cleanup"),dest.removeListener("close",onclose),dest.removeListener("finish",onfinish),dest.removeListener("drain",ondrain),dest.removeListener("error",onerror),dest.removeListener("unpipe",onunpipe),src.removeListener("end",onend),src.removeListener("end",cleanup),src.removeListener("data",ondata),cleanedUp=!0,!state.awaitDrain||dest._writableState&&!dest._writableState.needDrain||ondrain()}function ondata(chunk){debug("ondata"),increasedAwaitDrain=!1;var ret=dest.write(chunk);!1!==ret||increasedAwaitDrain||((1===state.pipesCount&&state.pipes===dest||state.pipesCount>1&&indexOf(state.pipes,dest)!==-1)&&!cleanedUp&&(debug("false write response, pause",src._readableState.awaitDrain),src._readableState.awaitDrain++,increasedAwaitDrain=!0),src.pause())}function onerror(er){debug("onerror",er),unpipe(),dest.removeListener("error",onerror),0===EElistenerCount(dest,"error")&&dest.emit("error",er)}function onclose(){dest.removeListener("finish",onfinish),unpipe()}function onfinish(){debug("onfinish"),dest.removeListener("close",onclose),unpipe()}function unpipe(){debug("unpipe"),src.unpipe(dest)}var src=this,state=this._readableState;switch(state.pipesCount){case 0:state.pipes=dest;break;case 1:state.pipes=[state.pipes,dest];break;default:state.pipes.push(dest)}state.pipesCount+=1,debug("pipe count=%d opts=%j",state.pipesCount,pipeOpts);var doEnd=(!pipeOpts||pipeOpts.end!==!1)&&dest!==process.stdout&&dest!==process.stderr,endFn=doEnd?onend:cleanup;state.endEmitted?processNextTick(endFn):src.once("end",endFn),dest.on("unpipe",onunpipe);var ondrain=pipeOnDrain(src);dest.on("drain",ondrain);var cleanedUp=!1,increasedAwaitDrain=!1;return src.on("data",ondata),prependListener(dest,"error",onerror),dest.once("close",onclose),dest.once("finish",onfinish),dest.emit("pipe",src),state.flowing||(debug("pipe resume"),src.resume()),dest},Readable.prototype.unpipe=function(dest){var state=this._readableState;if(0===state.pipesCount)return this;if(1===state.pipesCount)return dest&&dest!==state.pipes?this:(dest||(dest=state.pipes),state.pipes=null,state.pipesCount=0,state.flowing=!1,dest&&dest.emit("unpipe",this),this);if(!dest){var dests=state.pipes,len=state.pipesCount;state.pipes=null,state.pipesCount=0,state.flowing=!1;for(var i=0;i<len;i++)dests[i].emit("unpipe",this);return this}var index=indexOf(state.pipes,dest);return index===-1?this:(state.pipes.splice(index,1),state.pipesCount-=1,1===state.pipesCount&&(state.pipes=state.pipes[0]),dest.emit("unpipe",this),this)},Readable.prototype.on=function(ev,fn){var res=Stream.prototype.on.call(this,ev,fn);if("data"===ev)this._readableState.flowing!==!1&&this.resume();else if("readable"===ev){var state=this._readableState;state.endEmitted||state.readableListening||(state.readableListening=state.needReadable=!0,state.emittedReadable=!1,state.reading?state.length&&emitReadable(this,state):processNextTick(nReadingNextTick,this))}return res},Readable.prototype.addListener=Readable.prototype.on,Readable.prototype.resume=function(){var state=this._readableState;return state.flowing||(debug("resume"),state.flowing=!0,resume(this,state)),this},Readable.prototype.pause=function(){return debug("call pause flowing=%j",this._readableState.flowing),!1!==this._readableState.flowing&&(debug("pause"),this._readableState.flowing=!1,this.emit("pause")),this},Readable.prototype.wrap=function(stream){var state=this._readableState,paused=!1,self=this;stream.on("end",function(){if(debug("wrapped end"),state.decoder&&!state.ended){var chunk=state.decoder.end();chunk&&chunk.length&&self.push(chunk)}self.push(null)}),stream.on("data",function(chunk){if(debug("wrapped data"),state.decoder&&(chunk=state.decoder.write(chunk)),(!state.objectMode||null!==chunk&&void 0!==chunk)&&(state.objectMode||chunk&&chunk.length)){var ret=self.push(chunk);ret||(paused=!0,stream.pause())}});for(var i in stream)void 0===this[i]&&"function"==typeof stream[i]&&(this[i]=function(method){return function(){return stream[method].apply(stream,arguments)}}(i));var events=["error","close","destroy","pause","resume"];return forEach(events,function(ev){stream.on(ev,self.emit.bind(self,ev))}),self._read=function(n){debug("wrapped _read",n),paused&&(paused=!1,stream.resume())},self},Readable._fromList=fromList}).call(this,require("_process"))},{"./_stream_duplex":20,"./internal/streams/BufferList":25,_process:15,buffer:5,"buffer-shims":4,"core-util-is":7,events:8,inherits:11,isarray:13,"process-nextick-args":14,"string_decoder/":31,util:3}],23:[function(require,module,exports){"use strict";function TransformState(stream){this.afterTransform=function(er,data){return afterTransform(stream,er,data)},this.needTransform=!1,this.transforming=!1,this.writecb=null,this.writechunk=null,this.writeencoding=null}function afterTransform(stream,er,data){var ts=stream._transformState;ts.transforming=!1;var cb=ts.writecb;if(!cb)return stream.emit("error",new Error("no writecb in Transform class"));ts.writechunk=null,ts.writecb=null,null!==data&&void 0!==data&&stream.push(data),cb(er);var rs=stream._readableState;rs.reading=!1,(rs.needReadable||rs.length<rs.highWaterMark)&&stream._read(rs.highWaterMark)}function Transform(options){if(!(this instanceof Transform))return new Transform(options);Duplex.call(this,options),this._transformState=new TransformState(this);var stream=this;this._readableState.needReadable=!0,this._readableState.sync=!1,options&&("function"==typeof options.transform&&(this._transform=options.transform),"function"==typeof options.flush&&(this._flush=options.flush)),this.once("prefinish",function(){"function"==typeof this._flush?this._flush(function(er,data){done(stream,er,data)}):done(stream)})}function done(stream,er,data){if(er)return stream.emit("error",er);null!==data&&void 0!==data&&stream.push(data);var ws=stream._writableState,ts=stream._transformState;if(ws.length)throw new Error("Calling transform done when ws.length != 0");if(ts.transforming)throw new Error("Calling transform done when still transforming");return stream.push(null)}module.exports=Transform;var Duplex=require("./_stream_duplex"),util=require("core-util-is");util.inherits=require("inherits"),util.inherits(Transform,Duplex),Transform.prototype.push=function(chunk,encoding){return this._transformState.needTransform=!1,Duplex.prototype.push.call(this,chunk,encoding)},Transform.prototype._transform=function(chunk,encoding,cb){throw new Error("_transform() is not implemented")},Transform.prototype._write=function(chunk,encoding,cb){var ts=this._transformState;if(ts.writecb=cb,ts.writechunk=chunk,ts.writeencoding=encoding,!ts.transforming){var rs=this._readableState;(ts.needTransform||rs.needReadable||rs.length<rs.highWaterMark)&&this._read(rs.highWaterMark)}},Transform.prototype._read=function(n){var ts=this._transformState;null!==ts.writechunk&&ts.writecb&&!ts.transforming?(ts.transforming=!0,this._transform(ts.writechunk,ts.writeencoding,ts.afterTransform)):ts.needTransform=!0}},{"./_stream_duplex":20,"core-util-is":7,inherits:11}],24:[function(require,module,exports){(function(process){"use strict";function nop(){}function WriteReq(chunk,encoding,cb){this.chunk=chunk,this.encoding=encoding,this.callback=cb,this.next=null}function WritableState(options,stream){Duplex=Duplex||require("./_stream_duplex"),options=options||{},this.objectMode=!!options.objectMode,stream instanceof Duplex&&(this.objectMode=this.objectMode||!!options.writableObjectMode);var hwm=options.highWaterMark,defaultHwm=this.objectMode?16:16384;this.highWaterMark=hwm||0===hwm?hwm:defaultHwm,this.highWaterMark=~~this.highWaterMark,this.needDrain=!1,this.ending=!1,this.ended=!1,this.finished=!1;var noDecode=options.decodeStrings===!1;this.decodeStrings=!noDecode,this.defaultEncoding=options.defaultEncoding||"utf8",this.length=0,this.writing=!1,this.corked=0,this.sync=!0,this.bufferProcessing=!1,this.onwrite=function(er){onwrite(stream,er)},this.writecb=null,this.writelen=0,this.bufferedRequest=null,this.lastBufferedRequest=null,this.pendingcb=0,this.prefinished=!1,this.errorEmitted=!1,this.bufferedRequestCount=0,this.corkedRequestsFree=new CorkedRequest(this)}function Writable(options){return Duplex=Duplex||require("./_stream_duplex"),realHasInstance.call(Writable,this)||this instanceof Duplex?(this._writableState=new WritableState(options,this),this.writable=!0,options&&("function"==typeof options.write&&(this._write=options.write),"function"==typeof options.writev&&(this._writev=options.writev)),void Stream.call(this)):new Writable(options)}function writeAfterEnd(stream,cb){var er=new Error("write after end");stream.emit("error",er),processNextTick(cb,er)}function validChunk(stream,state,chunk,cb){var valid=!0,er=!1;return null===chunk?er=new TypeError("May not write null values to stream"):Buffer.isBuffer(chunk)||"string"==typeof chunk||void 0===chunk||state.objectMode||(er=new TypeError("Invalid non-string/buffer chunk")),er&&(stream.emit("error",er),processNextTick(cb,er),valid=!1),valid}function decodeChunk(state,chunk,encoding){return state.objectMode||state.decodeStrings===!1||"string"!=typeof chunk||(chunk=bufferShim.from(chunk,encoding)),chunk}function writeOrBuffer(stream,state,chunk,encoding,cb){chunk=decodeChunk(state,chunk,encoding),Buffer.isBuffer(chunk)&&(encoding="buffer");var len=state.objectMode?1:chunk.length;state.length+=len;var ret=state.length<state.highWaterMark;if(ret||(state.needDrain=!0),state.writing||state.corked){var last=state.lastBufferedRequest;state.lastBufferedRequest=new WriteReq(chunk,encoding,cb),last?last.next=state.lastBufferedRequest:state.bufferedRequest=state.lastBufferedRequest,state.bufferedRequestCount+=1}else doWrite(stream,state,!1,len,chunk,encoding,cb);return ret}function doWrite(stream,state,writev,len,chunk,encoding,cb){state.writelen=len,state.writecb=cb,state.writing=!0,state.sync=!0,writev?stream._writev(chunk,state.onwrite):stream._write(chunk,encoding,state.onwrite),state.sync=!1}function onwriteError(stream,state,sync,er,cb){--state.pendingcb,sync?processNextTick(cb,er):cb(er),stream._writableState.errorEmitted=!0,stream.emit("error",er)}function onwriteStateUpdate(state){state.writing=!1,state.writecb=null,state.length-=state.writelen,state.writelen=0}function onwrite(stream,er){var state=stream._writableState,sync=state.sync,cb=state.writecb;if(onwriteStateUpdate(state),er)onwriteError(stream,state,sync,er,cb);else{var finished=needFinish(state);finished||state.corked||state.bufferProcessing||!state.bufferedRequest||clearBuffer(stream,state),sync?asyncWrite(afterWrite,stream,state,finished,cb):afterWrite(stream,state,finished,cb)}}function afterWrite(stream,state,finished,cb){finished||onwriteDrain(stream,state),state.pendingcb--,cb(),finishMaybe(stream,state)}function onwriteDrain(stream,state){0===state.length&&state.needDrain&&(state.needDrain=!1,stream.emit("drain"))}function clearBuffer(stream,state){state.bufferProcessing=!0;var entry=state.bufferedRequest;if(stream._writev&&entry&&entry.next){var l=state.bufferedRequestCount,buffer=new Array(l),holder=state.corkedRequestsFree;holder.entry=entry;for(var count=0;entry;)buffer[count]=entry,entry=entry.next,count+=1;doWrite(stream,state,!0,state.length,buffer,"",holder.finish),state.pendingcb++,state.lastBufferedRequest=null,holder.next?(state.corkedRequestsFree=holder.next,holder.next=null):state.corkedRequestsFree=new CorkedRequest(state)}else{for(;entry;){var chunk=entry.chunk,encoding=entry.encoding,cb=entry.callback,len=state.objectMode?1:chunk.length;if(doWrite(stream,state,!1,len,chunk,encoding,cb),entry=entry.next,state.writing)break}null===entry&&(state.lastBufferedRequest=null)}state.bufferedRequestCount=0,state.bufferedRequest=entry,state.bufferProcessing=!1}function needFinish(state){return state.ending&&0===state.length&&null===state.bufferedRequest&&!state.finished&&!state.writing}function prefinish(stream,state){state.prefinished||(state.prefinished=!0,stream.emit("prefinish"))}function finishMaybe(stream,state){var need=needFinish(state);return need&&(0===state.pendingcb?(prefinish(stream,state),state.finished=!0,stream.emit("finish")):prefinish(stream,state)),need}function endWritable(stream,state,cb){state.ending=!0,finishMaybe(stream,state),cb&&(state.finished?processNextTick(cb):stream.once("finish",cb)),state.ended=!0,stream.writable=!1}function CorkedRequest(state){var _this=this;this.next=null,this.entry=null,this.finish=function(err){var entry=_this.entry;for(_this.entry=null;entry;){var cb=entry.callback;state.pendingcb--,cb(err),entry=entry.next}state.corkedRequestsFree?state.corkedRequestsFree.next=_this:state.corkedRequestsFree=_this}}module.exports=Writable;var Duplex,processNextTick=require("process-nextick-args"),asyncWrite=!process.browser&&["v0.10","v0.9."].indexOf(process.version.slice(0,5))>-1?setImmediate:processNextTick;Writable.WritableState=WritableState;var util=require("core-util-is");util.inherits=require("inherits");var Stream,internalUtil={deprecate:require("util-deprecate")};!function(){try{Stream=require("stream")}catch(_){}finally{Stream||(Stream=require("events").EventEmitter)}}();var Buffer=require("buffer").Buffer,bufferShim=require("buffer-shims");util.inherits(Writable,Stream),WritableState.prototype.getBuffer=function(){for(var current=this.bufferedRequest,out=[];current;)out.push(current),current=current.next;return out},function(){try{Object.defineProperty(WritableState.prototype,"buffer",{get:internalUtil.deprecate(function(){return this.getBuffer()},"_writableState.buffer is deprecated. Use _writableState.getBuffer instead.")})}catch(_){}}();var realHasInstance;"function"==typeof Symbol&&Symbol.hasInstance&&"function"==typeof Function.prototype[Symbol.hasInstance]?(realHasInstance=Function.prototype[Symbol.hasInstance],Object.defineProperty(Writable,Symbol.hasInstance,{value:function(object){return!!realHasInstance.call(this,object)||object&&object._writableState instanceof WritableState}})):realHasInstance=function(object){return object instanceof this},Writable.prototype.pipe=function(){this.emit("error",new Error("Cannot pipe, not readable"))},Writable.prototype.write=function(chunk,encoding,cb){var state=this._writableState,ret=!1;return"function"==typeof encoding&&(cb=encoding,encoding=null),Buffer.isBuffer(chunk)?encoding="buffer":encoding||(encoding=state.defaultEncoding),"function"!=typeof cb&&(cb=nop),state.ended?writeAfterEnd(this,cb):validChunk(this,state,chunk,cb)&&(state.pendingcb++,ret=writeOrBuffer(this,state,chunk,encoding,cb)),ret},Writable.prototype.cork=function(){var state=this._writableState;state.corked++},Writable.prototype.uncork=function(){var state=this._writableState;state.corked&&(state.corked--,state.writing||state.corked||state.finished||state.bufferProcessing||!state.bufferedRequest||clearBuffer(this,state))},Writable.prototype.setDefaultEncoding=function(encoding){if("string"==typeof encoding&&(encoding=encoding.toLowerCase()),!(["hex","utf8","utf-8","ascii","binary","base64","ucs2","ucs-2","utf16le","utf-16le","raw"].indexOf((encoding+"").toLowerCase())>-1))throw new TypeError("Unknown encoding: "+encoding);return this._writableState.defaultEncoding=encoding,this},Writable.prototype._write=function(chunk,encoding,cb){cb(new Error("_write() is not implemented"))},Writable.prototype._writev=null,Writable.prototype.end=function(chunk,encoding,cb){var state=this._writableState;"function"==typeof chunk?(cb=chunk,chunk=null,encoding=null):"function"==typeof encoding&&(cb=encoding,encoding=null),null!==chunk&&void 0!==chunk&&this.write(chunk,encoding),state.corked&&(state.corked=1,this.uncork()),state.ending||state.finished||endWritable(this,state,cb)}}).call(this,require("_process"))},{"./_stream_duplex":20,_process:15,buffer:5,"buffer-shims":4,"core-util-is":7,events:8,inherits:11,"process-nextick-args":14,"util-deprecate":35}],25:[function(require,module,exports){"use strict";function BufferList(){this.head=null,this.tail=null,this.length=0}var bufferShim=(require("buffer").Buffer,require("buffer-shims"));module.exports=BufferList,BufferList.prototype.push=function(v){var entry={data:v,next:null};this.length>0?this.tail.next=entry:this.head=entry,this.tail=entry,++this.length},BufferList.prototype.unshift=function(v){var entry={data:v,next:this.head};0===this.length&&(this.tail=entry),this.head=entry,++this.length},BufferList.prototype.shift=function(){if(0!==this.length){var ret=this.head.data;return 1===this.length?this.head=this.tail=null:this.head=this.head.next,--this.length,ret}},BufferList.prototype.clear=function(){this.head=this.tail=null,this.length=0},BufferList.prototype.join=function(s){if(0===this.length)return"";for(var p=this.head,ret=""+p.data;p=p.next;)ret+=s+p.data;return ret},BufferList.prototype.concat=function(n){if(0===this.length)return bufferShim.alloc(0);if(1===this.length)return this.head.data;for(var ret=bufferShim.allocUnsafe(n>>>0),p=this.head,i=0;p;)p.data.copy(ret,i),i+=p.data.length,p=p.next;return ret}},{buffer:5,"buffer-shims":4}],26:[function(require,module,exports){(function(process){var Stream=function(){try{return require("stream")}catch(_){}}();exports=module.exports=require("./lib/_stream_readable.js"),exports.Stream=Stream||exports,exports.Readable=exports,exports.Writable=require("./lib/_stream_writable.js"),exports.Duplex=require("./lib/_stream_duplex.js"),exports.Transform=require("./lib/_stream_transform.js"),exports.PassThrough=require("./lib/_stream_passthrough.js"),!process.browser&&"disable"===process.env.READABLE_STREAM&&Stream&&(module.exports=Stream);
 }).call(this,require("_process"))},{"./lib/_stream_duplex.js":20,"./lib/_stream_passthrough.js":21,"./lib/_stream_readable.js":22,"./lib/_stream_transform.js":23,"./lib/_stream_writable.js":24,_process:15}],27:[function(require,module,exports){(function(global){var ClientRequest=require("./lib/request"),extend=require("xtend"),statusCodes=require("builtin-status-codes"),url=require("url"),http=exports;http.request=function(opts,cb){opts="string"==typeof opts?url.parse(opts):extend(opts);var defaultProtocol=global.location.protocol.search(/^https?:$/)===-1?"http:":"",protocol=opts.protocol||defaultProtocol,host=opts.hostname||opts.host,port=opts.port,path=opts.path||"/";host&&host.indexOf(":")!==-1&&(host="["+host+"]"),opts.url=(host?protocol+"//"+host:"")+(port?":"+port:"")+path,opts.method=(opts.method||"GET").toUpperCase(),opts.headers=opts.headers||{};var req=new ClientRequest(opts);return cb&&req.on("response",cb),req},http.get=function(opts,cb){var req=http.request(opts,cb);return req.end(),req},http.Agent=function(){},http.Agent.defaultMaxSockets=4,http.STATUS_CODES=statusCodes,http.METHODS=["CHECKOUT","CONNECT","COPY","DELETE","GET","HEAD","LOCK","M-SEARCH","MERGE","MKACTIVITY","MKCOL","MOVE","NOTIFY","OPTIONS","PATCH","POST","PROPFIND","PROPPATCH","PURGE","PUT","REPORT","SEARCH","SUBSCRIBE","TRACE","UNLOCK","UNSUBSCRIBE"]}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./lib/request":29,"builtin-status-codes":6,url:33,xtend:36}],28:[function(require,module,exports){(function(global){function getXHR(){if(void 0!==xhr)return xhr;if(global.XMLHttpRequest){xhr=new global.XMLHttpRequest;try{xhr.open("GET",global.XDomainRequest?"/":"https://example.com")}catch(e){xhr=null}}else xhr=null;return xhr}function checkTypeSupport(type){var xhr=getXHR();if(!xhr)return!1;try{return xhr.responseType=type,xhr.responseType===type}catch(e){}return!1}function isFunction(value){return"function"==typeof value}exports.fetch=isFunction(global.fetch)&&isFunction(global.ReadableStream),exports.blobConstructor=!1;try{new Blob([new ArrayBuffer(1)]),exports.blobConstructor=!0}catch(e){}var xhr,haveArrayBuffer="undefined"!=typeof global.ArrayBuffer,haveSlice=haveArrayBuffer&&isFunction(global.ArrayBuffer.prototype.slice);exports.arraybuffer=exports.fetch||haveArrayBuffer&&checkTypeSupport("arraybuffer"),exports.msstream=!exports.fetch&&haveSlice&&checkTypeSupport("ms-stream"),exports.mozchunkedarraybuffer=!exports.fetch&&haveArrayBuffer&&checkTypeSupport("moz-chunked-arraybuffer"),exports.overrideMimeType=exports.fetch||!!getXHR()&&isFunction(getXHR().overrideMimeType),exports.vbArray=isFunction(global.VBArray),xhr=null}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}],29:[function(require,module,exports){(function(process,global,Buffer){function decideMode(preferBinary,useFetch){return capability.fetch&&useFetch?"fetch":capability.mozchunkedarraybuffer?"moz-chunked-arraybuffer":capability.msstream?"ms-stream":capability.arraybuffer&&preferBinary?"arraybuffer":capability.vbArray&&preferBinary?"text:vbarray":"text"}function statusValid(xhr){try{var status=xhr.status;return null!==status&&0!==status}catch(e){return!1}}var capability=require("./capability"),inherits=require("inherits"),response=require("./response"),stream=require("readable-stream"),toArrayBuffer=require("to-arraybuffer"),IncomingMessage=response.IncomingMessage,rStates=response.readyStates,ClientRequest=module.exports=function(opts){var self=this;stream.Writable.call(self),self._opts=opts,self._body=[],self._headers={},opts.auth&&self.setHeader("Authorization","Basic "+new Buffer(opts.auth).toString("base64")),Object.keys(opts.headers).forEach(function(name){self.setHeader(name,opts.headers[name])});var preferBinary,useFetch=!0;if("disable-fetch"===opts.mode||"timeout"in opts)useFetch=!1,preferBinary=!0;else if("prefer-streaming"===opts.mode)preferBinary=!1;else if("allow-wrong-content-type"===opts.mode)preferBinary=!capability.overrideMimeType;else{if(opts.mode&&"default"!==opts.mode&&"prefer-fast"!==opts.mode)throw new Error("Invalid value for opts.mode");preferBinary=!0}self._mode=decideMode(preferBinary,useFetch),self.on("finish",function(){self._onFinish()})};inherits(ClientRequest,stream.Writable),ClientRequest.prototype.setHeader=function(name,value){var self=this,lowerName=name.toLowerCase();unsafeHeaders.indexOf(lowerName)===-1&&(self._headers[lowerName]={name:name,value:value})},ClientRequest.prototype.getHeader=function(name){var self=this;return self._headers[name.toLowerCase()].value},ClientRequest.prototype.removeHeader=function(name){var self=this;delete self._headers[name.toLowerCase()]},ClientRequest.prototype._onFinish=function(){var self=this;if(!self._destroyed){var opts=self._opts,headersObj=self._headers,body=null;if("POST"!==opts.method&&"PUT"!==opts.method&&"PATCH"!==opts.method&&"MERGE"!==opts.method||(body=capability.blobConstructor?new global.Blob(self._body.map(function(buffer){return toArrayBuffer(buffer)}),{type:(headersObj["content-type"]||{}).value||""}):Buffer.concat(self._body).toString()),"fetch"===self._mode){var headers=Object.keys(headersObj).map(function(name){return[headersObj[name].name,headersObj[name].value]});global.fetch(self._opts.url,{method:self._opts.method,headers:headers,body:body||void 0,mode:"cors",credentials:opts.withCredentials?"include":"same-origin"}).then(function(response){self._fetchResponse=response,self._connect()},function(reason){self.emit("error",reason)})}else{var xhr=self._xhr=new global.XMLHttpRequest;try{xhr.open(self._opts.method,self._opts.url,!0)}catch(err){return void process.nextTick(function(){self.emit("error",err)})}"responseType"in xhr&&(xhr.responseType=self._mode.split(":")[0]),"withCredentials"in xhr&&(xhr.withCredentials=!!opts.withCredentials),"text"===self._mode&&"overrideMimeType"in xhr&&xhr.overrideMimeType("text/plain; charset=x-user-defined"),"timeout"in opts&&(xhr.timeout=opts.timeout,xhr.ontimeout=function(){self.emit("timeout")}),Object.keys(headersObj).forEach(function(name){xhr.setRequestHeader(headersObj[name].name,headersObj[name].value)}),self._response=null,xhr.onreadystatechange=function(){switch(xhr.readyState){case rStates.LOADING:case rStates.DONE:self._onXHRProgress()}},"moz-chunked-arraybuffer"===self._mode&&(xhr.onprogress=function(){self._onXHRProgress()}),xhr.onerror=function(){self._destroyed||self.emit("error",new Error("XHR error"))};try{xhr.send(body)}catch(err){return void process.nextTick(function(){self.emit("error",err)})}}}},ClientRequest.prototype._onXHRProgress=function(){var self=this;statusValid(self._xhr)&&!self._destroyed&&(self._response||self._connect(),self._response._onXHRProgress())},ClientRequest.prototype._connect=function(){var self=this;self._destroyed||(self._response=new IncomingMessage(self._xhr,self._fetchResponse,self._mode),self._response.on("error",function(err){self.emit("error",err)}),self.emit("response",self._response))},ClientRequest.prototype._write=function(chunk,encoding,cb){var self=this;self._body.push(chunk),cb()},ClientRequest.prototype.abort=ClientRequest.prototype.destroy=function(){var self=this;self._destroyed=!0,self._response&&(self._response._destroyed=!0),self._xhr&&self._xhr.abort()},ClientRequest.prototype.end=function(data,encoding,cb){var self=this;"function"==typeof data&&(cb=data,data=void 0),stream.Writable.prototype.end.call(self,data,encoding,cb)},ClientRequest.prototype.flushHeaders=function(){},ClientRequest.prototype.setTimeout=function(){},ClientRequest.prototype.setNoDelay=function(){},ClientRequest.prototype.setSocketKeepAlive=function(){};var unsafeHeaders=["accept-charset","accept-encoding","access-control-request-headers","access-control-request-method","connection","content-length","cookie","cookie2","date","dnt","expect","host","keep-alive","origin","referer","te","trailer","transfer-encoding","upgrade","user-agent","via"]}).call(this,require("_process"),"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{},require("buffer").Buffer)},{"./capability":28,"./response":30,_process:15,buffer:5,inherits:11,"readable-stream":26,"to-arraybuffer":32}],30:[function(require,module,exports){(function(process,global,Buffer){var capability=require("./capability"),inherits=require("inherits"),stream=require("readable-stream"),rStates=exports.readyStates={UNSENT:0,OPENED:1,HEADERS_RECEIVED:2,LOADING:3,DONE:4},IncomingMessage=exports.IncomingMessage=function(xhr,response,mode){function read(){reader.read().then(function(result){if(!self._destroyed){if(result.done)return void self.push(null);self.push(new Buffer(result.value)),read()}})["catch"](function(err){self.emit("error",err)})}var self=this;if(stream.Readable.call(self),self._mode=mode,self.headers={},self.rawHeaders=[],self.trailers={},self.rawTrailers=[],self.on("end",function(){process.nextTick(function(){self.emit("close")})}),"fetch"===mode){self._fetchResponse=response,self.url=response.url,self.statusCode=response.status,self.statusMessage=response.statusText,response.headers.forEach(function(header,key){self.headers[key.toLowerCase()]=header,self.rawHeaders.push(key,header)});var reader=response.body.getReader();read()}else{self._xhr=xhr,self._pos=0,self.url=xhr.responseURL,self.statusCode=xhr.status,self.statusMessage=xhr.statusText;var headers=xhr.getAllResponseHeaders().split(/\r?\n/);if(headers.forEach(function(header){var matches=header.match(/^([^:]+):\s*(.*)/);if(matches){var key=matches[1].toLowerCase();"set-cookie"===key?(void 0===self.headers[key]&&(self.headers[key]=[]),self.headers[key].push(matches[2])):void 0!==self.headers[key]?self.headers[key]+=", "+matches[2]:self.headers[key]=matches[2],self.rawHeaders.push(matches[1],matches[2])}}),self._charset="x-user-defined",!capability.overrideMimeType){var mimeType=self.rawHeaders["mime-type"];if(mimeType){var charsetMatch=mimeType.match(/;\s*charset=([^;])(;|$)/);charsetMatch&&(self._charset=charsetMatch[1].toLowerCase())}self._charset||(self._charset="utf-8")}}};inherits(IncomingMessage,stream.Readable),IncomingMessage.prototype._read=function(){},IncomingMessage.prototype._onXHRProgress=function(){var self=this,xhr=self._xhr,response=null;switch(self._mode){case"text:vbarray":if(xhr.readyState!==rStates.DONE)break;try{response=new global.VBArray(xhr.responseBody).toArray()}catch(e){}if(null!==response){self.push(new Buffer(response));break}case"text":try{response=xhr.responseText}catch(e){self._mode="text:vbarray";break}if(response.length>self._pos){var newData=response.substr(self._pos);if("x-user-defined"===self._charset){for(var buffer=new Buffer(newData.length),i=0;i<newData.length;i++)buffer[i]=255&newData.charCodeAt(i);self.push(buffer)}else self.push(newData,self._charset);self._pos=response.length}break;case"arraybuffer":if(xhr.readyState!==rStates.DONE||!xhr.response)break;response=xhr.response,self.push(new Buffer(new Uint8Array(response)));break;case"moz-chunked-arraybuffer":if(response=xhr.response,xhr.readyState!==rStates.LOADING||!response)break;self.push(new Buffer(new Uint8Array(response)));break;case"ms-stream":if(response=xhr.response,xhr.readyState!==rStates.LOADING)break;var reader=new global.MSStreamReader;reader.onprogress=function(){reader.result.byteLength>self._pos&&(self.push(new Buffer(new Uint8Array(reader.result.slice(self._pos)))),self._pos=reader.result.byteLength)},reader.onload=function(){self.push(null)},reader.readAsArrayBuffer(response)}self._xhr.readyState===rStates.DONE&&"ms-stream"!==self._mode&&self.push(null)}}).call(this,require("_process"),"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{},require("buffer").Buffer)},{"./capability":28,_process:15,buffer:5,inherits:11,"readable-stream":26}],31:[function(require,module,exports){function assertEncoding(encoding){if(encoding&&!isBufferEncoding(encoding))throw new Error("Unknown encoding: "+encoding)}function passThroughWrite(buffer){return buffer.toString(this.encoding)}function utf16DetectIncompleteChar(buffer){this.charReceived=buffer.length%2,this.charLength=this.charReceived?2:0}function base64DetectIncompleteChar(buffer){this.charReceived=buffer.length%3,this.charLength=this.charReceived?3:0}var Buffer=require("buffer").Buffer,isBufferEncoding=Buffer.isEncoding||function(encoding){switch(encoding&&encoding.toLowerCase()){case"hex":case"utf8":case"utf-8":case"ascii":case"binary":case"base64":case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":case"raw":return!0;default:return!1}},StringDecoder=exports.StringDecoder=function(encoding){switch(this.encoding=(encoding||"utf8").toLowerCase().replace(/[-_]/,""),assertEncoding(encoding),this.encoding){case"utf8":this.surrogateSize=3;break;case"ucs2":case"utf16le":this.surrogateSize=2,this.detectIncompleteChar=utf16DetectIncompleteChar;break;case"base64":this.surrogateSize=3,this.detectIncompleteChar=base64DetectIncompleteChar;break;default:return void(this.write=passThroughWrite)}this.charBuffer=new Buffer(6),this.charReceived=0,this.charLength=0};StringDecoder.prototype.write=function(buffer){for(var charStr="";this.charLength;){var available=buffer.length>=this.charLength-this.charReceived?this.charLength-this.charReceived:buffer.length;if(buffer.copy(this.charBuffer,this.charReceived,0,available),this.charReceived+=available,this.charReceived<this.charLength)return"";buffer=buffer.slice(available,buffer.length),charStr=this.charBuffer.slice(0,this.charLength).toString(this.encoding);var charCode=charStr.charCodeAt(charStr.length-1);if(!(charCode>=55296&&charCode<=56319)){if(this.charReceived=this.charLength=0,0===buffer.length)return charStr;break}this.charLength+=this.surrogateSize,charStr=""}this.detectIncompleteChar(buffer);var end=buffer.length;this.charLength&&(buffer.copy(this.charBuffer,0,buffer.length-this.charReceived,end),end-=this.charReceived),charStr+=buffer.toString(this.encoding,0,end);var end=charStr.length-1,charCode=charStr.charCodeAt(end);if(charCode>=55296&&charCode<=56319){var size=this.surrogateSize;return this.charLength+=size,this.charReceived+=size,this.charBuffer.copy(this.charBuffer,size,0,size),buffer.copy(this.charBuffer,0,0,size),charStr.substring(0,end)}return charStr},StringDecoder.prototype.detectIncompleteChar=function(buffer){for(var i=buffer.length>=3?3:buffer.length;i>0;i--){var c=buffer[buffer.length-i];if(1==i&&c>>5==6){this.charLength=2;break}if(i<=2&&c>>4==14){this.charLength=3;break}if(i<=3&&c>>3==30){this.charLength=4;break}}this.charReceived=i},StringDecoder.prototype.end=function(buffer){var res="";if(buffer&&buffer.length&&(res=this.write(buffer)),this.charReceived){var cr=this.charReceived,buf=this.charBuffer,enc=this.encoding;res+=buf.slice(0,cr).toString(enc)}return res}},{buffer:5}],32:[function(require,module,exports){var Buffer=require("buffer").Buffer;module.exports=function(buf){if(buf instanceof Uint8Array){if(0===buf.byteOffset&&buf.byteLength===buf.buffer.byteLength)return buf.buffer;if("function"==typeof buf.buffer.slice)return buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength)}if(Buffer.isBuffer(buf)){for(var arrayCopy=new Uint8Array(buf.length),len=buf.length,i=0;i<len;i++)arrayCopy[i]=buf[i];return arrayCopy.buffer}throw new Error("Argument must be a Buffer")}},{buffer:5}],33:[function(require,module,exports){"use strict";function Url(){this.protocol=null,this.slashes=null,this.auth=null,this.host=null,this.port=null,this.hostname=null,this.hash=null,this.search=null,this.query=null,this.pathname=null,this.path=null,this.href=null}function urlParse(url,parseQueryString,slashesDenoteHost){if(url&&util.isObject(url)&&url instanceof Url)return url;var u=new Url;return u.parse(url,parseQueryString,slashesDenoteHost),u}function urlFormat(obj){return util.isString(obj)&&(obj=urlParse(obj)),obj instanceof Url?obj.format():Url.prototype.format.call(obj)}function urlResolve(source,relative){return urlParse(source,!1,!0).resolve(relative)}function urlResolveObject(source,relative){return source?urlParse(source,!1,!0).resolveObject(relative):relative}var punycode=require("punycode"),util=require("./util");exports.parse=urlParse,exports.resolve=urlResolve,exports.resolveObject=urlResolveObject,exports.format=urlFormat,exports.Url=Url;var protocolPattern=/^([a-z0-9.+-]+:)/i,portPattern=/:[0-9]*$/,simplePathPattern=/^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,delims=["<",">",'"',"`"," ","\r","\n","\t"],unwise=["{","}","|","\\","^","`"].concat(delims),autoEscape=["'"].concat(unwise),nonHostChars=["%","/","?",";","#"].concat(autoEscape),hostEndingChars=["/","?","#"],hostnameMaxLen=255,hostnamePartPattern=/^[+a-z0-9A-Z_-]{0,63}$/,hostnamePartStart=/^([+a-z0-9A-Z_-]{0,63})(.*)$/,unsafeProtocol={javascript:!0,"javascript:":!0},hostlessProtocol={javascript:!0,"javascript:":!0},slashedProtocol={http:!0,https:!0,ftp:!0,gopher:!0,file:!0,"http:":!0,"https:":!0,"ftp:":!0,"gopher:":!0,"file:":!0},querystring=require("querystring");Url.prototype.parse=function(url,parseQueryString,slashesDenoteHost){if(!util.isString(url))throw new TypeError("Parameter 'url' must be a string, not "+typeof url);var queryIndex=url.indexOf("?"),splitter=queryIndex!==-1&&queryIndex<url.indexOf("#")?"?":"#",uSplit=url.split(splitter),slashRegex=/\\/g;uSplit[0]=uSplit[0].replace(slashRegex,"/"),url=uSplit.join(splitter);var rest=url;if(rest=rest.trim(),!slashesDenoteHost&&1===url.split("#").length){var simplePath=simplePathPattern.exec(rest);if(simplePath)return this.path=rest,this.href=rest,this.pathname=simplePath[1],simplePath[2]?(this.search=simplePath[2],parseQueryString?this.query=querystring.parse(this.search.substr(1)):this.query=this.search.substr(1)):parseQueryString&&(this.search="",this.query={}),this}var proto=protocolPattern.exec(rest);if(proto){proto=proto[0];var lowerProto=proto.toLowerCase();this.protocol=lowerProto,rest=rest.substr(proto.length)}if(slashesDenoteHost||proto||rest.match(/^\/\/[^@\/]+@[^@\/]+/)){var slashes="//"===rest.substr(0,2);!slashes||proto&&hostlessProtocol[proto]||(rest=rest.substr(2),this.slashes=!0)}if(!hostlessProtocol[proto]&&(slashes||proto&&!slashedProtocol[proto])){for(var hostEnd=-1,i=0;i<hostEndingChars.length;i++){var hec=rest.indexOf(hostEndingChars[i]);hec!==-1&&(hostEnd===-1||hec<hostEnd)&&(hostEnd=hec)}var auth,atSign;atSign=hostEnd===-1?rest.lastIndexOf("@"):rest.lastIndexOf("@",hostEnd),atSign!==-1&&(auth=rest.slice(0,atSign),rest=rest.slice(atSign+1),this.auth=decodeURIComponent(auth)),hostEnd=-1;for(var i=0;i<nonHostChars.length;i++){var hec=rest.indexOf(nonHostChars[i]);hec!==-1&&(hostEnd===-1||hec<hostEnd)&&(hostEnd=hec)}hostEnd===-1&&(hostEnd=rest.length),this.host=rest.slice(0,hostEnd),rest=rest.slice(hostEnd),this.parseHost(),this.hostname=this.hostname||"";var ipv6Hostname="["===this.hostname[0]&&"]"===this.hostname[this.hostname.length-1];if(!ipv6Hostname)for(var hostparts=this.hostname.split(/\./),i=0,l=hostparts.length;i<l;i++){var part=hostparts[i];if(part&&!part.match(hostnamePartPattern)){for(var newpart="",j=0,k=part.length;j<k;j++)newpart+=part.charCodeAt(j)>127?"x":part[j];if(!newpart.match(hostnamePartPattern)){var validParts=hostparts.slice(0,i),notHost=hostparts.slice(i+1),bit=part.match(hostnamePartStart);bit&&(validParts.push(bit[1]),notHost.unshift(bit[2])),notHost.length&&(rest="/"+notHost.join(".")+rest),this.hostname=validParts.join(".");break}}}this.hostname.length>hostnameMaxLen?this.hostname="":this.hostname=this.hostname.toLowerCase(),ipv6Hostname||(this.hostname=punycode.toASCII(this.hostname));var p=this.port?":"+this.port:"",h=this.hostname||"";this.host=h+p,this.href+=this.host,ipv6Hostname&&(this.hostname=this.hostname.substr(1,this.hostname.length-2),"/"!==rest[0]&&(rest="/"+rest))}if(!unsafeProtocol[lowerProto])for(var i=0,l=autoEscape.length;i<l;i++){var ae=autoEscape[i];if(rest.indexOf(ae)!==-1){var esc=encodeURIComponent(ae);esc===ae&&(esc=escape(ae)),rest=rest.split(ae).join(esc)}}var hash=rest.indexOf("#");hash!==-1&&(this.hash=rest.substr(hash),rest=rest.slice(0,hash));var qm=rest.indexOf("?");if(qm!==-1?(this.search=rest.substr(qm),this.query=rest.substr(qm+1),parseQueryString&&(this.query=querystring.parse(this.query)),rest=rest.slice(0,qm)):parseQueryString&&(this.search="",this.query={}),rest&&(this.pathname=rest),slashedProtocol[lowerProto]&&this.hostname&&!this.pathname&&(this.pathname="/"),this.pathname||this.search){var p=this.pathname||"",s=this.search||"";this.path=p+s}return this.href=this.format(),this},Url.prototype.format=function(){var auth=this.auth||"";auth&&(auth=encodeURIComponent(auth),auth=auth.replace(/%3A/i,":"),auth+="@");var protocol=this.protocol||"",pathname=this.pathname||"",hash=this.hash||"",host=!1,query="";this.host?host=auth+this.host:this.hostname&&(host=auth+(this.hostname.indexOf(":")===-1?this.hostname:"["+this.hostname+"]"),this.port&&(host+=":"+this.port)),this.query&&util.isObject(this.query)&&Object.keys(this.query).length&&(query=querystring.stringify(this.query));var search=this.search||query&&"?"+query||"";return protocol&&":"!==protocol.substr(-1)&&(protocol+=":"),this.slashes||(!protocol||slashedProtocol[protocol])&&host!==!1?(host="//"+(host||""),pathname&&"/"!==pathname.charAt(0)&&(pathname="/"+pathname)):host||(host=""),hash&&"#"!==hash.charAt(0)&&(hash="#"+hash),search&&"?"!==search.charAt(0)&&(search="?"+search),pathname=pathname.replace(/[?#]/g,function(match){return encodeURIComponent(match)}),search=search.replace("#","%23"),protocol+host+pathname+search+hash},Url.prototype.resolve=function(relative){return this.resolveObject(urlParse(relative,!1,!0)).format()},Url.prototype.resolveObject=function(relative){if(util.isString(relative)){var rel=new Url;rel.parse(relative,!1,!0),relative=rel}for(var result=new Url,tkeys=Object.keys(this),tk=0;tk<tkeys.length;tk++){var tkey=tkeys[tk];result[tkey]=this[tkey]}if(result.hash=relative.hash,""===relative.href)return result.href=result.format(),result;if(relative.slashes&&!relative.protocol){for(var rkeys=Object.keys(relative),rk=0;rk<rkeys.length;rk++){var rkey=rkeys[rk];"protocol"!==rkey&&(result[rkey]=relative[rkey])}return slashedProtocol[result.protocol]&&result.hostname&&!result.pathname&&(result.path=result.pathname="/"),result.href=result.format(),result}if(relative.protocol&&relative.protocol!==result.protocol){if(!slashedProtocol[relative.protocol]){for(var keys=Object.keys(relative),v=0;v<keys.length;v++){var k=keys[v];result[k]=relative[k]}return result.href=result.format(),result}if(result.protocol=relative.protocol,relative.host||hostlessProtocol[relative.protocol])result.pathname=relative.pathname;else{for(var relPath=(relative.pathname||"").split("/");relPath.length&&!(relative.host=relPath.shift()););relative.host||(relative.host=""),relative.hostname||(relative.hostname=""),""!==relPath[0]&&relPath.unshift(""),relPath.length<2&&relPath.unshift(""),result.pathname=relPath.join("/")}if(result.search=relative.search,result.query=relative.query,result.host=relative.host||"",result.auth=relative.auth,result.hostname=relative.hostname||relative.host,result.port=relative.port,result.pathname||result.search){var p=result.pathname||"",s=result.search||"";result.path=p+s}return result.slashes=result.slashes||relative.slashes,result.href=result.format(),result}var isSourceAbs=result.pathname&&"/"===result.pathname.charAt(0),isRelAbs=relative.host||relative.pathname&&"/"===relative.pathname.charAt(0),mustEndAbs=isRelAbs||isSourceAbs||result.host&&relative.pathname,removeAllDots=mustEndAbs,srcPath=result.pathname&&result.pathname.split("/")||[],relPath=relative.pathname&&relative.pathname.split("/")||[],psychotic=result.protocol&&!slashedProtocol[result.protocol];if(psychotic&&(result.hostname="",result.port=null,result.host&&(""===srcPath[0]?srcPath[0]=result.host:srcPath.unshift(result.host)),result.host="",relative.protocol&&(relative.hostname=null,relative.port=null,relative.host&&(""===relPath[0]?relPath[0]=relative.host:relPath.unshift(relative.host)),relative.host=null),mustEndAbs=mustEndAbs&&(""===relPath[0]||""===srcPath[0])),isRelAbs)result.host=relative.host||""===relative.host?relative.host:result.host,result.hostname=relative.hostname||""===relative.hostname?relative.hostname:result.hostname,result.search=relative.search,result.query=relative.query,srcPath=relPath;else if(relPath.length)srcPath||(srcPath=[]),srcPath.pop(),srcPath=srcPath.concat(relPath),result.search=relative.search,result.query=relative.query;else if(!util.isNullOrUndefined(relative.search)){if(psychotic){result.hostname=result.host=srcPath.shift();var authInHost=!!(result.host&&result.host.indexOf("@")>0)&&result.host.split("@");authInHost&&(result.auth=authInHost.shift(),result.host=result.hostname=authInHost.shift())}return result.search=relative.search,result.query=relative.query,util.isNull(result.pathname)&&util.isNull(result.search)||(result.path=(result.pathname?result.pathname:"")+(result.search?result.search:"")),result.href=result.format(),result}if(!srcPath.length)return result.pathname=null,result.search?result.path="/"+result.search:result.path=null,result.href=result.format(),result;for(var last=srcPath.slice(-1)[0],hasTrailingSlash=(result.host||relative.host||srcPath.length>1)&&("."===last||".."===last)||""===last,up=0,i=srcPath.length;i>=0;i--)last=srcPath[i],"."===last?srcPath.splice(i,1):".."===last?(srcPath.splice(i,1),up++):up&&(srcPath.splice(i,1),up--);if(!mustEndAbs&&!removeAllDots)for(;up--;up)srcPath.unshift("..");!mustEndAbs||""===srcPath[0]||srcPath[0]&&"/"===srcPath[0].charAt(0)||srcPath.unshift(""),hasTrailingSlash&&"/"!==srcPath.join("/").substr(-1)&&srcPath.push("");var isAbsolute=""===srcPath[0]||srcPath[0]&&"/"===srcPath[0].charAt(0);if(psychotic){result.hostname=result.host=isAbsolute?"":srcPath.length?srcPath.shift():"";var authInHost=!!(result.host&&result.host.indexOf("@")>0)&&result.host.split("@");authInHost&&(result.auth=authInHost.shift(),result.host=result.hostname=authInHost.shift())}return mustEndAbs=mustEndAbs||result.host&&srcPath.length,mustEndAbs&&!isAbsolute&&srcPath.unshift(""),srcPath.length?result.pathname=srcPath.join("/"):(result.pathname=null,result.path=null),util.isNull(result.pathname)&&util.isNull(result.search)||(result.path=(result.pathname?result.pathname:"")+(result.search?result.search:"")),result.auth=relative.auth||result.auth,result.slashes=result.slashes||relative.slashes,result.href=result.format(),result},Url.prototype.parseHost=function(){var host=this.host,port=portPattern.exec(host);port&&(port=port[0],":"!==port&&(this.port=port.substr(1)),host=host.substr(0,host.length-port.length)),host&&(this.hostname=host)}},{"./util":34,punycode:16,querystring:19}],34:[function(require,module,exports){"use strict";module.exports={isString:function(arg){return"string"==typeof arg},isObject:function(arg){return"object"==typeof arg&&null!==arg},isNull:function(arg){return null===arg},isNullOrUndefined:function(arg){return null==arg}}},{}],35:[function(require,module,exports){(function(global){function deprecate(fn,msg){function deprecated(){if(!warned){if(config("throwDeprecation"))throw new Error(msg);config("traceDeprecation")?console.trace(msg):console.warn(msg),warned=!0}return fn.apply(this,arguments)}if(config("noDeprecation"))return fn;var warned=!1;return deprecated}function config(name){try{if(!global.localStorage)return!1}catch(_){return!1}var val=global.localStorage[name];return null!=val&&"true"===String(val).toLowerCase()}module.exports=deprecate}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}],36:[function(require,module,exports){function extend(){for(var target={},i=0;i<arguments.length;i++){var source=arguments[i];for(var key in source)hasOwnProperty.call(source,key)&&(target[key]=source[key])}return target}module.exports=extend;var hasOwnProperty=Object.prototype.hasOwnProperty},{}]},{},[1])(1)});
 // manifold v1.1.11 https://github.com/viewdir/manifold#readme
-!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('lib/manifold.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.manifold=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var Manifold;!function(Manifold){var StringValue=function(){function StringValue(value){this.value="",value&&(this.value=value.toLowerCase())}return StringValue.prototype.toString=function(){return this.value},StringValue}();Manifold.StringValue=StringValue}(Manifold||(Manifold={}));var Manifold,__extends=this&&this.__extends||function(){var extendStatics=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(d,b){d.__proto__=b}||function(d,b){for(var p in b)b.hasOwnProperty(p)&&(d[p]=b[p])};return function(d,b){function __(){this.constructor=d}extendStatics(d,b),d.prototype=null===b?Object.create(b):(__.prototype=b.prototype,new __)}}();!function(Manifold){var TreeSortType=function(_super){function TreeSortType(){return null!==_super&&_super.apply(this,arguments)||this}return __extends(TreeSortType,_super),TreeSortType.prototype.date=function(){return new TreeSortType(TreeSortType.DATE.toString())},TreeSortType.prototype.none=function(){return new TreeSortType(TreeSortType.NONE.toString())},TreeSortType}(Manifold.StringValue);TreeSortType.DATE=new TreeSortType("date"),TreeSortType.NONE=new TreeSortType("none"),Manifold.TreeSortType=TreeSortType}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Bootstrapper=function(){function Bootstrapper(options){this._options=options,this._options.locale=this._options.locale||"en-GB"}return Bootstrapper.prototype.bootstrap=function(){var that=this;return new Promise(function(resolve,reject){var msie=that._msieversion();if(msie>0&&msie<11)if(9===msie){var settings={url:that._options.iiifResourceUri,type:"GET",dataType:"jsonp",jsonp:"callback",jsonpCallback:"manifestCallback"};$.ajax(settings),global.manifestCallback=function(json){that._loaded(that,JSON.stringify(json),resolve,reject)}}else 10===msie&&$.getJSON(that._options.iiifResourceUri,function(json){that._loaded(that,JSON.stringify(json),resolve,reject)});else manifesto.loadManifest(that._options.iiifResourceUri).then(function(json){that._loaded(that,json,resolve,reject)})})},Bootstrapper.prototype._loaded=function(bootstrapper,json,resolve,reject){var iiifResource=manifesto.create(json,{locale:bootstrapper._options.locale});if(bootstrapper._options.iiifResource||(bootstrapper._options.iiifResource=iiifResource),iiifResource.getIIIFResourceType().toString()===manifesto.IIIFResourceType.collection().toString()){var collections=iiifResource.getCollections();collections&&collections.length?iiifResource.getCollectionByIndex(bootstrapper._options.collectionIndex).then(function(collection){collection||reject("Collection index not found"),0===collection.getTotalManifests()&&0===bootstrapper._options.manifestIndex&&collection.getTotalCollections()>0&&(bootstrapper._options.collectionIndex=0,bootstrapper._options.iiifResourceUri=collection.id,bootstrapper.bootstrap()),collection.getManifestByIndex(bootstrapper._options.manifestIndex).then(function(manifest){bootstrapper._options.manifest=manifest;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)})}):iiifResource.getManifestByIndex(bootstrapper._options.manifestIndex).then(function(manifest){bootstrapper._options.manifest=manifest;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)})}else{bootstrapper._options.manifest=iiifResource;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)}},Bootstrapper.prototype._msieversion=function(){var ua=global.navigator.userAgent,msie=ua.indexOf("MSIE ");return msie>0?parseInt(ua.substring(msie+5,ua.indexOf(".",msie))):0},Bootstrapper}();Manifold.Bootstrapper=Bootstrapper}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var ExternalResource=function(){function ExternalResource(resource,dataUriFunc){this.isResponseHandled=!1,resource.externalResource=this,this.dataUri=dataUriFunc(resource),this._parseAuthServices(resource)}return ExternalResource.prototype._parseAuthServices=function(resource){this.clickThroughService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.clickThrough().toString()),this.loginService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.login().toString()),this.restrictedService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.restricted().toString()),this.clickThroughService?(this.logoutService=this.clickThroughService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.clickThroughService.getService(manifesto.ServiceProfile.token().toString())):this.loginService?(this.logoutService=this.loginService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.loginService.getService(manifesto.ServiceProfile.token().toString())):this.restrictedService&&(this.logoutService=this.restrictedService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.restrictedService.getService(manifesto.ServiceProfile.token().toString()))},ExternalResource.prototype.isAccessControlled=function(){return!!(this.clickThroughService||this.loginService||this.restrictedService)},ExternalResource.prototype.hasServiceDescriptor=function(){return this.dataUri.endsWith("info.json")},ExternalResource.prototype.getData=function(accessToken){var that=this;return that.data={},new Promise(function(resolve,reject){var type="GET";if(!that.hasServiceDescriptor()){if(!that.isAccessControlled())return that.status=HTTPStatusCode.OK,void resolve(that);type="HEAD"}$.ajax({url:that.dataUri,type:type,dataType:"json",beforeSend:function(xhr){accessToken&&xhr.setRequestHeader("Authorization","Bearer "+accessToken.accessToken)}}).done(function(data){if(data){var uri=unescape(data["@id"]);that.data=data,that._parseAuthServices(that.data),uri.endsWith("/info.json")&&(uri=uri.substr(0,uri.lastIndexOf("/")));var dataUri=that.dataUri;dataUri.endsWith("/info.json")&&(dataUri=dataUri.substr(0,dataUri.lastIndexOf("/"))),uri!==dataUri&&that.loginService?that.status=HTTPStatusCode.MOVED_TEMPORARILY:that.status=HTTPStatusCode.OK,resolve(that)}else that.status=HTTPStatusCode.OK,resolve(that)}).fail(function(error){that.status=error.status,that.error=error,error.responseJSON&&that._parseAuthServices(error.responseJSON),resolve(that)})})},ExternalResource}();Manifold.ExternalResource=ExternalResource}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Helper=function(){function Helper(options){this.options=options,this.iiifResource=this.options.iiifResource,this.iiifResourceUri=this.options.iiifResourceUri,this.manifest=this.options.manifest,this.collectionIndex=this.options.collectionIndex||0,this.manifestIndex=this.options.manifestIndex||0,this.sequenceIndex=this.options.sequenceIndex||0,this.canvasIndex=this.options.canvasIndex||0}return Helper.prototype.getAutoCompleteService=function(){var service=this.getSearchWithinService();return service?service.getService(manifesto.ServiceProfile.autoComplete()):null},Helper.prototype.getAttribution=function(){return Manifesto.TranslationCollection.getValue(this.manifest.getAttribution())},Helper.prototype.getCanvases=function(){return this.getCurrentSequence().getCanvases()},Helper.prototype.getCanvasById=function(id){return this.getCurrentSequence().getCanvasById(id)},Helper.prototype.getCanvasesById=function(ids){for(var canvases=[],i=0;i<ids.length;i++){var id=ids[i];canvases.push(this.getCanvasById(id))}return canvases},Helper.prototype.getCanvasByIndex=function(index){return this.getCurrentSequence().getCanvasByIndex(index)},Helper.prototype.getCanvasIndexById=function(id){return this.getCurrentSequence().getCanvasIndexById(id)},Helper.prototype.getCanvasIndexByLabel=function(label){var foliated=this.getManifestType().toString()===manifesto.ManifestType.manuscript().toString();return this.getCurrentSequence().getCanvasIndexByLabel(label,foliated)},Helper.prototype.getCanvasRange=function(canvas,path){var ranges=this.getCanvasRanges(canvas);if(path){for(var i=0;i<ranges.length;i++){var range=ranges[i];if(range.path===path)return range}return null}return ranges[0]},Helper.prototype.getCanvasRanges=function(canvas){return canvas.ranges?canvas.ranges:(canvas.ranges=this.manifest.getAllRanges().en().where(function(range){return range.getCanvasIds().en().any(function(c){return c===canvas.id})}).toArray(),canvas.ranges)},Helper.prototype.getCollectionIndex=function(iiifResource){var index=null;return iiifResource.parentCollection&&(index=iiifResource.parentCollection.index),index},Helper.prototype.getCurrentCanvas=function(){return this.getCurrentSequence().getCanvasByIndex(this.canvasIndex)},Helper.prototype.getCurrentElement=function(){return this.getCanvasByIndex(this.canvasIndex)},Helper.prototype.getCurrentSequence=function(){return this.getSequenceByIndex(this.sequenceIndex)},Helper.prototype.getElementType=function(element){return element||(element=this.getCurrentCanvas()),element.getType()},Helper.prototype.getFirstPageIndex=function(){return 0},Helper.prototype.getInfoUri=function(canvas){var images=canvas.getImages();if(images&&images.length){for(var infoUri=null,firstImage=images[0],resource=firstImage.getResource(),services=resource.getServices(),i=0;i<services.length;i++){var service=services[i],id=service.id;id.endsWith("/")||(id+="/"),manifesto.Utils.isImageProfile(service.getProfile())&&(infoUri=id+"info.json")}return infoUri}var service=canvas.getService(manifesto.ServiceProfile.ixif());return service?service.getInfoUri():canvas.id},Helper.prototype.getLabel=function(){return Manifesto.TranslationCollection.getValue(this.manifest.getLabel())},Helper.prototype.getLastCanvasLabel=function(alphanumeric){return this.getCurrentSequence().getLastCanvasLabel(alphanumeric)},Helper.prototype.getLastPageIndex=function(){return this.getTotalCanvases()-1},Helper.prototype.getLicense=function(){return this.manifest.getLicense()},Helper.prototype.getLogo=function(){return this.manifest.getLogo()},Helper.prototype.getManifestType=function(){var manifestType=this.manifest.getManifestType();return""===manifestType.toString()&&(manifestType=manifesto.ManifestType.monograph()),manifestType},Helper.prototype.getMetadata=function(options){var metadataGroups=[],manifestMetadata=this.manifest.getMetadata(),manifestGroup=new Manifold.MetadataGroup(this.manifest);if(manifestMetadata&&manifestMetadata.length&&manifestGroup.addMetadata(manifestMetadata,!0),this.manifest.getDescription().length){var metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.label=[new Manifesto.Translation("description",this.options.locale)],metadataItem.value=this.manifest.getDescription(),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getAttribution().length){var metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.label=[new Manifesto.Translation("attribution",this.options.locale)],metadataItem.value=this.manifest.getAttribution(),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getLicense()){var item={label:"license",value:options&&options.licenseFormatter?options.licenseFormatter.format(this.manifest.getLicense()):this.manifest.getLicense()},metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.parse(item),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getLogo()){var item={label:"logo",value:'<img src="'+this.manifest.getLogo()+'"/>'},metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.parse(item),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}return metadataGroups.push(manifestGroup),options?this._parseMetadataOptions(options,metadataGroups):metadataGroups},Helper.prototype._parseMetadataOptions=function(options,metadataGroups){var sequence=this.getCurrentSequence(),sequenceMetadata=sequence.getMetadata();if(sequenceMetadata&&sequenceMetadata.length){var sequenceGroup=new Manifold.MetadataGroup(sequence);sequenceGroup.addMetadata(sequenceMetadata),metadataGroups.push(sequenceGroup)}if(options.range){var rangeGroups=this._getRangeMetadata([],options.range);rangeGroups=rangeGroups.reverse(),metadataGroups=metadataGroups.concat(rangeGroups)}if(options.canvases&&options.canvases.length)for(var i=0;i<options.canvases.length;i++){var canvas=options.canvases[i],canvasMetadata=canvas.getMetadata();if(canvasMetadata&&canvasMetadata.length){var canvasGroup=new Manifold.MetadataGroup(canvas);canvasGroup.addMetadata(canvas.getMetadata()),metadataGroups.push(canvasGroup)}for(var images=canvas.getImages(),j=0;j<images.length;j++){var image=images[j],imageMetadata=image.getMetadata();if(imageMetadata&&imageMetadata.length){var imageGroup=new Manifold.MetadataGroup(image);imageGroup.addMetadata(imageMetadata),metadataGroups.push(imageGroup)}}}return metadataGroups},Helper.prototype._getRangeMetadata=function(metadataGroups,range){var rangeMetadata=range.getMetadata();if(rangeMetadata&&rangeMetadata.length){var rangeGroup=new Manifold.MetadataGroup(range);rangeGroup.addMetadata(rangeMetadata),metadataGroups.push(rangeGroup)}return range.parentRange?this._getRangeMetadata(metadataGroups,range.parentRange):metadataGroups},Helper.prototype.getMultiSelectState=function(){return this._multiSelectState||(this._multiSelectState=new Manifold.MultiSelectState,this._multiSelectState.ranges=this.getRanges().slice(0),this._multiSelectState.canvases=this.getCurrentSequence().getCanvases().slice(0)),this._multiSelectState},Helper.prototype.getRanges=function(){return this.manifest.getAllRanges()},Helper.prototype.getRangeByPath=function(path){return this.manifest.getRangeByPath(path)},Helper.prototype.getRangeCanvases=function(range){var ids=range.getCanvasIds();return this.getCanvasesById(ids)},Helper.prototype.getRelated=function(){return this.manifest.getRelated()},Helper.prototype.getResources=function(){var element=this.getCurrentElement();return element.getResources()},Helper.prototype.getSearchWithinService=function(){return this.manifest.getService(manifesto.ServiceProfile.searchWithin())},Helper.prototype.getSeeAlso=function(){return this.manifest.getSeeAlso()},Helper.prototype.getSequenceByIndex=function(index){return this.manifest.getSequenceByIndex(index)},Helper.prototype.getShareServiceUrl=function(){var url=null,shareService=this.manifest.getService(manifesto.ServiceProfile.shareExtensions());return shareService&&(shareService.length&&(shareService=shareService[0]),url=shareService.__jsonld.shareUrl),url},Helper.prototype.getSortedTreeNodesByDate=function(sortedTree,tree){var all=tree.nodes.en().traverseUnique(function(node){return node.nodes}).where(function(n){return n.data.type===manifesto.TreeNodeType.collection().toString()||n.data.type===manifesto.TreeNodeType.manifest().toString()}).toArray(),manifests=tree.nodes.en().traverseUnique(function(n){return n.nodes}).where(function(n){return n.data.type===manifesto.TreeNodeType.manifest().toString()}).toArray();this.createDecadeNodes(sortedTree,all),this.sortDecadeNodes(sortedTree),this.createYearNodes(sortedTree,all),this.sortYearNodes(sortedTree),this.createMonthNodes(sortedTree,manifests),this.sortMonthNodes(sortedTree),this.createDateNodes(sortedTree,manifests),this.pruneDecadeNodes(sortedTree)},Helper.prototype.getStartCanvasIndex=function(){return this.getCurrentSequence().getStartCanvasIndex()},Helper.prototype.getThumbs=function(width,height){return this.getCurrentSequence().getThumbs(width,height)},Helper.prototype.getTopRanges=function(){return this.manifest.getTopRanges()},Helper.prototype.getTotalCanvases=function(){return this.getCurrentSequence().getTotalCanvases()},Helper.prototype.getTrackingLabel=function(){return this.manifest.getTrackingLabel()},Helper.prototype.getTree=function(topRangeIndex,sortType){void 0===topRangeIndex&&(topRangeIndex=0),void 0===sortType&&(sortType=Manifold.TreeSortType.NONE);var tree;if(this.iiifResource.isCollection())tree=this.iiifResource.getDefaultTree();else{var topRanges=this.iiifResource.getTopRanges(),root=new manifesto.TreeNode;if(root.label="root",root.data=this.iiifResource,!topRanges.length)return root;var range=topRanges[topRangeIndex];tree=range.getTree(root)}var sortedTree=new manifesto.TreeNode;switch(sortType.toString()){case Manifold.TreeSortType.DATE.toString():if(this.treeHasNavDates(tree)){this.getSortedTreeNodesByDate(sortedTree,tree);break}default:sortedTree=tree}return sortedTree},Helper.prototype.treeHasNavDates=function(tree){var node=tree.nodes.en().traverseUnique(function(node){return node.nodes}).where(function(n){return!isNaN(n.navDate)}).first();return!!node},Helper.prototype.getViewingDirection=function(){var viewingDirection=this.getCurrentSequence().getViewingDirection();return viewingDirection.toString()||(viewingDirection=this.manifest.getViewingDirection()),viewingDirection},Helper.prototype.getViewingHint=function(){var viewingHint=this.getCurrentSequence().getViewingHint();return viewingHint.toString()||(viewingHint=this.manifest.getViewingHint()),viewingHint},Helper.prototype.hasParentCollection=function(){return!!this.manifest.parentCollection},Helper.prototype.hasRelatedPage=function(){var related=this.getRelated();return!!related&&(related.length&&(related=related[0]),"text/html"===related.format)},Helper.prototype.hasResources=function(){return this.getResources().length>0},Helper.prototype.isBottomToTop=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.bottomToTop().toString()},Helper.prototype.isCanvasIndexOutOfRange=function(index){return this.getCurrentSequence().isCanvasIndexOutOfRange(index)},Helper.prototype.isContinuous=function(){return this.getViewingHint().toString()===manifesto.ViewingHint.continuous().toString()},Helper.prototype.isFirstCanvas=function(index){return"undefined"!=typeof index?this.getCurrentSequence().isFirstCanvas(index):this.getCurrentSequence().isFirstCanvas(this.canvasIndex)},Helper.prototype.isHorizontallyAligned=function(){return this.isLeftToRight()||this.isRightToLeft()},Helper.prototype.isLastCanvas=function(index){return"undefined"!=typeof index?this.getCurrentSequence().isLastCanvas(index):this.getCurrentSequence().isLastCanvas(this.canvasIndex)},Helper.prototype.isLeftToRight=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.leftToRight().toString()},Helper.prototype.isMultiCanvas=function(){return this.getCurrentSequence().isMultiCanvas()},Helper.prototype.isMultiSequence=function(){return this.manifest.isMultiSequence()},Helper.prototype.isPaged=function(){return this.getViewingHint().toString()===manifesto.ViewingHint.paged().toString()},Helper.prototype.isPagingAvailable=function(){return this.isPagingEnabled()&&this.getTotalCanvases()>2},Helper.prototype.isPagingEnabled=function(){return this.manifest.isPagingEnabled()||this.getCurrentSequence().isPagingEnabled()},Helper.prototype.isRightToLeft=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.rightToLeft().toString()},Helper.prototype.isTopToBottom=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.topToBottom().toString()},Helper.prototype.isTotalCanvasesEven=function(){return this.getCurrentSequence().isTotalCanvasesEven()},Helper.prototype.isUIEnabled=function(name){var uiExtensions=this.manifest.getService(manifesto.ServiceProfile.uiExtensions());if(uiExtensions){var disableUI=uiExtensions.getProperty("disableUI");if(disableUI&&(disableUI.indexOf(name)!==-1||disableUI.indexOf(name.toLowerCase())!==-1))return!1}return!0},Helper.prototype.isVerticallyAligned=function(){return this.isTopToBottom()||this.isBottomToTop()},Helper.prototype.createDateNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),month=this.getNodeMonth(node),dateNode=new manifesto.TreeNode;dateNode.id=node.id,dateNode.label=this.getNodeDisplayDate(node),dateNode.data=node.data,dateNode.data.type=manifesto.TreeNodeType.manifest().toString(),dateNode.data.year=year,dateNode.data.month=month;var decadeNode=this.getDecadeNode(rootNode,year);if(decadeNode){var yearNode=this.getYearNode(decadeNode,year);if(yearNode){var monthNode=this.getMonthNode(yearNode,month);monthNode&&monthNode.addNode(dateNode)}}}},Helper.prototype.createDecadeNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),endYear=Number(year.toString().substr(0,3)+"9");if(!this.getDecadeNode(rootNode,year)){var decadeNode=new manifesto.TreeNode;decadeNode.label=year+" - "+endYear,decadeNode.navDate=node.navDate,decadeNode.data.startYear=year,decadeNode.data.endYear=endYear,rootNode.addNode(decadeNode)}}},Helper.prototype.createMonthNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),month=this.getNodeMonth(node),decadeNode=this.getDecadeNode(rootNode,year),yearNode=null;if(decadeNode&&(yearNode=this.getYearNode(decadeNode,year)),decadeNode&&yearNode&&!this.getMonthNode(yearNode,month)){var monthNode=new manifesto.TreeNode;monthNode.label=this.getNodeDisplayMonth(node),monthNode.navDate=node.navDate,monthNode.data.year=year,monthNode.data.month=month,yearNode.addNode(monthNode)}}},Helper.prototype.createYearNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),decadeNode=this.getDecadeNode(rootNode,year);if(decadeNode&&!this.getYearNode(decadeNode,year)){var yearNode=new manifesto.TreeNode;yearNode.label=year.toString(),yearNode.navDate=node.navDate,yearNode.data.year=year,decadeNode.addNode(yearNode)}}},Helper.prototype.getDecadeNode=function(rootNode,year){for(var i=0;i<rootNode.nodes.length;i++){var n=rootNode.nodes[i];if(year>=n.data.startYear&&year<=n.data.endYear)return n}return null},Helper.prototype.getMonthNode=function(yearNode,month){for(var i=0;i<yearNode.nodes.length;i++){var n=yearNode.nodes[i];if(month===this.getNodeMonth(n))return n}return null},Helper.prototype.getNodeDisplayDate=function(node){return node.navDate.toDateString()},Helper.prototype.getNodeDisplayMonth=function(node){var months=["January","February","March","April","May","June","July","August","September","October","November","December"];return months[node.navDate.getMonth()]},Helper.prototype.getNodeMonth=function(node){return node.navDate.getMonth()},Helper.prototype.getNodeYear=function(node){return node.navDate.getFullYear()},Helper.prototype.getYearNode=function(decadeNode,year){for(var i=0;i<decadeNode.nodes.length;i++){var n=decadeNode.nodes[i];if(year===this.getNodeYear(n))return n}return null},Helper.prototype.pruneDecadeNodes=function(rootNode){for(var pruned=[],i=0;i<rootNode.nodes.length;i++){var n=rootNode.nodes[i];n.nodes.length||pruned.push(n)}for(var j=0;j<pruned.length;j++){var p=pruned[j],index=rootNode.nodes.indexOf(p);index>-1&&rootNode.nodes.splice(index,1)}},Helper.prototype.sortDecadeNodes=function(rootNode){rootNode.nodes=rootNode.nodes.sort(function(a,b){return a.data.startYear-b.data.startYear})},Helper.prototype.sortMonthNodes=function(rootNode){for(var _this=this,i=0;i<rootNode.nodes.length;i++)for(var decadeNode=rootNode.nodes[i],j=0;j<decadeNode.nodes.length;j++){var monthNode=decadeNode.nodes[j];monthNode.nodes=monthNode.nodes.sort(function(a,b){return _this.getNodeMonth(a)-_this.getNodeMonth(b)})}},Helper.prototype.sortYearNodes=function(rootNode){for(var _this=this,i=0;i<rootNode.nodes.length;i++){var decadeNode=rootNode.nodes[i];decadeNode.nodes=decadeNode.nodes.sort(function(a,b){return _this.getNodeYear(a)-_this.getNodeYear(b)})}},Helper}();Manifold.Helper=Helper}(Manifold||(Manifold={}));var Manifold;!function(Manifold){function loadManifest(options){var bootstrapper=new Manifold.Bootstrapper(options);return bootstrapper.bootstrap()}Manifold.loadManifest=loadManifest}(Manifold||(Manifold={})),function(g){g.Manifold||(g.Manifold=Manifold)}(global);var Manifold;!function(Manifold){var MetadataGroup=function(){function MetadataGroup(resource,label){this.items=[],this.resource=resource,this.label=label}return MetadataGroup.prototype.addItem=function(item){this.items.push(item)},MetadataGroup.prototype.addMetadata=function(metadata,isRootLevel){void 0===isRootLevel&&(isRootLevel=!1);for(var i=0;i<metadata.length;i++){var item=metadata[i];item.isRootLevel=isRootLevel,this.addItem(item)}},MetadataGroup}();Manifold.MetadataGroup=MetadataGroup}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var MetadataOptions=function(){function MetadataOptions(){}return MetadataOptions}();Manifold.MetadataOptions=MetadataOptions}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var MultiSelectState=function(){function MultiSelectState(){this.isEnabled=!1,this.ranges=[],this.canvases=[]}return MultiSelectState.prototype.allCanvasesSelected=function(){return this.canvases.length>0&&this.getAllSelectedCanvases().length===this.canvases.length},MultiSelectState.prototype.allRangesSelected=function(){return this.ranges.length>0&&this.getAllSelectedRanges().length===this.ranges.length},MultiSelectState.prototype.allSelected=function(){return this.allRangesSelected()&&this.allCanvasesSelected()},MultiSelectState.prototype.getAll=function(){return this.canvases.concat(this.ranges)},MultiSelectState.prototype.getAllSelectedCanvases=function(){return this.canvases.en().where(function(c){return c.multiSelected}).toArray()},MultiSelectState.prototype.getAllSelectedRanges=function(){return this.ranges.en().where(function(r){return r.multiSelected}).toArray()},MultiSelectState.prototype.getCanvasById=function(id){return this.canvases.en().where(function(c){return c.id===id}).first()},MultiSelectState.prototype.getCanvasesByIds=function(ids){for(var canvases=[],i=0;i<ids.length;i++){var id=ids[i];canvases.push(this.getCanvasById(id))}return canvases},MultiSelectState.prototype.getRangeCanvases=function(range){var ids=range.getCanvasIds();return this.getCanvasesByIds(ids)},MultiSelectState.prototype.selectAll=function(selected){this.selectRanges(this.ranges,selected),this.selectCanvases(this.canvases,selected)},MultiSelectState.prototype.selectCanvas=function(canvas,selected){var c=this.canvases.en().where(function(c){return c.id===canvas.id}).first();c.multiSelected=selected},MultiSelectState.prototype.selectAllCanvases=function(selected){this.selectCanvases(this.canvases,selected)},MultiSelectState.prototype.selectCanvases=function(canvases,selected){for(var j=0;j<canvases.length;j++){var canvas=canvases[j];canvas.multiSelected=selected}},MultiSelectState.prototype.selectRange=function(range,selected){var r=this.ranges.en().where(function(r){return r.id===range.id}).first();r.multiSelected=selected;var canvases=this.getRangeCanvases(r);this.selectCanvases(canvases,selected)},MultiSelectState.prototype.selectAllRanges=function(selected){this.selectRanges(this.ranges,selected)},MultiSelectState.prototype.selectRanges=function(ranges,selected){for(var i=0;i<ranges.length;i++){var range=ranges[i];range.multiSelected=selected;var canvases=this.getCanvasesByIds(range.getCanvasIds());this.selectCanvases(canvases,selected)}},MultiSelectState.prototype.setEnabled=function(enabled){this.isEnabled=enabled;for(var items=this.getAll(),i=0;i<items.length;i++){var item=items[i];item.multiSelectEnabled=this.isEnabled,enabled||(item.multiSelected=!1)}},MultiSelectState}();Manifold.MultiSelectState=MultiSelectState}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var SearchResult=function(){function SearchResult(resource,canvasIndex){this.rects=[],this.canvasIndex=canvasIndex,this.addRect(resource)}return SearchResult.prototype.addRect=function(resource){var rect=new Manifold.SearchResultRect(resource);rect.canvasIndex=this.canvasIndex,rect.index=this.rects.length,this.rects.push(rect),this.rects.sort(function(a,b){return a.index-b.index})},SearchResult}();Manifold.SearchResult=SearchResult}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var SearchResultRect=function(){function SearchResultRect(result){this.isVisible=!0;var xywh=result.on.match(/.*xywh=(\d*),(\d*),(\d*),(\d*)/);this.x=Number(xywh[1]),this.y=Number(xywh[2]),this.width=Number(xywh[3]),this.height=Number(xywh[4]),this.chars=result.resource.chars}return SearchResultRect}();Manifold.SearchResultRect=SearchResultRect}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Translation=function(){function Translation(value,locale){this.value=value,this.locale=locale}return Translation}();Manifold.Translation=Translation}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var UriLabeller=function(){function UriLabeller(labels){this.labels=labels}return UriLabeller.prototype.format=function(url){if(url.indexOf("<a")!=-1)return url;var label=this.labels[url]?this.labels[url]:url;return'<a href="'+url+'">'+label+"</a>"},UriLabeller}();Manifold.UriLabeller=UriLabeller}(Manifold||(Manifold={}))}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
+!function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('lib/manifold.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.manifold=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var Manifold;!function(Manifold){var StringValue=function(){function StringValue(value){this.value="",value&&(this.value=value.toLowerCase())}return StringValue.prototype.toString=function(){return this.value},StringValue}();Manifold.StringValue=StringValue}(Manifold||(Manifold={}));var Manifold,__extends=this&&this.__extends||function(){var extendStatics=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(d,b){d.__proto__=b}||function(d,b){for(var p in b)b.hasOwnProperty(p)&&(d[p]=b[p])};return function(d,b){function __(){this.constructor=d}extendStatics(d,b),d.prototype=null===b?Object.create(b):(__.prototype=b.prototype,new __)}}();!function(Manifold){var TreeSortType=function(_super){function TreeSortType(){return null!==_super&&_super.apply(this,arguments)||this}return __extends(TreeSortType,_super),TreeSortType.prototype.date=function(){return new TreeSortType(TreeSortType.DATE.toString())},TreeSortType.prototype.none=function(){return new TreeSortType(TreeSortType.NONE.toString())},TreeSortType}(Manifold.StringValue);TreeSortType.DATE=new TreeSortType("date"),TreeSortType.NONE=new TreeSortType("none"),Manifold.TreeSortType=TreeSortType}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Bootstrapper=function(){function Bootstrapper(options){this._options=options,this._options.locale=this._options.locale||"en-GB"}return Bootstrapper.prototype.bootstrap=function(){var that=this;return new Promise(function(resolve,reject){var msie=that._msieversion();if(msie>0&&msie<11)if(9===msie){var settings={url:that._options.iiifResourceUri,type:"GET",dataType:"jsonp",jsonp:"callback",jsonpCallback:"manifestCallback"};$.ajax(settings),global.manifestCallback=function(json){that._loaded(that,JSON.stringify(json),resolve,reject)}}else 10===msie&&$.getJSON(that._options.iiifResourceUri,function(json){that._loaded(that,JSON.stringify(json),resolve,reject)});else manifesto.loadManifest(that._options.iiifResourceUri).then(function(json){that._loaded(that,json,resolve,reject)})})},Bootstrapper.prototype._loaded=function(bootstrapper,json,resolve,reject){var iiifResource=manifesto.create(json,{locale:bootstrapper._options.locale});if(bootstrapper._options.iiifResource||(bootstrapper._options.iiifResource=iiifResource),iiifResource.getIIIFResourceType().toString()===manifesto.IIIFResourceType.collection().toString()){var collections=iiifResource.getCollections();collections&&collections.length?iiifResource.getCollectionByIndex(bootstrapper._options.collectionIndex).then(function(collection){collection||reject("Collection index not found"),0===collection.getTotalManifests()&&0===bootstrapper._options.manifestIndex&&collection.getTotalCollections()>0&&(bootstrapper._options.collectionIndex=0,bootstrapper._options.iiifResourceUri=collection.id,bootstrapper.bootstrap()),collection.getManifestByIndex(bootstrapper._options.manifestIndex).then(function(manifest){bootstrapper._options.manifest=manifest;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)})}):iiifResource.getManifestByIndex(bootstrapper._options.manifestIndex).then(function(manifest){bootstrapper._options.manifest=manifest;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)})}else{bootstrapper._options.manifest=iiifResource;var helper=new Manifold.Helper(bootstrapper._options);resolve(helper)}},Bootstrapper.prototype._msieversion=function(){var ua=global.navigator.userAgent,msie=ua.indexOf("MSIE ");return msie>0?parseInt(ua.substring(msie+5,ua.indexOf(".",msie))):0},Bootstrapper}();Manifold.Bootstrapper=Bootstrapper}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var ExternalResource=function(){function ExternalResource(resource,dataUriFunc){this.isResponseHandled=!1,resource.externalResource=this,this.dataUri=dataUriFunc(resource),this._parseAuthServices(resource)}return ExternalResource.prototype._parseAuthServices=function(resource){this.clickThroughService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.clickThrough().toString()),this.loginService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.login().toString()),this.restrictedService=manifesto.Utils.getService(resource,manifesto.ServiceProfile.restricted().toString()),this.clickThroughService?(this.logoutService=this.clickThroughService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.clickThroughService.getService(manifesto.ServiceProfile.token().toString())):this.loginService?(this.logoutService=this.loginService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.loginService.getService(manifesto.ServiceProfile.token().toString())):this.restrictedService&&(this.logoutService=this.restrictedService.getService(manifesto.ServiceProfile.logout().toString()),this.tokenService=this.restrictedService.getService(manifesto.ServiceProfile.token().toString()))},ExternalResource.prototype.isAccessControlled=function(){return!!(this.clickThroughService||this.loginService||this.restrictedService)},ExternalResource.prototype.hasServiceDescriptor=function(){return this.dataUri.endsWith("info.json")},ExternalResource.prototype.getData=function(accessToken){var that=this;return that.data={},new Promise(function(resolve,reject){var type="GET";if(!that.hasServiceDescriptor()){if(!that.isAccessControlled())return that.status=HTTPStatusCode.OK,void resolve(that);type="HEAD"}$.ajax({url:that.dataUri,type:type,dataType:"json",beforeSend:function(xhr){accessToken&&xhr.setRequestHeader("Authorization","Bearer "+accessToken.accessToken)}}).done(function(data){if(data){var uri=unescape(data["@id"]);that.data=data,that._parseAuthServices(that.data),uri.endsWith("/info.json")&&(uri=uri.substr(0,uri.lastIndexOf("/")));var dataUri=that.dataUri;dataUri.endsWith("/info.json")&&(dataUri=dataUri.substr(0,dataUri.lastIndexOf("/"))),uri!==dataUri&&that.loginService?that.status=HTTPStatusCode.MOVED_TEMPORARILY:that.status=HTTPStatusCode.OK,resolve(that)}else that.status=HTTPStatusCode.OK,resolve(that)}).fail(function(error){that.status=error.status,that.error=error,error.responseJSON&&that._parseAuthServices(error.responseJSON),resolve(that)})})},ExternalResource}();Manifold.ExternalResource=ExternalResource}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Helper=function(){function Helper(options){this.options=options,this.iiifResource=this.options.iiifResource,this.iiifResourceUri=this.options.iiifResourceUri,this.manifest=this.options.manifest,this.collectionIndex=this.options.collectionIndex||0,this.manifestIndex=this.options.manifestIndex||0,this.sequenceIndex=this.options.sequenceIndex||0,this.canvasIndex=this.options.canvasIndex||0}return Helper.prototype.getAutoCompleteService=function(){var service=this.getSearchWithinService();return service?service.getService(manifesto.ServiceProfile.autoComplete()):null},Helper.prototype.getAttribution=function(){return Manifesto.TranslationCollection.getValue(this.manifest.getAttribution())},Helper.prototype.getCanvases=function(){return this.getCurrentSequence().getCanvases()},Helper.prototype.getCanvasById=function(id){return this.getCurrentSequence().getCanvasById(id)},Helper.prototype.getCanvasesById=function(ids){for(var canvases=[],i=0;i<ids.length;i++){var id=ids[i];canvases.push(this.getCanvasById(id))}return canvases},Helper.prototype.getCanvasByIndex=function(index){return this.getCurrentSequence().getCanvasByIndex(index)},Helper.prototype.getCanvasIndexById=function(id){return this.getCurrentSequence().getCanvasIndexById(id)},Helper.prototype.getCanvasIndexByLabel=function(label){var foliated=this.getManifestType().toString()===manifesto.ManifestType.manuscript().toString();return this.getCurrentSequence().getCanvasIndexByLabel(label,foliated)},Helper.prototype.getCanvasRange=function(canvas,path){var ranges=this.getCanvasRanges(canvas);if(path){for(var i=0;i<ranges.length;i++){var range=ranges[i];if(range.path===path)return range}return null}return ranges[0]},Helper.prototype.getCanvasRanges=function(canvas){return canvas.ranges?canvas.ranges:(canvas.ranges=this.manifest.getAllRanges().en().where(function(range){return range.getCanvasIds().en().any(function(c){return c===canvas.id})}).toArray(),canvas.ranges)},Helper.prototype.getCollectionIndex=function(iiifResource){var index=null;return iiifResource.parentCollection&&(index=iiifResource.parentCollection.index),index},Helper.prototype.getCurrentCanvas=function(){return this.getCurrentSequence().getCanvasByIndex(this.canvasIndex)},Helper.prototype.getCurrentElement=function(){return this.getCanvasByIndex(this.canvasIndex)},Helper.prototype.getCurrentSequence=function(){return this.getSequenceByIndex(this.sequenceIndex)},Helper.prototype.getElementType=function(element){return element||(element=this.getCurrentCanvas()),element.getType()},Helper.prototype.getFirstPageIndex=function(){return 0},Helper.prototype.getInfoUri=function(canvas){var images=canvas.getImages();if(images&&images.length){for(var infoUri=null,firstImage=images[0],resource=firstImage.getResource(),services=resource.getServices(),i=0;i<services.length;i++){var service=services[i],id=service.id;id.endsWith("/")||(id+="/"),manifesto.Utils.isImageProfile(service.getProfile())&&(infoUri=id+"info.json")}return infoUri}var service=canvas.getService(manifesto.ServiceProfile.ixif());return service?service.getInfoUri():canvas.id},Helper.prototype.getLabel=function(){return Manifesto.TranslationCollection.getValue(this.manifest.getLabel())},Helper.prototype.getLastCanvasLabel=function(alphanumeric){return this.getCurrentSequence().getLastCanvasLabel(alphanumeric)},Helper.prototype.getLastPageIndex=function(){return this.getTotalCanvases()-1},Helper.prototype.getLicense=function(){return this.manifest.getLicense()},Helper.prototype.getLogo=function(){return this.manifest.getLogo()},Helper.prototype.getManifestType=function(){var manifestType=this.manifest.getManifestType();return""===manifestType.toString()&&(manifestType=manifesto.ManifestType.monograph()),manifestType},Helper.prototype.getMetadata=function(options){var metadataGroups=[],manifestMetadata=this.manifest.getMetadata(),manifestGroup=new Manifold.MetadataGroup(this.manifest);if(manifestMetadata&&manifestMetadata.length&&manifestGroup.addMetadata(manifestMetadata,!0),this.manifest.getDescription().length){var metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.label=[new Manifesto.Translation("description",this.options.locale)],metadataItem.value=this.manifest.getDescription(),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getAttribution().length){var metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.label=[new Manifesto.Translation("attribution",this.options.locale)],metadataItem.value=this.manifest.getAttribution(),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getLicense()){var item={label:"license",value:options&&options.licenseFormatter?options.licenseFormatter.format(this.manifest.getLicense()):this.manifest.getLicense()},metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.parse(item),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}if(this.manifest.getLogo()){var item={label:"logo",value:'<img src="'+this.manifest.getLogo()+'"/>'},metadataItem=new Manifesto.MetadataItem(this.options.locale);metadataItem.parse(item),metadataItem.isRootLevel=!0,manifestGroup.addItem(metadataItem)}return metadataGroups.push(manifestGroup),options?this._parseMetadataOptions(options,metadataGroups):metadataGroups},Helper.prototype._parseMetadataOptions=function(options,metadataGroups){var sequence=this.getCurrentSequence(),sequenceMetadata=sequence.getMetadata();if(sequenceMetadata&&sequenceMetadata.length){var sequenceGroup=new Manifold.MetadataGroup(sequence);sequenceGroup.addMetadata(sequenceMetadata),metadataGroups.push(sequenceGroup)}if(options.range){var rangeGroups=this._getRangeMetadata([],options.range);rangeGroups=rangeGroups.reverse(),metadataGroups=metadataGroups.concat(rangeGroups)}if(options.canvases&&options.canvases.length)for(var i=0;i<options.canvases.length;i++){var canvas=options.canvases[i],canvasMetadata=canvas.getMetadata();if(canvasMetadata&&canvasMetadata.length){var canvasGroup=new Manifold.MetadataGroup(canvas);canvasGroup.addMetadata(canvas.getMetadata()),metadataGroups.push(canvasGroup)}for(var images=canvas.getImages(),j=0;j<images.length;j++){var image=images[j],imageMetadata=image.getMetadata();if(imageMetadata&&imageMetadata.length){var imageGroup=new Manifold.MetadataGroup(image);imageGroup.addMetadata(imageMetadata),metadataGroups.push(imageGroup)}}}return metadataGroups},Helper.prototype._getRangeMetadata=function(metadataGroups,range){var rangeMetadata=range.getMetadata();if(rangeMetadata&&rangeMetadata.length){var rangeGroup=new Manifold.MetadataGroup(range);rangeGroup.addMetadata(rangeMetadata),metadataGroups.push(rangeGroup)}return range.parentRange?this._getRangeMetadata(metadataGroups,range.parentRange):metadataGroups},Helper.prototype.getMultiSelectState=function(){return this._multiSelectState||(this._multiSelectState=new Manifold.MultiSelectState,this._multiSelectState.ranges=this.getRanges().slice(0),this._multiSelectState.canvases=this.getCurrentSequence().getCanvases().slice(0)),this._multiSelectState},Helper.prototype.getRanges=function(){return this.manifest.getAllRanges()},Helper.prototype.getRangeByPath=function(path){return this.manifest.getRangeByPath(path)},Helper.prototype.getRangeCanvases=function(range){var ids=range.getCanvasIds();return this.getCanvasesById(ids)},Helper.prototype.getRelated=function(){return this.manifest.getRelated()},Helper.prototype.getResources=function(){var element=this.getCurrentElement();return element.getResources()},Helper.prototype.getSearchWithinService=function(){return this.manifest.getService(manifesto.ServiceProfile.searchWithin())},Helper.prototype.getSeeAlso=function(){return this.manifest.getSeeAlso()},Helper.prototype.getSequenceByIndex=function(index){return this.manifest.getSequenceByIndex(index)},Helper.prototype.getShareServiceUrl=function(){var url=null,shareService=this.manifest.getService(manifesto.ServiceProfile.shareExtensions());return shareService&&(shareService.length&&(shareService=shareService[0]),url=shareService.__jsonld.shareUrl),url},Helper.prototype.getSortedTreeNodesByDate=function(sortedTree,tree){var all=tree.nodes.en().traverseUnique(function(node){return node.nodes}).where(function(n){return n.data.type===manifesto.TreeNodeType.collection().toString()||n.data.type===manifesto.TreeNodeType.manifest().toString()}).toArray(),manifests=tree.nodes.en().traverseUnique(function(n){return n.nodes}).where(function(n){return n.data.type===manifesto.TreeNodeType.manifest().toString()}).toArray();this.createDecadeNodes(sortedTree,all),this.sortDecadeNodes(sortedTree),this.createYearNodes(sortedTree,all),this.sortYearNodes(sortedTree),this.createMonthNodes(sortedTree,manifests),this.sortMonthNodes(sortedTree),this.createDateNodes(sortedTree,manifests),this.pruneDecadeNodes(sortedTree)},Helper.prototype.getStartCanvasIndex=function(){return this.getCurrentSequence().getStartCanvasIndex()},Helper.prototype.getThumbs=function(width,height){return this.getCurrentSequence().getThumbs(width,height)},Helper.prototype.getTopRanges=function(){return this.manifest.getTopRanges()},Helper.prototype.getTotalCanvases=function(){return this.getCurrentSequence().getTotalCanvases()},Helper.prototype.getTrackingLabel=function(){return this.manifest.getTrackingLabel()},Helper.prototype.getTree=function(topRangeIndex,sortType){if(void 0===topRangeIndex&&(topRangeIndex=0),void 0===sortType&&(sortType=Manifold.TreeSortType.NONE),!this.iiifResource)return null;var tree;if(this.iiifResource.isCollection())tree=this.iiifResource.getDefaultTree();else{var topRanges=this.iiifResource.getTopRanges(),root=new manifesto.TreeNode;if(root.label="root",root.data=this.iiifResource,!topRanges.length)return root;var range=topRanges[topRangeIndex];tree=range.getTree(root)}var sortedTree=new manifesto.TreeNode;switch(sortType.toString()){case Manifold.TreeSortType.DATE.toString():if(this.treeHasNavDates(tree)){this.getSortedTreeNodesByDate(sortedTree,tree);break}default:sortedTree=tree}return sortedTree},Helper.prototype.treeHasNavDates=function(tree){var node=tree.nodes.en().traverseUnique(function(node){return node.nodes}).where(function(n){return!isNaN(n.navDate)}).first();return!!node},Helper.prototype.getViewingDirection=function(){var viewingDirection=this.getCurrentSequence().getViewingDirection();return viewingDirection.toString()||(viewingDirection=this.manifest.getViewingDirection()),viewingDirection},Helper.prototype.getViewingHint=function(){var viewingHint=this.getCurrentSequence().getViewingHint();return viewingHint.toString()||(viewingHint=this.manifest.getViewingHint()),viewingHint},Helper.prototype.hasParentCollection=function(){return!!this.manifest.parentCollection},Helper.prototype.hasRelatedPage=function(){var related=this.getRelated();return!!related&&(related.length&&(related=related[0]),"text/html"===related.format)},Helper.prototype.hasResources=function(){return this.getResources().length>0},Helper.prototype.isBottomToTop=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.bottomToTop().toString()},Helper.prototype.isCanvasIndexOutOfRange=function(index){return this.getCurrentSequence().isCanvasIndexOutOfRange(index)},Helper.prototype.isContinuous=function(){return this.getViewingHint().toString()===manifesto.ViewingHint.continuous().toString()},Helper.prototype.isFirstCanvas=function(index){return"undefined"!=typeof index?this.getCurrentSequence().isFirstCanvas(index):this.getCurrentSequence().isFirstCanvas(this.canvasIndex)},Helper.prototype.isHorizontallyAligned=function(){return this.isLeftToRight()||this.isRightToLeft()},Helper.prototype.isLastCanvas=function(index){return"undefined"!=typeof index?this.getCurrentSequence().isLastCanvas(index):this.getCurrentSequence().isLastCanvas(this.canvasIndex)},Helper.prototype.isLeftToRight=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.leftToRight().toString()},Helper.prototype.isMultiCanvas=function(){return this.getCurrentSequence().isMultiCanvas()},Helper.prototype.isMultiSequence=function(){return this.manifest.isMultiSequence()},Helper.prototype.isPaged=function(){return this.getViewingHint().toString()===manifesto.ViewingHint.paged().toString()},Helper.prototype.isPagingAvailable=function(){return this.isPagingEnabled()&&this.getTotalCanvases()>2},Helper.prototype.isPagingEnabled=function(){return this.manifest.isPagingEnabled()||this.getCurrentSequence().isPagingEnabled()},Helper.prototype.isRightToLeft=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.rightToLeft().toString()},Helper.prototype.isTopToBottom=function(){return this.getViewingDirection().toString()===manifesto.ViewingDirection.topToBottom().toString()},Helper.prototype.isTotalCanvasesEven=function(){return this.getCurrentSequence().isTotalCanvasesEven()},Helper.prototype.isUIEnabled=function(name){var uiExtensions=this.manifest.getService(manifesto.ServiceProfile.uiExtensions());if(uiExtensions){var disableUI=uiExtensions.getProperty("disableUI");if(disableUI&&(disableUI.indexOf(name)!==-1||disableUI.indexOf(name.toLowerCase())!==-1))return!1}return!0},Helper.prototype.isVerticallyAligned=function(){return this.isTopToBottom()||this.isBottomToTop()},Helper.prototype.createDateNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),month=this.getNodeMonth(node),dateNode=new manifesto.TreeNode;dateNode.id=node.id,dateNode.label=this.getNodeDisplayDate(node),dateNode.data=node.data,dateNode.data.type=manifesto.TreeNodeType.manifest().toString(),dateNode.data.year=year,dateNode.data.month=month;var decadeNode=this.getDecadeNode(rootNode,year);if(decadeNode){var yearNode=this.getYearNode(decadeNode,year);if(yearNode){var monthNode=this.getMonthNode(yearNode,month);monthNode&&monthNode.addNode(dateNode)}}}},Helper.prototype.createDecadeNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),endYear=Number(year.toString().substr(0,3)+"9");if(!this.getDecadeNode(rootNode,year)){var decadeNode=new manifesto.TreeNode;decadeNode.label=year+" - "+endYear,decadeNode.navDate=node.navDate,decadeNode.data.startYear=year,decadeNode.data.endYear=endYear,rootNode.addNode(decadeNode)}}},Helper.prototype.createMonthNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),month=this.getNodeMonth(node),decadeNode=this.getDecadeNode(rootNode,year),yearNode=null;if(decadeNode&&(yearNode=this.getYearNode(decadeNode,year)),decadeNode&&yearNode&&!this.getMonthNode(yearNode,month)){var monthNode=new manifesto.TreeNode;monthNode.label=this.getNodeDisplayMonth(node),monthNode.navDate=node.navDate,monthNode.data.year=year,monthNode.data.month=month,yearNode.addNode(monthNode)}}},Helper.prototype.createYearNodes=function(rootNode,nodes){for(var i=0;i<nodes.length;i++){var node=nodes[i],year=this.getNodeYear(node),decadeNode=this.getDecadeNode(rootNode,year);if(decadeNode&&!this.getYearNode(decadeNode,year)){var yearNode=new manifesto.TreeNode;yearNode.label=year.toString(),yearNode.navDate=node.navDate,yearNode.data.year=year,decadeNode.addNode(yearNode)}}},Helper.prototype.getDecadeNode=function(rootNode,year){for(var i=0;i<rootNode.nodes.length;i++){var n=rootNode.nodes[i];if(year>=n.data.startYear&&year<=n.data.endYear)return n}return null},Helper.prototype.getMonthNode=function(yearNode,month){for(var i=0;i<yearNode.nodes.length;i++){var n=yearNode.nodes[i];if(month===this.getNodeMonth(n))return n}return null},Helper.prototype.getNodeDisplayDate=function(node){return node.navDate.toDateString()},Helper.prototype.getNodeDisplayMonth=function(node){var months=["January","February","March","April","May","June","July","August","September","October","November","December"];return months[node.navDate.getMonth()]},Helper.prototype.getNodeMonth=function(node){return node.navDate.getMonth()},Helper.prototype.getNodeYear=function(node){return node.navDate.getFullYear()},Helper.prototype.getYearNode=function(decadeNode,year){for(var i=0;i<decadeNode.nodes.length;i++){var n=decadeNode.nodes[i];if(year===this.getNodeYear(n))return n}return null},Helper.prototype.pruneDecadeNodes=function(rootNode){for(var pruned=[],i=0;i<rootNode.nodes.length;i++){var n=rootNode.nodes[i];n.nodes.length||pruned.push(n)}for(var j=0;j<pruned.length;j++){var p=pruned[j],index=rootNode.nodes.indexOf(p);index>-1&&rootNode.nodes.splice(index,1)}},Helper.prototype.sortDecadeNodes=function(rootNode){rootNode.nodes=rootNode.nodes.sort(function(a,b){return a.data.startYear-b.data.startYear})},Helper.prototype.sortMonthNodes=function(rootNode){for(var _this=this,i=0;i<rootNode.nodes.length;i++)for(var decadeNode=rootNode.nodes[i],j=0;j<decadeNode.nodes.length;j++){var monthNode=decadeNode.nodes[j];monthNode.nodes=monthNode.nodes.sort(function(a,b){return _this.getNodeMonth(a)-_this.getNodeMonth(b)})}},Helper.prototype.sortYearNodes=function(rootNode){for(var _this=this,i=0;i<rootNode.nodes.length;i++){var decadeNode=rootNode.nodes[i];decadeNode.nodes=decadeNode.nodes.sort(function(a,b){return _this.getNodeYear(a)-_this.getNodeYear(b)})}},Helper}();Manifold.Helper=Helper}(Manifold||(Manifold={}));var Manifold;!function(Manifold){function loadManifest(options){var bootstrapper=new Manifold.Bootstrapper(options);return bootstrapper.bootstrap()}Manifold.loadManifest=loadManifest}(Manifold||(Manifold={})),function(g){g.Manifold||(g.Manifold=Manifold)}(global);var Manifold;!function(Manifold){var MetadataGroup=function(){function MetadataGroup(resource,label){this.items=[],this.resource=resource,this.label=label}return MetadataGroup.prototype.addItem=function(item){this.items.push(item)},MetadataGroup.prototype.addMetadata=function(metadata,isRootLevel){void 0===isRootLevel&&(isRootLevel=!1);for(var i=0;i<metadata.length;i++){var item=metadata[i];item.isRootLevel=isRootLevel,this.addItem(item)}},MetadataGroup}();Manifold.MetadataGroup=MetadataGroup}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var MetadataOptions=function(){function MetadataOptions(){}return MetadataOptions}();Manifold.MetadataOptions=MetadataOptions}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var MultiSelectState=function(){function MultiSelectState(){this.isEnabled=!1,this.ranges=[],this.canvases=[]}return MultiSelectState.prototype.allCanvasesSelected=function(){return this.canvases.length>0&&this.getAllSelectedCanvases().length===this.canvases.length},MultiSelectState.prototype.allRangesSelected=function(){return this.ranges.length>0&&this.getAllSelectedRanges().length===this.ranges.length},MultiSelectState.prototype.allSelected=function(){return this.allRangesSelected()&&this.allCanvasesSelected()},MultiSelectState.prototype.getAll=function(){return this.canvases.concat(this.ranges)},MultiSelectState.prototype.getAllSelectedCanvases=function(){return this.canvases.en().where(function(c){return c.multiSelected}).toArray()},MultiSelectState.prototype.getAllSelectedRanges=function(){return this.ranges.en().where(function(r){return r.multiSelected}).toArray()},MultiSelectState.prototype.getCanvasById=function(id){return this.canvases.en().where(function(c){return c.id===id}).first()},MultiSelectState.prototype.getCanvasesByIds=function(ids){for(var canvases=[],i=0;i<ids.length;i++){var id=ids[i];canvases.push(this.getCanvasById(id))}return canvases},MultiSelectState.prototype.getRangeCanvases=function(range){var ids=range.getCanvasIds();return this.getCanvasesByIds(ids)},MultiSelectState.prototype.selectAll=function(selected){this.selectRanges(this.ranges,selected),this.selectCanvases(this.canvases,selected)},MultiSelectState.prototype.selectCanvas=function(canvas,selected){var c=this.canvases.en().where(function(c){return c.id===canvas.id}).first();c.multiSelected=selected},MultiSelectState.prototype.selectAllCanvases=function(selected){this.selectCanvases(this.canvases,selected)},MultiSelectState.prototype.selectCanvases=function(canvases,selected){for(var j=0;j<canvases.length;j++){var canvas=canvases[j];canvas.multiSelected=selected}},MultiSelectState.prototype.selectRange=function(range,selected){var r=this.ranges.en().where(function(r){return r.id===range.id}).first();r.multiSelected=selected;var canvases=this.getRangeCanvases(r);this.selectCanvases(canvases,selected)},MultiSelectState.prototype.selectAllRanges=function(selected){this.selectRanges(this.ranges,selected)},MultiSelectState.prototype.selectRanges=function(ranges,selected){for(var i=0;i<ranges.length;i++){var range=ranges[i];range.multiSelected=selected;var canvases=this.getCanvasesByIds(range.getCanvasIds());this.selectCanvases(canvases,selected)}},MultiSelectState.prototype.setEnabled=function(enabled){this.isEnabled=enabled;for(var items=this.getAll(),i=0;i<items.length;i++){var item=items[i];item.multiSelectEnabled=this.isEnabled,enabled||(item.multiSelected=!1)}},MultiSelectState}();Manifold.MultiSelectState=MultiSelectState}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var SearchResult=function(){function SearchResult(resource,canvasIndex){this.rects=[],this.canvasIndex=canvasIndex,this.addRect(resource)}return SearchResult.prototype.addRect=function(resource){var rect=new Manifold.SearchResultRect(resource);rect.canvasIndex=this.canvasIndex,rect.index=this.rects.length,this.rects.push(rect),this.rects.sort(function(a,b){return a.index-b.index})},SearchResult}();Manifold.SearchResult=SearchResult}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var SearchResultRect=function(){function SearchResultRect(result){this.isVisible=!0;var xywh=result.on.match(/.*xywh=(\d*),(\d*),(\d*),(\d*)/);this.x=Number(xywh[1]),this.y=Number(xywh[2]),this.width=Number(xywh[3]),this.height=Number(xywh[4]),this.chars=result.resource.chars}return SearchResultRect}();Manifold.SearchResultRect=SearchResultRect}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var Translation=function(){function Translation(value,locale){this.value=value,this.locale=locale}return Translation}();Manifold.Translation=Translation}(Manifold||(Manifold={}));var Manifold;!function(Manifold){var UriLabeller=function(){function UriLabeller(labels){this.labels=labels}return UriLabeller.prototype.format=function(url){if(url.indexOf("<a")!=-1)return url;var label=this.labels[url]?this.labels[url]:url;return'<a href="'+url+'">'+label+"</a>"},UriLabeller}();Manifold.UriLabeller=UriLabeller}(Manifold||(Manifold={}))}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
 // utils v0.0.38 https://github.com/edsilv/utils
 !function(f){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=f();else if("function"==typeof define&&define.amd)define('lib/utils.min.js',[],f);else{var g;g="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,g.utils=f()}}(function(){return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a="function"==typeof require&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}for(var i="function"==typeof require&&require,o=0;o<r.length;o++)s(r[o]);return s}({1:[function(require,module,exports){(function(global){var Utils;!function(Utils){var Async=function(){function Async(){}return Async.waitFor=function(test,successCallback,failureCallback,interval,maxTries,numTries){interval||(interval=200),maxTries||(maxTries=100),numTries||(numTries=0),numTries+=1,numTries>maxTries?failureCallback&&failureCallback():test()?successCallback():setTimeout(function(){Async.waitFor(test,successCallback,failureCallback,interval,maxTries,numTries)},interval)},Async}();Utils.Async=Async}(Utils||(Utils={}));var Utils;!function(Utils){var Bools=function(){function Bools(){}return Bools.getBool=function(val,defaultVal){return null===val||"undefined"==typeof val?defaultVal:val},Bools}();Utils.Bools=Bools}(Utils||(Utils={}));var Utils;!function(Utils){var Clipboard=function(){function Clipboard(){}return Clipboard.copy=function(text){var $tempDiv=$("<div style='position:absolute;left:-9999px'>"),brRegex=/<br\s*[\/]?>/gi;text=text.replace(brRegex,"\n"),$("body").append($tempDiv),$tempDiv.append(text);var $tempInput=$("<textarea>");$tempDiv.append($tempInput),$tempInput.val($tempDiv.text()).select(),document.execCommand("copy"),$tempDiv.remove()},Clipboard.supportsCopy=function(){return document.queryCommandSupported&&document.queryCommandSupported("copy")},Clipboard}();Utils.Clipboard=Clipboard}(Utils||(Utils={}));var Utils;!function(Utils){var Colors=function(){function Colors(){}return Colors.float32ColorToARGB=function(float32Color){var a=(4278190080&float32Color)>>>24,r=(16711680&float32Color)>>>16,g=(65280&float32Color)>>>8,b=255&float32Color,result=[a,r,g,b];return result},Colors._componentToHex=function(c){var hex=c.toString(16);return 1==hex.length?"0"+hex:hex},Colors.rgbToHexString=function(rgb){return Colors.coalesce(rgb),"#"+Colors._componentToHex(rgb[0])+Colors._componentToHex(rgb[1])+Colors._componentToHex(rgb[2])},Colors.argbToHexString=function(argb){return"#"+Colors._componentToHex(argb[0])+Colors._componentToHex(argb[1])+Colors._componentToHex(argb[2])+Colors._componentToHex(argb[3])},Colors.coalesce=function(arr){for(var i=1;i<arr.length;i++)"undefined"==typeof arr[i]&&(arr[i]=arr[i-1])},Colors}();Utils.Colors=Colors}(Utils||(Utils={}));var Utils;!function(Utils){var Dates=function(){function Dates(){}return Dates.getTimeStamp=function(){return(new Date).getTime()},Dates}();Utils.Dates=Dates}(Utils||(Utils={}));var Utils;!function(Utils){var Device=function(){function Device(){}return Device.getPixelRatio=function(ctx){var dpr=window.devicePixelRatio||1,bsr=ctx.webkitBackingStorePixelRatio||ctx.mozBackingStorePixelRatio||ctx.msBackingStorePixelRatio||ctx.oBackingStorePixelRatio||ctx.backingStorePixelRatio||1;return dpr/bsr},Device.isTouch=function(){return!!("ontouchstart"in window)||window.navigator.msMaxTouchPoints>0},Device}();Utils.Device=Device}(Utils||(Utils={}));var Utils;!function(Utils){var Documents=function(){function Documents(){}return Documents.isInIFrame=function(){try{return window.self!==window.top}catch(e){return!0}},Documents.supportsFullscreen=function(){var doc=document.documentElement,support=doc.requestFullscreen||doc.mozRequestFullScreen||doc.webkitRequestFullScreen||doc.msRequestFullscreen;return void 0!==support},Documents.isHidden=function(){var prop=Documents.getHiddenProp();return!!prop},Documents.getHiddenProp=function(){var prefixes=["webkit","moz","ms","o"];if("hidden"in document)return"hidden";for(var i=0;i<prefixes.length;i++)if(prefixes[i]+"Hidden"in document)return prefixes[i]+"Hidden";return null},Documents}();Utils.Documents=Documents}(Utils||(Utils={}));var Utils;!function(Utils){var Events=function(){function Events(){}return Events.debounce=function(fn,debounceDuration){return debounceDuration=debounceDuration||100,function(){if(!fn.debouncing){var args=Array.prototype.slice.apply(arguments);fn.lastReturnVal=fn.apply(window,args),fn.debouncing=!0}return clearTimeout(fn.debounceTimeout),fn.debounceTimeout=setTimeout(function(){fn.debouncing=!1},debounceDuration),fn.lastReturnVal}},Events}();Utils.Events=Events}(Utils||(Utils={}));var Utils;!function(Utils){var Files=function(){function Files(){}return Files.simplifyMimeType=function(mime){switch(mime){case"text/plain":return"txt";case"image/jpeg":return"jpg";case"application/msword":return"doc";case"application/vnd.openxmlformats-officedocument.wordprocessingml.document":return"docx";default:var parts=mime.split("/");return parts[parts.length-1]}},Files}();Utils.Files=Files}(Utils||(Utils={}));var Utils;!function(Utils){var Keyboard=function(){function Keyboard(){}return Keyboard.getCharCode=function(e){var charCode="number"==typeof e.which?e.which:e.keyCode;return charCode},Keyboard}();Utils.Keyboard=Keyboard}(Utils||(Utils={}));var Utils;!function(Utils){var Maths;!function(Maths){var Vector=function(){function Vector(x,y){this.X=x,this.Y=y}return Vector.prototype.get=function(){return new Vector(this.X,this.Y)},Vector.prototype.set=function(x,y){this.X=x,this.Y=y},Vector.prototype.add=function(v){this.X+=v.X,this.Y+=v.Y},Vector.add=function(v1,v2){return new Vector(v1.X+v2.X,v1.Y+v2.Y)},Vector.prototype.sub=function(v){this.X-=v.X,this.Y-=v.Y},Vector.sub=function(v1,v2){return new Vector(v1.X-v2.X,v1.Y-v2.Y)},Vector.prototype.mult=function(n){this.X=this.X*n,this.Y=this.Y*n},Vector.mult=function(v1,v2){return new Vector(v1.X*v2.X,v1.Y*v2.Y)},Vector.multN=function(v1,n){return new Vector(v1.X*n,v1.Y*n)},Vector.prototype.Div=function(n){this.X=this.X/n,this.Y=this.Y/n},Vector.div=function(v1,v2){return new Vector(v1.X/v2.X,v1.Y/v2.Y)},Vector.divN=function(v1,n){return new Vector(v1.X/n,v1.Y/n)},Vector.prototype.mag=function(){return Math.sqrt(this.X*this.X+this.Y*this.Y)},Vector.prototype.magSq=function(){return this.X*this.X+this.Y*this.Y},Vector.prototype.normalise=function(){var m=this.mag();0!=m&&1!=m&&this.Div(m)},Vector.prototype.limit=function(max){this.magSq()>max*max&&(this.normalise(),this.mult(max))},Vector.prototype.equals=function(v){return this.X==v.X&&this.Y==v.Y},Vector.prototype.heading=function(){var angle=Math.atan2(-this.Y,this.X);return-1*angle},Vector.random2D=function(){return Vector.fromAngle(Math.random()*Math.TAU)},Vector.fromAngle=function(angle){return new Vector(Math.cos(angle),Math.sin(angle))},Vector}();Maths.Vector=Vector}(Maths=Utils.Maths||(Utils.Maths={}))}(Utils||(Utils={}));var Utils;!function(Utils){var Measurements;!function(Measurements){var Size=function(){function Size(width,height){this.width=width,this.height=height}return Size}();Measurements.Size=Size;var Dimensions=function(){function Dimensions(){}return Dimensions.fitRect=function(width1,height1,width2,height2){var scale,ratio1=height1/width1,ratio2=height2/width2,width=0,height=0;return ratio1<ratio2&&(scale=width2/width1,width=width1*scale,height=height1*scale),ratio2<ratio1&&(scale=height2/height1,width=width1*scale,height=height1*scale),new Size(Math.floor(width),Math.floor(height))},Dimensions.hitRect=function(x,y,w,h,mx,my){return mx>x&&mx<x+w&&my>y&&my<y+h},Dimensions}();Measurements.Dimensions=Dimensions}(Measurements=Utils.Measurements||(Utils.Measurements={}))}(Utils||(Utils={}));var Utils;!function(Utils){var Numbers=function(){function Numbers(){}return Numbers.numericalInput=function(event){return 46==event.keyCode||8==event.keyCode||9==event.keyCode||27==event.keyCode||65==event.keyCode&&event.ctrlKey===!0||event.keyCode>=35&&event.keyCode<=39||(!(event.shiftKey||(event.keyCode<48||event.keyCode>57)&&(event.keyCode<96||event.keyCode>105))||(event.preventDefault(),!1))},Numbers}();Utils.Numbers=Numbers}(Utils||(Utils={}));var Utils;!function(Utils){var Objects=function(){function Objects(){}return Objects.toPlainObject=function(value){value=Object(value);var result={};for(var key in value)result[key]=value[key];return result},Objects}();Utils.Objects=Objects}(Utils||(Utils={}));var Utils;!function(Utils){var Storage=function(){function Storage(){}return Storage.clear=function(storageType){switch(void 0===storageType&&(storageType=Utils.StorageType.memory),storageType.value){case Utils.StorageType.memory.value:this._memoryStorage={};break;case Utils.StorageType.session.value:sessionStorage.clear();break;case Utils.StorageType.local.value:localStorage.clear()}},Storage.clearExpired=function(storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);for(var items=this.getItems(storageType),i=0;i<items.length;i++){var item=items[i];this._isExpired(item)&&this.remove(item.key)}},Storage.get=function(key,storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);var data=null;switch(storageType.value){case Utils.StorageType.memory.value:data=this._memoryStorage[key];break;case Utils.StorageType.session.value:data=sessionStorage.getItem(key);break;case Utils.StorageType.local.value:data=localStorage.getItem(key)}if(!data)return null;var item=JSON.parse(data);return this._isExpired(item)?null:(item.key=key,item)},Storage._isExpired=function(item){return!((new Date).getTime()<item.expiresAt)},Storage.getItems=function(storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);var items=[];switch(storageType.value){case Utils.StorageType.memory.value:for(var keys=Object.keys(this._memoryStorage),i=0;i<keys.length;i++){var item=this.get(keys[i],Utils.StorageType.memory);item&&items.push(item)}break;case Utils.StorageType.session.value:for(var i=0;i<sessionStorage.length;i++){var key=sessionStorage.key(i);if(key){var item=this.get(key,Utils.StorageType.session);item&&items.push(item)}}break;case Utils.StorageType.local.value:for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i);if(key){var item=this.get(key,Utils.StorageType.local);item&&items.push(item)}}}return items},Storage.remove=function(key,storageType){switch(void 0===storageType&&(storageType=Utils.StorageType.memory),storageType.value){case Utils.StorageType.memory.value:delete this._memoryStorage[key];break;case Utils.StorageType.session.value:sessionStorage.removeItem(key);break;case Utils.StorageType.local.value:localStorage.removeItem(key)}},Storage.set=function(key,value,expirationSecs,storageType){void 0===storageType&&(storageType=Utils.StorageType.memory);var expirationMS=1e3*expirationSecs,record=new Utils.StorageItem;switch(record.value=value,record.expiresAt=(new Date).getTime()+expirationMS,storageType.value){case Utils.StorageType.memory.value:this._memoryStorage[key]=JSON.stringify(record);break;case Utils.StorageType.session.value:sessionStorage.setItem(key,JSON.stringify(record));break;case Utils.StorageType.local.value:localStorage.setItem(key,JSON.stringify(record))}return record},Storage}();Storage._memoryStorage={},Utils.Storage=Storage}(Utils||(Utils={}));var Utils;!function(Utils){var StorageItem=function(){function StorageItem(){}return StorageItem}();Utils.StorageItem=StorageItem}(Utils||(Utils={}));var Utils;!function(Utils){var StorageType=function(){function StorageType(value){this.value=value}return StorageType.prototype.toString=function(){return this.value},StorageType}();StorageType.memory=new StorageType("memory"),StorageType.session=new StorageType("session"),StorageType.local=new StorageType("local"),Utils.StorageType=StorageType}(Utils||(Utils={}));var Utils;!function(Utils){var Strings=function(){function Strings(){}return Strings.ellipsis=function(text,chars){if(text.length<=chars)return text;var trimmedText=text.substr(0,chars),lastSpaceIndex=trimmedText.lastIndexOf(" ");return lastSpaceIndex!=-1&&(trimmedText=trimmedText.substr(0,Math.min(trimmedText.length,lastSpaceIndex))),trimmedText+"&hellip;"},Strings.htmlDecode=function(encoded){var div=document.createElement("div");return div.innerHTML=encoded,div.firstChild.nodeValue},Strings}();Utils.Strings=Strings}(Utils||(Utils={}));var Utils;!function(Utils){var Urls=function(){function Urls(){}return Urls.getHashParameter=function(key,doc){doc||(doc=window.document);var regex=new RegExp("#.*[?&]"+key+"=([^&]+)(&|$)"),match=regex.exec(doc.location.hash);return match?decodeURIComponent(match[1].replace(/\+/g," ")):null},Urls.setHashParameter=function(key,value,doc){doc||(doc=window.document);var kvp=this.updateURIKeyValuePair(doc.location.hash.replace("#?",""),key,value),newHash="#?"+kvp,url=doc.URL,index=url.indexOf("#");index!=-1&&(url=url.substr(0,url.indexOf("#"))),doc.location.replace(url+newHash)},Urls.getQuerystringParameter=function(key,w){return w||(w=window),this.getQuerystringParameterFromString(key,w.location.search)},Urls.getQuerystringParameterFromString=function(key,querystring){key=key.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");var regex=new RegExp("[\\?&]"+key+"=([^&#]*)"),match=regex.exec(querystring);return match?decodeURIComponent(match[1].replace(/\+/g," ")):null},Urls.setQuerystringParameter=function(key,value,doc){doc||(doc=window.document);var kvp=this.updateURIKeyValuePair(doc.location.hash.replace("#?",""),key,value);window.location.search=kvp},Urls.updateURIKeyValuePair=function(uriSegment,key,value){key=encodeURIComponent(key),value=encodeURIComponent(value);var kvp=uriSegment.split("&");""==kvp[0]&&kvp.shift();for(var x,i=kvp.length;i--;)if(x=kvp[i].split("="),x[0]==key){x[1]=value,kvp[i]=x.join("=");break}return i<0&&(kvp[kvp.length]=[key,value].join("=")),kvp.join("&")},Urls.getUrlParts=function(url){var a=document.createElement("a");return a.href=url,a},Urls.convertToRelativeUrl=function(url){var parts=this.getUrlParts(url),relUri=parts.pathname+parts.searchWithin;return relUri.startsWith("/")||(relUri="/"+relUri),relUri},Urls}();Utils.Urls=Urls}(Utils||(Utils={})),global.Utils=module.exports=Utils}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}]},{},[1])(1)});
 define('UVDataProvider',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var UVDataProvider = (function () {
         function UVDataProvider() {
-            this.store = {};
         }
-        UVDataProvider.prototype.data = function () {
-            return this.store;
-        };
-        UVDataProvider.prototype.assign = function (data) {
-            this.store = Object.assign(this.store, data);
-        };
-        // parse string 'en-GB' or 'en-GB:English,cy-GB:Welsh' into array
-        UVDataProvider.prototype.parseLocale = function (locale) {
-            if (!locale) {
-                return;
-            }
-            this.store.locales = [];
-            var l = locale.split(',');
+        // parse string 'en-GB' or 'en-GB:English,cy-GB:Welsh' and return ILocale array.
+        UVDataProvider.prototype.parseLocales = function (locales) {
+            var parsedLocales = [];
+            var l = locales.split(',');
             for (var i = 0; i < l.length; i++) {
                 var v = l[i].split(':');
-                this.store.locales.push({
+                parsedLocales.push({
                     name: v[0].trim(),
                     label: (v[1]) ? v[1].trim() : ""
                 });
             }
-            this.store.locale = this.store.locales[0].name;
+            return parsedLocales;
         };
-        UVDataProvider.prototype.getLocales = function () {
-            if (this.store.locales)
-                return this.store.locales;
-            // use data-locales to prioritise
-            var items = this.store.config.localisation.locales.slice(0);
-            var sorting = this.store.locales;
-            var result = [];
-            // loop through sorting array
-            // if items contains sort item, add it to results.
-            // if sort item has a label, substitute it
-            // mark item as added.
-            // if limitLocales is disabled,
-            // loop through remaining items and add to results.
-            $.each(sorting, function (index, sortItem) {
-                var match = items.filter(function (item) { return item.name === sortItem.name; });
-                if (match.length) {
-                    var m = match[0];
-                    if (sortItem.label)
-                        m.label = sortItem.label;
-                    m.added = true;
-                    result.push(m);
-                }
-            });
-            var limitLocales = Utils.Bools.getBool(this.store.config.options.limitLocales, false);
-            if (!limitLocales) {
-                $.each(items, function (index, item) {
-                    if (!item.added) {
-                        result.push(item);
-                    }
-                    delete item.added;
-                });
-            }
-            return this.store.locales = result;
+        // private _parseLocales(): void {
+        //     // use data-locales to prioritise
+        //     const items: any[] = this.data.config.localisation.locales.slice(0);
+        //     const sorting: any[] = this.data.locales;
+        //     const result: ILocale[] = [];
+        //     // loop through sorting array
+        //     // if items contains sort item, add it to results.
+        //     // if sort item has a label, substitute it
+        //     // mark item as added.
+        //     // if limitLocales is disabled,
+        //     // loop through remaining items and add to results.
+        //     $.each(sorting, (index: number, sortItem: any) => {
+        //         const match = items.filter((item: any) => { return item.name === sortItem.name; });
+        //         if (match.length){
+        //             var m: any = match[0];
+        //             if (sortItem.label) m.label = sortItem.label;
+        //             m.added = true;
+        //             result.push(m);
+        //         }
+        //     });
+        //     const limitLocales: boolean = Utils.Bools.getBool(this.data.config.options.limitLocales, false);
+        //     if (!limitLocales) {
+        //         $.each(items, (index: number, item: any) => {
+        //             if (!item.added){
+        //                 result.push(item);
+        //             }
+        //             delete item.added;
+        //         });
+        //     }
+        // }
+        UVDataProvider.prototype.data = function () {
+            return {};
         };
-        UVDataProvider.prototype.getAlternateLocale = function () {
-            var locales = this.getLocales();
-            var alternateLocale = null;
-            for (var i = 0; i < locales.length; i++) {
-                var locale = locales[i];
-                if (locale.name !== this.store.locale) {
-                    alternateLocale = locale;
-                }
-            }
-            return alternateLocale;
+        UVDataProvider.prototype.get = function (key, defaultValue) {
+            return new Object();
         };
-        UVDataProvider.prototype.serializeLocales = function (locales) {
-            var str = '';
-            if (!locales)
-                return str;
-            for (var i = 0; i < locales.length; i++) {
-                var l = locales[i];
-                if (i > 0)
-                    str += ',';
-                str += l.name;
-                if (l.label) {
-                    str += ':' + l.label;
-                }
-            }
-            return str;
-        };
-        UVDataProvider.prototype.getSerializedLocales = function () {
-            return this.serializeLocales(this.store.locales);
-        };
-        UVDataProvider.prototype.getParam = function (key) {
-            return null;
-        };
-        UVDataProvider.prototype.setParam = function (key, value) {
-        };
-        UVDataProvider.prototype.changeLocale = function (locale) {
-            // if the current locale is "en-GB:English,cy-GB:Welsh"
-            // and "cy-GB" is passed, it becomes "cy-GB:Welsh,en-GB:English"
-            // re-order locales so the passed locale is first
-            var locales = this.store.locales.clone();
-            var index = locales.findIndex(function (l) {
-                return l.name === locale;
-            });
-            locales.move(index, 0);
-            // convert to comma-separated string
-            var serialisedLocales = this.serializeLocales(locales);
-            this.parseLocale(serialisedLocales);
-        };
-        UVDataProvider.prototype.isDeepLinkingEnabled = function () {
-            return false;
+        UVDataProvider.prototype.set = function (key, value) {
         };
         return UVDataProvider;
     }());
     exports.UVDataProvider = UVDataProvider;
 });
 //# sourceMappingURL=UVDataProvider.js.map
-define('Params',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    // do not change order, index is important!
-    var Params;
-    (function (Params) {
-        Params[Params["collectionIndex"] = 0] = "collectionIndex";
-        Params[Params["manifestIndex"] = 1] = "manifestIndex";
-        Params[Params["sequenceIndex"] = 2] = "sequenceIndex";
-        Params[Params["canvasIndex"] = 3] = "canvasIndex";
-        Params[Params["xywh"] = 4] = "xywh";
-        Params[Params["rotation"] = 5] = "rotation";
-        Params[Params["highlight"] = 6] = "highlight";
-        Params[Params["anchor"] = 7] = "anchor";
-    })(Params = exports.Params || (exports.Params = {}));
-});
-//# sourceMappingURL=Params.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2894,171 +2821,189 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('URLDataProvider',["require", "exports", "./UVDataProvider", "./Params"], function (require, exports, UVDataProvider_1, Params_1) {
+define('URLDataProvider',["require", "exports", "./UVDataProvider"], function (require, exports, UVDataProvider_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var URLDataProvider = (function (_super) {
         __extends(URLDataProvider, _super);
+        //private _paramMap: string[] = ['c', 'm', 's', 'cv', 'xywh', 'r', 'h', 'a']; // todo: move xywh, r, h, a to OSDUrlDataProvider?
         function URLDataProvider() {
-            var _this = _super.call(this) || this;
-            _this._paramMap = ['c', 'm', 's', 'cv', 'xywh', 'r', 'h', 'a']; // todo: move xywh, r, h, a to OSDUrlDataProvider
-            return _this;
+            return _super.call(this) || this;
         }
         URLDataProvider.prototype.data = function () {
-            return this.store = {
-                // querystring params
+            var locales = [
+                {
+                    name: 'en-GB',
+                    label: 'English'
+                }
+            ];
+            var localeParam = Utils.Urls.getQuerystringParameter('locale') || Utils.Urls.getQuerystringParameter('locales');
+            if (localeParam && localeParam !== 'undefined') {
+                locales = this.parseLocales(localeParam);
+            }
+            return {
                 config: {},
-                configUri: Utils.Urls.getQuerystringParameter('config'),
-                domain: Utils.Urls.getQuerystringParameter('domain'),
-                embedDomain: Utils.Urls.getQuerystringParameter('embedDomain'),
-                embedScriptUri: Utils.Urls.getQuerystringParameter('embedScriptUri'),
-                isHomeDomain: Utils.Urls.getQuerystringParameter('isHomeDomain') === 'true',
-                isLightbox: Utils.Urls.getQuerystringParameter('isLightbox') === 'true',
-                isOnlyInstance: Utils.Urls.getQuerystringParameter('isOnlyInstance') === 'true',
-                isReload: Utils.Urls.getQuerystringParameter('isReload') === 'true',
-                iiifResourceUri: Utils.Urls.getQuerystringParameter('manifestUri') || Utils.Urls.getQuerystringParameter('iiifResourceUri'),
-                locale: this.parseLocale(Utils.Urls.getQuerystringParameter('locale')),
-                // querystring or hash params
-                collectionIndex: this.getParam(Params_1.Params.collectionIndex),
-                manifestIndex: this.getParam(Params_1.Params.manifestIndex),
-                sequenceIndex: this.getParam(Params_1.Params.sequenceIndex),
-                canvasIndex: this.getParam(Params_1.Params.canvasIndex)
+                configUri: this.get('config', null),
+                domain: this.get('domain', null),
+                embedDomain: this.get('embedDomain', null),
+                embedScriptUri: this.get('embedScriptUri', null),
+                isHomeDomain: this._isHomeDomain(),
+                isLightbox: this.get('isLightbox', false),
+                isOnlyInstance: this._isOnlyInstance(),
+                isReload: this._isReload(),
+                iiifResourceUri: this.get('manifestUri', null),
+                locales: locales,
+                collectionIndex: this.get('c', 0),
+                manifestIndex: this.get('m', 0),
+                sequenceIndex: this.get('s', 0),
+                canvasIndex: this.get('cv', 0)
             };
         };
+        URLDataProvider.prototype._isHomeDomain = function () {
+            return !!Utils.Urls.getQuerystringParameter('isHomeDomain');
+        };
+        URLDataProvider.prototype._isOnlyInstance = function () {
+            return !!Utils.Urls.getQuerystringParameter('isOnlyInstance');
+        };
+        URLDataProvider.prototype._isReload = function () {
+            return !!Utils.Urls.getQuerystringParameter('isReload');
+        };
         // get hash or data-attribute params depending on whether the UV is embedded.
-        URLDataProvider.prototype.getParam = function (key) {
+        URLDataProvider.prototype.get = function (key, defaultValue) {
             var value = null;
             // deep linking is only allowed when hosted on home domain.
             if (this._hashParamsAvailable()) {
-                // todo: use a static type on bootstrapper.params
-                value = Utils.Urls.getHashParameter(this._paramMap[key], parent.document);
+                value = Utils.Urls.getHashParameter(key, (parent.document) ? parent.document : document);
             }
             if (!value) {
-                // todo: use a static type on bootstrapper.params
-                value = Utils.Urls.getQuerystringParameter(this._paramMap[key]);
+                value = Utils.Urls.getQuerystringParameter(key);
             }
-            return value;
+            if (value) {
+                return value;
+            }
+            return defaultValue;
         };
         // set hash params depending on whether the UV is embedded.
-        URLDataProvider.prototype.setParam = function (key, value) {
-            if (this.isDeepLinkingEnabled()) {
-                Utils.Urls.setHashParameter(this._paramMap[key], value, parent.document);
+        URLDataProvider.prototype.set = function (key, value) {
+            if (this._isDeepLinkingEnabled()) {
+                Utils.Urls.setHashParameter(key, value.toString(), (parent.document) ? parent.document : document);
             }
         };
-        URLDataProvider.prototype.isDeepLinkingEnabled = function () {
-            return (this.store.isHomeDomain && this.store.isOnlyInstance);
+        URLDataProvider.prototype._isDeepLinkingEnabled = function () {
+            return (this._isHomeDomain() && this._isOnlyInstance());
         };
         URLDataProvider.prototype._hashParamsAvailable = function () {
-            return (this.store.isHomeDomain && !this.store.isReload && this.store.isOnlyInstance);
+            return (this._isHomeDomain() && !this._isReload() && this._isOnlyInstance());
         };
         return URLDataProvider;
     }(UVDataProvider_1.UVDataProvider));
-    exports.default = URLDataProvider;
+    exports["default"] = URLDataProvider;
 });
 //# sourceMappingURL=URLDataProvider.js.map
-define('modules/uv-shared-module/BaseCommands',["require", "exports"], function (require, exports) {
+define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var BaseCommands = (function () {
-        function BaseCommands() {
+    exports.__esModule = true;
+    var BaseEvents = (function () {
+        function BaseEvents() {
         }
-        return BaseCommands;
+        return BaseEvents;
     }());
-    BaseEvents.namespace = 'uv.';
-    BaseEvents.ACCEPT_TERMS = BaseEvents.namespace + 'onAcceptTerms';
-    BaseEvents.BOOKMARK = BaseEvents.namespace + 'onBookmark';
-    BaseEvents.CANVAS_INDEX_CHANGE_FAILED = BaseEvents.namespace + 'onCanvasIndexChangeFailed';
-    BaseEvents.CANVAS_INDEX_CHANGED = BaseEvents.namespace + 'onCanvasIndexChanged';
-    BaseEvents.CLICKTHROUGH = BaseEvents.namespace + 'onClickthrough';
-    BaseEvents.CLOSE_ACTIVE_DIALOGUE = BaseEvents.namespace + 'onCloseActiveDialogue';
-    BaseEvents.CLOSE_LEFT_PANEL = BaseEvents.namespace + 'onCloseLeftPanel';
-    BaseEvents.CLOSE_RIGHT_PANEL = BaseEvents.namespace + 'onCloseRightPanel';
-    BaseEvents.CREATED = BaseEvents.namespace + 'onCreated';
-    BaseEvents.DOWN_ARROW = BaseEvents.namespace + 'onDownArrow';
-    BaseEvents.DOWNLOAD = BaseEvents.namespace + 'onDownload';
-    BaseEvents.DROP = BaseEvents.namespace + 'onDrop';
-    BaseEvents.END = BaseEvents.namespace + 'onEnd';
-    BaseEvents.ESCAPE = BaseEvents.namespace + 'onEscape';
-    BaseEvents.EXTERNAL_LINK_CLICKED = BaseEvents.namespace + 'onExternalLinkClicked';
-    BaseEvents.FEEDBACK = BaseEvents.namespace + 'onFeedback';
-    BaseEvents.FORBIDDEN = BaseEvents.namespace + 'onForbidden';
-    BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE = BaseEvents.namespace + 'onHideClickthroughDialogue';
-    BaseEvents.HIDE_DOWNLOAD_DIALOGUE = BaseEvents.namespace + 'onHideDownloadDialogue';
-    BaseEvents.HIDE_EMBED_DIALOGUE = BaseEvents.namespace + 'onHideEmbedDialogue';
-    BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE = BaseEvents.namespace + 'onHideExternalContentDialogue';
-    BaseEvents.HIDE_GENERIC_DIALOGUE = BaseEvents.namespace + 'onHideGenericDialogue';
-    BaseEvents.HIDE_HELP_DIALOGUE = BaseEvents.namespace + 'onHideHelpDialogue';
-    BaseEvents.HIDE_INFORMATION = BaseEvents.namespace + 'onHideInformation';
-    BaseEvents.HIDE_LOGIN_DIALOGUE = BaseEvents.namespace + 'onHideLoginDialogue';
-    BaseEvents.HIDE_MOREINFO_DIALOGUE = BaseEvents.namespace + 'onHideMoreInfoDialogue';
-    BaseEvents.HIDE_OVERLAY = BaseEvents.namespace + 'onHideOverlay';
-    BaseEvents.HIDE_RESTRICTED_DIALOGUE = BaseEvents.namespace + 'onHideRestrictedDialogue';
-    BaseEvents.HIDE_SETTINGS_DIALOGUE = BaseEvents.namespace + 'onHideSettingsDialogue';
-    BaseEvents.HIDE_SHARE_DIALOGUE = BaseEvents.namespace + 'onHideShareDialogue';
-    BaseEvents.HOME = BaseEvents.namespace + 'onHome';
-    BaseEvents.LEFT_ARROW = BaseEvents.namespace + 'onLeftArrow';
-    BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH = BaseEvents.namespace + 'onLeftPanelCollapseFullFinish';
-    BaseEvents.LEFTPANEL_COLLAPSE_FULL_START = BaseEvents.namespace + 'onLeftPanelCollapseFullStart';
-    BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH = BaseEvents.namespace + 'onLeftPanelExpandFullFinish';
-    BaseEvents.LEFTPANEL_EXPAND_FULL_START = BaseEvents.namespace + 'onLeftPanelExpandFullStart';
-    BaseEvents.LOAD_FAILED = BaseEvents.namespace + 'onLoadFailed';
-    BaseEvents.LOAD = BaseEvents.namespace + 'onLoad';
-    BaseEvents.LOGIN_FAILED = BaseEvents.namespace + 'onLoginFailed';
-    BaseEvents.LOGIN = BaseEvents.namespace + 'onLogin';
-    BaseEvents.LOGOUT = BaseEvents.namespace + 'onLogout';
-    BaseEvents.METRIC_CHANGED = BaseEvents.namespace + 'onMetricChanged';
-    BaseEvents.MINUS = BaseEvents.namespace + 'onMinus';
-    BaseEvents.NOT_FOUND = BaseEvents.namespace + 'onNotFound';
-    BaseEvents.OPEN_EXTERNAL_RESOURCE = BaseEvents.namespace + 'onOpenExternalResource';
-    BaseEvents.OPEN_LEFT_PANEL = BaseEvents.namespace + 'onOpenLeftPanel';
-    BaseEvents.OPEN_RIGHT_PANEL = BaseEvents.namespace + 'onOpenRightPanel';
-    BaseEvents.OPEN = BaseEvents.namespace + 'onOpen';
-    BaseEvents.PAGE_DOWN = BaseEvents.namespace + 'onPageDown';
-    BaseEvents.PAGE_UP = BaseEvents.namespace + 'onPageUp';
-    BaseEvents.PARENT_EXIT_FULLSCREEN = BaseEvents.namespace + 'onParentExitFullScreen';
-    BaseEvents.PLUS = BaseEvents.namespace + 'onPlus';
-    BaseEvents.REDIRECT = BaseEvents.namespace + 'onRedirect';
-    BaseEvents.REFRESH = BaseEvents.namespace + 'onRefresh';
-    BaseEvents.RESIZE = BaseEvents.namespace + 'onResize';
-    BaseEvents.RESOURCE_DEGRADED = BaseEvents.namespace + 'onResourceDegraded';
-    BaseEvents.RETRY = BaseEvents.namespace + 'onRetry';
-    BaseEvents.RETURN = BaseEvents.namespace + 'onReturn';
-    BaseEvents.RELOAD = BaseEvents.namespace + 'onReload';
-    BaseEvents.RIGHT_ARROW = BaseEvents.namespace + 'onRightArrow';
-    BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH = BaseEvents.namespace + 'onRightPanelCollapseFullFinish';
-    BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START = BaseEvents.namespace + 'onRightPanelCollapseFullStart';
-    BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH = BaseEvents.namespace + 'onRightPanelExpandFullFinish';
-    BaseEvents.RIGHTPANEL_EXPAND_FULL_START = BaseEvents.namespace + 'onRightPanelExpandFullStart';
-    BaseEvents.SEQUENCE_INDEX_CHANGED = BaseEvents.namespace + 'onSequenceIndexChanged';
-    BaseEvents.SETTINGS_CHANGED = BaseEvents.namespace + 'onSettingsChanged';
-    BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE = BaseEvents.namespace + 'onShowClickThroughDialogue';
-    BaseEvents.SHOW_DOWNLOAD_DIALOGUE = BaseEvents.namespace + 'onShowDownloadDialogue';
-    BaseEvents.SHOW_EMBED_DIALOGUE = BaseEvents.namespace + 'onShowEmbedDialogue';
-    BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE = BaseEvents.namespace + 'onShowExternalContentDialogue';
-    BaseEvents.SHOW_GENERIC_DIALOGUE = BaseEvents.namespace + 'onShowGenericDialogue';
-    BaseEvents.SHOW_HELP_DIALOGUE = BaseEvents.namespace + 'onShowHelpDialogue';
-    BaseEvents.SHOW_INFORMATION = BaseEvents.namespace + 'onShowInformation';
-    BaseEvents.SHOW_LOGIN_DIALOGUE = BaseEvents.namespace + 'onShowLoginDialogue';
-    BaseEvents.SHOW_MOREINFO_DIALOGUE = BaseEvents.namespace + 'onShowMoreInfoDialogue';
-    BaseEvents.SHOW_OVERLAY = BaseEvents.namespace + 'onShowOverlay';
-    BaseEvents.SHOW_RESTRICTED_DIALOGUE = BaseEvents.namespace + 'onShowRestrictedDialogue';
-    BaseEvents.SHOW_SETTINGS_DIALOGUE = BaseEvents.namespace + 'onShowSettingsDialogue';
-    BaseEvents.SHOW_SHARE_DIALOGUE = BaseEvents.namespace + 'onShowShareDialogue';
-    BaseEvents.SHOW_TERMS_OF_USE = BaseEvents.namespace + 'onShowTermsOfUse';
-    BaseEvents.THUMB_SELECTED = BaseEvents.namespace + 'onThumbSelected';
-    BaseEvents.TOGGLE_EXPAND_LEFT_PANEL = BaseEvents.namespace + 'onToggleExpandLeftPanel';
-    BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL = BaseEvents.namespace + 'onToggleExpandRightPanel';
-    BaseEvents.TOGGLE_FULLSCREEN = BaseEvents.namespace + 'onToggleFullScreen';
-    BaseEvents.UP_ARROW = BaseEvents.namespace + 'onUpArrow';
-    BaseEvents.UPDATE_SETTINGS = BaseEvents.namespace + 'onUpdateSettings';
-    BaseEvents.VIEW_FULL_TERMS = BaseEvents.namespace + 'onViewFullTerms';
-    BaseEvents.WINDOW_UNLOAD = BaseEvents.namespace + 'onWindowUnload';
-    exports.BaseCommands = BaseCommands;
+    BaseEvents.ACCEPT_TERMS = 'acceptTerms';
+    BaseEvents.BOOKMARK = 'bookmark';
+    BaseEvents.CANVAS_INDEX_CHANGE_FAILED = 'canvasIndexChangeFailed';
+    BaseEvents.CANVAS_INDEX_CHANGED = 'canvasIndexChanged';
+    BaseEvents.CLICKTHROUGH = 'clickthrough';
+    BaseEvents.CLOSE_ACTIVE_DIALOGUE = 'closeActiveDialogue';
+    BaseEvents.CLOSE_LEFT_PANEL = 'closeLeftPanel';
+    BaseEvents.CLOSE_RIGHT_PANEL = 'closeRightPanel';
+    BaseEvents.COLLECTION_INDEX_CHANGED = 'collectionIndexChanged';
+    BaseEvents.CREATED = 'created';
+    BaseEvents.DOWN_ARROW = 'downArrow';
+    BaseEvents.DOWNLOAD = 'download';
+    BaseEvents.DROP = 'drop';
+    BaseEvents.END = 'end';
+    BaseEvents.ESCAPE = 'escape';
+    BaseEvents.EXTERNAL_LINK_CLICKED = 'externalLinkClicked';
+    BaseEvents.FEEDBACK = 'feedback';
+    BaseEvents.FORBIDDEN = 'forbidden';
+    BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE = 'hideClickthroughDialogue';
+    BaseEvents.HIDE_DOWNLOAD_DIALOGUE = 'hideDownloadDialogue';
+    BaseEvents.HIDE_EMBED_DIALOGUE = 'hideEmbedDialogue';
+    BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE = 'hideExternalContentDialogue';
+    BaseEvents.HIDE_GENERIC_DIALOGUE = 'hideGenericDialogue';
+    BaseEvents.HIDE_HELP_DIALOGUE = 'hideHelpDialogue';
+    BaseEvents.HIDE_INFORMATION = 'hideInformation';
+    BaseEvents.HIDE_LOGIN_DIALOGUE = 'hideLoginDialogue';
+    BaseEvents.HIDE_MOREINFO_DIALOGUE = 'hideMoreInfoDialogue';
+    BaseEvents.HIDE_OVERLAY = 'hideOverlay';
+    BaseEvents.HIDE_RESTRICTED_DIALOGUE = 'hideRestrictedDialogue';
+    BaseEvents.HIDE_SETTINGS_DIALOGUE = 'hideSettingsDialogue';
+    BaseEvents.HIDE_SHARE_DIALOGUE = 'hideShareDialogue';
+    BaseEvents.HOME = 'home';
+    BaseEvents.LEFT_ARROW = 'leftArrow';
+    BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH = 'leftPanelCollapseFullFinish';
+    BaseEvents.LEFTPANEL_COLLAPSE_FULL_START = 'leftPanelCollapseFullStart';
+    BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH = 'leftPanelExpandFullFinish';
+    BaseEvents.LEFTPANEL_EXPAND_FULL_START = 'leftPanelExpandFullStart';
+    BaseEvents.LOAD_FAILED = 'loadFailed';
+    BaseEvents.LOAD = 'load';
+    BaseEvents.LOGIN_FAILED = 'loginFailed';
+    BaseEvents.LOGIN = 'login';
+    BaseEvents.LOGOUT = 'logout';
+    BaseEvents.MANIFEST_INDEX_CHANGED = 'manifestIndexChanged';
+    BaseEvents.METRIC_CHANGED = 'metricChanged';
+    BaseEvents.MINUS = 'minus';
+    BaseEvents.NOT_FOUND = 'notFound';
+    BaseEvents.OPEN_EXTERNAL_RESOURCE = 'openExternalResource';
+    BaseEvents.OPEN_LEFT_PANEL = 'openLeftPanel';
+    BaseEvents.OPEN_RIGHT_PANEL = 'openRightPanel';
+    BaseEvents.OPEN = 'open';
+    BaseEvents.PAGE_DOWN = 'pageDown';
+    BaseEvents.PAGE_UP = 'pageUp';
+    BaseEvents.PARENT_EXIT_FULLSCREEN = 'parentExitFullScreen';
+    BaseEvents.PLUS = 'plus';
+    BaseEvents.REDIRECT = 'redirect';
+    BaseEvents.REFRESH = 'refresh';
+    BaseEvents.RELOAD = 'reload';
+    BaseEvents.RESIZE = 'resize';
+    BaseEvents.RESOURCE_DEGRADED = 'resourceDegraded';
+    BaseEvents.RETRY = 'retry';
+    BaseEvents.RETURN = 'return';
+    BaseEvents.RIGHT_ARROW = 'rightArrow';
+    BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH = 'rightPanelCollapseFullFinish';
+    BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START = 'rightPanelCollapseFullStart';
+    BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH = 'rightPanelExpandFullFinish';
+    BaseEvents.RIGHTPANEL_EXPAND_FULL_START = 'rightPanelExpandFullStart';
+    BaseEvents.SEQUENCE_INDEX_CHANGED = 'sequenceIndexChanged';
+    BaseEvents.SETTINGS_CHANGED = 'settingsChanged';
+    BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE = 'showClickThroughDialogue';
+    BaseEvents.SHOW_DOWNLOAD_DIALOGUE = 'showDownloadDialogue';
+    BaseEvents.SHOW_EMBED_DIALOGUE = 'showEmbedDialogue';
+    BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE = 'showExternalContentDialogue';
+    BaseEvents.SHOW_GENERIC_DIALOGUE = 'showGenericDialogue';
+    BaseEvents.SHOW_HELP_DIALOGUE = 'showHelpDialogue';
+    BaseEvents.SHOW_INFORMATION = 'showInformation';
+    BaseEvents.SHOW_LOGIN_DIALOGUE = 'showLoginDialogue';
+    BaseEvents.SHOW_MOREINFO_DIALOGUE = 'showMoreInfoDialogue';
+    BaseEvents.SHOW_OVERLAY = 'showOverlay';
+    BaseEvents.SHOW_RESTRICTED_DIALOGUE = 'showRestrictedDialogue';
+    BaseEvents.SHOW_SETTINGS_DIALOGUE = 'showSettingsDialogue';
+    BaseEvents.SHOW_SHARE_DIALOGUE = 'showShareDialogue';
+    BaseEvents.SHOW_TERMS_OF_USE = 'showTermsOfUse';
+    BaseEvents.THUMB_SELECTED = 'thumbSelected';
+    BaseEvents.TOGGLE_EXPAND_LEFT_PANEL = 'toggleExpandLeftPanel';
+    BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL = 'toggleExpandRightPanel';
+    BaseEvents.TOGGLE_FULLSCREEN = 'toggleFullScreen';
+    BaseEvents.UP_ARROW = 'upArrow';
+    BaseEvents.UPDATE_SETTINGS = 'updateSettings';
+    BaseEvents.VIEW_FULL_TERMS = 'viewFullTerms';
+    BaseEvents.WINDOW_UNLOAD = 'windowUnload';
+    exports.BaseEvents = BaseEvents;
 });
 //# sourceMappingURL=BaseEvents.js.map
-define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCommands"], function (require, exports, BaseCommands_1) {
+define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseEvents"], function (require, exports, BaseEvents_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     // The Bootstrapper is concerned with loading the manifest/collection (iiifResource)
     // then determining which extension to use and instantiating it.
     var Bootstrapper = (function () {
@@ -3068,33 +3013,33 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
         }
         Bootstrapper.prototype.bootstrap = function (data) {
             var _this = this;
-            this.store = data;
-            if (!this.store.iiifResourceUri)
+            this.data = data;
+            if (!this.data.iiifResourceUri)
                 return;
             // empty app div
             $('#app').empty();
             // add loading class
             $('#app').addClass('loading');
             // remove any existing css
-            $('link[type*="text/css"]').remove();
+            $('link[type*="text/css"]').remove(); // todo: replace any inline styles with id #uvcomponent
             jQuery.support.cors = true;
             Manifold.loadManifest({
-                iiifResourceUri: this.store.iiifResourceUri,
-                collectionIndex: this.store.collectionIndex,
-                manifestIndex: this.store.manifestIndex,
-                sequenceIndex: this.store.sequenceIndex,
-                canvasIndex: this.store.canvasIndex,
-                locale: this.store.locale
+                iiifResourceUri: this.data.iiifResourceUri,
+                collectionIndex: this.data.collectionIndex,
+                manifestIndex: this.data.manifestIndex,
+                sequenceIndex: this.data.sequenceIndex,
+                canvasIndex: this.data.canvasIndex,
+                locale: this.data.locales[0].name
             }).then(function (helper) {
                 var trackingLabel = helper.getTrackingLabel();
-                trackingLabel += ', URI: ' + _this.store.embedDomain;
+                trackingLabel += ', URI: ' + _this.data.embedDomain;
                 window.trackingLabel = trackingLabel;
-                var sequence = helper.getSequenceByIndex(_this.store.sequenceIndex);
+                var sequence = helper.getSequenceByIndex(_this.data.sequenceIndex);
                 if (!sequence) {
                     _this.notFound();
                     return;
                 }
-                var canvas = helper.getCanvasByIndex(_this.store.canvasIndex);
+                var canvas = helper.getCanvasByIndex(_this.data.canvasIndex);
                 if (!canvas) {
                     _this.notFound();
                     return;
@@ -3114,12 +3059,12 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
                 }
                 extension.helper = helper;
                 _this.configure(extension, function (config) {
-                    _this.store.config = config;
+                    _this.data.config = config;
                     _this.injectCss(extension, function () {
                         _this.createExtension(extension);
                     });
                 });
-            }).catch(function () {
+            })["catch"](function () {
                 this.notFound();
             });
         };
@@ -3128,7 +3073,7 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
         };
         Bootstrapper.prototype.notFound = function () {
             try {
-                parent.$(parent.document).trigger(BaseCommands_1.BaseEvents.NOT_FOUND);
+                parent.$(parent.document).trigger(BaseEvents_1.BaseEvents.NOT_FOUND);
                 return;
             }
             catch (e) { }
@@ -3138,7 +3083,7 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
             var that = this;
             this.getConfigExtension(extension, function (configExtension) {
                 // todo: use a compiler flag when available
-                var configUri = 'lib/' + extension.name + '.' + that.store.locale + '.config.json';
+                var configUri = 'lib/' + extension.name + '.' + that.data.locales[0].name + '.config.json';
                 $.getJSON(configUri, function (config) {
                     _this.extendConfig(extension, config, configExtension, cb);
                 });
@@ -3149,26 +3094,26 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
             // if data-config has been set, extend the existing config object.
             if (configExtension) {
                 // save a reference to the config extension uri.
-                config.uri = this.store.configUri;
+                config.uri = this.data.configUri;
                 $.extend(true, config, configExtension);
             }
             cb(config);
         };
         Bootstrapper.prototype.getConfigExtension = function (extension, cb) {
-            var sessionConfig = sessionStorage.getItem(extension.name + '.' + this.store.locale);
+            var sessionConfig = sessionStorage.getItem(extension.name + '.' + this.data.locales[0].name);
             if (sessionConfig) {
                 cb(JSON.parse(sessionConfig));
             }
-            else if (this.store.configUri) {
+            else if (this.data.configUri) {
                 if (this.isCORSEnabled()) {
-                    $.getJSON(this.store.configUri, function (configExtension) {
+                    $.getJSON(this.data.configUri, function (configExtension) {
                         cb(configExtension);
                     });
                 }
                 else {
                     // use jsonp
                     var settings = {
-                        url: this.store.configUri,
+                        url: this.data.configUri,
                         type: 'GET',
                         dataType: 'jsonp',
                         jsonp: 'callback',
@@ -3185,7 +3130,7 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
             }
         };
         Bootstrapper.prototype.injectCss = function (extension, cb) {
-            var cssPath = 'themes/' + this.store.config.options.theme + '/css/' + extension.name + '/theme.css';
+            var cssPath = 'themes/' + this.data.config.options.theme + '/css/' + extension.name + '/theme.css';
             yepnope.injectCss(cssPath, function () {
                 cb();
             });
@@ -3202,9 +3147,9 @@ define('Bootstrapper',["require", "exports", "./modules/uv-shared-module/BaseCom
     exports.Bootstrapper = Bootstrapper;
 });
 //# sourceMappingURL=Bootstrapper.js.map
-define('modules/uv-shared-module/Panel',["require", "exports", "./BaseCommands"], function (require, exports, BaseCommands_1) {
+define('modules/uv-shared-module/Panel',["require", "exports", "./BaseEvents"], function (require, exports, BaseEvents_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Panel = (function () {
         function Panel($element, fitToParentWidth, fitToParentHeight) {
             this.isResized = false;
@@ -3215,7 +3160,7 @@ define('modules/uv-shared-module/Panel',["require", "exports", "./BaseCommands"]
         }
         Panel.prototype.create = function () {
             var _this = this;
-            $.subscribe(BaseCommands_1.BaseEvents.RESIZE, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.RESIZE, function () {
                 _this.resize();
             });
         };
@@ -3246,7 +3191,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], function (require, exports, Panel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var BaseView = (function (_super) {
         __extends(BaseView, _super);
         function BaseView($element, fitToParentWidth, fitToParentHeight) {
@@ -3296,9 +3241,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", "./BaseCommands"], function (require, exports, BaseView_1, BaseCommands_1) {
+define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", "./BaseEvents"], function (require, exports, BaseView_1, BaseEvents_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Dialogue = (function (_super) {
         __extends(Dialogue, _super);
         function Dialogue($element) {
@@ -3313,14 +3258,14 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             this.setConfig('dialogue');
             _super.prototype.create.call(this);
             // events.
-            $.subscribe(BaseCommands_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
                         _this.close();
                     }
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.ESCAPE, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
                         _this.close();
@@ -3396,7 +3341,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
                     }
                 }
             }, 1);
-            $.publish(BaseCommands_1.BaseEvents.SHOW_OVERLAY);
+            $.publish(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
             if (this.isUnopened) {
                 this.isUnopened = false;
                 this.afterFirstOpen();
@@ -3411,7 +3356,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             this.$element.hide();
             this.isActive = false;
             $.publish(this.closeCommand);
-            $.publish(BaseCommands_1.BaseEvents.HIDE_OVERLAY);
+            $.publish(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
         };
         Dialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -3435,9 +3380,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ClickThroughDialogue = (function (_super) {
         __extends(ClickThroughDialogue, _super);
         function ClickThroughDialogue($element) {
@@ -3447,8 +3392,8 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
             var _this = this;
             this.setConfig('clickThroughDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE;
             $.subscribe(this.openCommand, function (e, params) {
                 _this.acceptCallback = params.acceptCallback;
                 _this.resource = params.resource;
@@ -3474,7 +3419,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
             this.$acceptTermsButton.on('click', function (e) {
                 e.preventDefault();
                 _this.close();
-                $.publish(BaseCommands_1.BaseEvents.ACCEPT_TERMS);
+                $.publish(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
                 if (_this.acceptCallback)
                     _this.acceptCallback();
             });
@@ -3486,7 +3431,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
             this.$message.targetBlank();
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
-                $.publish(BaseCommands_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
             });
             this.resize();
         };
@@ -3500,7 +3445,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
 //# sourceMappingURL=ClickThroughDialogue.js.map
 define('modules/uv-shared-module/InformationArgs',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var InformationArgs = (function () {
         function InformationArgs(informationType, param) {
             this.informationType = informationType;
@@ -3513,7 +3458,7 @@ define('modules/uv-shared-module/InformationArgs',["require", "exports"], functi
 //# sourceMappingURL=InformationArgs.js.map
 define('modules/uv-shared-module/InformationType',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var InformationType;
     (function (InformationType) {
         InformationType[InformationType["AUTH_CORS_ERROR"] = 0] = "AUTH_CORS_ERROR";
@@ -3531,9 +3476,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var LoginDialogue = (function (_super) {
         __extends(LoginDialogue, _super);
         function LoginDialogue($element) {
@@ -3543,8 +3488,8 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
             var _this = this;
             this.setConfig('loginDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_LOGIN_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_LOGIN_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE;
             $.subscribe(this.openCommand, function (s, e) {
                 _this.loginCallback = e.loginCallback;
                 _this.logoutCallback = e.logoutCallback;
@@ -3604,7 +3549,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
             this.$message.targetBlank();
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
-                $.publish(BaseCommands_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
             });
             if (this.options.showCancelButton) {
                 this.$cancelButton.show();
@@ -3632,7 +3577,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
 //# sourceMappingURL=LoginDialogue.js.map
 define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var LoginWarningMessages = (function () {
         function LoginWarningMessages() {
         }
@@ -3644,7 +3589,7 @@ define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], f
 //# sourceMappingURL=LoginWarningMessages.js.map
 define('modules/uv-shared-module/Metric',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Metric = (function () {
         function Metric(minWidth, maxWidth) {
             this.minWidth = minWidth;
@@ -3657,7 +3602,7 @@ define('modules/uv-shared-module/Metric',["require", "exports"], function (requi
 //# sourceMappingURL=Metric.js.map
 define('modules/uv-shared-module/Metrics',["require", "exports", "./Metric"], function (require, exports, Metric_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Metrics = (function () {
         function Metrics() {
         }
@@ -3678,9 +3623,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var RestrictedDialogue = (function (_super) {
         __extends(RestrictedDialogue, _super);
         function RestrictedDialogue($element) {
@@ -3690,8 +3635,8 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
             var _this = this;
             this.setConfig('restrictedDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE;
             $.subscribe(this.openCommand, function (s, e) {
                 _this.acceptCallback = e.acceptCallback;
                 _this.options = e.options;
@@ -3732,7 +3677,7 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
             this.$message.targetBlank();
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
-                $.publish(BaseCommands_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
             });
             this.resize();
         };
@@ -3761,9 +3706,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./BaseCommands", "./Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./BaseEvents", "./Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var GenericDialogue = (function (_super) {
         __extends(GenericDialogue, _super);
         function GenericDialogue($element) {
@@ -3773,8 +3718,8 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
             var _this = this;
             this.setConfig('genericDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_GENERIC_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_GENERIC_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE;
             $.subscribe(this.openCommand, function (e, params) {
                 _this.acceptCallback = params.acceptCallback;
                 _this.showMessage(params);
@@ -3798,7 +3743,7 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
             this.$element.hide();
         };
         GenericDialogue.prototype.accept = function () {
-            $.publish(BaseCommands_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+            $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
             if (this.acceptCallback)
                 this.acceptCallback();
         };
@@ -3833,9 +3778,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands", "./BaseView", "./GenericDialogue"], function (require, exports, BaseCommands_1, BaseView_1, GenericDialogue_1) {
+define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "./BaseView", "./GenericDialogue"], function (require, exports, BaseEvents_1, BaseView_1, GenericDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Shell = (function (_super) {
         __extends(Shell, _super);
         function Shell($element) {
@@ -3846,10 +3791,10 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
         }
         Shell.prototype.create = function () {
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_OVERLAY, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
                 Shell.$overlays.show();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_OVERLAY, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
                 Shell.$overlays.hide();
             });
             Shell.$headerPanel = $('<div class="headerPanel"></div>');
@@ -3873,7 +3818,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
             Shell.$overlays.on('click', function (e) {
                 if ($(e.target).hasClass('overlays')) {
                     e.preventDefault();
-                    $.publish(BaseCommands_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+                    $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
                 }
             });
             // create shared views.
@@ -3896,7 +3841,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseCommands",
 //# sourceMappingURL=Shell.js.map
 define('SynchronousRequire',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SynchronousRequire = (function () {
         function SynchronousRequire() {
         }
@@ -3936,9 +3881,9 @@ define('SynchronousRequire',["require", "exports"], function (require, exports) 
     }());
 });
 //# sourceMappingURL=SynchronousRequire.js.map
-define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCommands", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "./LoginWarningMessages", "../../modules/uv-shared-module/Metrics", "../../Params", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell", "../../SynchronousRequire"], function (require, exports, BaseCommands_1, ClickThroughDialogue_1, InformationArgs_1, InformationType_1, LoginDialogue_1, LoginWarningMessages_1, Metrics_1, Params_1, RestrictedDialogue_1, Shell_1, SynchronousRequire_1) {
+define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEvents", "../../modules/uv-dialogues-module/ClickThroughDialogue", "./InformationArgs", "./InformationType", "../../modules/uv-dialogues-module/LoginDialogue", "./LoginWarningMessages", "../../modules/uv-shared-module/Metrics", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell", "../../SynchronousRequire"], function (require, exports, BaseEvents_1, ClickThroughDialogue_1, InformationArgs_1, InformationType_1, LoginDialogue_1, LoginWarningMessages_1, Metrics_1, RestrictedDialogue_1, Shell_1, SynchronousRequire_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var BaseExtension = (function () {
         function BaseExtension(bootstrapper) {
             this.isCreated = false;
@@ -3967,7 +3912,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     }
                 });
             }
-            this.triggerSocket(BaseCommands_1.BaseEvents.LOAD, {
+            this.triggerSocket(BaseEvents_1.BaseEvents.LOAD, {
                 bootstrapper: {
                     store: this.getData()
                 },
@@ -4012,7 +3957,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                         var iiifResourceUri = Utils.Urls.getQuerystringParameterFromString('manifest', a.search);
                         //var canvasUri = Utils.Urls.getQuerystringParameterFromString('canvas', url.search);
                         if (iiifResourceUri) {
-                            _this.triggerSocket(BaseCommands_1.BaseEvents.DROP, iiifResourceUri);
+                            _this.triggerSocket(BaseEvents_1.BaseEvents.DROP, iiifResourceUri);
                             var data = {};
                             data.iiifResourceUri = iiifResourceUri;
                             _this.reload(data);
@@ -4033,36 +3978,36 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     var preventDefault = true;
                     if (!e.ctrlKey && !e.altKey && !e.shiftKey) {
                         if (e.keyCode === KeyCodes.KeyDown.Enter) {
-                            event = BaseCommands_1.BaseEvents.RETURN;
+                            event = BaseEvents_1.BaseEvents.RETURN;
                             preventDefault = false;
                         }
                         if (e.keyCode === KeyCodes.KeyDown.Escape)
-                            event = BaseCommands_1.BaseEvents.ESCAPE;
+                            event = BaseEvents_1.BaseEvents.ESCAPE;
                         if (e.keyCode === KeyCodes.KeyDown.PageUp)
-                            event = BaseCommands_1.BaseEvents.PAGE_UP;
+                            event = BaseEvents_1.BaseEvents.PAGE_UP;
                         if (e.keyCode === KeyCodes.KeyDown.PageDown)
-                            event = BaseCommands_1.BaseEvents.PAGE_DOWN;
+                            event = BaseEvents_1.BaseEvents.PAGE_DOWN;
                         if (e.keyCode === KeyCodes.KeyDown.End)
-                            event = BaseCommands_1.BaseEvents.END;
+                            event = BaseEvents_1.BaseEvents.END;
                         if (e.keyCode === KeyCodes.KeyDown.Home)
-                            event = BaseCommands_1.BaseEvents.HOME;
+                            event = BaseEvents_1.BaseEvents.HOME;
                         if (e.keyCode === KeyCodes.KeyDown.NumpadPlus || e.keyCode === 171 || e.keyCode === KeyCodes.KeyDown.Equals) {
-                            event = BaseCommands_1.BaseEvents.PLUS;
+                            event = BaseEvents_1.BaseEvents.PLUS;
                             preventDefault = false;
                         }
                         if (e.keyCode === KeyCodes.KeyDown.NumpadMinus || e.keyCode === 173 || e.keyCode === KeyCodes.KeyDown.Dash) {
-                            event = BaseCommands_1.BaseEvents.MINUS;
+                            event = BaseEvents_1.BaseEvents.MINUS;
                             preventDefault = false;
                         }
                         if (that.useArrowKeysToNavigate()) {
                             if (e.keyCode === KeyCodes.KeyDown.LeftArrow)
-                                event = BaseCommands_1.BaseEvents.LEFT_ARROW;
+                                event = BaseEvents_1.BaseEvents.LEFT_ARROW;
                             if (e.keyCode === KeyCodes.KeyDown.UpArrow)
-                                event = BaseCommands_1.BaseEvents.UP_ARROW;
+                                event = BaseEvents_1.BaseEvents.UP_ARROW;
                             if (e.keyCode === KeyCodes.KeyDown.RightArrow)
-                                event = BaseCommands_1.BaseEvents.RIGHT_ARROW;
+                                event = BaseEvents_1.BaseEvents.RIGHT_ARROW;
                             if (e.keyCode === KeyCodes.KeyDown.DownArrow)
-                                event = BaseCommands_1.BaseEvents.DOWN_ARROW;
+                                event = BaseEvents_1.BaseEvents.DOWN_ARROW;
                         }
                     }
                     if (event) {
@@ -4073,253 +4018,253 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     }
                 });
                 if (this.getData().isHomeDomain && Utils.Documents.isInIFrame()) {
-                    $.subscribe(BaseCommands_1.BaseEvents.PARENT_EXIT_FULLSCREEN, function () {
+                    $.subscribe(BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN, function () {
                         if (_this.isOverlayActive()) {
-                            $.publish(BaseCommands_1.BaseEvents.ESCAPE);
+                            $.publish(BaseEvents_1.BaseEvents.ESCAPE);
                         }
-                        $.publish(BaseCommands_1.BaseEvents.ESCAPE);
-                        $.publish(BaseCommands_1.BaseEvents.RESIZE);
+                        $.publish(BaseEvents_1.BaseEvents.ESCAPE);
+                        $.publish(BaseEvents_1.BaseEvents.RESIZE);
                     });
                 }
             }
             this.$element.append('<a href="/" id="top"></a>');
             this.$element.append('<iframe id="commsFrame" style="display:none"></iframe>');
-            $.subscribe(BaseCommands_1.BaseEvents.ACCEPT_TERMS, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.ACCEPT_TERMS);
+            $.subscribe(BaseEvents_1.BaseEvents.ACCEPT_TERMS, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LOGIN_FAILED, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LOGIN_FAILED);
+            $.subscribe(BaseEvents_1.BaseEvents.LOGIN_FAILED, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LOGIN_FAILED);
                 _this.showMessage(_this.getData().config.content.authorisationFailedMessage);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LOGIN, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
                 _this.isLoggedIn = true;
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LOGIN);
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LOGIN);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LOGOUT, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LOGOUT, function () {
                 _this.isLoggedIn = false;
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LOGOUT);
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LOGOUT);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.BOOKMARK, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.BOOKMARK, function () {
                 _this.bookmark();
-                _this.triggerSocket(BaseCommands_1.BaseEvents.BOOKMARK);
+                _this.triggerSocket(BaseEvents_1.BaseEvents.BOOKMARK);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, canvasIndex);
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CLICKTHROUGH, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CLICKTHROUGH);
+            $.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CLICKTHROUGH);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CLOSE_LEFT_PANEL, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CLOSE_LEFT_PANEL);
+            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CLOSE_RIGHT_PANEL, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CLOSE_RIGHT_PANEL);
+            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CREATED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
                 _this.isCreated = true;
-                _this.triggerSocket(BaseCommands_1.BaseEvents.CREATED);
+                _this.triggerSocket(BaseEvents_1.BaseEvents.CREATED);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.DOWN_ARROW, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.DOWN_ARROW);
+            $.subscribe(BaseEvents_1.BaseEvents.DOWN_ARROW, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.DOWN_ARROW);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.DOWNLOAD, function (e, obj) {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.DOWNLOAD, obj);
+            $.subscribe(BaseEvents_1.BaseEvents.DOWNLOAD, function (e, obj) {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.DOWNLOAD, obj);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.END, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.END);
+            $.subscribe(BaseEvents_1.BaseEvents.END, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.END);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.ESCAPE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.ESCAPE);
+            $.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.ESCAPE);
                 if (_this.isFullScreen() && !_this.isOverlayActive()) {
-                    $.publish(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN);
+                    $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.EXTERNAL_LINK_CLICKED, function (e, url) {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
+            $.subscribe(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, function (e, url) {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.FEEDBACK, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.FEEDBACK, function () {
                 _this.feedback();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.FORBIDDEN, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.FORBIDDEN);
-                $.publish(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
+            $.subscribe(BaseEvents_1.BaseEvents.FORBIDDEN, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.FORBIDDEN);
+                $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_EMBED_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_EMBED_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_EMBED_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_EMBED_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_GENERIC_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_GENERIC_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_HELP_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_HELP_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_INFORMATION, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_INFORMATION);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_LOGIN_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_LOGIN_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_OVERLAY, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_OVERLAY);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_SETTINGS_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HIDE_SETTINGS_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HOME, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.HOME);
+            $.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.HOME);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFT_ARROW, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LEFT_ARROW);
+            $.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LEFT_ARROW);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LOAD_FAILED, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.LOAD_FAILED);
+            $.subscribe(BaseEvents_1.BaseEvents.LOAD_FAILED, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.LOAD_FAILED);
                 if (!that.lastCanvasIndex == null && that.lastCanvasIndex !== that.helper.canvasIndex) {
                     _this.viewCanvas(that.lastCanvasIndex);
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.NOT_FOUND, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.NOT_FOUND);
+            $.subscribe(BaseEvents_1.BaseEvents.NOT_FOUND, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.NOT_FOUND);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.OPEN);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.OPEN);
                 var openUri = String.format(_this.getData().config.options.openTemplate, _this.helper.iiifResourceUri);
                 window.open(openUri);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_LEFT_PANEL, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.OPEN_LEFT_PANEL);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_RIGHT_PANEL, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.OPEN_RIGHT_PANEL);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.PAGE_DOWN, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.PAGE_DOWN);
+            $.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.PAGE_DOWN);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.PAGE_UP, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.PAGE_UP);
+            $.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.PAGE_UP);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RESOURCE_DEGRADED, function (e, resource) {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RESOURCE_DEGRADED);
+            $.subscribe(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, function (e, resource) {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED);
                 _this.handleDegraded(resource);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RETURN, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RETURN);
+            $.subscribe(BaseEvents_1.BaseEvents.RETURN, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RETURN);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RIGHT_ARROW, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RIGHT_ARROW);
+            $.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RIGHT_ARROW);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH);
+            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START);
+            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH);
+            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START);
+            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SEQUENCE_INDEX_CHANGED, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SEQUENCE_INDEX_CHANGED);
+            $.subscribe(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, args);
+            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, args);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_EMBED_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_EMBED_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_GENERIC_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_GENERIC_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_HELP_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_HELP_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_INFORMATION, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_INFORMATION);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_INFORMATION);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_LOGIN_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_LOGIN_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_OVERLAY, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_OVERLAY);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_SETTINGS_DIALOGUE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_TERMS_OF_USE, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.SHOW_TERMS_OF_USE);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
                 // todo: Eventually this should be replaced with a suitable IIIF Presentation API field - until then, use attribution
                 var terms = _this.helper.getAttribution();
                 _this.showMessage(terms);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.THUMB_SELECTED, thumb.index);
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.THUMB_SELECTED, thumb.index);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
                 $('#top').focus();
                 _this.bootstrapper.isFullScreen = !_this.bootstrapper.isFullScreen;
-                _this.triggerSocket(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN, {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, {
                     isFullScreen: _this.bootstrapper.isFullScreen,
                     overrideFullScreen: _this.getData().config.options.overrideFullScreen
                 });
             });
-            $.subscribe(BaseCommands_1.BaseEvents.UP_ARROW, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.UP_ARROW);
+            $.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.UP_ARROW);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.UPDATE_SETTINGS, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.UPDATE_SETTINGS);
+            $.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.UPDATE_SETTINGS);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.VIEW_FULL_TERMS, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.VIEW_FULL_TERMS);
+            $.subscribe(BaseEvents_1.BaseEvents.VIEW_FULL_TERMS, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.VIEW_FULL_TERMS);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.WINDOW_UNLOAD, function () {
-                _this.triggerSocket(BaseCommands_1.BaseEvents.WINDOW_UNLOAD);
+            $.subscribe(BaseEvents_1.BaseEvents.WINDOW_UNLOAD, function () {
+                _this.triggerSocket(BaseEvents_1.BaseEvents.WINDOW_UNLOAD);
             });
             // create shell and shared views.
             this.shell = new Shell_1.Shell(this.$element);
@@ -4409,19 +4354,19 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             }
             this.createModules();
             this.modulesCreated();
-            $.publish(BaseCommands_1.BaseEvents.RESIZE); // initial sizing
-            $.publish(BaseCommands_1.BaseEvents.CREATED);
+            $.publish(BaseEvents_1.BaseEvents.RESIZE); // initial sizing
+            $.publish(BaseEvents_1.BaseEvents.CREATED);
             this.setParams();
             this.setDefaultFocus();
-            this.viewCanvas(this.getCanvasIndexParam());
+            this.viewCanvas(this.helper.canvasIndex);
         };
         BaseExtension.prototype.setParams = function () {
             if (!this.getData().isHomeDomain)
                 return;
-            this.setParam(Params_1.Params.collectionIndex, this.helper.collectionIndex.toString());
-            this.setParam(Params_1.Params.manifestIndex, this.helper.manifestIndex.toString());
-            this.setParam(Params_1.Params.sequenceIndex, this.helper.sequenceIndex.toString());
-            this.setParam(Params_1.Params.canvasIndex, this.helper.canvasIndex.toString());
+            $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.helper.collectionIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.helper.manifestIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.helper.sequenceIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex.toString()]);
         };
         BaseExtension.prototype.setDefaultFocus = function () {
             var _this = this;
@@ -4444,10 +4389,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             }
         };
         BaseExtension.prototype.redirect = function (uri) {
-            this.triggerSocket(BaseCommands_1.BaseEvents.REDIRECT, uri);
+            this.triggerSocket(BaseEvents_1.BaseEvents.REDIRECT, uri);
         };
         BaseExtension.prototype.refresh = function () {
-            this.triggerSocket(BaseCommands_1.BaseEvents.REFRESH, null);
+            this.triggerSocket(BaseEvents_1.BaseEvents.REFRESH, null);
         };
         BaseExtension.prototype._updateMetric = function () {
             var keys = Object.keys(Metrics_1.Metrics);
@@ -4456,14 +4401,14 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 if (this.width() > metric.minWidth && this.width() <= metric.maxWidth) {
                     if (this.metric !== metric) {
                         this.metric = metric;
-                        $.publish(BaseCommands_1.BaseEvents.METRIC_CHANGED);
+                        $.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
                     }
                 }
             }
         };
         BaseExtension.prototype.resize = function () {
             this._updateMetric();
-            $.publish(BaseCommands_1.BaseEvents.RESIZE);
+            $.publish(BaseEvents_1.BaseEvents.RESIZE);
         };
         BaseExtension.prototype.handleParentFrameEvent = function (message) {
             var _this = this;
@@ -4471,11 +4416,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 return _this.isCreated;
             }, function () {
                 switch (message.eventName) {
-                    case BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN:
-                        $.publish(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN, message.eventObject);
+                    case BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN:
+                        $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, message.eventObject);
                         break;
-                    case BaseCommands_1.BaseEvents.PARENT_EXIT_FULLSCREEN:
-                        $.publish(BaseCommands_1.BaseEvents.PARENT_EXIT_FULLSCREEN);
+                    case BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN:
+                        $.publish(BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN);
                         break;
                 }
             });
@@ -4483,13 +4428,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         // re-bootstraps the application with new querystring params
         BaseExtension.prototype.reload = function (data) {
             $.disposePubSub();
-            $.publish(BaseCommands_1.BaseEvents.RELOAD, [data]);
-        };
-        BaseExtension.prototype.getCanvasIndexParam = function () {
-            return parseInt(this.getParam(Params_1.Params.canvasIndex));
-        };
-        BaseExtension.prototype.getSequenceIndexParam = function () {
-            return parseInt(this.getParam(Params_1.Params.sequenceIndex));
+            $.publish(BaseEvents_1.BaseEvents.RELOAD, [data]);
         };
         BaseExtension.prototype.isSeeAlsoEnabled = function () {
             return this.getData().config.options.seeAlsoEnabled !== false;
@@ -4525,14 +4464,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             return uri + "?t=" + Utils.Dates.getTimeStamp();
         };
         BaseExtension.prototype.isDeepLinkingEnabled = function () {
-            return this.getDataProvider().isDeepLinkingEnabled();
-        };
-        // get hash or data-attribute params depending on whether the UV is embedded.
-        BaseExtension.prototype.getParam = function (key) {
-            return this.getDataProvider().getParam(key);
-        };
-        BaseExtension.prototype.setParam = function (key, value) {
-            this.getDataProvider().setParam(key, value);
+            return (this.getData().isHomeDomain && this.getData().isOnlyInstance);
         };
         BaseExtension.prototype.isOnHomeDomain = function () {
             return this.isDeepLinkingEnabled();
@@ -4580,13 +4512,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             });
             $elem.html(s.clean_node(elem));
             return $elem.html();
-        };
-        BaseExtension.prototype.changeLocale = function (locale) {
-            this.getDataProvider().changeLocale(locale);
-            this.reload();
-        };
-        BaseExtension.prototype.getDataProvider = function () {
-            return this.bootstrapper.dataProvider;
         };
         BaseExtension.prototype.getSharePreview = function () {
             var preview = {};
@@ -4670,10 +4595,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 })['catch'](function (error) {
                     switch (error.name) {
                         case manifesto.StatusCodes.AUTHORIZATION_FAILED.toString():
-                            $.publish(BaseCommands_1.BaseEvents.LOGIN_FAILED);
+                            $.publish(BaseEvents_1.BaseEvents.LOGIN_FAILED);
                             break;
                         case manifesto.StatusCodes.FORBIDDEN.toString():
-                            $.publish(BaseCommands_1.BaseEvents.FORBIDDEN);
+                            $.publish(BaseEvents_1.BaseEvents.FORBIDDEN);
                             break;
                         case manifesto.StatusCodes.RESTRICTED.toString():
                             // do nothing
@@ -4691,13 +4616,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             }
             this.lastCanvasIndex = this.helper.canvasIndex;
             this.helper.canvasIndex = canvasIndex;
-            $.publish(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
-            $.publish(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
-            this.setParam(Params_1.Params.canvasIndex, canvasIndex.toString());
+            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
+            $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
         };
         BaseExtension.prototype.showMessage = function (message, acceptCallback, buttonText, allowClose) {
             this.closeActiveDialogue();
-            $.publish(BaseCommands_1.BaseEvents.SHOW_GENERIC_DIALOGUE, [
+            $.publish(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE, [
                 {
                     message: message,
                     acceptCallback: acceptCallback,
@@ -4707,7 +4631,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             ]);
         };
         BaseExtension.prototype.closeActiveDialogue = function () {
-            $.publish(BaseCommands_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+            $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
         };
         BaseExtension.prototype.isOverlayActive = function () {
             return Shell_1.Shell.$overlays.is(':visible');
@@ -4762,7 +4686,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             // override for each extension
         };
         BaseExtension.prototype.feedback = function () {
-            this.triggerSocket(BaseCommands_1.BaseEvents.FEEDBACK, this.getData());
+            this.triggerSocket(BaseEvents_1.BaseEvents.FEEDBACK, this.getData());
         };
         BaseExtension.prototype.getBookmarkUri = function () {
             var absUri = parent.document.URL;
@@ -4773,29 +4697,61 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
             }
             return relUri;
         };
-        BaseExtension.prototype.getStore = function () {
-            return this.bootstrapper.store;
+        BaseExtension.prototype.getData = function () {
+            return this.bootstrapper.data;
         };
         BaseExtension.prototype.getAlternateLocale = function () {
-            return this.getDataProvider().getAlternateLocale();
+            var locales = this.getLocales();
+            var alternateLocale = null;
+            if (locales.length > 1) {
+                alternateLocale = locales[1];
+            }
+            return alternateLocale;
         };
         BaseExtension.prototype.getLocales = function () {
-            return this.getDataProvider().getLocales();
+            return this.getData().locales;
         };
         BaseExtension.prototype.getSerializedLocales = function () {
-            return this.getDataProvider().getSerializedLocales();
+            return this.serializeLocales(this.getLocales());
+        };
+        BaseExtension.prototype.serializeLocales = function (locales) {
+            var serializedLocales = '';
+            for (var i = 0; i < locales.length; i++) {
+                var l = locales[i];
+                if (i > 0)
+                    serializedLocales += ',';
+                serializedLocales += l.name;
+                if (l.label) {
+                    serializedLocales += ':' + l.label;
+                }
+            }
+            return serializedLocales;
+        };
+        BaseExtension.prototype.changeLocale = function (locale) {
+            // if the current locale is "en-GB:English,cy-GB:Welsh"
+            // and "cy-GB" is passed, it becomes "cy-GB:Welsh,en-GB:English"
+            // re-order locales so the passed locale is first
+            var locales = this.getLocales();
+            locales = locales.clone();
+            var index = locales.findIndex(function (l) {
+                return l.name === locale;
+            });
+            locales.move(index, 0);
+            var data = {};
+            data.locales = locales;
+            this.reload(data);
         };
         // auth
         BaseExtension.prototype.clickThrough = function (resource) {
             return new Promise(function (resolve) {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, [{
+                $.publish(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, [{
                         resource: resource,
                         acceptCallback: function () {
                             var win = window.open(resource.clickThroughService.id);
                             var pollTimer = window.setInterval(function () {
                                 if (win.closed) {
                                     window.clearInterval(pollTimer);
-                                    $.publish(BaseCommands_1.BaseEvents.CLICKTHROUGH);
+                                    $.publish(BaseEvents_1.BaseEvents.CLICKTHROUGH);
                                     resolve();
                                 }
                             }, 500);
@@ -4805,10 +4761,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.restricted = function (resource) {
             return new Promise(function (resolve, reject) {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, [{
+                $.publish(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, [{
                         resource: resource,
                         acceptCallback: function () {
-                            $.publish(BaseCommands_1.BaseEvents.LOAD_FAILED);
+                            $.publish(BaseEvents_1.BaseEvents.LOAD_FAILED);
                             reject(resource);
                         }
                     }]);
@@ -4821,14 +4777,14 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                     options.warningMessage = LoginWarningMessages_1.LoginWarningMessages.FORBIDDEN;
                     options.showCancelButton = true;
                 }
-                $.publish(BaseCommands_1.BaseEvents.SHOW_LOGIN_DIALOGUE, [{
+                $.publish(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE, [{
                         resource: resource,
                         loginCallback: function () {
                             var win = window.open(resource.loginService.id + "?t=" + new Date().getTime());
                             var pollTimer = window.setInterval(function () {
                                 if (win.closed) {
                                     window.clearInterval(pollTimer);
-                                    $.publish(BaseCommands_1.BaseEvents.LOGIN);
+                                    $.publish(BaseEvents_1.BaseEvents.LOGIN);
                                     resolve();
                                 }
                             }, 500);
@@ -4838,7 +4794,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                             var pollTimer = window.setInterval(function () {
                                 if (win.closed) {
                                     window.clearInterval(pollTimer);
-                                    $.publish(BaseCommands_1.BaseEvents.LOGOUT);
+                                    $.publish(BaseEvents_1.BaseEvents.LOGOUT);
                                     resolve();
                                 }
                             }, 500);
@@ -4939,7 +4895,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                 }
                 else if (resource.status === HTTPStatusCode.MOVED_TEMPORARILY) {
                     resolve(resource);
-                    $.publish(BaseCommands_1.BaseEvents.RESOURCE_DEGRADED, [resource]);
+                    $.publish(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, [resource]);
                 }
                 else {
                     if (resource.error.status === HTTPStatusCode.UNAUTHORIZED ||
@@ -4947,7 +4903,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
                         // if the browser doesn't support CORS
                         if (!Modernizr.cors) {
                             var informationArgs = new InformationArgs_1.InformationArgs(InformationType_1.InformationType.AUTH_CORS_ERROR, null);
-                            $.publish(BaseCommands_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
+                            $.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
                             resolve(resource);
                         }
                         else {
@@ -4968,7 +4924,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
         };
         BaseExtension.prototype.handleDegraded = function (resource) {
             var informationArgs = new InformationArgs_1.InformationArgs(InformationType_1.InformationType.DEGRADED_RESOURCE, resource);
-            $.publish(BaseCommands_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
+            $.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
         };
         return BaseExtension;
     }());
@@ -4977,7 +4933,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseCo
 //# sourceMappingURL=BaseExtension.js.map
 define('modules/uv-shared-module/Bookmark',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Bookmark = (function () {
         function Bookmark() {
         }
@@ -4986,24 +4942,9 @@ define('modules/uv-shared-module/Bookmark',["require", "exports"], function (req
     exports.Bookmark = Bookmark;
 });
 //# sourceMappingURL=Bookmark.js.map
-define('extensions/uv-mediaelement-extension/Commands',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Commands = (function () {
-        function Commands() {
-        }
-        return Commands;
-    }());
-    Events.namespace = 'mediaelementExtension.';
-    Events.MEDIA_ENDED = Events.namespace + 'onMediaEnded';
-    Events.MEDIA_PAUSED = Events.namespace + 'onMediaPaused';
-    Events.MEDIA_PLAYED = Events.namespace + 'onMediaPlayed';
-    exports.Commands = Commands;
-});
-//# sourceMappingURL=Events.js.map
 define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var DownloadOption = (function () {
         function DownloadOption(value) {
             this.value = value;
@@ -5035,9 +4976,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseCommands_1, Dialogue_1, DownloadOption_1) {
+define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseEvents_1, Dialogue_1, DownloadOption_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -5047,8 +4988,8 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             var _this = this;
             this.setConfig('downloadDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
             $.subscribe(this.openCommand, function (e, $triggerButton) {
                 _this.open($triggerButton);
             });
@@ -5067,7 +5008,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             this.$termsOfUseButton = $('<a href="#">' + this.extension.getData().config.content.termsOfUse + '</a>');
             this.$footer.append(this.$termsOfUseButton);
             this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_TERMS_OF_USE);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
             });
             // hide
             this.$element.hide();
@@ -5165,7 +5106,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -5189,6 +5130,21 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
     exports.DownloadDialogue = DownloadDialogue;
 });
 //# sourceMappingURL=DownloadDialogue.js.map
+define('extensions/uv-mediaelement-extension/Events',["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.__esModule = true;
+    var Events = (function () {
+        function Events() {
+        }
+        return Events;
+    }());
+    Events.namespace = 'mediaelementExtension.';
+    Events.MEDIA_ENDED = Events.namespace + 'mediaEnded';
+    Events.MEDIA_PAUSED = Events.namespace + 'mediaPaused';
+    Events.MEDIA_PLAYED = Events.namespace + 'mediaPlayed';
+    exports.Events = Events;
+});
+//# sourceMappingURL=Events.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5199,9 +5155,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseCommands", "./BaseView", "./Metrics"], function (require, exports, BaseCommands_1, BaseView_1, Metrics_1) {
+define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEvents", "./BaseView", "./Metrics"], function (require, exports, BaseEvents_1, BaseView_1, Metrics_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -5211,14 +5167,14 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
             var _this = this;
             this.setConfig('footerPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
                 _this.updateFullScreenButton();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.METRIC_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.updateMinimisedButtons();
                 _this.updateMoreInfoButton();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.updateDownloadButton();
             });
             this.$options = $('<div class="options"></div>');
@@ -5240,29 +5196,29 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
             this.$fullScreenBtn = $('<a href="#" class="fullScreen" title="' + this.content.fullScreen + '" tabindex="0">' + this.content.fullScreen + '</a>');
             this.$options.append(this.$fullScreenBtn);
             this.$openButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.OPEN);
+                $.publish(BaseEvents_1.BaseEvents.OPEN);
             });
             this.$feedbackButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.FEEDBACK);
+                $.publish(BaseEvents_1.BaseEvents.FEEDBACK);
             });
             this.$bookmarkButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.BOOKMARK);
+                $.publish(BaseEvents_1.BaseEvents.BOOKMARK);
             });
             this.$shareButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_SHARE_DIALOGUE, [_this.$shareButton]);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE, [_this.$shareButton]);
             });
             this.$embedButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_EMBED_DIALOGUE, [_this.$embedButton]);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, [_this.$embedButton]);
             });
             this.$downloadButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, [_this.$downloadButton]);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, [_this.$downloadButton]);
             });
             this.$moreInfoButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_MOREINFO_DIALOGUE, [_this.$moreInfoButton]);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE, [_this.$moreInfoButton]);
             });
             this.$fullScreenBtn.on('click', function (e) {
                 e.preventDefault();
-                $.publish(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN);
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
             if (!Utils.Bools.getBool(this.options.embedEnabled, true)) {
                 this.$embedButton.hide();
@@ -5383,7 +5339,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseComm
 //# sourceMappingURL=FooterPanel.js.map
 define('modules/uv-shared-module/Information',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Information = (function () {
         function Information(message, actions) {
             this.message = message;
@@ -5396,7 +5352,7 @@ define('modules/uv-shared-module/Information',["require", "exports"], function (
 //# sourceMappingURL=Information.js.map
 define('modules/uv-shared-module/InformationAction',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var InformationAction = (function () {
         function InformationAction() {
         }
@@ -5405,9 +5361,9 @@ define('modules/uv-shared-module/InformationAction',["require", "exports"], func
     exports.InformationAction = InformationAction;
 });
 //# sourceMappingURL=InformationAction.js.map
-define('modules/uv-shared-module/InformationFactory',["require", "exports", "./BaseCommands", "./Information", "./InformationAction", "./InformationType"], function (require, exports, BaseCommands_1, Information_1, InformationAction_1, InformationType_1) {
+define('modules/uv-shared-module/InformationFactory',["require", "exports", "./BaseEvents", "./Information", "./InformationAction", "./InformationType"], function (require, exports, BaseEvents_1, Information_1, InformationAction_1, InformationType_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var InformationFactory = (function () {
         function InformationFactory(extension) {
             this.extension = extension;
@@ -5421,8 +5377,8 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
                     var loginAction = new InformationAction_1.InformationAction();
                     loginAction.label = this.extension.getData().config.content.degradedResourceLogin;
                     loginAction.action = function () {
-                        $.publish(BaseCommands_1.BaseEvents.HIDE_INFORMATION);
-                        $.publish(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[args.param]]);
+                        $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
+                        $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[args.param]]);
                     };
                     actions.push(loginAction);
                     return new Information_1.Information(this.extension.getData().config.content.degradedResourceMessage, actions);
@@ -5443,9 +5399,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseCommands", "./BaseView", "../uv-shared-module/InformationFactory"], function (require, exports, BaseCommands_1, BaseView_1, InformationFactory_1) {
+define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEvents", "./BaseView", "../uv-shared-module/InformationFactory"], function (require, exports, BaseEvents_1, BaseView_1, InformationFactory_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var HeaderPanel = (function (_super) {
         __extends(HeaderPanel, _super);
         function HeaderPanel($element) {
@@ -5455,10 +5411,10 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseComm
             var _this = this;
             this.setConfig('headerPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_INFORMATION, function (e, args) {
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function (e, args) {
                 _this.showInformation(args);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_INFORMATION, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
                 _this.hideInformation();
             });
             this.$options = $('<div class="options"></div>');
@@ -5484,13 +5440,13 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseComm
             this.$informationBox.find('.close').attr('title', this.content.close);
             this.$informationBox.find('.close').on('click', function (e) {
                 e.preventDefault();
-                $.publish(BaseCommands_1.BaseEvents.HIDE_INFORMATION);
+                $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
             });
             this.$localeToggleButton.on('click', function () {
                 _this.extension.changeLocale(String(_this.$localeToggleButton.data('locale')));
             });
             this.$settingsButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
             this.updateLocaleToggle();
             this.updateSettingsButton();
@@ -5516,7 +5472,11 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseComm
             }
         };
         HeaderPanel.prototype.localeToggleIsVisible = function () {
-            return this.extension.getLocales().length > 1 && Utils.Bools.getBool(this.options.localeToggleEnabled, false);
+            var locales = this.extension.getLocales();
+            if (locales) {
+                return locales.length > 1 && Utils.Bools.getBool(this.options.localeToggleEnabled, false);
+            }
+            return false;
         };
         HeaderPanel.prototype.showInformation = function (args) {
             var informationFactory = new InformationFactory_1.InformationFactory(this.extension);
@@ -5545,7 +5505,7 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseComm
         };
         HeaderPanel.prototype.updateSettings = function (settings) {
             this.extension.updateSettings(settings);
-            $.publish(BaseCommands_1.BaseEvents.UPDATE_SETTINGS, [settings]);
+            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
         };
         HeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -5587,9 +5547,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var HelpDialogue = (function (_super) {
         __extends(HelpDialogue, _super);
         function HelpDialogue($element) {
@@ -5599,8 +5559,8 @@ define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-
             var _this = this;
             this.setConfig('helpDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_HELP_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_HELP_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE;
             $.subscribe(this.openCommand, function () {
                 _this.open();
             });
@@ -5640,7 +5600,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", "./BaseView"], function (require, exports, Shell_1, BaseView_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var CenterPanel = (function (_super) {
         __extends(CenterPanel, _super);
         function CenterPanel($element) {
@@ -5749,9 +5709,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-mediaelement-extension/Commands", "../uv-shared-module/CenterPanel"], function (require, exports, BaseCommands_1, Commands_1, CenterPanel_1) {
+define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-mediaelement-extension/Events", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, Events_1, CenterPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
@@ -5764,7 +5724,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             // events.
             // only full screen video
             if (this.extension.isVideo()) {
-                $.subscribe(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+                $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
                     if (that.bootstrapper.isFullScreen) {
                         that.$container.css('backgroundColor', '#000');
                         that.player.enterFullScreen(false);
@@ -5775,7 +5735,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                     }
                 });
             }
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 that.openMedia(resources);
             });
             this.$container = $('<div class="container"></div>');
@@ -5814,16 +5774,16 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                                 that.resize();
                             });
                             media.addEventListener('play', function () {
-                                $.publish(Commands_1.Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
+                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                             });
                             media.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
-                                    $.publish(Commands_1.Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
+                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                                 }
                             });
                             media.addEventListener('ended', function () {
-                                $.publish(Commands_1.Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
+                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                             });
                             media.setSrc(sources);
                             try {
@@ -5856,16 +5816,16 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                                 that.resize();
                             });
                             media.addEventListener('play', function () {
-                                $.publish(Commands_1.Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
+                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
                             });
                             media.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
-                                    $.publish(Commands_1.Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
+                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
                                 }
                             });
                             media.addEventListener('ended', function () {
-                                $.publish(Commands_1.Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
+                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
                             });
                             //media.setSrc(sources);
                             try {
@@ -5921,7 +5881,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./BaseView"], function (require, exports, BaseView_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var BaseExpandPanel = (function (_super) {
         __extends(BaseExpandPanel, _super);
         function BaseExpandPanel($element) {
@@ -6125,9 +6085,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseCommands", "./BaseExpandPanel"], function (require, exports, BaseCommands_1, BaseExpandPanel_1) {
+define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseEvents", "./BaseExpandPanel"], function (require, exports, BaseEvents_1, BaseExpandPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var RightPanel = (function (_super) {
         __extends(RightPanel, _super);
         function RightPanel($element) {
@@ -6144,7 +6104,7 @@ define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseComma
             if (shouldOpenPanel) {
                 this.toggle(true);
             }
-            $.subscribe(BaseCommands_1.BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -6162,10 +6122,10 @@ define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseComma
         RightPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
             if (this.isExpanded) {
-                $.publish(BaseCommands_1.BaseEvents.OPEN_RIGHT_PANEL);
+                $.publish(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
             }
             else {
-                $.publish(BaseCommands_1.BaseEvents.CLOSE_RIGHT_PANEL);
+                $.publish(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
             }
             this.extension.updateSettings({ rightPanelOpen: this.isExpanded });
         };
@@ -6190,9 +6150,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/RightPanel"], function (require, exports, BaseCommands_1, RightPanel_1) {
+define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/RightPanel"], function (require, exports, BaseEvents_1, RightPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var MoreInfoRightPanel = (function (_super) {
         __extends(MoreInfoRightPanel, _super);
         function MoreInfoRightPanel($element) {
@@ -6202,7 +6162,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             var _this = this;
             this.setConfig('moreInfoRightPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 _this.databind();
             });
             this.setTitle(this.config.content.title);
@@ -6264,9 +6224,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseCommands", "./BaseExpandPanel"], function (require, exports, BaseCommands_1, BaseExpandPanel_1) {
+define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseEvents", "./BaseExpandPanel"], function (require, exports, BaseEvents_1, BaseExpandPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var LeftPanel = (function (_super) {
         __extends(LeftPanel, _super);
         function LeftPanel($element) {
@@ -6276,7 +6236,7 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseComman
             var _this = this;
             _super.prototype.create.call(this);
             this.$element.width(this.options.panelCollapsedWidth);
-            $.subscribe(BaseCommands_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -6306,10 +6266,10 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseComman
         LeftPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
             if (this.isExpanded) {
-                $.publish(BaseCommands_1.BaseEvents.OPEN_LEFT_PANEL);
+                $.publish(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL);
             }
             else {
-                $.publish(BaseCommands_1.BaseEvents.CLOSE_LEFT_PANEL);
+                $.publish(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL);
             }
             this.extension.updateSettings({ leftPanelOpen: this.isExpanded });
         };
@@ -6334,9 +6294,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseCommands", "./BaseView"], function (require, exports, BaseCommands_1, BaseView_1) {
+define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvents", "./BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView($element) {
@@ -6348,13 +6308,13 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
         ThumbsView.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, index) {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, index) {
                 _this.selectIndex(parseInt(index));
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LOGIN, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
                 _this.loadThumbs();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CLICKTHROUGH, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
                 _this.loadThumbs();
             });
             this.$thumbs = $('<div class="thumbs"></div>');
@@ -6446,7 +6406,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseComma
                 e.preventDefault();
                 var data = $.view(this).data;
                 that.lastThumbClickedIndex = data.index;
-                $.publish(BaseCommands_1.BaseEvents.THUMB_SELECTED, [data]);
+                $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [data]);
             });
             this.setLabel();
             this.isCreated = true;
@@ -6573,7 +6533,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('modules/uv-resourcesleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/ThumbsView"], function (require, exports, ThumbsView_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView() {
@@ -6598,9 +6558,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/LeftPanel", "./ThumbsView"], function (require, exports, BaseCommands_1, LeftPanel_1, ThumbsView_1) {
+define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/LeftPanel", "./ThumbsView"], function (require, exports, BaseEvents_1, LeftPanel_1, ThumbsView_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ResourcesLeftPanel = (function (_super) {
         __extends(ResourcesLeftPanel, _super);
         function ResourcesLeftPanel($element) {
@@ -6684,19 +6644,19 @@ define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "ex
         };
         ResourcesLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
         };
         ResourcesLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
         };
         ResourcesLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
         };
         ResourcesLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
         };
         ResourcesLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -6718,9 +6678,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -6730,8 +6690,8 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             var _this = this;
             this.setConfig('settingsDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_SETTINGS_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_SETTINGS_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE;
             $.subscribe(this.openCommand, function () {
                 _this.open();
             });
@@ -6757,15 +6717,17 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             this.$website.html(this.content.website);
             this.$website.targetBlank();
             var locales = this.extension.getLocales();
-            for (var i = 0; i < locales.length; i++) {
-                var locale = locales[i];
-                this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
+            if (locales) {
+                for (var i = 0; i < locales.length; i++) {
+                    var locale = locales[i];
+                    this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
+                }
             }
-            this.$localeDropDown.val(this.extension.getData().locale);
+            this.$localeDropDown.val(locales[0].name);
             this.$localeDropDown.change(function () {
                 _this.extension.changeLocale(_this.$localeDropDown.val());
             });
-            if (this.extension.getLocales().length < 2) {
+            if (locales && locales.length < 2) {
                 this.$locale.hide();
             }
             this.$element.hide();
@@ -6775,7 +6737,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
         };
         SettingsDialogue.prototype.updateSettings = function (settings) {
             this.extension.updateSettings(settings);
-            $.publish(BaseCommands_1.BaseEvents.UPDATE_SETTINGS, [settings]);
+            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
         };
         SettingsDialogue.prototype.open = function () {
             var _this = this;
@@ -6804,7 +6766,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-mediaelement-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -6829,9 +6791,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -6849,8 +6811,8 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             var _this = this;
             this.setConfig('shareDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_SHARE_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_SHARE_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SHARE_DIALOGUE;
             $.subscribe(this.openCommand, function (e, $triggerButton) {
                 _this.open($triggerButton);
                 if (_this.isShareAvailable()) {
@@ -6863,7 +6825,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_EMBED_DIALOGUE, function (e, $triggerButton) {
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function (e, $triggerButton) {
                 _this.open($triggerButton);
                 _this.openEmbedView();
             });
@@ -6950,7 +6912,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
                 _this.update();
             });
             this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.SHOW_TERMS_OF_USE);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
             });
             this.$element.hide();
             this.update();
@@ -7128,7 +7090,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-mediaelement-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -7161,9 +7123,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, Commands_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MediaElementCenterPanel_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./Events", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, Events_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MediaElementCenterPanel_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -7174,31 +7136,31 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             _super.prototype.create.call(this);
             // listen for mediaelement enter/exit fullscreen events.
             $(window).bind('enterfullscreen', function () {
-                $.publish(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN);
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
             $(window).bind('exitfullscreen', function () {
-                $.publish(BaseCommands_1.BaseEvents.TOGGLE_FULLSCREEN);
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 Shell_1.Shell.$rightPanel.show();
                 _this.resize();
             });
-            $.subscribe(Commands_1.Events.MEDIA_ENDED, function () {
-                _this.triggerSocket(Commands_1.Events.MEDIA_ENDED);
+            $.subscribe(Events_1.Events.MEDIA_ENDED, function () {
+                _this.triggerSocket(Events_1.Events.MEDIA_ENDED);
             });
-            $.subscribe(Commands_1.Events.MEDIA_PAUSED, function () {
-                _this.triggerSocket(Commands_1.Events.MEDIA_PAUSED);
+            $.subscribe(Events_1.Events.MEDIA_PAUSED, function () {
+                _this.triggerSocket(Events_1.Events.MEDIA_PAUSED);
             });
-            $.subscribe(Commands_1.Events.MEDIA_PLAYED, function () {
-                _this.triggerSocket(Commands_1.Events.MEDIA_PLAYED);
+            $.subscribe(Events_1.Events.MEDIA_PLAYED, function () {
+                _this.triggerSocket(Events_1.Events.MEDIA_PLAYED);
             });
         };
         Extension.prototype.createModules = function () {
@@ -7261,7 +7223,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             else {
                 bookmark.type = manifesto.ElementType.sound().toString();
             }
-            this.triggerSocket(BaseCommands_1.BaseEvents.BOOKMARK, bookmark);
+            this.triggerSocket(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
             var configUri = this.getData().config.uri || '';
@@ -7281,61 +7243,62 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
     exports.Extension = Extension;
 });
 //# sourceMappingURL=Extension.js.map
-define('extensions/uv-seadragon-extension/Commands',["require", "exports"], function (require, exports) {
+define('extensions/uv-seadragon-extension/Events',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Commands = (function () {
-        function Commands() {
+    exports.__esModule = true;
+    var Events = (function () {
+        function Events() {
         }
-        return Commands;
+        return Events;
     }());
-    Events.namespace = 'seadragonExtension.';
-    Events.CLEAR_SEARCH = Events.namespace + 'onClearSearch';
-    Events.CURRENT_VIEW_URI = Events.namespace + 'onCurrentViewUri';
-    Events.FIRST = Events.namespace + 'onFirst';
-    Events.GALLERY_DECREASE_SIZE = Events.namespace + 'onGalleryDecreaseSize';
-    Events.GALLERY_INCREASE_SIZE = Events.namespace + 'onGalleryIncreaseSize';
-    Events.GALLERY_THUMB_SELECTED = Events.namespace + 'onGalleryThumbSelected';
-    Events.HIDE_MULTISELECT_DIALOGUE = Events.namespace + 'onHideMultiSelectDialogue';
-    Events.IMAGE_SEARCH = Events.namespace + 'onImageSearch';
-    Events.LAST = Events.namespace + 'onLast';
-    Events.MODE_CHANGED = Events.namespace + 'onModeChanged';
-    Events.MULTISELECT_CHANGE = Events.namespace + 'onMultiSelectChange';
-    Events.MULTISELECTION_MADE = Events.namespace + 'onMultiSelectionMade';
-    Events.NEXT_SEARCH_RESULT = Events.namespace + 'onNextSearchResult';
-    Events.NEXT = Events.namespace + 'onNext';
-    Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'onNextImagesSearchResultUnavailable';
-    Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'onPrevImagesSearchResultUnavailable';
-    Events.OPEN_THUMBS_VIEW = Events.namespace + 'onOpenThumbsView';
-    Events.OPEN_TREE_VIEW = Events.namespace + 'onOpenTreeView';
-    Events.PAGE_SEARCH = Events.namespace + 'onPageSearch';
-    Events.PAGING_TOGGLED = Events.namespace + 'onPagingToggled';
-    Events.PREV_SEARCH_RESULT = Events.namespace + 'onPrevSearchResult';
-    Events.PREV = Events.namespace + 'onPrev';
-    Events.PRINT = Events.namespace + 'onPrint';
-    Events.ROTATE = Events.namespace + 'onRotate';
-    Events.SEADRAGON_ANIMATION_FINISH = Events.namespace + 'onAnimationfinish';
-    Events.SEADRAGON_ANIMATION_START = Events.namespace + 'onAnimationStart';
-    Events.SEADRAGON_ANIMATION = Events.namespace + 'onAnimation';
-    Events.SEADRAGON_OPEN = Events.namespace + 'onOpen';
-    Events.SEADRAGON_RESIZE = Events.namespace + 'onResize';
-    Events.SEADRAGON_ROTATION = Events.namespace + 'onRotation';
-    Events.SEARCH_PREVIEW_FINISH = Events.namespace + 'onSearchPreviewFinish';
-    Events.SEARCH_PREVIEW_START = Events.namespace + 'onSearchPreviewStart';
-    Events.SEARCH_RESULT_CANVAS_CHANGED = Events.namespace + 'onSearchResultCanvasChanged';
-    Events.SEARCH_RESULT_RECT_CHANGED = Events.namespace + 'onSearchResultRectChanged';
-    Events.SEARCH_RESULTS_EMPTY = Events.namespace + 'onSearchResultsEmpty';
-    Events.SEARCH_RESULTS = Events.namespace + 'onSearchResults';
-    Events.SEARCH_RESULTS_CLEARED = Events.namespace + 'onSearchResultsCleared';
-    Events.SEARCH = Events.namespace + 'onSearch';
-    Events.SHOW_MULTISELECT_DIALOGUE = Events.namespace + 'onShowMultiSelectDialogue';
-    Events.THUMB_MULTISELECTED = Events.namespace + 'onThumbMultiSelected';
-    Events.TREE_NODE_MULTISELECTED = Events.namespace + 'onTreeNodeMultiSelected';
-    Events.TREE_NODE_SELECTED = Events.namespace + 'onTreeNodeSelected';
-    Events.VIEW_PAGE = Events.namespace + 'onViewPage';
-    Events.ZOOM_IN = Events.namespace + 'onZoomIn';
-    Events.ZOOM_OUT = Events.namespace + 'onZoomOut';
-    exports.Commands = Commands;
+    Events.namespace = 'openseadragonExtension.';
+    Events.CLEAR_SEARCH = Events.namespace + 'clearSearch';
+    Events.CURRENT_VIEW_URI = Events.namespace + 'currentViewUri';
+    Events.FIRST = Events.namespace + 'first';
+    Events.GALLERY_DECREASE_SIZE = Events.namespace + 'galleryDecreaseSize';
+    Events.GALLERY_INCREASE_SIZE = Events.namespace + 'galleryIncreaseSize';
+    Events.GALLERY_THUMB_SELECTED = Events.namespace + 'galleryThumbSelected';
+    Events.HIDE_MULTISELECT_DIALOGUE = Events.namespace + 'hideMultiSelectDialogue';
+    Events.IMAGE_SEARCH = Events.namespace + 'imageSearch';
+    Events.LAST = Events.namespace + 'last';
+    Events.MODE_CHANGED = Events.namespace + 'modeChanged';
+    Events.MULTISELECT_CHANGE = Events.namespace + 'multiSelectChange';
+    Events.MULTISELECTION_MADE = Events.namespace + 'multiSelectionMade';
+    Events.NEXT_SEARCH_RESULT = Events.namespace + 'nextSearchResult';
+    Events.NEXT = Events.namespace + 'next';
+    Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'nextImagesSearchResultUnavailable';
+    Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'prevImagesSearchResultUnavailable';
+    Events.OPEN_THUMBS_VIEW = Events.namespace + 'openThumbsView';
+    Events.OPEN_TREE_VIEW = Events.namespace + 'openTreeView';
+    Events.PAGE_SEARCH = Events.namespace + 'pageSearch';
+    Events.PAGING_TOGGLED = Events.namespace + 'pagingToggled';
+    Events.PREV_SEARCH_RESULT = Events.namespace + 'prevSearchResult';
+    Events.PREV = Events.namespace + 'prev';
+    Events.PRINT = Events.namespace + 'print';
+    Events.ROTATE = Events.namespace + 'rotate';
+    Events.SEADRAGON_ANIMATION_FINISH = Events.namespace + 'animationFinish';
+    Events.SEADRAGON_ANIMATION_START = Events.namespace + 'animationStart';
+    Events.SEADRAGON_ANIMATION = Events.namespace + 'animation';
+    Events.SEADRAGON_OPEN = Events.namespace + 'open';
+    Events.SEADRAGON_RESIZE = Events.namespace + 'resize';
+    Events.SEADRAGON_ROTATION = Events.namespace + 'rotationChanged';
+    Events.SEARCH_PREVIEW_FINISH = Events.namespace + 'searchPreviewFinish';
+    Events.SEARCH_PREVIEW_START = Events.namespace + 'searchPreviewStart';
+    Events.SEARCH_RESULT_CANVAS_CHANGED = Events.namespace + 'searchResultCanvasChanged';
+    Events.SEARCH_RESULT_RECT_CHANGED = Events.namespace + 'searchResultRectChanged';
+    Events.SEARCH_RESULTS_EMPTY = Events.namespace + 'searchResultsEmpty';
+    Events.SEARCH_RESULTS = Events.namespace + 'searchResults';
+    Events.SEARCH_RESULTS_CLEARED = Events.namespace + 'searchResultsCleared';
+    Events.SEARCH = Events.namespace + 'search';
+    Events.SHOW_MULTISELECT_DIALOGUE = Events.namespace + 'showMultiSelectDialogue';
+    Events.THUMB_MULTISELECTED = Events.namespace + 'thumbMultiSelected';
+    Events.TREE_NODE_MULTISELECTED = Events.namespace + 'treeNodeMultiSelected';
+    Events.TREE_NODE_SELECTED = Events.namespace + 'treeNodeSelected';
+    Events.VIEW_PAGE = Events.namespace + 'viewPage';
+    Events.XYWH_CHANGED = Events.namespace + 'xywhChanged';
+    Events.ZOOM_IN = Events.namespace + 'zoomIn';
+    Events.ZOOM_OUT = Events.namespace + 'zoomOut';
+    exports.Events = Events;
 });
 //# sourceMappingURL=Events.js.map
 var __extends = (this && this.__extends) || (function () {
@@ -7348,9 +7311,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, BaseCommands_1, BaseView_1, Commands_1) {
+define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Events"], function (require, exports, BaseEvents_1, BaseView_1, Events_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var GalleryView = (function (_super) {
         __extends(GalleryView, _super);
         function GalleryView($element) {
@@ -7377,14 +7340,14 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
                 data: this.galleryData
             });
             this.component.on('thumbSelected', function (thumb) {
-                $.publish(Commands_1.Events.GALLERY_THUMB_SELECTED, [thumb]);
-                $.publish(BaseCommands_1.BaseEvents.THUMB_SELECTED, [thumb]);
+                $.publish(Events_1.Events.GALLERY_THUMB_SELECTED, [thumb]);
+                $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
             });
             this.component.on('decreaseSize', function () {
-                $.publish(Commands_1.Events.GALLERY_DECREASE_SIZE);
+                $.publish(Events_1.Events.GALLERY_DECREASE_SIZE);
             });
             this.component.on('increaseSize', function () {
-                $.publish(Commands_1.Events.GALLERY_INCREASE_SIZE);
+                $.publish(Events_1.Events.GALLERY_INCREASE_SIZE);
             });
         };
         GalleryView.prototype.databind = function () {
@@ -7418,7 +7381,7 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
 //# sourceMappingURL=GalleryView.js.map
 define('extensions/uv-seadragon-extension/Mode',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Mode = (function () {
         function Mode(value) {
             this.value = value;
@@ -7443,9 +7406,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/ThumbsView", "../../extensions/uv-seadragon-extension/Commands", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, ThumbsView_1, Commands_1, Mode_1) {
+define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", "../uv-shared-module/ThumbsView", "../../extensions/uv-seadragon-extension/Events", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, ThumbsView_1, Events_1, Mode_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ThumbsView = (function (_super) {
         __extends(ThumbsView, _super);
         function ThumbsView() {
@@ -7456,13 +7419,13 @@ define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", ".
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
             // todo: this should be a setting
-            $.subscribe(Commands_1.Events.MODE_CHANGED, function () {
+            $.subscribe(Events_1.Events.MODE_CHANGED, function () {
                 _this.setLabel();
             });
-            $.subscribe(Commands_1.Events.SEARCH_PREVIEW_START, function (e, canvasIndex) {
+            $.subscribe(Events_1.Events.SEARCH_PREVIEW_START, function (e, canvasIndex) {
                 _this.searchPreviewStart(canvasIndex);
             });
-            $.subscribe(Commands_1.Events.SEARCH_PREVIEW_FINISH, function () {
+            $.subscribe(Events_1.Events.SEARCH_PREVIEW_FINISH, function () {
                 _this.searchPreviewFinish();
             });
             if (this.extension.helper.isPaged()) {
@@ -7539,9 +7502,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, BaseView_1, Commands_1) {
+define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Events"], function (require, exports, BaseView_1, Events_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var TreeView = (function (_super) {
         __extends(TreeView, _super);
         function TreeView($element) {
@@ -7564,10 +7527,10 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             // it is mixed-in a runtime. figure out how to add .on etc to IBaseComponent without needing
             // to implement it in BaseComponent.
             this.component.on('treeNodeSelected', function (node) {
-                $.publish(Commands_1.Events.TREE_NODE_SELECTED, [node]);
+                $.publish(Events_1.Events.TREE_NODE_SELECTED, [node]);
             });
             this.component.on('treeNodeMultiSelected', function (node) {
-                $.publish(Commands_1.Events.TREE_NODE_MULTISELECTED, [node]);
+                $.publish(Events_1.Events.TREE_NODE_MULTISELECTED, [node]);
             });
         };
         TreeView.prototype.databind = function () {
@@ -7610,9 +7573,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "./GalleryView", "../uv-shared-module/LeftPanel", "../uv-shared-module/Metrics", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseCommands_1, Commands_1, GalleryView_1, LeftPanel_1, Metrics_1, Mode_1, ThumbsView_1, TreeView_1) {
+define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Events", "./GalleryView", "../uv-shared-module/LeftPanel", "../uv-shared-module/Metrics", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseEvents_1, Events_1, GalleryView_1, LeftPanel_1, Metrics_1, Mode_1, ThumbsView_1, TreeView_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ContentLeftPanel = (function (_super) {
         __extends(ContentLeftPanel, _super);
         function ContentLeftPanel($element) {
@@ -7627,32 +7590,32 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             var _this = this;
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.databind();
             });
-            $.subscribe(Commands_1.Events.GALLERY_THUMB_SELECTED, function () {
+            $.subscribe(Events_1.Events.GALLERY_THUMB_SELECTED, function () {
                 _this.collapseFull();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.METRIC_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 if (_this.extension.metric === Metrics_1.Metrics.MOBILE_LANDSCAPE) {
                     if (_this.isFullyExpanded) {
                         _this.collapseFull();
                     }
                 }
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS, function () {
+            $.subscribe(Events_1.Events.SEARCH_RESULTS, function () {
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS_CLEARED, function () {
+            $.subscribe(Events_1.Events.SEARCH_RESULTS_CLEARED, function () {
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS_EMPTY, function () {
+            $.subscribe(Events_1.Events.SEARCH_RESULTS_EMPTY, function () {
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -7713,11 +7676,11 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             this.$treeViewOptions.hide();
             this.$treeButton.onPressed(function () {
                 _this.openTreeView();
-                $.publish(Commands_1.Events.OPEN_TREE_VIEW);
+                $.publish(Events_1.Events.OPEN_TREE_VIEW);
             });
             this.$thumbsButton.onPressed(function () {
                 _this.openThumbsView();
-                $.publish(Commands_1.Events.OPEN_THUMBS_VIEW);
+                $.publish(Events_1.Events.OPEN_THUMBS_VIEW);
             });
             this.setTitle(this.content.title);
             this.$sortByVolumeButton.addClass('on');
@@ -7758,6 +7721,9 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         };
         ContentLeftPanel.prototype.updateTreeViewOptions = function () {
             var treeData = this.getTree();
+            if (!treeData) {
+                return;
+            }
             if (this.isCollection() && this.extension.helper.treeHasNavDates(treeData)) {
                 this.$treeViewOptions.show();
             }
@@ -7791,7 +7757,10 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         };
         ContentLeftPanel.prototype.isCollection = function () {
             var treeData = this.getTree();
-            return treeData.data.type === manifesto.TreeNodeType.collection().toString();
+            if (treeData) {
+                return treeData.data.type === manifesto.TreeNodeType.collection().toString();
+            }
+            throw new Error("Tree not available");
         };
         ContentLeftPanel.prototype.databindTreeView = function () {
             if (!this.treeView)
@@ -7964,7 +7933,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             var defaultToTreeIfGreaterThan = this.config.options.defaultToTreeIfGreaterThan || 0;
             var treeData = this.getTree();
             if (defaultToTreeEnabled) {
-                if (treeData.nodes.length > defaultToTreeIfGreaterThan) {
+                if (treeData && treeData.nodes.length > defaultToTreeIfGreaterThan) {
                     return false;
                 }
             }
@@ -7972,7 +7941,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         };
         ContentLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
         };
         ContentLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
@@ -7982,11 +7951,11 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             else if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
         };
         ContentLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
         };
         ContentLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
@@ -7996,7 +7965,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
-            $.publish(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
         };
         ContentLeftPanel.prototype.openTreeView = function () {
             this.isTreeViewOpen = true;
@@ -8094,7 +8063,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
 //# sourceMappingURL=ContentLeftPanel.js.map
 define('modules/uv-shared-module/Point',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Point = (function () {
         function Point(x, y) {
             this.x = x;
@@ -8107,7 +8076,7 @@ define('modules/uv-shared-module/Point',["require", "exports"], function (requir
 //# sourceMappingURL=Point.js.map
 define('extensions/uv-seadragon-extension/CroppedImageDimensions',["require", "exports", "../../modules/uv-shared-module/Point"], function (require, exports, Point_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Size = Utils.Measurements.Size;
     var CroppedImageDimensions = (function () {
         function CroppedImageDimensions() {
@@ -8122,7 +8091,7 @@ define('extensions/uv-seadragon-extension/CroppedImageDimensions',["require", "e
 //# sourceMappingURL=CroppedImageDimensions.js.map
 define('extensions/uv-seadragon-extension/DownloadType',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var DownloadType = (function () {
         function DownloadType() {
         }
@@ -8148,9 +8117,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "./Commands", "../../modules/uv-dialogues-module/DownloadDialogue", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseCommands_1, Commands_1, DownloadDialogue_1, DownloadOption_1, DownloadType_1) {
+define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "./Events", "../../modules/uv-dialogues-module/DownloadDialogue", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseEvents_1, Events_1, DownloadDialogue_1, DownloadOption_1, DownloadType_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Size = Utils.Measurements.Size;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
@@ -8237,7 +8206,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             Utils.Async.waitFor(function () {
                                 return !_this.isActive;
                             }, function () {
-                                $.publish(Commands_1.Events.SHOW_MULTISELECT_DIALOGUE);
+                                $.publish(Events_1.Events.SHOW_MULTISELECT_DIALOGUE);
                             });
                             break;
                         case DownloadOption_1.DownloadOption.wholeImageHighRes.toString():
@@ -8257,7 +8226,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             break;
                     }
                 }
-                $.publish(BaseCommands_1.BaseEvents.DOWNLOAD, [{
+                $.publish(BaseEvents_1.BaseEvents.DOWNLOAD, [{
                         "type": type,
                         "label": label
                     }]);
@@ -8645,9 +8614,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ExternalContentDialogue = (function (_super) {
         __extends(ExternalContentDialogue, _super);
         function ExternalContentDialogue($element) {
@@ -8657,8 +8626,8 @@ define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "export
             var _this = this;
             this.setConfig('externalContentDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE;
             $.subscribe(this.openCommand, function (e, params) {
                 _this.open();
                 _this.$iframe.prop('src', params.uri);
@@ -8690,9 +8659,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "exports", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Commands"], function (require, exports, FooterPanel_1, Commands_1) {
+define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "exports", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Events"], function (require, exports, FooterPanel_1, Events_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -8710,13 +8679,13 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
             this.$zoomInButton = $('<a class="zoomIn" title="' + this.content.zoomIn + '" tabindex="0">' + this.content.zoomIn + '</a>');
             this.$options.prepend(this.$zoomInButton);
             this.$zoomInButton.onPressed(function () {
-                $.publish(Commands_1.Events.ZOOM_IN);
+                $.publish(Events_1.Events.ZOOM_IN);
             });
             this.$zoomOutButton.onPressed(function () {
-                $.publish(Commands_1.Events.ZOOM_OUT);
+                $.publish(Events_1.Events.ZOOM_OUT);
             });
             this.$rotateButton.onPressed(function () {
-                $.publish(Commands_1.Events.ROTATE);
+                $.publish(Events_1.Events.ROTATE);
             });
         };
         FooterPanel.prototype.resize = function () {
@@ -8730,7 +8699,7 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
 //# sourceMappingURL=MobileFooter.js.map
 define('modules/uv-shared-module/AutoComplete',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var AutoComplete = (function () {
         function AutoComplete(element, autoCompleteFunc, parseResultsFunc, onSelect, delay, minChars, positionAbove) {
             if (delay === void 0) { delay = 300; }
@@ -8961,9 +8930,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseCommands_1, Commands_1, FooterPanel_1, Mode_1) {
+define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Events", "../uv-shared-module/FooterPanel", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseEvents_1, Events_1, FooterPanel_1, Mode_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var FooterPanel = (function (_super) {
         __extends(FooterPanel, _super);
         function FooterPanel($element) {
@@ -8975,27 +8944,27 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var _this = this;
             this.setConfig('searchFooterPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 _this.canvasIndexChanged();
                 _this.setCurrentSearchResultPlacemarker();
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
             // todo: this should be a setting
-            $.subscribe(Commands_1.Events.MODE_CHANGED, function () {
+            $.subscribe(Events_1.Events.MODE_CHANGED, function () {
                 _this.settingsChanged();
             });
-            $.subscribe(Commands_1.Events.SEARCH, function (e, terms) {
+            $.subscribe(Events_1.Events.SEARCH, function (e, terms) {
                 _this.terms = terms;
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS, function (e, obj) {
+            $.subscribe(Events_1.Events.SEARCH_RESULTS, function (e, obj) {
                 _this.displaySearchResults(obj.terms, obj.results);
                 _this.setCurrentSearchResultPlacemarker();
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS_EMPTY, function () {
+            $.subscribe(Events_1.Events.SEARCH_RESULTS_EMPTY, function () {
                 _this.hideSearchSpinner();
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULT_RECT_CHANGED, function () {
+            $.subscribe(Events_1.Events.SEARCH_RESULT_RECT_CHANGED, function () {
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
@@ -9057,29 +9026,29 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                     _this.$searchText.val('');
             });
             this.$placemarkerDetails.on('mouseover', function () {
-                $.publish(Commands_1.Events.SEARCH_PREVIEW_START, [_this.currentPlacemarkerIndex]);
+                $.publish(Events_1.Events.SEARCH_PREVIEW_START, [_this.currentPlacemarkerIndex]);
             });
             this.$placemarkerDetails.on('mouseleave', function () {
                 $(this).hide();
-                $.publish(Commands_1.Events.SEARCH_PREVIEW_FINISH);
+                $.publish(Events_1.Events.SEARCH_PREVIEW_FINISH);
                 // reset all placemarkers.
                 var placemarkers = that.getSearchResultPlacemarkers();
                 placemarkers.removeClass('hover');
             });
             this.$placemarkerDetails.on('click', function () {
-                $.publish(Commands_1.Events.VIEW_PAGE, [_this.currentPlacemarkerIndex]);
+                $.publish(Events_1.Events.VIEW_PAGE, [_this.currentPlacemarkerIndex]);
             });
             this.$previousResultButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Commands_1.Events.PREV_SEARCH_RESULT);
+                $.publish(Events_1.Events.PREV_SEARCH_RESULT);
             });
             this.$nextResultButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Commands_1.Events.NEXT_SEARCH_RESULT);
+                $.publish(Events_1.Events.NEXT_SEARCH_RESULT);
             });
             this.$clearSearchResultsButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Commands_1.Events.CLEAR_SEARCH);
+                $.publish(Events_1.Events.CLEAR_SEARCH);
                 _this.clearSearchResults();
             });
             // hide search options if not enabled/supported.
@@ -9114,7 +9083,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 });
             }
             this.$printButton.onPressed(function () {
-                $.publish(Commands_1.Events.PRINT);
+                $.publish(Events_1.Events.PRINT);
             });
             this.updatePrintButton();
             var positionMarkerEnabled = Utils.Bools.getBool(this.config.options.positionMarkerEnabled, true);
@@ -9229,7 +9198,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             // blur search field
             this.$searchText.blur();
             this.showSearchSpinner();
-            $.publish(Commands_1.Events.SEARCH, [this.terms]);
+            $.publish(Events_1.Events.SEARCH, [this.terms]);
         };
         FooterPanel.prototype.getSearchResultPlacemarkers = function () {
             return this.$searchResultsContainer.find('.searchResultPlacemarker');
@@ -9273,7 +9242,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             that.placemarkerTouched = true;
             var $placemarker = $(this);
             var index = parseInt($placemarker.attr('data-index'));
-            $.publish(Commands_1.Events.VIEW_PAGE, [index]);
+            $.publish(Events_1.Events.VIEW_PAGE, [index]);
         };
         FooterPanel.prototype.onPlacemarkerClick = function (that) {
             if (that.placemarkerTouched)
@@ -9281,7 +9250,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             that.placemarkerTouched = false;
             var $placemarker = $(this);
             var index = parseInt($placemarker.attr('data-index'));
-            $.publish(Commands_1.Events.VIEW_PAGE, [index]);
+            $.publish(Events_1.Events.VIEW_PAGE, [index]);
         };
         FooterPanel.prototype.onPlacemarkerMouseEnter = function (that) {
             if (that.placemarkerTouched)
@@ -9289,7 +9258,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var $placemarker = $(this);
             $placemarker.addClass('hover');
             var canvasIndex = parseInt($placemarker.attr('data-index'));
-            $.publish(Commands_1.Events.SEARCH_PREVIEW_START, [canvasIndex]);
+            $.publish(Events_1.Events.SEARCH_PREVIEW_START, [canvasIndex]);
             var $placemarkers = that.getSearchResultPlacemarkers();
             var elemIndex = $placemarkers.index($placemarker[0]);
             that.currentPlacemarkerIndex = canvasIndex;
@@ -9339,7 +9308,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             });
         };
         FooterPanel.prototype.onPlacemarkerMouseLeave = function (e, that) {
-            $.publish(Commands_1.Events.SEARCH_PREVIEW_FINISH);
+            $.publish(Events_1.Events.SEARCH_PREVIEW_FINISH);
             var $placemarker = $(this);
             var newElement = e.toElement || e.relatedTarget;
             var isChild = $(newElement).closest(that.$placemarkerDetails).length;
@@ -9491,9 +9460,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/Dialogue"], function (require, exports, BaseCommands_1, Dialogue_1) {
+define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var MoreInfoDialogue = (function (_super) {
         __extends(MoreInfoDialogue, _super);
         function MoreInfoDialogue($element) {
@@ -9503,8 +9472,8 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
             var _this = this;
             this.setConfig('moreInfoDialogue');
             _super.prototype.create.call(this);
-            this.openCommand = BaseCommands_1.BaseEvents.SHOW_MOREINFO_DIALOGUE;
-            this.closeCommand = BaseCommands_1.BaseEvents.HIDE_MOREINFO_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_MOREINFO_DIALOGUE;
             $.subscribe(this.openCommand, function (e, $triggerButton) {
                 _this.open($triggerButton);
             });
@@ -9574,9 +9543,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "exports", "../../extensions/uv-seadragon-extension/Commands", "../../modules/uv-shared-module/Dialogue", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, Commands_1, Dialogue_1, Mode_1) {
+define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "exports", "../../extensions/uv-seadragon-extension/Events", "../../modules/uv-shared-module/Dialogue", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, Events_1, Dialogue_1, Mode_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var MultiSelectDialogue = (function (_super) {
         __extends(MultiSelectDialogue, _super);
         function MultiSelectDialogue($element) {
@@ -9587,8 +9556,8 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             this.setConfig('multiSelectDialogue');
             _super.prototype.create.call(this);
             var that = this;
-            this.openCommand = Commands_1.Events.SHOW_MULTISELECT_DIALOGUE;
-            this.closeCommand = Commands_1.Events.HIDE_MULTISELECT_DIALOGUE;
+            this.openCommand = Events_1.Events.SHOW_MULTISELECT_DIALOGUE;
+            this.closeCommand = Events_1.Events.HIDE_MULTISELECT_DIALOGUE;
             $.subscribe(this.openCommand, function () {
                 _this.open();
                 var multiSelectState = _this.extension.helper.getMultiSelectState();
@@ -9629,7 +9598,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             var $selectButton = this.$gallery.find('a.select');
             $selectButton.addClass('btn btn-primary');
             this.component.on('multiSelectionMade', function (ids) {
-                $.publish(Commands_1.Events.MULTISELECTION_MADE, [ids]);
+                $.publish(Events_1.Events.MULTISELECTION_MADE, [ids]);
                 that.close();
             });
             this.$element.hide();
@@ -9656,7 +9625,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
 //# sourceMappingURL=MultiSelectDialogue.js.map
 define('extensions/uv-seadragon-extension/MultiSelectionArgs',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var MultiSelectionArgs = (function () {
         function MultiSelectionArgs() {
         }
@@ -9675,9 +9644,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Commands", "../uv-shared-module/HeaderPanel", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseCommands_1, Commands_1, HeaderPanel_1, Mode_1) {
+define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "exports", "../uv-shared-module/AutoComplete", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Events", "../uv-shared-module/HeaderPanel", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, AutoComplete_1, BaseEvents_1, Events_1, HeaderPanel_1, Mode_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var PagingHeaderPanel = (function (_super) {
         __extends(PagingHeaderPanel, _super);
         function PagingHeaderPanel($element) {
@@ -9692,20 +9661,20 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             var _this = this;
             this.setConfig('pagingHeaderPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.canvasIndexChanged(canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.modeChanged();
                 _this.updatePagingToggle();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
                 _this.setSearchFieldValue(_this.extension.helper.canvasIndex);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 _this.openGallery();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 _this.closeGallery();
             });
             this.$prevOptions = $('<div class="prevOptions"></div>');
@@ -9773,7 +9742,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 }
                 this.$imageSelectionBox.change(function () {
                     var imageIndex = parseInt(_this.$imageSelectionBox.val());
-                    $.publish(Commands_1.Events.IMAGE_SEARCH, [imageIndex]);
+                    $.publish(Events_1.Events.IMAGE_SEARCH, [imageIndex]);
                 });
             }
             this.$total = $('<span class="total"></span>');
@@ -9816,15 +9785,15 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$oneUpButton.onPressed(function () {
                 var enabled = false;
                 _this.updateSettings({ pagingEnabled: enabled });
-                $.publish(Commands_1.Events.PAGING_TOGGLED, [enabled]);
+                $.publish(Events_1.Events.PAGING_TOGGLED, [enabled]);
             });
             this.$twoUpButton.onPressed(function () {
                 var enabled = true;
                 _this.updateSettings({ pagingEnabled: enabled });
-                $.publish(Commands_1.Events.PAGING_TOGGLED, [enabled]);
+                $.publish(Events_1.Events.PAGING_TOGGLED, [enabled]);
             });
             this.$galleryButton.onPressed(function () {
-                $.publish(BaseCommands_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL);
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL);
             });
             this.setTitles();
             this.setTotal();
@@ -9839,10 +9808,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
-                        $.publish(Commands_1.Events.FIRST);
+                        $.publish(Events_1.Events.FIRST);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Commands_1.Events.LAST);
+                        $.publish(Events_1.Events.LAST);
                         break;
                 }
             });
@@ -9851,10 +9820,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Commands_1.Events.PREV);
+                        $.publish(Events_1.Events.PREV);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Commands_1.Events.NEXT);
+                        $.publish(Events_1.Events.NEXT);
                         break;
                 }
             });
@@ -9863,10 +9832,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Commands_1.Events.NEXT);
+                        $.publish(Events_1.Events.NEXT);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Commands_1.Events.PREV);
+                        $.publish(Events_1.Events.PREV);
                         break;
                 }
             });
@@ -9875,10 +9844,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
-                        $.publish(Commands_1.Events.LAST);
+                        $.publish(Events_1.Events.LAST);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Commands_1.Events.FIRST);
+                        $.publish(Events_1.Events.FIRST);
                         break;
                 }
             });
@@ -9894,10 +9863,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 // visible, since otherwise, clicking on the "Image" label can
                 // trigger unexpected/undesired side effects.
                 this.$imageModeOption.on('click', function (e) {
-                    $.publish(Commands_1.Events.MODE_CHANGED, [Mode_1.Mode.image.toString()]);
+                    $.publish(Events_1.Events.MODE_CHANGED, [Mode_1.Mode.image.toString()]);
                 });
                 this.$pageModeOption.on('click', function (e) {
-                    $.publish(Commands_1.Events.MODE_CHANGED, [Mode_1.Mode.page.toString()]);
+                    $.publish(Events_1.Events.MODE_CHANGED, [Mode_1.Mode.page.toString()]);
                 });
             }
             this.$searchText.onEnter(function () {
@@ -10035,11 +10004,11 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.search = function (value) {
             if (!value) {
                 this.extension.showMessage(this.content.emptyValue);
-                $.publish(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
             if (this.isPageModeEnabled()) {
-                $.publish(Commands_1.Events.PAGE_SEARCH, [value]);
+                $.publish(Events_1.Events.PAGE_SEARCH, [value]);
             }
             else {
                 var index = void 0;
@@ -10052,16 +10021,16 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 index -= 1;
                 if (isNaN(index)) {
                     this.extension.showMessage(this.extension.getData().config.modules.genericDialogue.content.invalidNumber);
-                    $.publish(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
                 var asset = this.extension.helper.getCanvasByIndex(index);
                 if (!asset) {
                     this.extension.showMessage(this.extension.getData().config.modules.genericDialogue.content.pageNotFound);
-                    $.publish(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
-                $.publish(Commands_1.Events.IMAGE_SEARCH, [index]);
+                $.publish(Events_1.Events.IMAGE_SEARCH, [index]);
             }
         };
         PagingHeaderPanel.prototype.canvasIndexChanged = function (index) {
@@ -10167,7 +10136,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
 //# sourceMappingURL=PagingHeaderPanel.js.map
 define('extensions/uv-seadragon-extension/Bounds',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Bounds = (function () {
         function Bounds(x, y, w, h) {
             this.x = x;
@@ -10197,9 +10166,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../../extensions/uv-seadragon-extension/Bounds", "../uv-shared-module/CenterPanel", "../../extensions/uv-seadragon-extension/Commands", "../uv-shared-module/Metrics", "../../Params"], function (require, exports, BaseCommands_1, Bounds_1, CenterPanel_1, Commands_1, Metrics_1, Params_1) {
+define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Bounds", "../uv-shared-module/CenterPanel", "../../extensions/uv-seadragon-extension/Events", "../uv-shared-module/Metrics"], function (require, exports, BaseEvents_1, Bounds_1, CenterPanel_1, Events_1, Metrics_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SeadragonCenterPanel = (function (_super) {
         __extends(SeadragonCenterPanel, _super);
         function SeadragonCenterPanel($element) {
@@ -10217,52 +10186,52 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             _super.prototype.create.call(this);
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.prepend(this.$viewer);
-            $.subscribe(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
+            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
                 _this.viewer.gestureSettingsMouse.clickToZoom = args.clickToZoomEnabled;
             });
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.whenResized(function () {
                     if (!_this.isCreated)
                         _this.createUI();
                     _this.openMedia(resources);
                 });
             });
-            $.subscribe(Commands_1.Events.CLEAR_SEARCH, function () {
+            $.subscribe(Events_1.Events.CLEAR_SEARCH, function () {
                 _this.whenCreated(function () {
                     _this.extension.currentSearchResultRect = null;
                     _this.clearSearchResults();
                 });
             });
-            $.subscribe(Commands_1.Events.VIEW_PAGE, function () {
+            $.subscribe(Events_1.Events.VIEW_PAGE, function () {
                 _this.extension.previousSearchResultRect = null;
                 _this.extension.currentSearchResultRect = null;
             });
-            $.subscribe(Commands_1.Events.NEXT_SEARCH_RESULT, function () {
+            $.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
                 _this.whenCreated(function () {
                     _this.nextSearchResult();
                 });
             });
-            $.subscribe(Commands_1.Events.PREV_SEARCH_RESULT, function () {
+            $.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
                 _this.whenCreated(function () {
                     _this.prevSearchResult();
                 });
             });
-            $.subscribe(Commands_1.Events.ZOOM_IN, function () {
+            $.subscribe(Events_1.Events.ZOOM_IN, function () {
                 _this.whenCreated(function () {
                     _this.zoomIn();
                 });
             });
-            $.subscribe(Commands_1.Events.ZOOM_OUT, function () {
+            $.subscribe(Events_1.Events.ZOOM_OUT, function () {
                 _this.whenCreated(function () {
                     _this.zoomOut();
                 });
             });
-            $.subscribe(Commands_1.Events.ROTATE, function () {
+            $.subscribe(Events_1.Events.ROTATE, function () {
                 _this.whenCreated(function () {
                     _this.rotateRight();
                 });
             });
-            $.subscribe(BaseCommands_1.BaseEvents.METRIC_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.whenCreated(function () {
                     _this.updateResponsiveView();
                 });
@@ -10427,22 +10396,22 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             //this.viewer.addHandler("open-failed", () => {
             //});
             this.viewer.addHandler('resize', function (viewer) {
-                $.publish(Commands_1.Events.SEADRAGON_RESIZE, [viewer]);
+                $.publish(Events_1.Events.SEADRAGON_RESIZE, [viewer]);
                 _this.viewerResize(viewer);
             });
             this.viewer.addHandler('animation-start', function (viewer) {
-                $.publish(Commands_1.Events.SEADRAGON_ANIMATION_START, [viewer]);
+                $.publish(Events_1.Events.SEADRAGON_ANIMATION_START, [viewer]);
             });
             this.viewer.addHandler('animation', function (viewer) {
-                $.publish(Commands_1.Events.SEADRAGON_ANIMATION, [viewer]);
+                $.publish(Events_1.Events.SEADRAGON_ANIMATION, [viewer]);
             });
             this.viewer.addHandler('animation-finish', function (viewer) {
                 _this.currentBounds = _this.getViewportBounds();
                 _this.updateVisibleSearchResultRects();
-                $.publish(Commands_1.Events.SEADRAGON_ANIMATION_FINISH, [viewer]);
+                $.publish(Events_1.Events.SEADRAGON_ANIMATION_FINISH, [viewer]);
             });
             this.viewer.addHandler('rotate', function (args) {
-                $.publish(Commands_1.Events.SEADRAGON_ROTATION, [args.degrees]);
+                $.publish(Events_1.Events.SEADRAGON_ROTATION, [args.degrees]);
             });
             this.title = this.extension.helper.getLabel();
             this.createNavigationButtons();
@@ -10477,10 +10446,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Commands_1.Events.PREV);
+                        $.publish(Events_1.Events.PREV);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Commands_1.Events.NEXT);
+                        $.publish(Events_1.Events.NEXT);
                         break;
                 }
             });
@@ -10493,10 +10462,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Commands_1.Events.NEXT);
+                        $.publish(Events_1.Events.NEXT);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Commands_1.Events.PREV);
+                        $.publish(Events_1.Events.PREV);
                         break;
                 }
             });
@@ -10601,7 +10570,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             return resources;
         };
         SeadragonCenterPanel.prototype.openPagesHandler = function () {
-            $.publish(Commands_1.Events.SEADRAGON_OPEN);
+            $.publish(Events_1.Events.SEADRAGON_OPEN);
             if (this.extension.helper.isMultiCanvas() && !this.extension.helper.isContinuous()) {
                 this.showPrevButton();
                 this.showNextButton();
@@ -10651,11 +10620,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var settings = this.extension.getSettings();
             // if this is the first load and there are initial bounds, fit to those.
             if (this.isFirstLoad) {
-                this.initialRotation = this.extension.getParam(Params_1.Params.rotation);
+                this.initialRotation = this.extension.getData().rotation;
                 if (this.initialRotation) {
                     this.viewer.viewport.setRotation(parseInt(this.initialRotation));
                 }
-                this.initialBounds = this.extension.getParam(Params_1.Params.xywh);
+                this.initialBounds = this.extension.getData().xywh;
                 if (this.initialBounds) {
                     this.initialBounds = Bounds_1.Bounds.fromString(this.initialBounds);
                     this.currentBounds = this.initialBounds;
@@ -10819,14 +10788,14 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 // if the rect's canvasIndex is greater than the current canvasIndex
                 if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
                     this.extension.currentSearchResultRect = foundRect;
-                    $.publish(Commands_1.Events.SEARCH_RESULT_CANVAS_CHANGED, [foundRect]);
+                    $.publish(Events_1.Events.SEARCH_RESULT_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
                     this.zoomToSearchResult(foundRect);
                 }
             }
             else {
-                $.publish(Commands_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+                $.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
             }
         };
         SeadragonCenterPanel.prototype.prevSearchResult = function () {
@@ -10851,14 +10820,14 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 // if the rect's canvasIndex is less than the current canvasIndex
                 if (foundRect.canvasIndex < this.extension.helper.canvasIndex) {
                     this.extension.currentSearchResultRect = foundRect;
-                    $.publish(Commands_1.Events.SEARCH_RESULT_CANVAS_CHANGED, [foundRect]);
+                    $.publish(Events_1.Events.SEARCH_RESULT_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
                     this.zoomToSearchResult(foundRect);
                 }
             }
             else {
-                $.publish(Commands_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+                $.publish(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
             }
         };
         SeadragonCenterPanel.prototype.getSearchResultRectByIndex = function (index) {
@@ -10885,7 +10854,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.extension.currentSearchResultRect = searchResultRect;
             this.fitToBounds(new Bounds_1.Bounds(searchResultRect.viewportX, searchResultRect.viewportY, searchResultRect.width, searchResultRect.height), false);
             this.highlightSearchResultRect(searchResultRect);
-            $.publish(Commands_1.Events.SEARCH_RESULT_RECT_CHANGED);
+            $.publish(Events_1.Events.SEARCH_RESULT_RECT_CHANGED);
         };
         SeadragonCenterPanel.prototype.highlightSearchResultRect = function (searchResultRect) {
             var $rect = $('#searchResult-' + searchResultRect.canvasIndex + '-' + searchResultRect.index);
@@ -10995,7 +10964,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-seadragon-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -11119,17 +11088,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/ShareDialogue',["require", "exports", "./Commands", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, Commands_1, ShareDialogue_1) {
+define('extensions/uv-seadragon-extension/ShareDialogue',["require", "exports", "./Events", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, Events_1, ShareDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
             var _this = _super.call(this, $element) || this;
-            $.subscribe(Commands_1.Events.SEADRAGON_OPEN, function () {
+            $.subscribe(Events_1.Events.SEADRAGON_OPEN, function () {
                 _this.update();
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_ANIMATION_FINISH, function () {
+            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION_FINISH, function () {
                 _this.update();
             });
             return _this;
@@ -11163,9 +11132,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Commands", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-shared-module/Metrics", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../Params", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, Commands_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, Metrics_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Params_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./Events", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-shared-module/Metrics", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, Events_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, Metrics_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SearchResult = Manifold.SearchResult;
     var Size = Utils.Measurements.Size;
     var Extension = (function (_super) {
@@ -11180,56 +11149,56 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.METRIC_CHANGED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 if (_this.metric === Metrics_1.Metrics.MOBILE_LANDSCAPE) {
                     var settings = {};
                     settings.pagingEnabled = false;
                     _this.updateSettings(settings);
-                    $.publish(BaseCommands_1.BaseEvents.UPDATE_SETTINGS);
+                    $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS);
                     Shell_1.Shell.$rightPanel.hide();
                 }
                 else {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
-            $.subscribe(Commands_1.Events.CLEAR_SEARCH, function () {
+            $.subscribe(Events_1.Events.CLEAR_SEARCH, function () {
                 _this.searchResults = null;
-                $.publish(Commands_1.Events.SEARCH_RESULTS_CLEARED);
-                _this.triggerSocket(Commands_1.Events.CLEAR_SEARCH);
+                $.publish(Events_1.Events.SEARCH_RESULTS_CLEARED);
+                _this.triggerSocket(Events_1.Events.CLEAR_SEARCH);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.DOWN_ARROW, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.DOWN_ARROW, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.END, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.END, function () {
                 _this.viewPage(_this.helper.getLastPageIndex());
             });
-            $.subscribe(Commands_1.Events.FIRST, function () {
-                _this.triggerSocket(Commands_1.Events.FIRST);
+            $.subscribe(Events_1.Events.FIRST, function () {
+                _this.triggerSocket(Events_1.Events.FIRST);
                 _this.viewPage(_this.helper.getFirstPageIndex());
             });
-            $.subscribe(Commands_1.Events.GALLERY_DECREASE_SIZE, function () {
-                _this.triggerSocket(Commands_1.Events.GALLERY_DECREASE_SIZE);
+            $.subscribe(Events_1.Events.GALLERY_DECREASE_SIZE, function () {
+                _this.triggerSocket(Events_1.Events.GALLERY_DECREASE_SIZE);
             });
-            $.subscribe(Commands_1.Events.GALLERY_INCREASE_SIZE, function () {
-                _this.triggerSocket(Commands_1.Events.GALLERY_INCREASE_SIZE);
+            $.subscribe(Events_1.Events.GALLERY_INCREASE_SIZE, function () {
+                _this.triggerSocket(Events_1.Events.GALLERY_INCREASE_SIZE);
             });
-            $.subscribe(Commands_1.Events.GALLERY_THUMB_SELECTED, function () {
-                _this.triggerSocket(Commands_1.Events.GALLERY_THUMB_SELECTED);
+            $.subscribe(Events_1.Events.GALLERY_THUMB_SELECTED, function () {
+                _this.triggerSocket(Events_1.Events.GALLERY_THUMB_SELECTED);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HOME, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
                 _this.viewPage(_this.helper.getFirstPageIndex());
             });
-            $.subscribe(Commands_1.Events.IMAGE_SEARCH, function (e, index) {
-                _this.triggerSocket(Commands_1.Events.IMAGE_SEARCH, index);
+            $.subscribe(Events_1.Events.IMAGE_SEARCH, function (e, index) {
+                _this.triggerSocket(Events_1.Events.IMAGE_SEARCH, index);
                 _this.viewPage(index);
             });
-            $.subscribe(Commands_1.Events.LAST, function () {
-                _this.triggerSocket(Commands_1.Events.LAST);
+            $.subscribe(Events_1.Events.LAST, function () {
+                _this.triggerSocket(Events_1.Events.LAST);
                 _this.viewPage(_this.helper.getLastPageIndex());
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFT_ARROW, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
                     _this.viewPage(_this.getPrevPageIndex());
                 }
@@ -11237,85 +11206,85 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 if (_this.metric !== Metrics_1.Metrics.MOBILE_LANDSCAPE) {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.MINUS, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.MINUS, function () {
                 _this.centerPanel.setFocus();
             });
-            $.subscribe(Commands_1.Events.MODE_CHANGED, function (e, mode) {
-                _this.triggerSocket(Commands_1.Events.MODE_CHANGED, mode);
+            $.subscribe(Events_1.Events.MODE_CHANGED, function (e, mode) {
+                _this.triggerSocket(Events_1.Events.MODE_CHANGED, mode);
                 _this.mode = new Mode_1.Mode(mode);
                 var settings = _this.getSettings();
-                $.publish(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, [settings]);
+                $.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, [settings]);
             });
-            $.subscribe(Commands_1.Events.MULTISELECTION_MADE, function (e, ids) {
+            $.subscribe(Events_1.Events.MULTISELECTION_MADE, function (e, ids) {
                 var args = new MultiSelectionArgs_1.MultiSelectionArgs();
                 args.manifestUri = _this.helper.iiifResourceUri;
                 args.allCanvases = ids.length === _this.helper.getCanvases().length;
                 args.canvases = ids;
                 args.format = _this.getData().config.options.multiSelectionMimeType;
                 args.sequence = _this.helper.getCurrentSequence().id;
-                _this.triggerSocket(Commands_1.Events.MULTISELECTION_MADE, args);
+                _this.triggerSocket(Events_1.Events.MULTISELECTION_MADE, args);
             });
-            $.subscribe(Commands_1.Events.NEXT, function () {
-                _this.triggerSocket(Commands_1.Events.NEXT);
+            $.subscribe(Events_1.Events.NEXT, function () {
+                _this.triggerSocket(Events_1.Events.NEXT);
                 _this.viewPage(_this.getNextPageIndex());
             });
-            $.subscribe(Commands_1.Events.NEXT_SEARCH_RESULT, function () {
-                _this.triggerSocket(Commands_1.Events.NEXT_SEARCH_RESULT);
+            $.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
+                _this.triggerSocket(Events_1.Events.NEXT_SEARCH_RESULT);
             });
-            $.subscribe(Commands_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
-                _this.triggerSocket(Commands_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+            $.subscribe(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
+                _this.triggerSocket(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
                 _this.nextSearchResult();
             });
-            $.subscribe(Commands_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
-                _this.triggerSocket(Commands_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+            $.subscribe(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
+                _this.triggerSocket(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
                 _this.prevSearchResult();
             });
-            $.subscribe(Commands_1.Events.OPEN_THUMBS_VIEW, function () {
-                _this.triggerSocket(Commands_1.Events.OPEN_THUMBS_VIEW);
+            $.subscribe(Events_1.Events.OPEN_THUMBS_VIEW, function () {
+                _this.triggerSocket(Events_1.Events.OPEN_THUMBS_VIEW);
             });
-            $.subscribe(Commands_1.Events.OPEN_TREE_VIEW, function () {
-                _this.triggerSocket(Commands_1.Events.OPEN_TREE_VIEW);
+            $.subscribe(Events_1.Events.OPEN_TREE_VIEW, function () {
+                _this.triggerSocket(Events_1.Events.OPEN_TREE_VIEW);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.PAGE_DOWN, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
                 _this.viewPage(_this.getNextPageIndex());
             });
-            $.subscribe(Commands_1.Events.PAGE_SEARCH, function (e, value) {
-                _this.triggerSocket(Commands_1.Events.PAGE_SEARCH, value);
+            $.subscribe(Events_1.Events.PAGE_SEARCH, function (e, value) {
+                _this.triggerSocket(Events_1.Events.PAGE_SEARCH, value);
                 _this.viewLabel(value);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.PAGE_UP, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
                 _this.viewPage(_this.getPrevPageIndex());
             });
-            $.subscribe(Commands_1.Events.PAGING_TOGGLED, function (e, obj) {
-                _this.triggerSocket(Commands_1.Events.PAGING_TOGGLED, obj);
+            $.subscribe(Events_1.Events.PAGING_TOGGLED, function (e, obj) {
+                _this.triggerSocket(Events_1.Events.PAGING_TOGGLED, obj);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.PLUS, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.PLUS, function () {
                 _this.centerPanel.setFocus();
             });
-            $.subscribe(Commands_1.Events.PREV, function () {
-                _this.triggerSocket(Commands_1.Events.PREV);
+            $.subscribe(Events_1.Events.PREV, function () {
+                _this.triggerSocket(Events_1.Events.PREV);
                 _this.viewPage(_this.getPrevPageIndex());
             });
-            $.subscribe(Commands_1.Events.PREV_SEARCH_RESULT, function () {
-                _this.triggerSocket(Commands_1.Events.PREV_SEARCH_RESULT);
+            $.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
+                _this.triggerSocket(Events_1.Events.PREV_SEARCH_RESULT);
             });
-            $.subscribe(Commands_1.Events.PRINT, function () {
+            $.subscribe(Events_1.Events.PRINT, function () {
                 _this.print();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.RIGHT_ARROW, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
                     _this.viewPage(_this.getNextPageIndex());
                 }
@@ -11323,74 +11292,73 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_ANIMATION, function () {
-                _this.triggerSocket(Commands_1.Events.SEADRAGON_ANIMATION);
+            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION, function () {
+                _this.triggerSocket(Events_1.Events.SEADRAGON_ANIMATION);
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
+            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
                 var bounds = _this.centerPanel.getViewportBounds();
                 if (_this.centerPanel && bounds) {
-                    _this.setParam(Params_1.Params.xywh, bounds.toString());
+                    $.publish(Events_1.Events.XYWH_CHANGED, [bounds.toString()]);
                 }
                 var canvas = _this.helper.getCurrentCanvas();
-                _this.triggerSocket(Commands_1.Events.CURRENT_VIEW_URI, {
+                _this.triggerSocket(Events_1.Events.CURRENT_VIEW_URI, {
                     cropUri: _this.getCroppedImageUri(canvas, _this.getViewer()),
                     fullUri: _this.getConfinedImageUri(canvas, canvas.getWidth())
                 });
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_ANIMATION_START, function () {
-                _this.triggerSocket(Commands_1.Events.SEADRAGON_ANIMATION_START);
+            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION_START, function () {
+                _this.triggerSocket(Events_1.Events.SEADRAGON_ANIMATION_START);
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_OPEN, function () {
+            $.subscribe(Events_1.Events.SEADRAGON_OPEN, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_RESIZE, function () {
-                _this.triggerSocket(Commands_1.Events.SEADRAGON_RESIZE);
+            $.subscribe(Events_1.Events.SEADRAGON_RESIZE, function () {
+                _this.triggerSocket(Events_1.Events.SEADRAGON_RESIZE);
             });
-            $.subscribe(Commands_1.Events.SEADRAGON_ROTATION, function (e, rotation) {
-                _this.triggerSocket(Commands_1.Events.SEADRAGON_ROTATION);
+            $.subscribe(Events_1.Events.SEADRAGON_ROTATION, function (e, rotation) {
+                _this.triggerSocket(Events_1.Events.SEADRAGON_ROTATION);
                 _this.currentRotation = rotation;
-                _this.setParam(Params_1.Params.rotation, rotation.toString());
             });
-            $.subscribe(Commands_1.Events.SEARCH, function (e, terms) {
-                _this.triggerSocket(Commands_1.Events.SEARCH, terms);
+            $.subscribe(Events_1.Events.SEARCH, function (e, terms) {
+                _this.triggerSocket(Events_1.Events.SEARCH, terms);
                 _this.searchWithin(terms);
             });
-            $.subscribe(Commands_1.Events.SEARCH_PREVIEW_FINISH, function () {
-                _this.triggerSocket(Commands_1.Events.SEARCH_PREVIEW_FINISH);
+            $.subscribe(Events_1.Events.SEARCH_PREVIEW_FINISH, function () {
+                _this.triggerSocket(Events_1.Events.SEARCH_PREVIEW_FINISH);
             });
-            $.subscribe(Commands_1.Events.SEARCH_PREVIEW_START, function () {
-                _this.triggerSocket(Commands_1.Events.SEARCH_PREVIEW_START);
+            $.subscribe(Events_1.Events.SEARCH_PREVIEW_START, function () {
+                _this.triggerSocket(Events_1.Events.SEARCH_PREVIEW_START);
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS, function (e, obj) {
-                _this.triggerSocket(Commands_1.Events.SEARCH_RESULTS, obj);
+            $.subscribe(Events_1.Events.SEARCH_RESULTS, function (e, obj) {
+                _this.triggerSocket(Events_1.Events.SEARCH_RESULTS, obj);
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULT_CANVAS_CHANGED, function (e, rect) {
+            $.subscribe(Events_1.Events.SEARCH_RESULT_CANVAS_CHANGED, function (e, rect) {
                 _this.viewPage(rect.canvasIndex);
             });
-            $.subscribe(Commands_1.Events.SEARCH_RESULTS_EMPTY, function () {
-                _this.triggerSocket(Commands_1.Events.SEARCH_RESULTS_EMPTY);
+            $.subscribe(Events_1.Events.SEARCH_RESULTS_EMPTY, function () {
+                _this.triggerSocket(Events_1.Events.SEARCH_RESULTS_EMPTY);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
                 _this.viewPage(thumb.index);
             });
-            $.subscribe(Commands_1.Events.TREE_NODE_SELECTED, function (e, node) {
-                _this.triggerSocket(Commands_1.Events.TREE_NODE_SELECTED, node.data.path);
+            $.subscribe(Events_1.Events.TREE_NODE_SELECTED, function (e, node) {
+                _this.triggerSocket(Events_1.Events.TREE_NODE_SELECTED, node.data.path);
                 _this.treeNodeSelected(node);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.UP_ARROW, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.UPDATE_SETTINGS, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
                 _this.viewPage(_this.helper.canvasIndex, true);
                 var settings = _this.getSettings();
-                $.publish(BaseCommands_1.BaseEvents.SETTINGS_CHANGED, [settings]);
+                $.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, [settings]);
             });
-            $.subscribe(Commands_1.Events.VIEW_PAGE, function (e, index) {
-                _this.triggerSocket(Commands_1.Events.VIEW_PAGE, index);
+            $.subscribe(Events_1.Events.VIEW_PAGE, function (e, index) {
+                _this.triggerSocket(Events_1.Events.VIEW_PAGE, index);
                 _this.viewPage(index);
             });
             Utils.Async.waitFor(function () {
@@ -11466,19 +11434,19 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             // if a h value is in the hash params, do a search.
             if (this.isDeepLinkingEnabled()) {
                 // if a highlight param is set, use it to search.
-                var highlight = this.getParam(Params_1.Params.highlight);
+                var highlight = this.getData().highlight;
                 if (highlight) {
                     highlight.replace(/\+/g, " ").replace(/"/g, "");
-                    $.publish(Commands_1.Events.SEARCH, [highlight]);
+                    $.publish(Events_1.Events.SEARCH, [highlight]);
                 }
             }
         };
         Extension.prototype.checkForRotationParam = function () {
             // if a rotation value is in the hash params, set currentRotation
             if (this.isDeepLinkingEnabled()) {
-                var rotation = Number(this.getParam(Params_1.Params.rotation));
+                var rotation = this.getData().rotation;
                 if (rotation) {
-                    $.publish(Commands_1.Events.SEADRAGON_ROTATION, [rotation]);
+                    $.publish(Events_1.Events.SEADRAGON_ROTATION, [rotation]);
                 }
             }
         };
@@ -11541,7 +11509,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
                 this.showMessage(this.getData().config.modules.genericDialogue.content.emptyValue);
-                $.publish(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
             var index = this.helper.getCanvasIndexByLabel(label);
@@ -11550,7 +11518,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
             else {
                 this.showMessage(this.getData().config.modules.genericDialogue.content.pageNotFound);
-                $.publish(BaseCommands_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
             }
         };
         Extension.prototype.treeNodeSelected = function (node) {
@@ -11615,7 +11583,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
             bookmark.type = manifesto.ElementType.image().toString();
-            this.triggerSocket(BaseCommands_1.BaseEvents.BOOKMARK, bookmark);
+            this.triggerSocket(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.print = function () {
             // var args: MultiSelectionArgs = new MultiSelectionArgs();
@@ -11624,7 +11592,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             // args.format = this.getData().config.options.printMimeType;
             // args.sequence = this.helper.getCurrentSequence().id;
             window.print();
-            this.triggerSocket(Commands_1.Events.PRINT);
+            this.triggerSocket(Events_1.Events.PRINT);
         };
         Extension.prototype.getCroppedImageDimensions = function (canvas, viewer) {
             if (!viewer)
@@ -11892,13 +11860,13 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     _this.searchResults = results.sort(function (a, b) {
                         return a.canvasIndex - b.canvasIndex;
                     });
-                    $.publish(Commands_1.Events.SEARCH_RESULTS, [{ terms: terms, results: results }]);
+                    $.publish(Events_1.Events.SEARCH_RESULTS, [{ terms: terms, results: results }]);
                     // reload current index as it may contain results.
                     that.viewPage(that.helper.canvasIndex, true);
                 }
                 else {
                     that.showMessage(that.getData().config.modules.genericDialogue.content.noMatches, function () {
-                        $.publish(Commands_1.Events.SEARCH_RESULTS_EMPTY);
+                        $.publish(Events_1.Events.SEARCH_RESULTS_EMPTY);
                     });
                 }
             });
@@ -12009,7 +11977,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -12049,9 +12017,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/CenterPanel", "../../Params"], function (require, exports, BaseCommands_1, CenterPanel_1, Params_1) {
+define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var PDFCenterPanel = (function (_super) {
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
@@ -12061,7 +12029,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             var _this = this;
             this.setConfig('pdfCenterPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
             });
         };
@@ -12086,9 +12054,9 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     _this.$content.load(viewerPath, function () {
                         PDFJS.workerSrc = 'lib/pdf.worker.min.js';
                         PDFJS.DEFAULT_URL = pdfUri;
-                        var anchorParam = that.extension.getParam(Params_1.Params.anchor);
-                        if (anchorParam) {
-                            var anchorIndex = (1 + parseInt(anchorParam)) || 0;
+                        var anchor = that.extension.getData().anchor;
+                        if (anchor) {
+                            var anchorIndex = (1 + parseInt(anchor)) || 0;
                             PDFView.initialBookmark = "page=" + anchorIndex;
                         }
                         window.webViewerLoad();
@@ -12117,7 +12085,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-pdf-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -12144,7 +12112,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-pdf-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -12177,9 +12145,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -12188,24 +12156,24 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
                 _this.viewCanvas(thumb.index);
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 Shell_1.Shell.$rightPanel.show();
                 _this.resize();
             });
-            $.subscribe(BaseCommands_1.BaseEvents.SHOW_OVERLAY, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.hide();
                 }
             });
-            $.subscribe(BaseCommands_1.BaseEvents.HIDE_OVERLAY, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.show();
                 }
@@ -12266,7 +12234,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
             bookmark.type = manifesto.ElementType.document().toString();
-            this.triggerSocket(BaseCommands_1.BaseEvents.BOOKMARK, bookmark);
+            this.triggerSocket(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
             var configUri = this.getData().config.uri || '';
@@ -12290,7 +12258,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-virtex-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -12326,7 +12294,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-virtex-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var SettingsDialogue = (function (_super) {
         __extends(SettingsDialogue, _super);
         function SettingsDialogue($element) {
@@ -12353,7 +12321,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define('extensions/uv-virtex-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var ShareDialogue = (function (_super) {
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
@@ -12386,9 +12354,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "exports", "../uv-shared-module/BaseCommands", "../uv-shared-module/CenterPanel"], function (require, exports, BaseCommands_1, CenterPanel_1) {
+define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var VirtexCenterPanel = (function (_super) {
         __extends(VirtexCenterPanel, _super);
         function VirtexCenterPanel($element) {
@@ -12399,7 +12367,7 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.setConfig('virtexCenterPanel');
             _super.prototype.create.call(this);
             var that = this;
-            $.subscribe(BaseCommands_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 that.openMedia(resources);
             });
             this.$navigation = $('<div class="navigation"></div>');
@@ -12468,9 +12436,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseCommands", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseCommands_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1, VirtexCenterPanel_1) {
+define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1, VirtexCenterPanel_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.__esModule = true;
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension(bootstrapper) {
@@ -12479,7 +12447,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseCommands_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
         };
@@ -12546,7 +12514,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
             bookmark.type = manifesto.ElementType.physicalobject().toString();
-            this.triggerSocket(BaseCommands_1.BaseEvents.BOOKMARK, bookmark);
+            this.triggerSocket(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
             var configUri = this.getData().config.uri || '';
@@ -12568,25 +12536,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('UV',["require", "exports", "./modules/uv-shared-module/BaseCommands", "./Bootstrapper", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension"], function (require, exports, BaseCommands_1, Bootstrapper_1, Extension_1, Extension_2, Extension_3, Extension_4) {
+define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./Bootstrapper", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension"], function (require, exports, BaseEvents_1, Bootstrapper_1, Extension_1, Extension_2, Extension_3, Extension_4) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var UV = (function (_super) {
-        __extends(UV, _super);
-        function UV(options) {
+    exports.__esModule = true;
+    var UVComponent = (function (_super) {
+        __extends(UVComponent, _super);
+        function UVComponent(options) {
             var _this = _super.call(this, options) || this;
             _this._init();
             _this._resize();
             return _this;
         }
-        UV.prototype._init = function () {
+        UVComponent.prototype._init = function () {
             var _this = this;
             var success = _super.prototype._init.call(this);
             if (!success) {
                 console.error("UV failed to initialise");
             }
-            $.subscribe(BaseCommands_1.BaseEvents.RELOAD, function (e, data) {
-                _this.fire(BaseCommands_1.BaseEvents.RELOAD, data);
+            $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
+                _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
             });
             this._extensions = {};
             this._extensions[manifesto.ElementType.canvas().toString()] = {
@@ -12612,20 +12580,20 @@ define('UV',["require", "exports", "./modules/uv-shared-module/BaseCommands", ".
             this.set(this.options.data);
             return success;
         };
-        UV.prototype.data = function () {
+        UVComponent.prototype.data = function () {
             return {};
         };
-        UV.prototype.set = function (data) {
+        UVComponent.prototype.set = function (data) {
             var bootstrapper = new Bootstrapper_1.Bootstrapper(this._extensions);
             bootstrapper.bootstrap(data);
         };
-        UV.prototype._resize = function () {
+        UVComponent.prototype._resize = function () {
         };
-        return UV;
+        return UVComponent;
     }(_Components.BaseComponent));
-    exports.default = UV;
+    exports["default"] = UVComponent;
 });
-//# sourceMappingURL=UV.js.map
+//# sourceMappingURL=UVComponent.js.map
 if (typeof jQuery === "function") {
     define('jquery', [], function () {
         return jQuery;
@@ -12665,10 +12633,10 @@ requirejs([
     './lib/manifold.min.js',
     './lib/utils.min.js',
     'URLDataProvider',
-    'UV'
-], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UV) {
-    window.UV = UV.default;
-    window.UV.URLDataProvider = URLDataProvider.default;
+    'UVComponent'
+], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UVComponent) {
+    window.UV = UVComponent["default"];
+    window.UV.URLDataProvider = URLDataProvider["default"];
     window.dispatchEvent(new CustomEvent('uvReady'));
 });
 //# sourceMappingURL=app.js.map

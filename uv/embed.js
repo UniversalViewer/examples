@@ -238,7 +238,7 @@ docReady(function() {
             rotation = $app.attr('data-rotation');
             config = $app.attr('data-config');
             jsonp = $app.attr('data-jsonp');
-            locale = $app.attr('data-locale') || "en-GB"; // todo: this should be defaulted in bootstrapper
+            locale = $app.attr('data-locale');
 
             isFullScreen = false;
             var offset = $app.offset();
