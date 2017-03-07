@@ -8,7 +8,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/json2.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/shim.min.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="uv/uv.js"></script>
 
     <style type="text/css">
         #app.loading {
@@ -24,25 +24,43 @@
     <div id="app"></div>
 
     <script type="text/javascript">
-        var app = document.getElementById('app');
-        var width = window.innerWidth || document.documentElement.clientWidth;
-        var height = window.innerHeight || document.documentElement.clientHeight;
-        app.setAttribute('style', 'width:' + width + 'px');
-        app.setAttribute('style', 'height:' + height + 'px');
 
-        window.addEventListener('uvReady', function(e) { 
+        var $win = $(window);
+        var $app = $('#app');
+
+        function resize() {
+            $('body').height($win.height());
+            $app.width($win.width());
+            $app.height($win.height());
+        }
+
+        window.onresize = function() {
+            console.log('resize');
+            resize();
+        };
+
+        window.addEventListener('uvLoaded', function(e) { 
 
             var urlDataProvider = new UV.URLDataProvider();
 
             var uv = new UV({
-                target: document.querySelector('#app'),
+                target: $app[0],
                 data: urlDataProvider.data()
             });
-            
+
+            uv.on('create', function(obj) {
+                console.log('create', obj);
+            });
+
+            uv.on('created', function(obj) {
+                console.log('created');
+            });
+
             uv.on('canvasIndexChanged', function(index) {
-                if (uv.socket) { // todo extend to other events
-                    uv.socket.postMessage(JSON.stringify({ eventName: 'canvasIndexChanged', eventObject: index }));
-                }
+                // jQuery(document).trigger('canvasIndexChanged', [index]);
+                // if (uv.socket) { // todo extend to other events
+                //     uv.socket.postMessage(JSON.stringify({ eventName: 'canvasIndexChanged', eventObject: index }));
+                // }
                 urlDataProvider.set('cv', index);
             });
 
@@ -54,10 +72,56 @@
                 urlDataProvider.set('xywh', xywh);
             });
 
+            uv.on('openseadragonExtension.currentViewUri', function(obj) {
+                console.log('openseadragonExtension.currentViewUri', obj);
+            });
+
             uv.on('reload', function(data) {
                 data.isReload = true;
                 uv.set(Object.assign(urlDataProvider.data(), data));
             });
+
+            uv.on('bookmark', function(bookmark) {
+
+                var absUri = parent.document.URL;
+                var parts = Utils.Urls.getUrlParts(absUri);
+                var relUri = parts.pathname + parts.search + parent.document.location.hash;
+
+                if (!relUri.startsWith("/")) {
+                    relUri = "/" + relUri;
+                }
+
+                bookmark.path = relUri;
+
+                console.log('bookmark', bookmark);
+            });
+
+            // if (!urlDataProvider.data().isReload && Utils.Documents.isInIFrame()) {
+            //     // communication with parent frame (if it exists).
+            //     this.component.socket = new easyXDM.Socket({
+            //         onMessage: (message: any, origin: any) => {
+            //             message = $.parseJSON(message);
+            //             this.handleParentFrameEvent(message);
+            //         }
+            //     });
+            // }
+
+            // function handleParentFrameEvent(message) {
+            //     Utils.Async.waitFor(() => {
+            //         return this.isCreated;
+            //     }, () => {
+            //         switch (message.eventName) {
+            //             case BaseEvents.TOGGLE_FULLSCREEN:
+            //                 //$.publish(BaseEvents.TOGGLE_FULLSCREEN, message.eventObject);
+            //                 uv.toggleFullscreen(message.eventObject);
+            //                 break;
+            //             case BaseEvents.PARENT_EXIT_FULLSCREEN:
+            //                 //$.publish(BaseEvents.PARENT_EXIT_FULLSCREEN);
+            //                 uv.exitFullscreen();
+            //                 break;
+            //         }
+            //     });
+            // }
 
         }, false);
     </script>

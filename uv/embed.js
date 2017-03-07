@@ -183,7 +183,7 @@ docReady(function() {
 
         // get the part preceding 'embed.js'
         var baseUri = (/(.*)embed.js/).exec(scriptUri)[1];
-        appUri = baseUri + 'app.html';
+        appUri = 'app.html';
         easyXDMUri = 'https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.min.js';
         json2Uri = 'https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/json2.min.js';
 
@@ -207,7 +207,7 @@ docReady(function() {
         }
 
         function app(element, isHomeDomain, isOnlyInstance) {
-            var socket, $app, $img, $appFrame, manifestUri, collectionIndex, manifestIndex, sequenceIndex, canvasIndex, defaultToFullScreen, isLightbox, xywh, rotation, config, jsonp, locale, isFullScreen, dimensions, top, left, lastScroll, reload;
+            var socket, $app, $img, $appFrame, iiifResourceUri, collectionIndex, manifestIndex, sequenceIndex, canvasIndex, defaultToFullScreen, isLightbox, xywh, rotation, config, jsonp, locale, isFullScreen, dimensions, top, left, lastScroll, reload;
 
             $app = $(element);
 
@@ -228,8 +228,8 @@ docReady(function() {
             }
 
             // get initial params from the container's 'data-' attributes.
-            manifestUri = $app.attr('data-uri') || "";
-            manifestUri = encodeURIComponent(manifestUri);
+            iiifResourceUri = $app.attr('data-uri') || "";
+            iiifResourceUri = encodeURIComponent(iiifResourceUri);
             collectionIndex = $app.attr('data-collectionindex');
             manifestIndex = $app.attr('data-manifestindex');
             sequenceIndex = $app.attr('data-sequenceindex');
@@ -473,7 +473,7 @@ docReady(function() {
                 var uri = appUri +
                     "?isHomeDomain=" + isHomeDomain +
                     "&isOnlyInstance=" + isOnlyInstance +
-                    "&manifestUri=" + manifestUri +
+                    "&iiifResourceUri=" + iiifResourceUri +
                     "&embedScriptUri=" + absScriptUri +
                     "&embedDomain=" + document.domain +
                     "&domain=" + domain +

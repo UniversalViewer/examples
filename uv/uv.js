@@ -2826,9 +2826,8 @@ define('URLDataProvider',["require", "exports", "./UVDataProvider"], function (r
     exports.__esModule = true;
     var URLDataProvider = (function (_super) {
         __extends(URLDataProvider, _super);
-        //private _paramMap: string[] = ['c', 'm', 's', 'cv', 'xywh', 'r', 'h', 'a']; // todo: move xywh, r, h, a to OSDUrlDataProvider?
         function URLDataProvider() {
-            return _super.call(this) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         URLDataProvider.prototype.data = function () {
             var locales = [
@@ -2842,6 +2841,7 @@ define('URLDataProvider',["require", "exports", "./UVDataProvider"], function (r
                 locales = this.parseLocales(localeParam);
             }
             return {
+                assetRoot: './uv/',
                 config: {},
                 configUri: this.get('config', null),
                 domain: this.get('domain', null),
@@ -2851,12 +2851,15 @@ define('URLDataProvider',["require", "exports", "./UVDataProvider"], function (r
                 isLightbox: Boolean(this.get('isLightbox', false)),
                 isOnlyInstance: this._isOnlyInstance(),
                 isReload: this._isReload(),
-                iiifResourceUri: this.get('manifestUri', null),
+                iiifResourceUri: this.get('iiifResourceUri', null),
                 locales: locales,
                 collectionIndex: Number(this.get('c', 0)),
                 manifestIndex: Number(this.get('m', 0)),
                 sequenceIndex: Number(this.get('s', 0)),
-                canvasIndex: Number(this.get('cv', 0))
+                canvasIndex: Number(this.get('cv', 0)),
+                // non-generic params, move these to extension-specific data providers
+                rotation: Number(this.get('r', 0)),
+                xywh: this.get('xywh', '')
             };
         };
         URLDataProvider.prototype._isHomeDomain = function () {
@@ -2866,7 +2869,7 @@ define('URLDataProvider',["require", "exports", "./UVDataProvider"], function (r
             return Boolean(Utils.Urls.getQuerystringParameter('isOnlyInstance'));
         };
         URLDataProvider.prototype._isReload = function () {
-            return !!Utils.Urls.getQuerystringParameter('isReload');
+            return Boolean(Utils.Urls.getQuerystringParameter('isReload'));
         };
         // get hash or data-attribute params depending on whether the UV is embedded.
         URLDataProvider.prototype.get = function (key, defaultValue) {
@@ -2917,6 +2920,7 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
     BaseEvents.CLOSE_LEFT_PANEL = 'closeLeftPanel';
     BaseEvents.CLOSE_RIGHT_PANEL = 'closeRightPanel';
     BaseEvents.COLLECTION_INDEX_CHANGED = 'collectionIndexChanged';
+    BaseEvents.CREATE = 'create';
     BaseEvents.CREATED = 'created';
     BaseEvents.DOWN_ARROW = 'downArrow';
     BaseEvents.DOWNLOAD = 'download';
@@ -2946,7 +2950,6 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
     BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH = 'leftPanelExpandFullFinish';
     BaseEvents.LEFTPANEL_EXPAND_FULL_START = 'leftPanelExpandFullStart';
     BaseEvents.LOAD_FAILED = 'loadFailed';
-    BaseEvents.LOAD = 'load';
     BaseEvents.LOGIN_FAILED = 'loginFailed';
     BaseEvents.LOGIN = 'login';
     BaseEvents.LOGOUT = 'logout';
@@ -3052,7 +3055,7 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
             return _super.call(this, $element, fitToParentWidth, fitToParentHeight) || this;
         }
         BaseView.prototype.create = function () {
-            this.component = $("body > #app").data("component");
+            this.component = this.$element.closest('.universalviewer').data("component");
             _super.prototype.create.call(this);
             this.extension = this.component.extension;
             this.config = {};
@@ -3063,7 +3066,7 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
             if (that.modules && that.modules.length) {
                 that.modules = that.modules.reverse();
                 $.each(that.modules, function (index, moduleName) {
-                    that.config = $.extend(true, that.config, that.extension.getData().config.modules[moduleName]);
+                    that.config = $.extend(true, that.config, that.extension.data.config.modules[moduleName]);
                 });
             }
             this.content = this.config.content;
@@ -3396,7 +3399,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
             this.$title.text(this.resource.loginService.getProperty('label'));
             var message = this.resource.loginService.getProperty('description');
             if (this.options.warningMessage) {
-                message = '<span class="warning">' + this.extension.getData().config.content[this.options.warningMessage] + '</span><span class="description">' + message + '</span>';
+                message = '<span class="warning">' + this.extension.data.config.content[this.options.warningMessage] + '</span><span class="description">' + message + '</span>';
             }
             this.updateLogoutButton();
             this.$message.html(message);
@@ -3748,50 +3751,29 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         BaseExtension.prototype.create = function () {
             var _this = this;
             var that = this;
-            this.$element = $('#app');
+            this.$element = $(this.component.options.target);
             this.$element.data("component", this.component);
-            // initial sizing.
-            var $win = $(window);
-            this.embedWidth = $win.width();
-            this.embedHeight = $win.height();
-            this.$element.width(this.embedWidth);
-            this.$element.height(this.embedHeight);
-            if (!this.getData().isReload && Utils.Documents.isInIFrame()) {
-                // communication with parent frame (if it exists).
-                this.component.socket = new easyXDM.Socket({
-                    onMessage: function (message, origin) {
-                        message = $.parseJSON(message);
-                        _this.handleParentFrameEvent(message);
-                    }
-                });
-            }
-            this.fire(BaseEvents_1.BaseEvents.LOAD, {
-                bootstrapper: {
-                    store: this.getData()
-                },
+            this.fire(BaseEvents_1.BaseEvents.CREATE, {
+                data: this.data,
                 settings: this.getSettings(),
                 preview: this.getSharePreview()
             });
             // add/remove classes.
             this.$element.empty();
             this.$element.removeClass();
+            this.$element.addClass('universalviewer');
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
-            if (!this.getData().isHomeDomain)
+            if (!this.data.isHomeDomain)
                 this.$element.addClass('embedded');
-            if (this.getData().isLightbox)
+            if (this.data.isLightbox)
                 this.$element.addClass('lightbox');
             $(document).on('mousemove', function (e) {
                 _this.mouseX = e.pageX;
                 _this.mouseY = e.pageY;
             });
             // events
-            if (!this.getData().isReload) {
-                window.onresize = function () {
-                    var $win = $(window);
-                    $('body').height($win.height());
-                    _this.resize();
-                };
+            if (!this.data.isReload) {
                 var visibilityProp = Utils.Documents.getHiddenProp();
                 if (visibilityProp) {
                     var event_1 = visibilityProp.replace(/[H|h]idden/, '') + 'visibilitychange';
@@ -3802,10 +3784,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                         }
                     });
                 }
-                if (Utils.Bools.getBool(this.getData().config.options.dropEnabled, true)) {
+                if (Utils.Bools.getBool(this.data.config.options.dropEnabled, true)) {
                     this.$element.on('drop', (function (e) {
                         e.preventDefault();
-                        var dropUrl = e.originalEvent.dataTransfer.getData("URL");
+                        var dropUrl = e.originalEvent.dataTransfer.getData('URL');
                         var a = Utils.Urls.getUrlParts(dropUrl);
                         var iiifResourceUri = Utils.Urls.getQuerystringParameterFromString('manifest', a.search);
                         //var canvasUri = Utils.Urls.getQuerystringParameterFromString('canvas', url.search);
@@ -3870,7 +3852,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                         $.publish(event);
                     }
                 });
-                if (this.getData().isHomeDomain && Utils.Documents.isInIFrame()) {
+                if (this.data.isHomeDomain && Utils.Documents.isInIFrame()) {
                     $.subscribe(BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN, function () {
                         if (_this.isOverlayActive()) {
                             $.publish(BaseEvents_1.BaseEvents.ESCAPE);
@@ -3887,7 +3869,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             });
             $.subscribe(BaseEvents_1.BaseEvents.LOGIN_FAILED, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LOGIN_FAILED);
-                _this.showMessage(_this.getData().config.content.authorisationFailedMessage);
+                _this.showMessage(_this.data.config.content.authorisationFailedMessage);
             });
             $.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
                 _this.isLoggedIn = true;
@@ -3920,6 +3902,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             $.subscribe(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL, function () {
                 _this.fire(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
                 _this.resize();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, function (e, collectionIndex) {
+                _this.fire(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, collectionIndex);
             });
             $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
                 _this.isCreated = true;
@@ -4004,12 +3989,15 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                     _this.viewCanvas(that.lastCanvasIndex);
                 }
             });
+            $.subscribe(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, function (e, manifestIndex) {
+                _this.fire(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, manifestIndex);
+            });
             $.subscribe(BaseEvents_1.BaseEvents.NOT_FOUND, function () {
                 _this.fire(BaseEvents_1.BaseEvents.NOT_FOUND);
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN);
-                var openUri = String.format(_this.getData().config.options.openTemplate, _this.helper.iiifResourceUri);
+                var openUri = String.format(_this.data.config.options.openTemplate, _this.helper.iiifResourceUri);
                 window.open(openUri);
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL, function () {
@@ -4051,8 +4039,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, function () {
-                _this.fire(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED);
+            $.subscribe(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, function (e, sequenceIndex) {
+                _this.fire(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, sequenceIndex);
             });
             $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
                 _this.fire(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, args);
@@ -4104,7 +4092,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                 _this.component.isFullScreen = !_this.component.isFullScreen;
                 _this.fire(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, {
                     isFullScreen: _this.component.isFullScreen,
-                    overrideFullScreen: _this.getData().config.options.overrideFullScreen
+                    overrideFullScreen: _this.data.config.options.overrideFullScreen
                 });
             });
             $.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
@@ -4141,7 +4129,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         BaseExtension.prototype.getDependencies = function (cb) {
             var that = this;
-            var depsUri = 'lib/' + this.name + '-dependencies';
+            var depsUri = this.data.assetRoot + '/lib/' + this.name + '-dependencies';
             // check if the deps are already loaded
             var scripts = $('script[data-requiremodule]')
                 .filter(function () {
@@ -4150,7 +4138,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             });
             if (!scripts.length) {
                 requirejs([depsUri], function (deps) {
-                    var baseUri = 'lib/';
+                    var baseUri = that.data.assetRoot + '/lib/';
                     // for each dependency, prepend baseUri.
                     if (deps.sync) {
                         for (var i = 0; i < deps.sync.length; i++) {
@@ -4214,7 +4202,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this.viewCanvas(this.helper.canvasIndex);
         };
         BaseExtension.prototype.setParams = function () {
-            if (!this.getData().isHomeDomain)
+            if (!this.data.isHomeDomain)
                 return;
             $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.helper.collectionIndex.toString()]);
             $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.helper.manifestIndex.toString()]);
@@ -4224,23 +4212,23 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         BaseExtension.prototype.setDefaultFocus = function () {
             var _this = this;
             setTimeout(function () {
-                if (_this.getData().config.options.allowStealFocus) {
+                if (_this.data.config.options.allowStealFocus) {
                     $('[tabindex=0]').focus();
                 }
             }, 1);
         };
         BaseExtension.prototype.width = function () {
-            return $(window).width();
+            return this.$element.width();
         };
         BaseExtension.prototype.height = function () {
-            return $(window).height();
+            return this.$element.height();
         };
         BaseExtension.prototype.fire = function (name) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            this.component.fire(name, args);
+            this.component.fire(name, arguments[1]);
         };
         BaseExtension.prototype.redirect = function (uri) {
             this.fire(BaseEvents_1.BaseEvents.REDIRECT, uri);
@@ -4264,28 +4252,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this._updateMetric();
             $.publish(BaseEvents_1.BaseEvents.RESIZE);
         };
-        BaseExtension.prototype.handleParentFrameEvent = function (message) {
-            var _this = this;
-            Utils.Async.waitFor(function () {
-                return _this.isCreated;
-            }, function () {
-                switch (message.eventName) {
-                    case BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN:
-                        $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, message.eventObject);
-                        break;
-                    case BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN:
-                        $.publish(BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN);
-                        break;
-                }
-            });
-        };
         // re-bootstraps the application with new querystring params
         BaseExtension.prototype.reload = function (data) {
             $.disposePubSub();
             $.publish(BaseEvents_1.BaseEvents.RELOAD, [data]);
         };
         BaseExtension.prototype.isSeeAlsoEnabled = function () {
-            return this.getData().config.options.seeAlsoEnabled !== false;
+            return this.data.config.options.seeAlsoEnabled !== false;
         };
         BaseExtension.prototype.getShareUrl = function () {
             // If embedded on the home domain and it's the only instance of the UV on the page
@@ -4318,7 +4291,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return uri + "?t=" + Utils.Dates.getTimeStamp();
         };
         BaseExtension.prototype.isDeepLinkingEnabled = function () {
-            return (this.getData().isHomeDomain && this.getData().isOnlyInstance);
+            return (this.data.isHomeDomain && this.data.isOnlyInstance);
         };
         BaseExtension.prototype.isOnHomeDomain = function () {
             return this.isDeepLinkingEnabled();
@@ -4328,19 +4301,19 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return parts.host;
         };
         BaseExtension.prototype.getEmbedDomain = function () {
-            return this.getData().embedDomain;
+            return this.data.embedDomain;
         };
         BaseExtension.prototype.getSettings = function () {
-            if (Utils.Bools.getBool(this.getData().config.options.saveUserSettings, false)) {
+            if (Utils.Bools.getBool(this.data.config.options.saveUserSettings, false)) {
                 var settings = Utils.Storage.get("uv.settings", Utils.StorageType.local);
                 if (settings) {
-                    return $.extend(this.getData().config.options, settings.value);
+                    return $.extend(this.data.config.options, settings.value);
                 }
             }
-            return this.getData().config.options;
+            return this.data.config.options;
         };
         BaseExtension.prototype.updateSettings = function (settings) {
-            if (Utils.Bools.getBool(this.getData().config.options.saveUserSettings, false)) {
+            if (Utils.Bools.getBool(this.data.config.options.saveUserSettings, false)) {
                 var storedSettings = Utils.Storage.get("uv.settings", Utils.StorageType.local);
                 if (storedSettings) {
                     settings = $.extend(storedSettings.value, settings);
@@ -4348,7 +4321,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                 // store for ten years
                 Utils.Storage.set("uv.settings", settings, 315360000, Utils.StorageType.local);
             }
-            this.getData().config.options = $.extend(this.getData().config.options, settings);
+            this.data.config.options = $.extend(this.data.config.options, settings);
         };
         BaseExtension.prototype.sanitize = function (html) {
             var elem = document.createElement('div');
@@ -4368,16 +4341,17 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return $elem.html();
         };
         BaseExtension.prototype.getSharePreview = function () {
-            var preview = {};
-            preview.title = this.helper.getLabel();
+            var title = this.helper.getLabel();
             // todo: use getThumb (when implemented)
             var canvas = this.helper.getCurrentCanvas();
             var thumbnail = canvas.getProperty('thumbnail');
             if (!thumbnail || !(typeof (thumbnail) === 'string')) {
-                thumbnail = canvas.getCanonicalImageUri(this.getData().config.options.bookmarkThumbWidth);
+                thumbnail = canvas.getCanonicalImageUri(this.data.config.options.bookmarkThumbWidth);
             }
-            preview.image = thumbnail;
-            return preview;
+            return {
+                title: title,
+                image: thumbnail
+            };
         };
         BaseExtension.prototype.getPagedIndices = function (canvasIndex) {
             if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
@@ -4414,6 +4388,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             var range = this.helper.getCanvasRange(this.helper.getCurrentCanvas());
             return range;
         };
+        // todo: move to manifold
         BaseExtension.prototype.getExternalResources = function (resources) {
             var _this = this;
             var indices = this.getPagedIndices();
@@ -4438,7 +4413,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                     resourcesToLoad.push(r);
                 }
             });
-            var storageStrategy = this.getData().config.options.tokenStorage;
+            var storageStrategy = this.data.config.options.tokenStorage;
             return new Promise(function (resolve) {
                 manifesto.Utils.loadExternalResources(resourcesToLoad, storageStrategy, _this.clickThrough, _this.restricted, _this.login, _this.getAccessToken, _this.storeAccessToken, _this.getStoredAccessToken, _this.handleExternalResourceResponse).then(function (r) {
                     _this.resources = r.map(function (resource) {
@@ -4465,7 +4440,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         BaseExtension.prototype.viewCanvas = function (canvasIndex) {
             if (this.helper.isCanvasIndexOutOfRange(canvasIndex)) {
-                this.showMessage(this.getData().config.content.canvasIndexOutOfRange);
+                this.showMessage(this.data.config.content.canvasIndexOutOfRange);
                 canvasIndex = 0;
             }
             this.lastCanvasIndex = this.helper.canvasIndex;
@@ -4512,10 +4487,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return this.component.isFullScreen;
         };
         BaseExtension.prototype.isHeaderPanelEnabled = function () {
-            return Utils.Bools.getBool(this.getData().config.options.headerPanelEnabled, true);
+            return Utils.Bools.getBool(this.data.config.options.headerPanelEnabled, true);
         };
         BaseExtension.prototype.isLeftPanelEnabled = function () {
-            if (Utils.Bools.getBool(this.getData().config.options.leftPanelEnabled, true)) {
+            if (Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true)) {
                 if (this.helper.hasParentCollection()) {
                     return true;
                 }
@@ -4528,31 +4503,19 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return false;
         };
         BaseExtension.prototype.isRightPanelEnabled = function () {
-            return Utils.Bools.getBool(this.getData().config.options.rightPanelEnabled, true);
+            return Utils.Bools.getBool(this.data.config.options.rightPanelEnabled, true);
         };
         BaseExtension.prototype.isFooterPanelEnabled = function () {
-            return Utils.Bools.getBool(this.getData().config.options.footerPanelEnabled, true);
+            return Utils.Bools.getBool(this.data.config.options.footerPanelEnabled, true);
         };
         BaseExtension.prototype.useArrowKeysToNavigate = function () {
-            return Utils.Bools.getBool(this.getData().config.options.useArrowKeysToNavigate, true);
+            return Utils.Bools.getBool(this.data.config.options.useArrowKeysToNavigate, true);
         };
         BaseExtension.prototype.bookmark = function () {
             // override for each extension
         };
         BaseExtension.prototype.feedback = function () {
-            this.fire(BaseEvents_1.BaseEvents.FEEDBACK, this.getData());
-        };
-        BaseExtension.prototype.getBookmarkUri = function () {
-            var absUri = parent.document.URL;
-            var parts = Utils.Urls.getUrlParts(absUri);
-            var relUri = parts.pathname + parts.search + parent.document.location.hash;
-            if (!relUri.startsWith("/")) {
-                relUri = "/" + relUri;
-            }
-            return relUri;
-        };
-        BaseExtension.prototype.getData = function () {
-            return this.data;
+            this.fire(BaseEvents_1.BaseEvents.FEEDBACK, this.data);
         };
         BaseExtension.prototype.getAlternateLocale = function () {
             var locales = this.getLocales();
@@ -4563,7 +4526,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return alternateLocale;
         };
         BaseExtension.prototype.getLocales = function () {
-            return this.getData().locales;
+            return this.data.locales;
         };
         BaseExtension.prototype.getSerializedLocales = function () {
             return this.serializeLocales(this.getLocales());
@@ -4859,7 +4822,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             this.$content.append(this.$downloadOptions);
             this.$footer = $('<div class="footer"></div>');
             this.$content.append(this.$footer);
-            this.$termsOfUseButton = $('<a href="#">' + this.extension.getData().config.content.termsOfUse + '</a>');
+            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
             this.$footer.append(this.$termsOfUseButton);
             this.$termsOfUseButton.onPressed(function () {
                 $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
@@ -4916,7 +4879,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
         };
         DownloadDialogue.prototype.updateTermsOfUseButton = function () {
             var attribution = this.extension.helper.getAttribution(); // todo: this should eventually use a suitable IIIF 'terms' field.
-            if (Utils.Bools.getBool(this.extension.getData().config.options.termsOfUseEnabled, false) && attribution) {
+            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && attribution) {
                 this.$termsOfUseButton.show();
             }
             else {
@@ -5112,7 +5075,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
         };
         FooterPanel.prototype.updateOpenButton = function () {
             var configEnabled = Utils.Bools.getBool(this.options.openEnabled, false);
-            if (configEnabled && !this.extension.getData().isHomeDomain) {
+            if (configEnabled && !this.extension.data.isHomeDomain) {
                 this.$openButton.show();
             }
             else {
@@ -5123,7 +5086,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true)) {
                 this.$fullScreenBtn.hide();
             }
-            if (this.extension.getData().isLightbox) {
+            if (this.extension.data.isLightbox) {
                 this.$fullScreenBtn.addClass('lightbox');
             }
             if (this.extension.isFullScreen()) {
@@ -5225,17 +5188,17 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
         InformationFactory.prototype.Get = function (args) {
             switch (args.informationType) {
                 case (InformationType_1.InformationType.AUTH_CORS_ERROR):
-                    return new Information_1.Information(this.extension.getData().config.content.authCORSError, []);
+                    return new Information_1.Information(this.extension.data.config.content.authCORSError, []);
                 case (InformationType_1.InformationType.DEGRADED_RESOURCE):
                     var actions = [];
                     var loginAction = new InformationAction_1.InformationAction();
-                    loginAction.label = this.extension.getData().config.content.degradedResourceLogin;
+                    loginAction.label = this.extension.data.config.content.degradedResourceLogin;
                     loginAction.action = function () {
                         $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
                         $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[args.param]]);
                     };
                     actions.push(loginAction);
-                    return new Information_1.Information(this.extension.getData().config.content.degradedResourceMessage, actions);
+                    return new Information_1.Information(this.extension.data.config.content.degradedResourceMessage, actions);
             }
         };
         return InformationFactory;
@@ -5377,7 +5340,7 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
                 $message.ellipsisFill(this.information.message);
             }
             // hide toggle buttons below minimum width
-            if (this.extension.width() < this.extension.getData().config.options.minWidthBreakPoint) {
+            if (this.extension.width() < this.extension.data.config.options.minWidthBreakPoint) {
                 if (this.localeToggleIsVisible())
                     this.$localeToggleButton.hide();
             }
@@ -6596,7 +6559,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
         SettingsDialogue.prototype.open = function () {
             var _this = this;
             _super.prototype.open.call(this);
-            $.getJSON("package.json", function (pjson) {
+            $.getJSON(this.extension.data.assetRoot + "/package.json", function (pjson) {
                 _this.$version.text("v" + pjson.version);
             });
         };
@@ -6734,7 +6697,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             var iiifUrl = this.extension.getIIIFShareUrl();
             this.$iiifButton = $('<a class="imageBtn iiif" href="' + iiifUrl + '" title="' + this.content.iiif + '" target="_blank"></a>');
             this.$footer.append(this.$iiifButton);
-            this.$termsOfUseButton = $('<a href="#">' + this.extension.getData().config.content.termsOfUse + '</a>');
+            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
             this.$footer.append(this.$termsOfUseButton);
             this.$widthInput.on('keydown', function (e) {
                 return Utils.Numbers.numericalInput(e);
@@ -6841,7 +6804,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
         //     if (!canvas) return;
         //     var thumbnail = canvas.getProperty('thumbnail');
         //     if (!thumbnail || !_.isString(thumbnail)){
-        //         thumbnail = canvas.getCanonicalImageUri(this.extension.getData().config.options.bookmarkThumbWidth);
+        //         thumbnail = canvas.getCanonicalImageUri(this.extension.data.config.options.bookmarkThumbWidth);
         //     }
         //     this.$link.attr('href', thumbnail);
         //     this.$image.attr('src', thumbnail);
@@ -6889,7 +6852,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
         };
         ShareDialogue.prototype.updateTermsOfUseButton = function () {
             var attribution = this.extension.helper.getAttribution(); // todo: this should eventually use a suitable IIIF 'terms' field.
-            if (Utils.Bools.getBool(this.extension.getData().config.options.termsOfUseEnabled, false) && attribution) {
+            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && attribution) {
                 this.$termsOfUseButton.show();
             }
             else {
@@ -6983,7 +6946,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension() {
-            return _super.call(this) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         Extension.prototype.create = function () {
             var _this = this;
@@ -7058,7 +7021,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             }
         };
         Extension.prototype.isLeftPanelEnabled = function () {
-            return Utils.Bools.getBool(this.getData().config.options.leftPanelEnabled, true)
+            return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true)
                 && ((this.helper.isMultiCanvas() || this.helper.isMultiSequence()) || this.helper.hasResources());
         };
         Extension.prototype.bookmark = function () {
@@ -7067,7 +7030,6 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             var bookmark = new Bookmark_1.Bookmark();
             bookmark.index = this.helper.canvasIndex;
             bookmark.label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
-            bookmark.path = this.getBookmarkUri();
             bookmark.thumb = canvas.getProperty('thumbnail');
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
@@ -7080,8 +7042,8 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.getData().config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.getData().embedScriptUri);
+            var configUri = this.data.config.uri || '';
+            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             return script;
         };
         // todo: use canvas.getThumbnail()
@@ -8947,7 +8909,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             }
         };
         FooterPanel.prototype.isZoomToSearchResultEnabled = function () {
-            return Utils.Bools.getBool(this.extension.getData().config.options.zoomToSearchResultEnabled, true);
+            return Utils.Bools.getBool(this.extension.data.config.options.zoomToSearchResultEnabled, true);
         };
         FooterPanel.prototype.isPreviousButtonEnabled = function () {
             var currentCanvasIndex = this.extension.helper.canvasIndex;
@@ -9334,8 +9296,8 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
             $.subscribe(this.closeCommand, function () {
                 _this.close();
             });
-            this.config.content = this.extension.getData().config.modules.moreInfoRightPanel.content;
-            this.config.options = this.extension.getData().config.modules.moreInfoRightPanel.options;
+            this.config.content = this.extension.data.config.modules.moreInfoRightPanel.content;
+            this.config.options = this.extension.data.config.modules.moreInfoRightPanel.options;
             // create ui
             this.$title = $('<h1>' + this.config.content.title + '</h1>');
             this.$content.append(this.$title);
@@ -9874,13 +9836,13 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 }
                 index -= 1;
                 if (isNaN(index)) {
-                    this.extension.showMessage(this.extension.getData().config.modules.genericDialogue.content.invalidNumber);
+                    this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.invalidNumber);
                     $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
                 var asset = this.extension.helper.getCanvasByIndex(index);
                 if (!asset) {
-                    this.extension.showMessage(this.extension.getData().config.modules.genericDialogue.content.pageNotFound);
+                    this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.pageNotFound);
                     $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
@@ -9970,7 +9932,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
             // hide toggle buttons below minimum width
-            if (this.extension.width() < this.extension.getData().config.options.minWidthBreakPoint) {
+            if (this.extension.width() < this.extension.data.config.options.minWidthBreakPoint) {
                 if (this.pagingToggleIsVisible())
                     this.$pagingToggleButtons.hide();
                 if (this.galleryIsVisible())
@@ -10128,8 +10090,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$spinner = $('<div class="spinner"></div>');
             this.$content.append(this.$spinner);
             this.updateAttribution();
-            // todo: use compiler flag (when available)
-            var prefixUrl = 'themes/' + this.extension.getData().config.options.theme + '/img/uv-seadragoncenterpanel-module/';
+            var prefixUrl = this.extension.data.assetRoot + '/themes/' + this.extension.data.config.options.theme + '/img/uv-seadragoncenterpanel-module/';
             // add to window object for testing automation purposes.
             window.openSeadragonViewer = this.viewer = OpenSeadragon({
                 id: "viewer",
@@ -10152,7 +10113,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 autoHideControls: Utils.Bools.getBool(this.config.options.autoHideControls, true),
                 prefixUrl: prefixUrl,
                 gestureSettingsMouse: {
-                    clickToZoom: !!this.extension.getData().config.options.clickToZoomEnabled
+                    clickToZoom: !!this.extension.data.config.options.clickToZoomEnabled
                 },
                 navImages: {
                     zoomIn: {
@@ -10474,11 +10435,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var settings = this.extension.getSettings();
             // if this is the first load and there are initial bounds, fit to those.
             if (this.isFirstLoad) {
-                this.initialRotation = this.extension.getData().rotation;
+                this.initialRotation = this.extension.data.rotation;
                 if (this.initialRotation) {
                     this.viewer.viewport.setRotation(parseInt(this.initialRotation));
                 }
-                this.initialBounds = this.extension.getData().xywh;
+                this.initialBounds = this.extension.data.xywh;
                 if (this.initialBounds) {
                     this.initialBounds = Bounds_1.Bounds.fromString(this.initialBounds);
                     this.currentBounds = this.initialBounds;
@@ -10618,7 +10579,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             return searchResultRects.indexOf(searchResultRect);
         };
         SeadragonCenterPanel.prototype.isZoomToSearchResultEnabled = function () {
-            return Utils.Bools.getBool(this.extension.getData().config.options.zoomToSearchResultEnabled, true);
+            return Utils.Bools.getBool(this.extension.data.config.options.zoomToSearchResultEnabled, true);
         };
         SeadragonCenterPanel.prototype.nextSearchResult = function () {
             var searchResultRects = this.getSearchResultRectsForCurrentImages();
@@ -10786,7 +10747,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.setFocus = function () {
             if (!this.$canvas.is(":focus")) {
-                if (this.extension.getData().config.options.allowStealFocus) {
+                if (this.extension.data.config.options.allowStealFocus) {
                     this.$canvas.focus();
                 }
             }
@@ -10994,7 +10955,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension() {
-            var _this = _super.call(this) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.currentRotation = 0;
             _this.isSearching = false;
             _this.searchResults = [];
@@ -11087,7 +11048,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 args.manifestUri = _this.helper.iiifResourceUri;
                 args.allCanvases = ids.length === _this.helper.getCanvases().length;
                 args.canvases = ids;
-                args.format = _this.getData().config.options.multiSelectionMimeType;
+                args.format = _this.data.config.options.multiSelectionMimeType;
                 args.sequence = _this.helper.getCurrentSequence().id;
                 _this.fire(Events_1.Events.MULTISELECTION_MADE, args);
             });
@@ -11153,6 +11114,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var bounds = _this.centerPanel.getViewportBounds();
                 if (_this.centerPanel && bounds) {
                     $.publish(Events_1.Events.XYWH_CHANGED, [bounds.toString()]);
+                    _this.fire(Events_1.Events.XYWH_CHANGED, bounds.toString());
                 }
                 var canvas = _this.helper.getCurrentCanvas();
                 _this.fire(Events_1.Events.CURRENT_VIEW_URI, {
@@ -11172,7 +11134,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.fire(Events_1.Events.SEADRAGON_RESIZE);
             });
             $.subscribe(Events_1.Events.SEADRAGON_ROTATION, function (e, rotation) {
-                _this.fire(Events_1.Events.SEADRAGON_ROTATION);
+                _this.fire(Events_1.Events.SEADRAGON_ROTATION, rotation);
                 _this.currentRotation = rotation;
             });
             $.subscribe(Events_1.Events.SEARCH, function (e, terms) {
@@ -11288,7 +11250,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             // if a h value is in the hash params, do a search.
             if (this.isDeepLinkingEnabled()) {
                 // if a highlight param is set, use it to search.
-                var highlight = this.getData().highlight;
+                var highlight = this.data.highlight;
                 if (highlight) {
                     highlight.replace(/\+/g, " ").replace(/"/g, "");
                     $.publish(Events_1.Events.SEARCH, [highlight]);
@@ -11298,7 +11260,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.checkForRotationParam = function () {
             // if a rotation value is in the hash params, set currentRotation
             if (this.isDeepLinkingEnabled()) {
-                var rotation = this.getData().rotation;
+                var rotation = this.data.rotation;
                 if (rotation) {
                     $.publish(Events_1.Events.SEADRAGON_ROTATION, [rotation]);
                 }
@@ -11309,7 +11271,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             if (canvasIndex === -1)
                 return;
             if (this.helper.isCanvasIndexOutOfRange(canvasIndex)) {
-                this.showMessage(this.getData().config.content.canvasIndexOutOfRange);
+                this.showMessage(this.data.config.content.canvasIndexOutOfRange);
                 canvasIndex = 0;
             }
             if (this.isPagingSettingEnabled() && !isReload) {
@@ -11362,7 +11324,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
-                this.showMessage(this.getData().config.modules.genericDialogue.content.emptyValue);
+                this.showMessage(this.data.config.modules.genericDialogue.content.emptyValue);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
@@ -11371,7 +11333,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 this.viewPage(index);
             }
             else {
-                this.showMessage(this.getData().config.modules.genericDialogue.content.pageNotFound);
+                this.showMessage(this.data.config.modules.genericDialogue.content.pageNotFound);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
             }
         };
@@ -11433,7 +11395,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             bookmark.index = this.helper.canvasIndex;
             bookmark.label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
             bookmark.path = this.getCroppedImageUri(canvas, this.getViewer());
-            bookmark.thumb = canvas.getCanonicalImageUri(this.getData().config.options.bookmarkThumbWidth);
+            bookmark.thumb = canvas.getCanonicalImageUri(this.data.config.options.bookmarkThumbWidth);
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
             bookmark.type = manifesto.ElementType.image().toString();
@@ -11443,7 +11405,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             // var args: MultiSelectionArgs = new MultiSelectionArgs();
             // args.manifestUri = this.helper.iiifResourceUri;
             // args.allCanvases = true;
-            // args.format = this.getData().config.options.printMimeType;
+            // args.format = this.data.config.options.printMimeType;
             // args.sequence = this.helper.getCurrentSequence().id;
             window.print();
             this.fire(Events_1.Events.PRINT);
@@ -11620,8 +11582,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return infoUri;
         };
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
-            var configUri = this.getData().config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.getData().embedScriptUri);
+            var configUri = this.data.config.uri || '';
+            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
             return script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
@@ -11642,7 +11604,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return index;
         };
         Extension.prototype.isSearchWithinEnabled = function () {
-            if (!Utils.Bools.getBool(this.getData().config.options.searchWithinEnabled, false)) {
+            if (!Utils.Bools.getBool(this.data.config.options.searchWithinEnabled, false)) {
                 return false;
             }
             if (!this.helper.getSearchWithinService()) {
@@ -11719,7 +11681,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     that.viewPage(that.helper.canvasIndex, true);
                 }
                 else {
-                    that.showMessage(that.getData().config.modules.genericDialogue.content.noMatches, function () {
+                    that.showMessage(that.data.config.modules.genericDialogue.content.noMatches, function () {
                         $.publish(Events_1.Events.SEARCH_RESULTS_EMPTY);
                     });
                 }
@@ -11908,7 +11870,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     _this.$content.load(viewerPath, function () {
                         PDFJS.workerSrc = 'lib/pdf.worker.min.js';
                         PDFJS.DEFAULT_URL = pdfUri;
-                        var anchor = that.extension.getData().anchor;
+                        var anchor = that.extension.data.anchor;
                         if (anchor) {
                             var anchorIndex = (1 + parseInt(anchor)) || 0;
                             PDFView.initialBookmark = "page=" + anchorIndex;
@@ -12005,7 +11967,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension() {
-            return _super.call(this) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         Extension.prototype.create = function () {
             var _this = this;
@@ -12083,7 +12045,6 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             var bookmark = new Bookmark_1.Bookmark();
             bookmark.index = this.helper.canvasIndex;
             bookmark.label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
-            bookmark.path = this.getBookmarkUri();
             bookmark.thumb = canvas.getProperty('thumbnail');
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
@@ -12091,8 +12052,8 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.getData().config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.getData().embedScriptUri);
+            var configUri = this.data.config.uri || '';
+            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             return script;
         };
         return Extension;
@@ -12296,7 +12257,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension() {
-            return _super.call(this) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         Extension.prototype.create = function () {
             var _this = this;
@@ -12354,7 +12315,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             }
         };
         Extension.prototype.isLeftPanelEnabled = function () {
-            return Utils.Bools.getBool(this.getData().config.options.leftPanelEnabled, true)
+            return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true)
                 && (this.helper.isMultiCanvas() || this.helper.isMultiSequence());
         };
         Extension.prototype.bookmark = function () {
@@ -12363,7 +12324,6 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             var bookmark = new Bookmark_1.Bookmark();
             bookmark.index = this.helper.canvasIndex;
             bookmark.label = Manifesto.TranslationCollection.getValue(canvas.getLabel());
-            bookmark.path = this.getBookmarkUri();
             bookmark.thumb = canvas.getProperty('thumbnail');
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
@@ -12371,8 +12331,8 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.getData().config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.getData().embedScriptUri);
+            var configUri = this.data.config.uri || '';
+            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             return script;
         };
         return Extension;
@@ -12411,6 +12371,14 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
                 _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
             });
+            // get the path to uv.js
+            // const $scripts: JQuery = $('script');
+            // $scripts.each((index: number, script: Element) => {
+            //     const src: string = $(script).prop('src');
+            //     if (src.endsWith('uv.js')) {
+            //         this._uvScriptUri = src;
+            //     }
+            // });
             this._extensions = {};
             this._extensions[manifesto.ElementType.canvas().toString()] = {
                 type: Extension_2.Extension,
@@ -12436,11 +12404,17 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             return success;
         };
         UVComponent.prototype.data = function () {
-            return {};
+            return {
+                assetRoot: "./uv"
+            };
         };
         UVComponent.prototype.set = function (data) {
-            if (!data.iiifResourceUri)
+            if (!data.iiifResourceUri) {
                 return;
+            }
+            if (data.assetRoot && data.assetRoot.endsWith('/')) {
+                data.assetRoot = data.assetRoot.substring(0, data.assetRoot.length - 1);
+            }
             // empty app div
             $('#app').empty();
             // add loading class
@@ -12506,9 +12480,8 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         UVComponent.prototype._configure = function (data, extension, cb) {
             var _this = this;
             this._getConfigExtension(data, extension, function (configExtension) {
-                // todo: use a compiler flag when available
-                var configUri = 'lib/' + extension.name + '.' + data.locales[0].name + '.config.json';
-                $.getJSON(configUri, function (config) {
+                var configPath = data.assetRoot + '/lib/' + extension.name + '.' + data.locales[0].name + '.config.json';
+                $.getJSON(configPath, function (config) {
                     _this._extendConfig(data, extension, config, configExtension, cb);
                 });
             });
@@ -12555,7 +12528,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             }
         };
         UVComponent.prototype._injectCss = function (data, extension, cb) {
-            var cssPath = 'themes/' + data.config.options.theme + '/css/' + extension.name + '/theme.css';
+            var cssPath = data.assetRoot + '/themes/' + data.config.options.theme + '/css/' + extension.name + '/theme.css';
             yepnope.injectCss(cssPath, function () {
                 cb();
             });
@@ -12568,7 +12541,8 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             this.extension.name = extension.name;
             this.extension.create();
         };
-        UVComponent.prototype._resize = function () {
+        UVComponent.prototype.resize = function () {
+            this.extension.resize();
         };
         return UVComponent;
     }(_Components.BaseComponent));
@@ -12618,7 +12592,7 @@ requirejs([
 ], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, yepnope, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UVComponent) {
     window.UV = UVComponent["default"];
     window.UV.URLDataProvider = URLDataProvider["default"];
-    window.dispatchEvent(new CustomEvent('uvReady'));
+    window.dispatchEvent(new CustomEvent('uvLoaded'));
 });
 //# sourceMappingURL=app.js.map
 define("app", function(){});
