@@ -26,7 +26,6 @@
         window.addEventListener('uvLoaded', function(e) { 
 
             var uv;
-            var $win = $(window);
             var $app = $('#app');
 
             window.onresize = function() {
@@ -39,11 +38,15 @@
 
             uv = new UV({
                 target: $app[0],
-                data: Object.assign(urlDataProvider.data(), {
-                    isHomeDomain: true,
-                    isOnlyInstance: true,
-                    iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest'
-                })
+                data: {
+                    iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest',
+                    collectionIndex: Number(urlDataProvider.get('c', 0)),
+                    manifestIndex: Number(urlDataProvider.get('m', 0)),
+                    sequenceIndex: Number(urlDataProvider.get('s', 0)),
+                    canvasIndex: Number(urlDataProvider.get('cv', 0)),
+                    rotation: Number(urlDataProvider.get('r', 0)),
+                    xywh: urlDataProvider.get('xywh', '')
+                }
             });
 
             uv.on('create', function(obj) {
@@ -52,6 +55,18 @@
 
             uv.on('created', function(obj) {
                 console.log('created');
+            });
+
+            uv.on('collectionIndexChanged', function(index) {
+                urlDataProvider.set('c', index);
+            });
+
+            uv.on('manifestIndexChanged', function(index) {
+                urlDataProvider.set('m', index);
+            });
+
+            uv.on('sequenceIndexChanged', function(index) {
+                urlDataProvider.set('s', index);
             });
 
             uv.on('canvasIndexChanged', function(index) {
@@ -67,12 +82,16 @@
             });
 
             uv.on('openseadragonExtension.currentViewUri', function(obj) {
-                console.log('openseadragonExtension.currentViewUri', obj);
+                //console.log('openseadragonExtension.currentViewUri', obj);
             });
 
             uv.on('reload', function(data) {
                 data.isReload = true;
                 uv.set(Object.assign(urlDataProvider.data(), data));
+            });
+
+            uv.on('error', function(message) {
+                console.error(message);
             });
 
             uv.on('bookmark', function(bookmark) {
@@ -92,7 +111,6 @@
 
         }, false);
     </script>
-
 
 </body>
 </html>

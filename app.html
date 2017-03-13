@@ -45,7 +45,17 @@
 
             var uv = new UV({
                 target: $app[0],
-                data: urlDataProvider.data()
+                data: {
+                    configUri: urlDataProvider.get('config', null),
+                    domain: urlDataProvider.get('domain', null),
+                    embedDomain: urlDataProvider.get('embedDomain', null),
+                    embedScriptUri: urlDataProvider.get('embedScriptUri', null),
+                    iiifResourceUri: urlDataProvider.get('iiifResourceUri', null),
+                    isHomeDomain: urlDataProvider.get('isHomeDomain', true),
+                    isLightbox: urlDataProvider.get('isLightbox', false),
+                    isOnlyInstance: urlDataProvider.get('isOnlyInstance', true),
+                    isReload: urlDataProvider.get('isReload', false)
+                }
             });
 
             uv.on('create', function(obj) {
