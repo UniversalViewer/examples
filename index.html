@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script type="text/javascript" src="uv/lib/offline.js"></script>
     <script type="text/javascript" src="uv/uv.js"></script>
+    <script type="text/javascript" src="uvhelpers.js"></script>
 
     <style type="text/css">
         #app.loading {
@@ -17,99 +18,27 @@
 </head>
 <body>
 
-    <div style="width: 1024px; height: 769px">
-        <div id="app"></div>
-    </div>
+    <div id="uv" style="width: 924px; height: 668px"></div>
 
     <script type="text/javascript">
 
         window.addEventListener('uvLoaded', function(e) { 
 
-            var uv;
-            var $app = $('#app');
-
-            window.onresize = function() {
-                if (uv) {
-                    uv.resize();
-                }
-            }
-
             var urlDataProvider = new UV.URLDataProvider();
 
-            uv = new UV({
-                target: $app[0],
-                data: {
-                    iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest',
-                    collectionIndex: Number(urlDataProvider.get('c', 0)),
-                    manifestIndex: Number(urlDataProvider.get('m', 0)),
-                    sequenceIndex: Number(urlDataProvider.get('s', 0)),
-                    canvasIndex: Number(urlDataProvider.get('cv', 0)),
-                    rotation: Number(urlDataProvider.get('r', 0)),
-                    xywh: urlDataProvider.get('xywh', '')
-                }
-            });
-
-            uv.on('create', function(obj) {
-                console.log('create', obj);
-            });
-
-            uv.on('created', function(obj) {
-                console.log('created');
-            });
-
-            uv.on('collectionIndexChanged', function(index) {
-                urlDataProvider.set('c', index);
-            });
-
-            uv.on('manifestIndexChanged', function(index) {
-                urlDataProvider.set('m', index);
-            });
-
-            uv.on('sequenceIndexChanged', function(index) {
-                urlDataProvider.set('s', index);
-            });
-
-            uv.on('canvasIndexChanged', function(index) {
-                urlDataProvider.set('cv', index);
-            });
-
-            uv.on('openseadragonExtension.rotationChanged', function(rotation) {
-                urlDataProvider.set('r', rotation);
-            });
-
-            uv.on('openseadragonExtension.xywhChanged', function(xywh) {
-                urlDataProvider.set('xywh', xywh);
-            });
-
-            uv.on('openseadragonExtension.currentViewUri', function(obj) {
-                //console.log('openseadragonExtension.currentViewUri', obj);
-            });
-
-            uv.on('reload', function(data) {
-                data.isReload = true;
-                uv.set(Object.assign(urlDataProvider.data(), data));
-            });
-
-            uv.on('error', function(message) {
-                console.error(message);
-            });
-
-            uv.on('bookmark', function(bookmark) {
-
-                var absUri = parent.document.URL;
-                var parts = Utils.Urls.getUrlParts(absUri);
-                var relUri = parts.pathname + parts.search + parent.document.location.hash;
-
-                if (!relUri.startsWith("/")) {
-                    relUri = "/" + relUri;
-                }
-
-                bookmark.path = relUri;
-
-                console.log('bookmark', bookmark);
-            });
+            createUV('#uv', {
+                iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest',
+                embedScriptUri: 'http://universalviewer.io/uv/embed.js',
+                collectionIndex: Number(urlDataProvider.get('c', 0)),
+                manifestIndex: Number(urlDataProvider.get('m', 0)),
+                sequenceIndex: Number(urlDataProvider.get('s', 0)),
+                canvasIndex: Number(urlDataProvider.get('cv', 0)),
+                rotation: Number(urlDataProvider.get('r', 0)),
+                xywh: urlDataProvider.get('xywh', '')
+            }, urlDataProvider);
 
         }, false);
+
     </script>
 
 </body>

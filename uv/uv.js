@@ -2804,6 +2804,7 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
     BaseEvents.END = 'end';
     BaseEvents.ERROR = 'error';
     BaseEvents.ESCAPE = 'escape';
+    BaseEvents.EXIT_FULLSCREEN = 'exitFullScreen';
     BaseEvents.EXTERNAL_LINK_CLICKED = 'externalLinkClicked';
     BaseEvents.FEEDBACK = 'feedback';
     BaseEvents.FORBIDDEN = 'forbidden';
@@ -2840,7 +2841,6 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
     BaseEvents.OPEN = 'open';
     BaseEvents.PAGE_DOWN = 'pageDown';
     BaseEvents.PAGE_UP = 'pageUp';
-    BaseEvents.PARENT_EXIT_FULLSCREEN = 'parentExitFullScreen';
     BaseEvents.PLUS = 'plus';
     BaseEvents.REDIRECT = 'redirect';
     BaseEvents.REFRESH = 'refresh';
@@ -3642,11 +3642,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this.$element.addClass(this.data.locales[0].name);
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
+            this.$element.prop('tabindex', 0);
             if (!this.data.isHomeDomain)
                 this.$element.addClass('embedded');
             if (this.data.isLightbox)
                 this.$element.addClass('lightbox');
-            $(document).on('mousemove', function (e) {
+            this.$element.on('mousemove', function (e) {
                 _this.mouseX = e.pageX;
                 _this.mouseY = e.pageY;
             });
@@ -3682,11 +3683,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                     e.preventDefault();
                 }));
                 // keyboard events.
-                $(document).on('keyup keydown', function (e) {
+                this.$element.on('keyup keydown', function (e) {
                     _this.shifted = e.shiftKey;
                     _this.tabbing = e.keyCode === KeyCodes.KeyDown.Tab;
                 });
-                $(document).keydown(function (e) {
+                this.$element.on('keydown', function (e) {
                     var event = null;
                     var preventDefault = true;
                     if (!e.ctrlKey && !e.altKey && !e.shiftKey) {
@@ -3730,8 +3731,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                         $.publish(event);
                     }
                 });
-                if (this.data.isHomeDomain && Utils.Documents.isInIFrame()) {
-                    $.subscribe(BaseEvents_1.BaseEvents.PARENT_EXIT_FULLSCREEN, function () {
+                if (this.data.isHomeDomain) {
+                    $.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
                         if (_this.isOverlayActive()) {
                             $.publish(BaseEvents_1.BaseEvents.ESCAPE);
                         }
@@ -4100,6 +4101,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         BaseExtension.prototype.height = function () {
             return this.$element.height();
+        };
+        BaseExtension.prototype.exitFullScreen = function () {
+            $.publish(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN);
         };
         BaseExtension.prototype.fire = function (name) {
             var args = [];
@@ -6713,8 +6717,9 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
         };
         ShareDialogue.prototype.updateShareFrame = function () {
             var shareUrl = this.extension.helper.getShareServiceUrl();
-            if (!shareUrl)
+            if (!shareUrl) {
                 return;
+            }
             if (Utils.Bools.getBool(this.config.options.shareFrameEnabled, true) && shareUrl) {
                 this.$shareFrame.prop('src', shareUrl);
                 this.$shareFrame.show();
@@ -12445,6 +12450,9 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             this.extension.helper = helper;
             this.extension.name = extension.name;
             this.extension.create();
+        };
+        UVComponent.prototype.exitFullScreen = function () {
+            this.extension.exitFullScreen();
         };
         UVComponent.prototype.resize = function () {
             this.extension.resize();
