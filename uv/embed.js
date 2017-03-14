@@ -32,7 +32,7 @@
     }
 
     function readyStateChange() {
-        if ( document.readyState === "complete" ) {
+        if (document.readyState === "complete") {
             ready();
         }
     }
@@ -258,7 +258,7 @@ docReady(function() {
                 if (e.type === 'webkitfullscreenchange' && !document.webkitIsFullScreen ||
                 e.type === 'mozfullscreenchange' && !document.mozFullScreen ||
                 e.type === 'MSFullscreenChange' && document.msFullscreenElement === null) {
-                    triggerSocket('uv.onParentExitFullScreen');
+                    triggerSocket('exitFullScreen');
                 }
             });
 
@@ -460,7 +460,7 @@ docReady(function() {
             function showLightbox(){
                 $img.hide();
                 $appFrame.show();
-                triggerSocket('uv.onToggleFullScreen');
+                triggerSocket('toggleFullScreen');
             }
 
             function hideLightbox(){
@@ -502,7 +502,7 @@ docReady(function() {
                             toggleFullScreen({
                                 isFullScreen: true
                             });
-                            triggerSocket('uv.onToggleFullScreen');
+                            triggerSocket('toggleFullScreen');
                         }
                         if (isLightbox) {
                             $img.on('click', function(e){
@@ -522,24 +522,24 @@ docReady(function() {
                         }
 
                         switch (message.eventName) {
-                            case "uv.onToggleFullScreen":
+                            case "toggleFullScreen":
                                 toggleFullScreen(message.eventObject);
                                 break;
-                            case "uv.onSequenceIndexChanged":
+                            case "sequenceIndexChanged":
                                 viewSequence(message.eventObject);
                                 break;
-                            case "uv.onRedirect":
+                            case "redirect":
                                 redirect(message.eventObject);
                                 break;
-                            case "uv.onRefresh":
+                            case "refresh":
                                 refresh();
                                 break;
-                            case "uv.onTrackEvent":
+                            case "trackEvent":
                                 if ("undefined" !== typeof (trackEvent)) {
                                     trackEvent(message.eventObject.category, message.eventObject.action, message.eventObject.label, message.eventObject.value);
                                 }
                                 break;
-                            case "uv.onTrackVariable":
+                            case "trackVariable":
                                 if ("undefined" !== typeof (trackVariable)) {
                                     trackVariable(message.eventObject.slot, message.eventObject.name, message.eventObject.value, message.eventObject.scope);
                                 }

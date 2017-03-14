@@ -2,6 +2,7 @@ function createUV(selector, data, dataProvider) {
     var uv;
     var isFullScreen = false;
     var $container = $(selector);
+    $container.empty();
     var $parent = $('<div></div>');
     $container.append($parent);
     var $uv = $('<div></div>');
@@ -30,11 +31,11 @@ function createUV(selector, data, dataProvider) {
     });
 
     uv.on('create', function(obj) {
-        //console.log('create', obj);
+        resize();
     });
 
     uv.on('created', function(obj) {
-       resize();
+       
     });
 
     uv.on('collectionIndexChanged', function(index) {
@@ -67,7 +68,7 @@ function createUV(selector, data, dataProvider) {
 
     uv.on('reload', function(data) {
         data.isReload = true;
-        uv.set(Object.assign(dataProvider.data(), data));
+        uv.set(data);
     });
 
     uv.on('toggleFullScreen', function(obj) {
@@ -120,6 +121,8 @@ function createUV(selector, data, dataProvider) {
             uv.exitFullScreen();
         }
     });
+
+    return uv;
 }
 
 function getRequestFullScreen(elem) {

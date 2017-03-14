@@ -29,6 +29,6 @@
     "commit": "912e5c7990c0496e7bbbc21dad7ee9d25d242b9a"
   },
   "_source": "git://github.com/edsilv/utils.git",
-  "_target": "~0.0.14",
+  "_target": "~0.0.38",
   "_originalSource": "edsilv/utils"
 }

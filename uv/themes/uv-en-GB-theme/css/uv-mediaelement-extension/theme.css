@@ -1152,7 +1152,7 @@
 }
 .mejs-uv .mejs-controls {
   height: 43px;
-  background-image: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome-bg.png');
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAcAgMAAADdMz1fAAAAA3NCSVQICAjb4U/gAAAACVBMVEVSUlL///8cGRr/dezSAAAAA3RSTlP//wDXyg1BAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M1cbXjNgAAABZ0RVh0Q3JlYXRpb24gVGltZQAwNS8yNC8xMk5SXJ0AAAAMSURBVAiZY2AgDwAAADgAAdoY9/YAAAAASUVORK5CYII=");
   background-repeat: repeat-x;
   background-position: 0 5px;
   margin: 0 0 0 11px;
@@ -1172,7 +1172,10 @@
 .mejs-uv .mejs-controls .mejs-playpause-button button {
   width: 37px;
   height: 37px;
-  background: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome.png') no-repeat -1px -18px;
+  background-image: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls.png');
+  background-repeat: no-repeat;
+  background-position-x: -1px;
+  background-position-y: -18px;
   margin: 0;
   padding: 0;
 }
@@ -1219,7 +1222,10 @@
   border: 0;
   top: -5px;
   left: -1px;
-  background: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome.png') no-repeat 0 0;
+  background-image: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls.png');
+  background-repeat: no-repeat;
+  background-position-x: 0;
+  background-position-y: 0;
 }
 .mejs-uv .mejs-controls .mejs-time-rail .mejs-time-float {
   display: none;
@@ -1235,14 +1241,20 @@
   margin: 3px 5px 0 0;
 }
 .mejs-uv .mejs-controls .mejs-mute button {
-  background: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome.png') no-repeat -19px 0;
+  background-image: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls.png');
+  background-repeat: no-repeat;
+  background-position-x: -19px;
+  background-position-y: 0;
   width: 18px;
   height: 17px;
   margin: 0;
   padding: 0;
 }
 .mejs-uv .mejs-controls .mejs-unmute button {
-  background: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome.png') no-repeat -40px 0;
+  background: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls.png');
+  background-repeat: no-repeat;
+  background-position-x: -40px;
+  background-position-y: 0;
   width: 18px;
   height: 17px;
   margin: 0;
@@ -1279,14 +1291,22 @@
 .mejs-uv .mejs-controls .mejs-fullscreen-button button {
   width: 17px;
   height: 15px;
-  background: transparent url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome.png') no-repeat -1px -58px;
+  background-color: transparent;
+  background-image: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls.png');
+  background-repeat: no-repeat;
+  background-position-x: -1px;
+  background-position-y: -58px;
   margin: 0;
   padding: 0;
 }
 .mejs-uv .mejs-controls .mejs-unfullscreen button {
   width: 17px;
   height: 15px;
-  background: transparent url('../../../modules/uv-mediaelementcenterpanel-module/img/controls-wellcome.png') no-repeat -22px -58px;
+  background-color: transparent;
+  background-image: url('../../../modules/uv-mediaelementcenterpanel-module/img/controls.png');
+  background-repeat: no-repeat;
+  background-position-x: -22px;
+  background-position-y: -58px;
   margin: 0;
   padding: 0;
 }

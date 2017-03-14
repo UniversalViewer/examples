@@ -3640,6 +3640,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this.$element.removeClass();
             this.$element.addClass('uv');
             this.$element.addClass(this.data.locales[0].name);
+            this.$element.addClass(this.name);
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
             this.$element.prop('tabindex', 0);
@@ -4136,7 +4137,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         // re-bootstraps the application with new querystring params
         BaseExtension.prototype.reload = function (data) {
-            $.disposePubSub();
             $.publish(BaseEvents_1.BaseEvents.RELOAD, [data]);
         };
         BaseExtension.prototype.isSeeAlsoEnabled = function () {
@@ -12248,6 +12248,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             if (!success) {
                 console.error("UV failed to initialise");
             }
+            $.disposePubSub(); // remove any existing event listeners
             $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
                 _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
             });
@@ -12319,7 +12320,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 data.assetRoot = data.assetRoot.substring(0, data.assetRoot.length - 1);
             }
             var $elem = $(this.options.target);
-            // empty app div
+            // empty .uv div
             $elem.empty();
             // add loading class
             $elem.addClass('loading');
@@ -12428,7 +12429,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         UVComponent.prototype._injectCss = function (data, extension, cb) {
             var cssPath = data.assetRoot + '/themes/' + data.config.options.theme + '/css/' + extension.name + '/theme.css';
             var locale = data.locales[0].name;
-            var themeName = 'uv-theme-' + locale;
+            var themeName = extension.name + '-theme-' + locale;
             var $existingCSS = $('#' + themeName);
             if (!$existingCSS.length) {
                 $.ajax({
