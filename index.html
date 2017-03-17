@@ -73,14 +73,16 @@
         function loadManifests(cb) {
 
             // load manifests
-            $.getJSON('manifests.json', function(manifests) {
+            $.getJSON('ipfs-manifests.json', function(manifests) {
 
                 var $manifestSelect = $('#manifestSelect');
 
                 for (var i = 0; i < manifests.collections.length; i++) {
                     var collection = manifests.collections[i];
 
-                    if (collection.visible === false) continue;
+                    if (collection.visible === false) {
+                        continue;
+                    }
 
                     $manifestSelect.append('<optgroup label="' + collection.label + '">');
 
@@ -92,7 +94,7 @@
                         }
                     }
 
-                    $manifestSelect.append('</optgroup>');
+                    $manifestSelect.append('</optgroup>'); 
                 }
 
                 cb();
