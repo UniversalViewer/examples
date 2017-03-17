@@ -12079,15 +12079,21 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.updateAttribution();
             this.$zoomInButton.on('click', function (e) {
                 e.preventDefault();
-                _this.viewport.zoomIn();
+                if (_this.viewport) {
+                    _this.viewport.zoomIn();
+                }
             });
             this.$zoomOutButton.on('click', function (e) {
                 e.preventDefault();
-                _this.viewport.zoomOut();
+                if (_this.viewport) {
+                    _this.viewport.zoomOut();
+                }
             });
             this.$vrButton.on('click', function (e) {
                 e.preventDefault();
-                _this.viewport.toggleVR();
+                if (_this.viewport) {
+                    _this.viewport.toggleVR();
+                }
             });
             if (!WEBVR.isAvailable()) {
                 this.$vrButton.hide();
@@ -12115,6 +12121,9 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.$title.ellipsisFill(this.title);
             this.$viewport.width(this.$content.width());
             this.$viewport.height(this.$content.height());
+            if (this.viewport) {
+                this.viewport.resize();
+            }
         };
         return VirtexCenterPanel;
     }(CenterPanel_1.CenterPanel));
@@ -12433,9 +12442,9 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             var $existingCSS = $('#' + themeName);
             if (!$existingCSS.length) {
                 $.ajax({
-                    url: cssPath,
+                    url: cssPath.toLowerCase(),
                     success: function (data) {
-                        $('body').append('<style id="' + themeName + '">' + data + '</style>');
+                        $('body').append('<style id="' + themeName.toLowerCase() + '">' + data + '</style>');
                         cb();
                     }
                 });
