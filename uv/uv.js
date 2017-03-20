@@ -3639,7 +3639,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this.$element.empty();
             this.$element.removeClass();
             this.$element.addClass('uv');
-            this.$element.addClass(this.data.locales[0].name);
+            this.$element.addClass(this.data.locales[0].name.toLowerCase());
             this.$element.addClass(this.name);
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
@@ -12104,11 +12104,11 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.extension.getExternalResources(resources).then(function () {
                 _this.$viewport.empty();
                 var canvas = _this.extension.helper.getCurrentCanvas();
-                var $element = $("#content .virtex");
                 _this.viewport = new Virtex.Viewport({
-                    target: $element[0],
+                    target: _this.$viewport[0],
                     data: {
                         file: canvas.id,
+                        fullscreenEnabled: false,
                         type: new Virtex.FileType("application/vnd.threejs+json"),
                         showStats: _this.options.showStats
                     }
