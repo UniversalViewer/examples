@@ -11789,34 +11789,10 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
-            var that = this;
             this.extension.getExternalResources(resources).then(function () {
                 var canvas = _this.extension.helper.getCurrentCanvas();
                 var pdfUri = canvas.id;
-                var browser = window.browserDetect.browser;
-                var version = window.browserDetect.version;
-                if ((browser === 'Explorer' && version < 10) || !_this.config.options.usePdfJs) {
-                    // create pdf object
-                    new PDFObject({
-                        url: pdfUri,
-                        id: "PDF"
-                    }).embed('content');
-                }
-                else {
-                    var viewerPath = 'html/uv-pdfcenterpanel-module/viewer.html';
-                    // load viewer.html
-                    _this.$content.load(viewerPath, function () {
-                        PDFJS.workerSrc = 'lib/pdf.worker.min.js';
-                        PDFJS.DEFAULT_URL = pdfUri;
-                        var anchor = that.extension.data.anchor;
-                        if (anchor) {
-                            var anchorIndex = (1 + parseInt(anchor)) || 0;
-                            PDFView.initialBookmark = "page=" + anchorIndex;
-                        }
-                        window.webViewerLoad();
-                        _this.resize();
-                    });
-                }
+                window.PDFObject.embed(pdfUri, '#content', { id: "PDF" });
             });
         };
         PDFCenterPanel.prototype.resize = function () {
@@ -11988,6 +11964,11 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             bookmark.trackingLabel = window.trackingLabel;
             bookmark.type = manifesto.ElementType.document().toString();
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
+        };
+        Extension.prototype.dependencyLoaded = function (index, dep) {
+            if (index === 0) {
+                window.PDFObject = dep;
+            }
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
             var configUri = this.data.config.uri || '';
