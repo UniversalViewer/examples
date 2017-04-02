@@ -4029,7 +4029,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         BaseExtension.prototype.getDependencies = function (cb) {
             var that = this;
-            var depsUri = this.data.assetRoot + '/lib/' + this.name + '-dependencies';
+            var depsUri = this.data.root + '/lib/' + this.name + '-dependencies';
             // check if the deps are already loaded
             var scripts = $('script[data-requiremodule]')
                 .filter(function () {
@@ -4038,7 +4038,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             });
             if (!scripts.length) {
                 requirejs([depsUri], function (deps) {
-                    var baseUri = that.data.assetRoot + '/lib/';
+                    var baseUri = that.data.root + '/lib/';
                     // for each dependency, prepend baseUri.
                     if (deps.sync) {
                         for (var i = 0; i < deps.sync.length; i++) {
@@ -5432,13 +5432,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
+define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-mediaelement-extension/Events", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, Events_1, CenterPanel_1) {
     "use strict";
     exports.__esModule = true;
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
-            return _super.call(this, $element) || this;
+            var _this = _super.call(this, $element) || this;
+            _this.justResized = false;
+            return _this;
         }
         MediaElementCenterPanel.prototype.create = function () {
             this.setConfig('mediaelementCenterPanel');
@@ -5465,16 +5467,15 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             this.title = this.extension.helper.getLabel();
         };
         MediaElementCenterPanel.prototype.openMedia = function (resources) {
-            //var that = this;
             var _this = this;
+            var that = this;
             this.extension.getExternalResources(resources).then(function () {
                 _this.$container.empty();
                 var canvas = _this.extension.helper.getCurrentCanvas();
-                // this.mediaHeight = this.config.defaultHeight;
-                // this.mediaWidth = this.config.defaultWidth;
-                // this.$container.height(this.mediaHeight);
-                // this.$container.width(this.mediaWidth);
-                var id = Utils.Dates.getTimeStamp();
+                _this.mediaHeight = _this.config.defaultHeight;
+                _this.mediaWidth = _this.config.defaultWidth;
+                _this.$container.height(_this.mediaHeight);
+                _this.$container.width(_this.mediaWidth);
                 var poster = _this.extension.getPosterImageUri();
                 var posterAttr = poster ? ' poster="' + poster + '"' : '';
                 var sources = [];
@@ -5484,109 +5485,136 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                         src: rendering.id
                     });
                 });
-                // if ((<IMediaElementExtension>this.extension).isVideo()) {
-                //     this.media = this.$container.append('<video id="' + id + '" type="video/mp4" class="mejs-uv" controls="controls" preload="none"' + posterAttr + '></video>');
-                _this.media = _this.$container.append('<video width="800" height="600" id="' + id + '" type="video/mp4" controls="controls" preload="none"' + posterAttr + '></video>');
-                _this.player = new MediaElementPlayer($('video')[0], {
-                    success: function (mediaElement, originalNode) {
-                        mediaElement.setSrc(sources);
-                    }
-                });
-                //     this.player = new MediaElementPlayer("#" + id, {
-                //         type: ['video/mp4', 'video/webm', 'video/flv'],
-                //         plugins: ['flash'],
-                //         alwaysShowControls: false,
-                //         autosizeProgress: false,
-                //         success: function (media: any) {
-                //             media.addEventListener('canplay', () => {
-                //                 that.resize();
-                //             });
-                //             media.addEventListener('play', () => {
-                //                 $.publish(Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
-                //             });
-                //             media.addEventListener('pause', () => {
-                //                 // mediaelement creates a pause event before the ended event. ignore this.
-                //                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
-                //                     $.publish(Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
-                //                 }
-                //             });
-                //             media.addEventListener('ended', () => {
-                //                 $.publish(Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
-                //             });
-                //             media.setSrc(sources);
-                //             try {
-                //                 media.load();
-                //             } catch (e) {
-                //                 // do nothing
-                //             }
-                //         }
-                //     });
-                // } else {
-                //     // Try to find an MP3, since this is most likely to work:
-                //     var preferredSource: any = 0;
-                //     for (var i in sources) {
-                //         if (sources[i].type === "audio/mp3") {
-                //             preferredSource = i;
-                //             break;
-                //         }
-                //     }
-                //     this.media = this.$container.append('<audio id="' + id + '" type="' + sources[preferredSource].type + '" src="' + sources[preferredSource].src + '" class="mejs-uv" controls="controls" preload="none"' + posterAttr + '></audio>');
-                //     this.player = new MediaElementPlayer("#" + id, {
-                //         plugins: ['flash'],
-                //         alwaysShowControls: false,
-                //         autosizeProgress: false,
-                //         defaultVideoWidth: that.mediaWidth,
-                //         defaultVideoHeight: that.mediaHeight,
-                //         success: function (media: any) {
-                //             media.addEventListener('canplay', () => {
-                //                 that.resize();
-                //             });
-                //             media.addEventListener('play', () => {
-                //                 $.publish(Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
-                //             });
-                //             media.addEventListener('pause', () => {
-                //                 // mediaelement creates a pause event before the ended event. ignore this.
-                //                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
-                //                     $.publish(Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
-                //                 }
-                //             });
-                //             media.addEventListener('ended', () => {
-                //                 $.publish(Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
-                //             });
-                //             //media.setSrc(sources);
-                //             try {
-                //                 media.load();
-                //             } catch (e) {
-                //                 // do nothing
-                //             }
-                //         }
-                //     });
-                // }
+                if (_this.extension.isVideo()) {
+                    _this.$media = $('<video controls="controls" preload="none"' + posterAttr + '></video>');
+                    _this.$container.append(_this.$media);
+                    _this.player = new MediaElementPlayer($('video')[0], {
+                        //pluginPath: this.extension.data.root + 'lib/mediaelement/',
+                        success: function (mediaElement, originalNode) {
+                            mediaElement.addEventListener('canplay', function () {
+                                that.resize();
+                            });
+                            mediaElement.addEventListener('play', function () {
+                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                            });
+                            mediaElement.addEventListener('pause', function () {
+                                // mediaelement creates a pause event before the ended event. ignore this.
+                                if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
+                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                }
+                            });
+                            mediaElement.addEventListener('ended', function () {
+                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                            });
+                            mediaElement.setSrc(sources);
+                        }
+                    });
+                    //     this.player = new MediaElementPlayer("#" + id, {
+                    //         type: ['video/mp4', 'video/webm', 'video/flv'],
+                    //         plugins: ['flash'],
+                    //         alwaysShowControls: false,
+                    //         autosizeProgress: false,
+                    //         success: function (media: any) {
+                    //             media.addEventListener('canplay', () => {
+                    //                 that.resize();
+                    //             });
+                    //             media.addEventListener('play', () => {
+                    //                 $.publish(Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
+                    //             });
+                    //             media.addEventListener('pause', () => {
+                    //                 // mediaelement creates a pause event before the ended event. ignore this.
+                    //                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
+                    //                     $.publish(Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
+                    //                 }
+                    //             });
+                    //             media.addEventListener('ended', () => {
+                    //                 $.publish(Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
+                    //             });
+                    //             media.setSrc(sources);
+                    //             try {
+                    //                 media.load();
+                    //             } catch (e) {
+                    //                 // do nothing
+                    //             }
+                    //         }
+                    //     });
+                }
+                else {
+                    //     // Try to find an MP3, since this is most likely to work:
+                    //     var preferredSource: any = 0;
+                    //     for (var i in sources) {
+                    //         if (sources[i].type === "audio/mp3") {
+                    //             preferredSource = i;
+                    //             break;
+                    //         }
+                    //     }
+                    //     this.media = this.$container.append('<audio id="' + id + '" type="' + sources[preferredSource].type + '" src="' + sources[preferredSource].src + '" class="mejs-uv" controls="controls" preload="none"' + posterAttr + '></audio>');
+                    //     this.player = new MediaElementPlayer("#" + id, {
+                    //         plugins: ['flash'],
+                    //         alwaysShowControls: false,
+                    //         autosizeProgress: false,
+                    //         defaultVideoWidth: that.mediaWidth,
+                    //         defaultVideoHeight: that.mediaHeight,
+                    //         success: function (media: any) {
+                    //             media.addEventListener('canplay', () => {
+                    //                 that.resize();
+                    //             });
+                    //             media.addEventListener('play', () => {
+                    //                 $.publish(Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
+                    //             });
+                    //             media.addEventListener('pause', () => {
+                    //                 // mediaelement creates a pause event before the ended event. ignore this.
+                    //                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
+                    //                     $.publish(Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
+                    //                 }
+                    //             });
+                    //             media.addEventListener('ended', () => {
+                    //                 $.publish(Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
+                    //             });
+                    //             //media.setSrc(sources);
+                    //             try {
+                    //                 media.load();
+                    //             } catch (e) {
+                    //                 // do nothing
+                    //             }
+                    //         }
+                    //     });
+                }
                 _this.resize();
             });
         };
         MediaElementCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            // // if in Firefox < v13 don't resize the media container.
-            // if (window.browserDetect.browser === 'Firefox' && window.browserDetect.version < 13) {
-            //     this.$container.width(this.mediaWidth);
-            //     this.$container.height(this.mediaHeight);
-            // } else {
-            //     // fit media to available space.
-            //     const size: Utils.Measurements.Size = Utils.Measurements.Dimensions.fitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
-            //     this.$container.height(size.height);
-            //     this.$container.width(size.width);
-            // }
-            // if (this.player && !this.extension.isFullScreen()){
-            //     this.player.resize();
-            // }
-            // const left: number = Math.floor((this.$content.width() - this.$container.width()) / 2);
-            // const top: number = Math.floor((this.$content.height() - this.$container.height()) / 2);
-            // this.$container.css({
-            //     'left': left,
-            //     'top': top
-            // });
-            // this.$title.ellipsisFill(this.title);
+            // if in Firefox < v13 don't resize the media container.
+            if (window.browserDetect.browser === 'Firefox' && window.browserDetect.version < 13) {
+                this.$container.width(this.mediaWidth);
+                this.$container.height(this.mediaHeight);
+            }
+            else {
+                // fit media to available space.
+                var size = Utils.Measurements.Dimensions.fitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
+                this.$container.height(size.height);
+                this.$container.width(size.width);
+                if (this.player && !this.extension.isFullScreen()) {
+                    this.$media.width(size.width);
+                    this.$media.height(size.height);
+                }
+            }
+            var left = Math.floor((this.$content.width() - this.$container.width()) / 2);
+            var top = Math.floor((this.$content.height() - this.$container.height()) / 2);
+            this.$container.css({
+                'left': left,
+                'top': top
+            });
+            this.$title.ellipsisFill(this.title);
+            if (this.player && !this.extension.isFullScreen()) {
+                this.player.setPlayerSize();
+                this.player.setControlsSize();
+                var $mejs = $('.mejs__container');
+                $mejs.css({
+                    'margin-top': (this.$container.height() - $mejs.height()) / 2
+                });
+            }
         };
         return MediaElementCenterPanel;
     }(CenterPanel_1.CenterPanel));
@@ -6466,7 +6494,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
         SettingsDialogue.prototype.open = function () {
             var _this = this;
             _super.prototype.open.call(this);
-            $.getJSON(this.extension.data.assetRoot + "/package.json", function (pjson) {
+            $.getJSON(this.extension.data.root + "/package.json", function (pjson) {
                 _this.$version.text("v" + pjson.version);
             });
         };
@@ -10021,7 +10049,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 immediateRender: Utils.Bools.getBool(this.config.options.immediateRender, false),
                 blendTime: this.config.options.blendTime || 0,
                 autoHideControls: Utils.Bools.getBool(this.config.options.autoHideControls, true),
-                prefixUrl: this.extension.data.assetRoot + '/img/',
+                prefixUrl: this.extension.data.root + '/img/',
                 gestureSettingsMouse: {
                     clickToZoom: Utils.Bools.getBool(this.extension.data.config.options.clickToZoomEnabled, true)
                 },
@@ -12325,7 +12353,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         };
         UVComponent.prototype.data = function () {
             return {
-                assetRoot: "./uv",
+                root: "./uv",
                 canvasIndex: 0,
                 collectionIndex: 0,
                 config: null,
@@ -12355,8 +12383,8 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             if (!data.iiifResourceUri) {
                 return;
             }
-            if (data.assetRoot && data.assetRoot.endsWith('/')) {
-                data.assetRoot = data.assetRoot.substring(0, data.assetRoot.length - 1);
+            if (data.root && data.root.endsWith('/')) {
+                data.root = data.root.substring(0, data.root.length - 1);
             }
             var $elem = $(this.options.target);
             // empty .uv div
@@ -12418,7 +12446,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         UVComponent.prototype._configure = function (data, extension, cb) {
             var _this = this;
             this._getConfigExtension(data, extension, function (configExtension) {
-                var configPath = data.assetRoot + '/lib/' + extension.name + '.' + data.locales[0].name + '.config.json';
+                var configPath = data.root + '/lib/' + extension.name + '.' + data.locales[0].name + '.config.json';
                 $.getJSON(configPath, function (config) {
                     _this._extendConfig(data, extension, config, configExtension, cb);
                 });
@@ -12466,18 +12494,13 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             }
         };
         UVComponent.prototype._injectCss = function (data, extension, cb) {
-            var cssPath = data.assetRoot + '/themes/' + data.config.options.theme + '/css/' + extension.name + '/theme.css';
+            var cssPath = data.root + '/themes/' + data.config.options.theme + '/css/' + extension.name + '/theme.css';
             var locale = data.locales[0].name;
-            var themeName = extension.name + '-theme-' + locale;
-            var $existingCSS = $('#' + themeName);
+            var themeName = extension.name.toLowerCase() + '-theme-' + locale.toLowerCase();
+            var $existingCSS = $('#' + themeName.toLowerCase());
             if (!$existingCSS.length) {
-                $.ajax({
-                    url: cssPath.toLowerCase(),
-                    success: function (data) {
-                        $('body').append('<style id="' + themeName.toLowerCase() + '">' + data + '</style>');
-                        cb();
-                    }
-                });
+                $('head').append('<link rel="stylesheet" id="' + themeName + '" href="' + cssPath.toLowerCase() + '" />');
+                cb();
             }
             else {
                 cb();
