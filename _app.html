@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Universal Viewer Examples</title>
+    <link rel="icon" href="/examples/favicon.ico">
+    <link rel="stylesheet" href="lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="examples.css" />
+</head>
+<body>
+
+    <!--<header>-->
+
+    <!--</header>-->
+
+    <!--
+     psd dimensions
+     width:1138px; height:760px
+     -->
+
+    <main>
+        <div class="uv" data-no-load="true" style="width:924px; height:668px; background-color: #000"></div>
+        <script type="text/javascript" id="embedUV" src="uv/embed.js"></script>
+    </main>
+
+    <footer style="display: none">
+
+        <!-- Note: in order for config changes to appear in the editor, you need to run a build -->
+
+        <!--<hr/>-->
+
+        <!--<h3>Options</h3>-->
+
+        <!--<div>-->
+            <!--<input id="cors-or-jsonp-auto" checked="checked" name="cors-or-jsonp" type="radio"><label for="cors-or-jsonp-auto">Autodetect CORS/JSONP</label>-->
+            <!--<input id="cors" name="cors-or-jsonp" type="radio"><label for="cors">Force CORS</label>-->
+            <!--<input id="jsonp" name="cors-or-jsonp" type="radio"><label for="jsonp">Force JSONP</label>-->
+            <!--<p>Controls whether the viewer uses CORS or JSONP to load manifests and info.json. Default automatic behaviour is to use JSONP for IE<10, CORS otherwise.</p>-->
+        <!--</div>-->
+
+        <!--<div>-->
+            <!--<input id="testids" type="checkbox"><label for="testids">Test Ids</label>-->
+            <!--<p>Adds unique ids to viewer buttons for testing convenience.</p>-->
+        <!--</div>-->
+
+        <!--<div>-->
+            <!--<input id="defaultToFullScreen" type="checkbox"><label for="defaultToFullScreen">Default to Full Screen</label>-->
+            <!--<p>Makes the viewer open in full screen when the page loads.</p>-->
+        <!--</div>-->
+
+        <!--<a id="setOptionsBtn" class="button">Set</a>-->
+
+        <!--<hr/>-->
+
+        <h3>Manifest</h3>
+
+        <select id="manifestSelect"></select>
+
+        <input id="manifest" type="text" value="" />
+
+        <a id="setManifestBtn" class="button">Set</a>
+
+        <!--<a id="dragndrop" href="e-codices-help.html?manifest=http://www.e-codices.unifr.ch/metadata/iiif/kba-0003/manifest.json&amp;canvas=http://www.e-codices.unifr.ch/metadata/iiif/kba-0003/canvas/kba-0003_002r.json">-->
+        <a id="dragndrop">
+            <img src="iiif.png" title="Drag and drop this icon into an IIIF viewer">
+        </a>
+
+        <div id="configEditor" style="display: none">
+            <hr/>
+
+            <h3>Config&nbsp;<span class="config-name"></span></h3>
+
+            <p>Changes to config made with this tool are at the session level and not persisted.</p>
+
+            <ul id="edit-config" class="button-group">
+                <li><a id="editBtn" href="#" class="button">Edit</a></li>
+                <li><a id="closeBtn" href="#" class="button hide">Close</a></li>
+                <li><a id="saveBtn" href="#" class="button hide">Save</a></li>
+                <li><a id="resetBtn" href="#" class="button hide">Reset</a></li>
+            </ul>
+
+            <div id="editPnl" class="hide">
+                <div id="editor"></div>
+            </div>
+        </div>
+
+    </footer>
+
+    <script type="text/javascript" src="browserdetect.js"></script>
+    <script type="text/javascript" src="lib/utils/dist/utils.js"></script>
+    <script type="text/javascript" src="lib/extensions/dist/extensions.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="lib/jmespath.js/artifacts/jmespath.js"></script>
+    <script type="text/javascript" src="lib/json-editor/dist/jsoneditor.js"></script>
+    <script type="text/javascript" src="lib/jquery-plugins/dist/jquery-plugins.js"></script>
+    <!--<script type="text/javascript" src="testids.js"></script>-->
+    <!--<script type="text/javascript" src="events.js"></script>-->
+    <script type="text/javascript" src="examples.js"></script>
+
+</body>
+</html>
