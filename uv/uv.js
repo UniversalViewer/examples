@@ -5438,9 +5438,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
     var MediaElementCenterPanel = (function (_super) {
         __extends(MediaElementCenterPanel, _super);
         function MediaElementCenterPanel($element) {
-            var _this = _super.call(this, $element) || this;
-            _this.justResized = false;
-            return _this;
+            return _super.call(this, $element) || this;
         }
         MediaElementCenterPanel.prototype.create = function () {
             this.setConfig('mediaelementCenterPanel');
@@ -5448,17 +5446,16 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             var that = this;
             // events.
             // only full screen video
-            // if ((<IMediaElementExtension>this.extension).isVideo()){
-            //     $.subscribe(BaseEvents.TOGGLE_FULLSCREEN, () => {
-            //         if (that.component.isFullScreen) {
-            //             that.$container.css('backgroundColor', '#000');
-            //             that.player.enterFullScreen(false);
-            //         } else {
-            //             that.$container.css('backgroundColor', 'transparent');
-            //             that.player.exitFullScreen(false);
-            //         }
-            //     });
-            // }
+            if (this.isVideo()) {
+                $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+                    if (that.component.isFullScreen) {
+                        that.player.enterFullScreen(false);
+                    }
+                    else {
+                        that.player.exitFullScreen(false);
+                    }
+                });
+            }
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 that.openMedia(resources);
             });
@@ -5477,7 +5474,6 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                 _this.$container.height(_this.mediaHeight);
                 _this.$container.width(_this.mediaWidth);
                 var poster = _this.extension.getPosterImageUri();
-                var posterAttr = poster ? ' poster="' + poster + '"' : '';
                 var sources = [];
                 $.each(canvas.getRenderings(), function (index, rendering) {
                     sources.push({
@@ -5485,11 +5481,13 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                         src: rendering.id
                     });
                 });
-                if (_this.extension.isVideo()) {
-                    _this.$media = $('<video controls="controls" preload="none"' + posterAttr + '></video>');
+                if (_this.isVideo()) {
+                    _this.$media = $('<video controls="controls" preload="none"></video>');
                     _this.$container.append(_this.$media);
                     _this.player = new MediaElementPlayer($('video')[0], {
                         //pluginPath: this.extension.data.root + 'lib/mediaelement/',
+                        poster: poster,
+                        features: ['playpause', 'current', 'progress', 'volume'],
                         success: function (mediaElement, originalNode) {
                             mediaElement.addEventListener('canplay', function () {
                                 that.resize();
@@ -5509,79 +5507,49 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                             mediaElement.setSrc(sources);
                         }
                     });
-                    //     this.player = new MediaElementPlayer("#" + id, {
-                    //         type: ['video/mp4', 'video/webm', 'video/flv'],
-                    //         plugins: ['flash'],
-                    //         alwaysShowControls: false,
-                    //         autosizeProgress: false,
-                    //         success: function (media: any) {
-                    //             media.addEventListener('canplay', () => {
-                    //                 that.resize();
-                    //             });
-                    //             media.addEventListener('play', () => {
-                    //                 $.publish(Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
-                    //             });
-                    //             media.addEventListener('pause', () => {
-                    //                 // mediaelement creates a pause event before the ended event. ignore this.
-                    //                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
-                    //                     $.publish(Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
-                    //                 }
-                    //             });
-                    //             media.addEventListener('ended', () => {
-                    //                 $.publish(Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
-                    //             });
-                    //             media.setSrc(sources);
-                    //             try {
-                    //                 media.load();
-                    //             } catch (e) {
-                    //                 // do nothing
-                    //             }
-                    //         }
-                    //     });
                 }
                 else {
-                    //     // Try to find an MP3, since this is most likely to work:
-                    //     var preferredSource: any = 0;
-                    //     for (var i in sources) {
-                    //         if (sources[i].type === "audio/mp3") {
-                    //             preferredSource = i;
-                    //             break;
-                    //         }
-                    //     }
-                    //     this.media = this.$container.append('<audio id="' + id + '" type="' + sources[preferredSource].type + '" src="' + sources[preferredSource].src + '" class="mejs-uv" controls="controls" preload="none"' + posterAttr + '></audio>');
-                    //     this.player = new MediaElementPlayer("#" + id, {
-                    //         plugins: ['flash'],
-                    //         alwaysShowControls: false,
-                    //         autosizeProgress: false,
-                    //         defaultVideoWidth: that.mediaWidth,
-                    //         defaultVideoHeight: that.mediaHeight,
-                    //         success: function (media: any) {
-                    //             media.addEventListener('canplay', () => {
-                    //                 that.resize();
-                    //             });
-                    //             media.addEventListener('play', () => {
-                    //                 $.publish(Events.MEDIA_PLAYED, [Math.floor(that.player.media.currentTime)]);
-                    //             });
-                    //             media.addEventListener('pause', () => {
-                    //                 // mediaelement creates a pause event before the ended event. ignore this.
-                    //                 if (Math.floor(that.player.media.currentTime) != Math.floor(that.player.media.duration)) {
-                    //                     $.publish(Events.MEDIA_PAUSED, [Math.floor(that.player.media.currentTime)]);
-                    //                 }
-                    //             });
-                    //             media.addEventListener('ended', () => {
-                    //                 $.publish(Events.MEDIA_ENDED, [Math.floor(that.player.media.duration)]);
-                    //             });
-                    //             //media.setSrc(sources);
-                    //             try {
-                    //                 media.load();
-                    //             } catch (e) {
-                    //                 // do nothing
-                    //             }
-                    //         }
-                    //     });
+                    // Try to find an MP3, since this is most likely to work:
+                    var preferredSource = 0;
+                    for (var i in sources) {
+                        if (sources[i].type === "audio/mp3") {
+                            preferredSource = i;
+                            break;
+                        }
+                    }
+                    _this.$media = $('<audio controls="controls" preload="none"></audio>');
+                    _this.$container.append(_this.$media);
+                    _this.player = new MediaElementPlayer($('audio')[0], {
+                        poster: poster,
+                        defaultAudioWidth: that.mediaWidth,
+                        defaultAudioHeight: that.mediaHeight,
+                        showPosterWhenPaused: true,
+                        showPosterWhenEnded: true,
+                        success: function (mediaElement, originalNode) {
+                            mediaElement.addEventListener('canplay', function () {
+                                that.resize();
+                            });
+                            mediaElement.addEventListener('play', function () {
+                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                            });
+                            mediaElement.addEventListener('pause', function () {
+                                // mediaelement creates a pause event before the ended event. ignore this.
+                                if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
+                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                }
+                            });
+                            mediaElement.addEventListener('ended', function () {
+                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                            });
+                            mediaElement.setSrc(sources);
+                        }
+                    });
                 }
                 _this.resize();
             });
+        };
+        MediaElementCenterPanel.prototype.isVideo = function () {
+            return this.extension.isVideo();
         };
         MediaElementCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -5607,13 +5575,15 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                 'top': top
             });
             this.$title.ellipsisFill(this.title);
-            if (this.player && !this.extension.isFullScreen()) {
-                this.player.setPlayerSize();
-                this.player.setControlsSize();
-                var $mejs = $('.mejs__container');
-                $mejs.css({
-                    'margin-top': (this.$container.height() - $mejs.height()) / 2
-                });
+            if (this.player) {
+                if (!this.isVideo() || (this.isVideo() && !this.component.isFullScreen)) {
+                    this.player.setPlayerSize();
+                    this.player.setControlsSize();
+                    var $mejs = $('.mejs__container');
+                    $mejs.css({
+                        'margin-top': (this.$container.height() - $mejs.height()) / 2
+                    });
+                }
             }
         };
         return MediaElementCenterPanel;
