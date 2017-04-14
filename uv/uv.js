@@ -2697,49 +2697,6 @@ define('UVDataProvider',["require", "exports"], function (require, exports) {
     var UVDataProvider = (function () {
         function UVDataProvider() {
         }
-        // parse string 'en-GB' or 'en-GB:English,cy-GB:Welsh' and return ILocale array.
-        UVDataProvider.prototype.parseLocales = function (locales) {
-            var parsedLocales = [];
-            var l = locales.split(',');
-            for (var i = 0; i < l.length; i++) {
-                var v = l[i].split(':');
-                parsedLocales.push({
-                    name: v[0].trim(),
-                    label: (v[1]) ? v[1].trim() : ""
-                });
-            }
-            return parsedLocales;
-        };
-        // private _parseLocales(): void {
-        //     // use data-locales to prioritise
-        //     const items: any[] = this.data.config.localisation.locales.slice(0);
-        //     const sorting: any[] = this.data.locales;
-        //     const result: ILocale[] = [];
-        //     // loop through sorting array
-        //     // if items contains sort item, add it to results.
-        //     // if sort item has a label, substitute it
-        //     // mark item as added.
-        //     // if limitLocales is disabled,
-        //     // loop through remaining items and add to results.
-        //     $.each(sorting, (index: number, sortItem: any) => {
-        //         const match = items.filter((item: any) => { return item.name === sortItem.name; });
-        //         if (match.length){
-        //             var m: any = match[0];
-        //             if (sortItem.label) m.label = sortItem.label;
-        //             m.added = true;
-        //             result.push(m);
-        //         }
-        //     });
-        //     const limitLocales: boolean = Utils.Bools.getBool(this.data.config.options.limitLocales, false);
-        //     if (!limitLocales) {
-        //         $.each(items, (index: number, item: any) => {
-        //             if (!item.added){
-        //                 result.push(item);
-        //             }
-        //             delete item.added;
-        //         });
-        //     }
-        // }
         UVDataProvider.prototype.get = function (key, defaultValue) {
             return new Object();
         };
@@ -3655,6 +3612,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
                 preview: this.getSharePreview()
             });
             this._parseMetrics();
+            this._initLocales();
             // add/remove classes.
             this.$element.empty();
             this.$element.removeClass();
@@ -4097,11 +4055,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this.modulesCreated();
             $.publish(BaseEvents_1.BaseEvents.RESIZE); // initial sizing
             $.publish(BaseEvents_1.BaseEvents.CREATED);
-            this.setParams();
-            this.setDefaultFocus();
+            this._setParams();
+            this._setDefaultFocus();
             this.viewCanvas(this.helper.canvasIndex);
         };
-        BaseExtension.prototype.setParams = function () {
+        BaseExtension.prototype._setParams = function () {
             if (!this.data.isHomeDomain)
                 return;
             $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.helper.collectionIndex.toString()]);
@@ -4109,7 +4067,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.helper.sequenceIndex.toString()]);
             $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex.toString()]);
         };
-        BaseExtension.prototype.setDefaultFocus = function () {
+        // private _resetParams(): void {
+        //     $.publish(BaseEvents.COLLECTION_INDEX_CHANGED, [0]);
+        //     $.publish(BaseEvents.MANIFEST_INDEX_CHANGED, [0]);
+        //     $.publish(BaseEvents.SEQUENCE_INDEX_CHANGED, [0]);
+        //     $.publish(BaseEvents.CANVAS_INDEX_CHANGED, [0]);
+        // }
+        BaseExtension.prototype._setDefaultFocus = function () {
             var _this = this;
             setTimeout(function () {
                 if (_this.data.config.options.allowStealFocus) {
@@ -4139,6 +4103,37 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         BaseExtension.prototype.refresh = function () {
             this.fire(BaseEvents_1.BaseEvents.REFRESH, null);
         };
+        BaseExtension.prototype._initLocales = function () {
+            var availableLocales = this.data.config.localisation.locales.slice(0);
+            var configuredLocales = this.data.locales;
+            var finalLocales = [];
+            // loop through configuredLocales array (those passed in when initialising the UV component)
+            // if availableLocales (those available in each extension's l10n directory) contains a configured locale, add it to finalLocales.
+            // if the configured locale has a label, substitute it
+            // mark locale as added.
+            // if limitLocales is disabled,
+            // loop through remaining availableLocales and add to finalLocales.
+            $.each(configuredLocales, function (index, configuredLocale) {
+                var match = availableLocales.filter(function (item) { return item.name === configuredLocale.name; });
+                if (match.length) {
+                    var m = match[0];
+                    if (configuredLocale.label)
+                        m.label = configuredLocale.label;
+                    m.added = true;
+                    finalLocales.push(m);
+                }
+            });
+            var limitLocales = Utils.Bools.getBool(this.data.config.options.limitLocales, false);
+            if (!limitLocales) {
+                $.each(availableLocales, function (index, availableLocale) {
+                    if (!availableLocale.added) {
+                        finalLocales.push(availableLocale);
+                    }
+                    delete availableLocale.added;
+                });
+            }
+            this.data.locales = finalLocales;
+        };
         BaseExtension.prototype._parseMetrics = function () {
             var metrics = this.data.config.options.metrics;
             if (metrics) {
@@ -4166,6 +4161,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         // re-bootstraps the application with new querystring params
         BaseExtension.prototype.reload = function (data) {
+            //this._resetParams();
             $.publish(BaseEvents_1.BaseEvents.RELOAD, [data]);
         };
         BaseExtension.prototype.isSeeAlsoEnabled = function () {
@@ -4452,16 +4448,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             return serializedLocales;
         };
         BaseExtension.prototype.changeLocale = function (locale) {
-            // if the current locale is "en-GB:English,cy-GB:Welsh"
-            // and "cy-GB" is passed, it becomes "cy-GB:Welsh,en-GB:English"
             // re-order locales so the passed locale is first
-            var locales = this.data.locales.clone();
-            var index = locales.findIndex(function (l) {
+            var data = {};
+            data.locales = this.data.locales.clone();
+            var index = data.locales.findIndex(function (l) {
                 return l.name === locale;
             });
-            locales.move(index, 0);
-            var data = {};
-            data.locales = locales;
+            data.locales.move(index, 0);
             this.reload(data);
         };
         // auth
@@ -6438,20 +6431,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             this.$title.text(this.content.title);
             this.$website.html(this.content.website);
             this.$website.targetBlank();
-            var locales = this.extension.data.locales;
-            if (locales) {
-                for (var i = 0; i < locales.length; i++) {
-                    var locale = locales[i];
-                    this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
-                }
-            }
-            this.$localeDropDown.val(locales[0].name);
-            this.$localeDropDown.change(function () {
-                _this.extension.changeLocale(_this.$localeDropDown.val());
-            });
-            if (locales && locales.length < 2) {
-                this.$locale.hide();
-            }
+            this._createLocalesMenu();
             this.$element.hide();
         };
         SettingsDialogue.prototype.getSettings = function () {
@@ -6466,6 +6446,23 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             _super.prototype.open.call(this);
             $.getJSON(this.extension.data.root + "/package.json", function (pjson) {
                 _this.$version.text("v" + pjson.version);
+            });
+        };
+        SettingsDialogue.prototype._createLocalesMenu = function () {
+            var _this = this;
+            var locales = this.extension.data.locales;
+            if (locales && locales.length > 1) {
+                for (var i = 0; i < locales.length; i++) {
+                    var locale = locales[i];
+                    this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
+                }
+                this.$localeDropDown.val(locales[0].name);
+            }
+            else {
+                this.$locale.hide();
+            }
+            this.$localeDropDown.change(function () {
+                _this.extension.changeLocale(_this.$localeDropDown.val());
             });
         };
         SettingsDialogue.prototype.resize = function () {
@@ -12270,14 +12267,6 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
                 _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
             });
-            // get the path to uv.js
-            // const $scripts: JQuery = $('script');
-            // $scripts.each((index: number, script: Element) => {
-            //     const src: string = $(script).prop('src');
-            //     if (src.endsWith('uv.js')) {
-            //         this._uvScriptUri = src;
-            //     }
-            // });
             this._extensions = {};
             this._extensions[manifesto.ElementType.canvas().toString()] = {
                 type: Extension_2.Extension,
@@ -12317,10 +12306,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 isLightbox: false,
                 isOnlyInstance: true,
                 isReload: false,
+                limitLocales: false,
                 locales: [
                     {
-                        name: 'en-GB',
-                        label: 'English'
+                        name: 'en-GB'
                     }
                 ],
                 manifestIndex: 0,

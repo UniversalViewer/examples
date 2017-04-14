@@ -2336,21 +2336,21 @@ input[type=range]:focus::-ms-fill-upper {
 .uv .leftPanel .thumbsView .thumb.selected .wrap {
   border: none;
 }
-.uv.cy-GB .headerPanel .options .centerOptions {
+.uv.cy-gb .headerPanel .options .centerOptions {
   width: 432px;
 }
-.uv.cy-GB .headerPanel .options .centerOptions .prevOptions {
+.uv.cy-gb .headerPanel .options .centerOptions .prevOptions {
   margin: 0 10px 0 0;
 }
-.uv.cy-GB .headerPanel .options .centerOptions .mode label {
+.uv.cy-gb .headerPanel .options .centerOptions .mode label {
   width: 42px;
 }
-.uv.cy-GB .headerPanel .options .centerOptions .search {
+.uv.cy-gb .headerPanel .options .centerOptions .search {
   width: 140px;
 }
-.uv.cy-GB .headerPanel .options .centerOptions .nextOptions {
+.uv.cy-gb .headerPanel .options .centerOptions .nextOptions {
   margin: 0 0 0 10px;
 }
-.uv.cy-GB .footerPanel .searchPager .controls .searchResultsInfo {
+.uv.cy-gb .footerPanel .searchPager .controls .searchResultsInfo {
   width: 290px;
 }

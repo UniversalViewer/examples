@@ -27,6 +27,11 @@
 </head>
 <body>
 
+    <div>
+        <h1>UV v3.0 alpha testing</h1>
+        <p>Please report any issues you find on the <a href="https://github.com/UniversalViewer/universalviewer/milestone/8" target="_blank">UV 3.0 milestone</a></p>
+    </div>
+
     <div id="uv" class="uv"></div>
 
     <div id="options">
@@ -50,9 +55,11 @@
 
         }, false);
 
-        function reloadUV() {
-            uv = createUV('#uv', {
+        function reloadUV(newData) {
+
+            var data = {
                 iiifResourceUri: manifest,
+                configUri: 'examples-config.json',
                 embedScriptUri: 'http://universalviewer.io/uv/embed.js',
                 collectionIndex: Number(urlDataProvider.get('c', 0)),
                 manifestIndex: Number(urlDataProvider.get('m', 0)),
@@ -60,11 +67,22 @@
                 canvasIndex: Number(urlDataProvider.get('cv', 0)),
                 rotation: Number(urlDataProvider.get('r', 0)),
                 xywh: urlDataProvider.get('xywh', '')
-            }, urlDataProvider);
+            };
+
+            if (newData) {
+                $.extend(data, newData);
+            }
+
+            uv = createUV('#uv', data, urlDataProvider);
 
             uv.on('created', function() {
                 Utils.Urls.setHashParameter('manifest', manifest);
-            });            
+            });
+
+            // todo: see uvhelpers.js for the (eventually) correct reload method
+            uv.on('reload', function(data) {
+                reloadUV(data);
+            });
         }
 
         function loadManifests(cb) {
@@ -121,6 +139,13 @@
 
         $('#setManifestButton').on('click', function() {
             manifest = $('#manifest').val();
+
+            urlDataProvider.set('c', 0);
+            urlDataProvider.set('m', 0);
+            urlDataProvider.set('s', 0);
+            urlDataProvider.set('cv', 0);
+            urlDataProvider.set('r', 0);
+
             reloadUV();
         });
 
