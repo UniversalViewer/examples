@@ -66,12 +66,10 @@ function createUV(selector, data, dataProvider) {
         //console.log('openseadragonExtension.currentViewUri', obj);
     });
 
-    // todo: this should be how the UV is resetting
-    // until BaseComponent more closely matches svelte, recreate the component
-    // uv.on('reload', function(data) {
-    //     data.isReload = true;
-    //     uv.set(data);
-    // });
+    uv.on('reload', function(data) {
+        data.isReload = true;
+        uv.set(data);
+    });
 
     uv.on('toggleFullScreen', function(obj) {
         isFullScreen = obj.isFullScreen;

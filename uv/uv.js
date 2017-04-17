@@ -4055,24 +4055,18 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             this.modulesCreated();
             $.publish(BaseEvents_1.BaseEvents.RESIZE); // initial sizing
             $.publish(BaseEvents_1.BaseEvents.CREATED);
-            this._setParams();
+            this.update();
             this._setDefaultFocus();
             this.viewCanvas(this.helper.canvasIndex);
         };
-        BaseExtension.prototype._setParams = function () {
+        BaseExtension.prototype.update = function () {
             if (!this.data.isHomeDomain)
                 return;
-            $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.helper.collectionIndex.toString()]);
-            $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.helper.manifestIndex.toString()]);
-            $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.helper.sequenceIndex.toString()]);
-            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.data.collectionIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.data.manifestIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.data.sequenceIndex.toString()]);
+            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.data.canvasIndex.toString()]);
         };
-        // private _resetParams(): void {
-        //     $.publish(BaseEvents.COLLECTION_INDEX_CHANGED, [0]);
-        //     $.publish(BaseEvents.MANIFEST_INDEX_CHANGED, [0]);
-        //     $.publish(BaseEvents.SEQUENCE_INDEX_CHANGED, [0]);
-        //     $.publish(BaseEvents.CANVAS_INDEX_CHANGED, [0]);
-        // }
         BaseExtension.prototype._setDefaultFocus = function () {
             var _this = this;
             setTimeout(function () {
@@ -4161,7 +4155,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
         };
         // re-bootstraps the application with new querystring params
         BaseExtension.prototype.reload = function (data) {
-            //this._resetParams();
             $.publish(BaseEvents_1.BaseEvents.RELOAD, [data]);
         };
         BaseExtension.prototype.isSeeAlsoEnabled = function () {
@@ -12319,13 +12312,49 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             };
         };
         UVComponent.prototype.set = function (data) {
+            // if this is the first set
+            if (!this.extension) {
+                if (!data.iiifResourceUri) {
+                    this._error("iiifResourceUri is required.");
+                    return;
+                }
+                // remove '/' from root
+                if (data.root && data.root.endsWith('/')) {
+                    data.root = data.root.substring(0, data.root.length - 1);
+                }
+                this._reload(data);
+            }
+            else {
+                // changing any of these data properties forces the UV to reload.
+                if (!!data.collectionIndex && this.extension.data.collectionIndex !== data.collectionIndex ||
+                    !!data.manifestIndex && this.extension.data.manifestIndex !== data.manifestIndex ||
+                    !!data.config && this.extension.data.config !== data.config ||
+                    !!data.configUri && this.extension.data.configUri !== data.configUri ||
+                    !!data.domain && this.extension.data.domain !== data.domain ||
+                    !!data.embedDomain && this.extension.data.embedDomain !== data.embedDomain ||
+                    !!data.embedScriptUri && this.extension.data.embedScriptUri !== data.embedScriptUri ||
+                    !!data.iiifResourceUri && this.extension.data.iiifResourceUri !== data.iiifResourceUri ||
+                    !!data.isHomeDomain && this.extension.data.isHomeDomain !== data.isHomeDomain ||
+                    !!data.isLightbox && this.extension.data.isLightbox !== data.isLightbox ||
+                    !!data.isOnlyInstance && this.extension.data.isOnlyInstance !== data.isOnlyInstance ||
+                    !!data.isReload && this.extension.data.isReload !== data.isReload ||
+                    !!data.locales && this.extension.data.locales !== data.locales ||
+                    !!data.root && this.extension.data.root !== data.root) {
+                    $.extend(this.extension.data, data);
+                    this._reload(this.extension.data);
+                }
+                else {
+                    // no need to reload, just update.
+                    $.extend(this.extension.data, data);
+                    this.extension.update();
+                }
+            }
+        };
+        UVComponent.prototype.get = function (key) {
+            return this.extension.data[key];
+        };
+        UVComponent.prototype._reload = function (data) {
             var _this = this;
-            if (!data.iiifResourceUri) {
-                return;
-            }
-            if (data.root && data.root.endsWith('/')) {
-                data.root = data.root.substring(0, data.root.length - 1);
-            }
             var $elem = $(this.options.target);
             // empty .uv div
             $elem.empty();

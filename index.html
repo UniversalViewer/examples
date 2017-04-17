@@ -40,6 +40,11 @@
         <a id="setManifestButton" class="button" href="#">Set</a>
     </div>
 
+    <div>
+        <button id="prev">&lt;</button>
+        <button id="next">&gt;</button>
+    </div>
+
     <script type="text/javascript">
 
         var uv, manifest, urlDataProvider;
@@ -50,17 +55,17 @@
 
             loadManifests(function() {
                 setSelectedManifest();
-                reloadUV();
+                setupUV();
             });
 
         }, false);
 
-        function reloadUV(newData) {
+        function setupUV() {
 
             var data = {
                 iiifResourceUri: manifest,
                 configUri: 'examples-config.json',
-                embedScriptUri: 'http://universalviewer.io/uv/embed.js',
+                //embedScriptUri: 'http://universalviewer.io/uv/embed.js',
                 collectionIndex: Number(urlDataProvider.get('c', 0)),
                 manifestIndex: Number(urlDataProvider.get('m', 0)),
                 sequenceIndex: Number(urlDataProvider.get('s', 0)),
@@ -69,19 +74,10 @@
                 xywh: urlDataProvider.get('xywh', '')
             };
 
-            if (newData) {
-                $.extend(data, newData);
-            }
-
             uv = createUV('#uv', data, urlDataProvider);
 
             uv.on('created', function() {
                 Utils.Urls.setHashParameter('manifest', manifest);
-            });
-
-            // todo: see uvhelpers.js for the (eventually) correct reload method
-            uv.on('reload', function(data) {
-                reloadUV(data);
             });
         }
 
@@ -104,7 +100,7 @@
                     for (var j = 0; j < collection.manifests.length; j++) {
                         var manifest = collection.manifests[j];
 
-                        if (manifest.visible !== false){
+                        if (manifest.visible !== false) {
                             $manifestSelect.append('<option value="' + manifest['@id'] + '">' + manifest.label + '</option>');
                         }
                     }
@@ -140,13 +136,25 @@
         $('#setManifestButton').on('click', function() {
             manifest = $('#manifest').val();
 
-            urlDataProvider.set('c', 0);
-            urlDataProvider.set('m', 0);
-            urlDataProvider.set('s', 0);
-            urlDataProvider.set('cv', 0);
-            urlDataProvider.set('r', 0);
+            uv.set({
+                iiifResourceUri: manifest,
+                collectionIndex: 0,
+                manifestIndex: 0,
+                sequenceIndex: 0,
+                canvasIndex: 0
+            });
+        });
 
-            reloadUV();
+        $('#prev').on('click', function() {
+            uv.set({
+                canvasIndex: uv.get('canvasIndex') - 1
+            });
+        });
+
+        $('#next').on('click', function() {
+            uv.set({
+                canvasIndex: uv.get('canvasIndex') + 1
+            });
         });
 
     </script>
