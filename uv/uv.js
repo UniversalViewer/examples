@@ -12251,15 +12251,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             return _this;
         }
         UVComponent.prototype._init = function () {
-            var _this = this;
             var success = _super.prototype._init.call(this);
             if (!success) {
                 console.error("UV failed to initialise");
             }
-            $.disposePubSub(); // remove any existing event listeners
-            $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
-                _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
-            });
             this._extensions = {};
             this._extensions[manifesto.ElementType.canvas().toString()] = {
                 type: Extension_2.Extension,
@@ -12326,35 +12321,42 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             }
             else {
                 // changing any of these data properties forces the UV to reload.
-                if (!!data.collectionIndex && this.extension.data.collectionIndex !== data.collectionIndex ||
-                    !!data.manifestIndex && this.extension.data.manifestIndex !== data.manifestIndex ||
-                    !!data.config && this.extension.data.config !== data.config ||
-                    !!data.configUri && this.extension.data.configUri !== data.configUri ||
-                    !!data.domain && this.extension.data.domain !== data.domain ||
-                    !!data.embedDomain && this.extension.data.embedDomain !== data.embedDomain ||
-                    !!data.embedScriptUri && this.extension.data.embedScriptUri !== data.embedScriptUri ||
-                    !!data.iiifResourceUri && this.extension.data.iiifResourceUri !== data.iiifResourceUri ||
-                    !!data.isHomeDomain && this.extension.data.isHomeDomain !== data.isHomeDomain ||
-                    !!data.isLightbox && this.extension.data.isLightbox !== data.isLightbox ||
-                    !!data.isOnlyInstance && this.extension.data.isOnlyInstance !== data.isOnlyInstance ||
-                    !!data.isReload && this.extension.data.isReload !== data.isReload ||
-                    !!data.locales && this.extension.data.locales !== data.locales ||
-                    !!data.root && this.extension.data.root !== data.root) {
+                if (this._propertiesChanged(data, ['collectionIndex', 'manifestIndex', 'config', 'configUri', 'domain', 'embedDomain', 'embedScriptUri', 'iiifResourceUri', 'isHomeDomain', 'isLightbox', 'isOnlyInstance', 'isReload', 'locales', 'root'])) {
                     $.extend(this.extension.data, data);
                     this._reload(this.extension.data);
+                    console.log("reload");
                 }
                 else {
                     // no need to reload, just update.
                     $.extend(this.extension.data, data);
                     this.extension.update();
+                    console.log("update");
                 }
             }
+        };
+        // check if any of the properties have changed
+        UVComponent.prototype._propertiesChanged = function (data, properties) {
+            var propChanged = false;
+            for (var i = 0; i < properties.length; i++) {
+                propChanged = this._propertyChanged(data, properties[i]);
+                if (propChanged) {
+                    break;
+                }
+            }
+            return propChanged;
+        };
+        UVComponent.prototype._propertyChanged = function (data, propertyName) {
+            return !!data[propertyName] && this.extension.data[propertyName] !== data[propertyName];
         };
         UVComponent.prototype.get = function (key) {
             return this.extension.data[key];
         };
         UVComponent.prototype._reload = function (data) {
             var _this = this;
+            $.disposePubSub(); // remove any existing event listeners
+            $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
+                _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
+            });
             var $elem = $(this.options.target);
             // empty .uv div
             $elem.empty();
