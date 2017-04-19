@@ -3844,7 +3844,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             $.subscribe(BaseEvents_1.BaseEvents.LOAD_FAILED, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LOAD_FAILED);
                 if (!that.lastCanvasIndex == null && that.lastCanvasIndex !== that.helper.canvasIndex) {
-                    _this.viewCanvas(that.lastCanvasIndex);
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [that.lastCanvasIndex]);
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, function (e, manifestIndex) {
@@ -4057,15 +4057,16 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             $.publish(BaseEvents_1.BaseEvents.CREATED);
             this.update();
             this._setDefaultFocus();
-            this.viewCanvas(this.helper.canvasIndex);
         };
         BaseExtension.prototype.update = function () {
-            if (!this.data.isHomeDomain)
-                return;
-            $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.data.collectionIndex.toString()]);
-            $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.data.manifestIndex.toString()]);
-            $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.data.sequenceIndex.toString()]);
-            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.data.canvasIndex.toString()]);
+            var _this = this;
+            // allow 1ms for subclasses to subscribe to events.
+            setTimeout(function () {
+                $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [_this.data.collectionIndex]);
+                $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [_this.data.manifestIndex]);
+                $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [_this.data.sequenceIndex]);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.data.canvasIndex]);
+            }, 1);
         };
         BaseExtension.prototype._setDefaultFocus = function () {
             var _this = this;
@@ -4345,7 +4346,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./BaseEv
             }
             this.lastCanvasIndex = this.helper.canvasIndex;
             this.helper.canvasIndex = canvasIndex;
-            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
             $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
         };
         BaseExtension.prototype.showMessage = function (message, acceptCallback, buttonText, allowClose) {
@@ -6854,8 +6854,11 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             $(window).bind('exitfullscreen', function () {
                 $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
             });
             $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
@@ -6915,6 +6918,9 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             if (this.isRightPanelEnabled()) {
                 this.rightPanel.init();
             }
+        };
+        Extension.prototype.update = function () {
+            _super.prototype.update.call(this);
         };
         Extension.prototype.isLeftPanelEnabled = function () {
             return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true)
@@ -10874,6 +10880,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.viewPage(canvasIndex);
+            });
             $.subscribe(Events_1.Events.CLEAR_SEARCH, function () {
                 _this.searchResults = null;
                 $.publish(Events_1.Events.SEARCH_RESULTS_CLEARED);
@@ -10885,11 +10894,11 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.END, function () {
-                _this.viewPage(_this.helper.getLastPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getLastPageIndex()]);
             });
             $.subscribe(Events_1.Events.FIRST, function () {
                 _this.fire(Events_1.Events.FIRST);
-                _this.viewPage(_this.helper.getFirstPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getFirstPageIndex()]);
             });
             $.subscribe(Events_1.Events.GALLERY_DECREASE_SIZE, function () {
                 _this.fire(Events_1.Events.GALLERY_DECREASE_SIZE);
@@ -10901,19 +10910,19 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.fire(Events_1.Events.GALLERY_THUMB_SELECTED);
             });
             $.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
-                _this.viewPage(_this.helper.getFirstPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getFirstPageIndex()]);
             });
             $.subscribe(Events_1.Events.IMAGE_SEARCH, function (e, index) {
                 _this.fire(Events_1.Events.IMAGE_SEARCH, index);
-                _this.viewPage(index);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
             });
             $.subscribe(Events_1.Events.LAST, function () {
                 _this.fire(Events_1.Events.LAST);
-                _this.viewPage(_this.helper.getLastPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getLastPageIndex()]);
             });
             $.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
-                    _this.viewPage(_this.getPrevPageIndex());
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
                 }
                 else {
                     _this.centerPanel.setFocus();
@@ -10952,7 +10961,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             });
             $.subscribe(Events_1.Events.NEXT, function () {
                 _this.fire(Events_1.Events.NEXT);
-                _this.viewPage(_this.getNextPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
             });
             $.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
                 _this.fire(Events_1.Events.NEXT_SEARCH_RESULT);
@@ -10972,14 +10981,14 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.fire(Events_1.Events.OPEN_TREE_VIEW);
             });
             $.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
-                _this.viewPage(_this.getNextPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
             });
             $.subscribe(Events_1.Events.PAGE_SEARCH, function (e, value) {
                 _this.fire(Events_1.Events.PAGE_SEARCH, value);
                 _this.viewLabel(value);
             });
             $.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
-                _this.viewPage(_this.getPrevPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
             });
             $.subscribe(Events_1.Events.PAGING_TOGGLED, function (e, obj) {
                 _this.fire(Events_1.Events.PAGING_TOGGLED, obj);
@@ -10989,7 +10998,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             });
             $.subscribe(Events_1.Events.PREV, function () {
                 _this.fire(Events_1.Events.PREV);
-                _this.viewPage(_this.getPrevPageIndex());
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
             });
             $.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
                 _this.fire(Events_1.Events.PREV_SEARCH_RESULT);
@@ -10999,7 +11008,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             });
             $.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
-                    _this.viewPage(_this.getNextPageIndex());
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
                 }
                 else {
                     _this.centerPanel.setFocus();
@@ -11049,13 +11058,13 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.fire(Events_1.Events.SEARCH_RESULTS, obj);
             });
             $.subscribe(Events_1.Events.SEARCH_RESULT_CANVAS_CHANGED, function (e, rect) {
-                _this.viewPage(rect.canvasIndex);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [rect.canvasIndex]);
             });
             $.subscribe(Events_1.Events.SEARCH_RESULTS_EMPTY, function () {
                 _this.fire(Events_1.Events.SEARCH_RESULTS_EMPTY);
             });
             $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                _this.viewPage(thumb.index);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
             });
             $.subscribe(Events_1.Events.TREE_NODE_SELECTED, function (e, node) {
                 _this.fire(Events_1.Events.TREE_NODE_SELECTED, node.data.path);
@@ -11067,19 +11076,13 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
-                _this.viewPage(_this.helper.canvasIndex, true);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.canvasIndex]);
                 var settings = _this.getSettings();
                 $.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, [settings]);
             });
             $.subscribe(Events_1.Events.VIEW_PAGE, function (e, index) {
                 _this.fire(Events_1.Events.VIEW_PAGE, index);
-                _this.viewPage(index);
-            });
-            Utils.Async.waitFor(function () {
-                return _this.centerPanel && _this.centerPanel.isCreated;
-            }, function () {
-                _this.checkForSearchParam();
-                _this.checkForRotationParam();
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
             });
         };
         Extension.prototype.createModules = function () {
@@ -11144,6 +11147,16 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 this.footerPanel.init();
             }
         };
+        Extension.prototype.update = function () {
+            var _this = this;
+            _super.prototype.update.call(this);
+            Utils.Async.waitFor(function () {
+                return _this.centerPanel && _this.centerPanel.isCreated;
+            }, function () {
+                _this.checkForSearchParam();
+                _this.checkForRotationParam();
+            });
+        };
         Extension.prototype.checkForSearchParam = function () {
             // if a h value is in the hash params, do a search.
             if (this.isDeepLinkingEnabled()) {
@@ -11164,19 +11177,22 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 }
             }
         };
-        Extension.prototype.viewPage = function (canvasIndex, isReload) {
-            // if it's a valid canvas index.
+        Extension.prototype.viewPage = function (canvasIndex) {
+            // if it's an invalid canvas index.
             if (canvasIndex === -1)
                 return;
+            var isReload = false;
+            if (canvasIndex === this.helper.canvasIndex) {
+                isReload = true;
+            }
             if (this.helper.isCanvasIndexOutOfRange(canvasIndex)) {
                 this.showMessage(this.data.config.content.canvasIndexOutOfRange);
                 canvasIndex = 0;
             }
             if (this.isPagingSettingEnabled() && !isReload) {
                 var indices = this.getPagedIndices(canvasIndex);
-                // if the page is already displayed, only advance canvasIndex.
+                // if the page is already displayed, do nothing.
                 if (indices.includes(this.helper.canvasIndex)) {
-                    this.viewCanvas(canvasIndex);
                     return;
                 }
             }
@@ -11218,7 +11234,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 return;
             var canvasId = range.getCanvasIds()[0];
             var index = this.helper.getCanvasIndexById(canvasId);
-            this.viewPage(index);
+            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
         };
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
@@ -11228,7 +11244,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
             var index = this.helper.getCanvasIndexByLabel(label);
             if (index != -1) {
-                this.viewPage(index);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
             }
             else {
                 this.showMessage(this.data.config.modules.genericDialogue.content.pageNotFound);
@@ -11256,7 +11272,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.clearSearch = function () {
             this.searchResults = [];
             // reload current index as it may contain results.
-            this.viewPage(this.helper.canvasIndex);
+            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex]);
         };
         Extension.prototype.prevSearchResult = function () {
             var foundResult;
@@ -11267,7 +11283,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var result = this.searchResults[i];
                 if (result.canvasIndex <= this.getPrevPageIndex()) {
                     foundResult = result;
-                    this.viewPage(foundResult.canvasIndex);
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [foundResult.canvasIndex]);
                     break;
                 }
             }
@@ -11281,7 +11297,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var result = this.searchResults[i];
                 if (result && result.canvasIndex >= this.getNextPageIndex()) {
                     foundResult = result;
-                    this.viewPage(result.canvasIndex);
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [result.canvasIndex]);
                     break;
                 }
             }
@@ -11576,7 +11592,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     });
                     $.publish(Events_1.Events.SEARCH_RESULTS, [{ terms: terms, results: results }]);
                     // reload current index as it may contain results.
-                    that.viewPage(that.helper.canvasIndex, true);
+                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [that.helper.canvasIndex]);
                 }
                 else {
                     that.showMessage(that.data.config.modules.genericDialogue.content.noMatches, function () {
@@ -11846,8 +11862,11 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.viewCanvas(canvasIndex);
+            });
             $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                _this.viewCanvas(thumb.index);
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
             });
             $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
@@ -11868,6 +11887,9 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
                     _this.centerPanel.$element.show();
                 }
             });
+        };
+        Extension.prototype.update = function () {
+            _super.prototype.update.call(this);
         };
         Extension.prototype.IsOldIE = function () {
             var browser = window.browserDetect.browser;
@@ -12150,8 +12172,11 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
             });
         };
         Extension.prototype.createModules = function () {
@@ -12196,6 +12221,9 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             else {
                 Shell_1.Shell.$rightPanel.hide();
             }
+        };
+        Extension.prototype.update = function () {
+            _super.prototype.update.call(this);
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
             if (index === 0) {
@@ -12324,17 +12352,14 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 if (this._propertiesChanged(data, ['collectionIndex', 'manifestIndex', 'config', 'configUri', 'domain', 'embedDomain', 'embedScriptUri', 'iiifResourceUri', 'isHomeDomain', 'isLightbox', 'isOnlyInstance', 'isReload', 'locales', 'root'])) {
                     $.extend(this.extension.data, data);
                     this._reload(this.extension.data);
-                    console.log("reload");
                 }
                 else {
                     // no need to reload, just update.
                     $.extend(this.extension.data, data);
                     this.extension.update();
-                    console.log("update");
                 }
             }
         };
-        // check if any of the properties have changed
         UVComponent.prototype._propertiesChanged = function (data, properties) {
             var propChanged = false;
             for (var i = 0; i < properties.length; i++) {
@@ -12358,7 +12383,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
             });
             var $elem = $(this.options.target);
-            // empty .uv div
+            // empty the containing element
             $elem.empty();
             // add loading class
             $elem.addClass('loading');
