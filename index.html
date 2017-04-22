@@ -45,6 +45,10 @@
         <button id="next">&gt;</button>
     </div>
 
+    <div>
+        <textarea id="searchJSON" rows="10" cols="50"></textarea>
+    </div>
+
     <script type="text/javascript">
 
         var uv, manifest, urlDataProvider;
@@ -154,6 +158,22 @@
         $('#next').on('click', function() {
             uv.set({
                 canvasIndex: uv.get('canvasIndex') + 1
+            });
+        });
+
+        var oldVal = "";
+
+        $('#searchJSON').on("change keyup paste", function() {
+            var currentVal = $(this).val();
+
+            if (currentVal === oldVal) {
+                return; //check to prevent multiple simultaneous triggers
+            }
+
+            oldVal = currentVal;
+            
+            uv.set({
+                searchResults: currentVal
             });
         });
 
