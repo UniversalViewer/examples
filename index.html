@@ -46,7 +46,8 @@
     </div>
 
     <div>
-        <textarea id="searchJSON" rows="10" cols="50"></textarea>
+        <textarea id="annotations" rows="10" cols="50" placeholder="annotations"></textarea>
+        <button id="updateAnnotations">Update</button>
     </div>
 
     <script type="text/javascript">
@@ -161,19 +162,12 @@
             });
         });
 
-        var oldVal = "";
-
-        $('#searchJSON').on("change keyup paste", function() {
-            var currentVal = $(this).val();
-
-            if (currentVal === oldVal) {
-                return; //check to prevent multiple simultaneous triggers
-            }
-
-            oldVal = currentVal;
+        $('#updateAnnotations').on('click', function() {
+            
+            var annotations = JSON.parse($('#annotations').val());
             
             uv.set({
-                searchResults: currentVal
+                annotations: annotations
             });
         });
 
