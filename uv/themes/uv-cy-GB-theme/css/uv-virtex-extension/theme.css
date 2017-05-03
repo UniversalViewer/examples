@@ -267,6 +267,27 @@
 .uv .overlay.login .bottom {
   background: none;
 }
+.uv .overlay.auth {
+  width: 470px;
+  height: 250px;
+}
+.uv .overlay.auth .message {
+  height: 180px;
+}
+.uv .overlay.auth .message h1 {
+  border-bottom: none !important;
+  font-size: 12px !important;
+}
+.uv .overlay.auth .message .warning {
+  display: block;
+  background-color: #FFB81D;
+  font-weight: bold;
+  padding: 10px 10px 10px 10px;
+  margin-bottom: 10px;
+}
+.uv .overlay.auth .bottom {
+  background: none;
+}
 @media only screen and (min-width: 0px) and (max-width: 640px) {
   .uv .overlay.share {
     padding: 0 0 45px 8px;

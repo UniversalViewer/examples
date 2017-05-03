@@ -15916,7 +15916,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
+define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../uv-shared-module/Utils"], function (require, exports, BaseEvents_1, Dialogue_1, Utils_1) {
     "use strict";
     exports.__esModule = true;
     var AuthDialogue = (function (_super) {
@@ -15973,21 +15973,23 @@ define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-
         };
         AuthDialogue.prototype.open = function () {
             _super.prototype.open.call(this);
-            // let label: string = "";
-            // let header: string = "";
+            var header = this.service.getHeader();
             var description = this.service.getDescription();
             var confirmLabel = this.service.getConfirmLabel();
-            console.log(description, confirmLabel);
-            // if (this.resource.loginService) {
-            //     this.$title.text(this.resource.loginService.getProperty('label'));
-            //     message = this.resource.loginService.getProperty('description');
-            // }
-            // this.$message.html(message);
-            // this.$message.targetBlank();
-            // this.$message.find('a').on('click', function() {
-            //     var url: string = $(this).attr('href');
-            //     $.publish(BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
-            // });
+            if (header) {
+                this.$title.text(Utils_1.UVUtils.sanitize(header));
+            }
+            if (description) {
+                this.$message.html(Utils_1.UVUtils.sanitize(description));
+                this.$message.targetBlank();
+                this.$message.find('a').on('click', function () {
+                    var url = $(this).attr('href');
+                    $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                });
+            }
+            if (confirmLabel) {
+                this.$confirmButton.text(Utils_1.UVUtils.sanitize(confirmLabel));
+            }
             this.resize();
         };
         AuthDialogue.prototype.resize = function () {
