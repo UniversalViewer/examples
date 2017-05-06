@@ -1,0 +1,28 @@
+{
+  "name": "universalviewer",
+  "version": "3.0.0",
+  "description": "The Universal Viewer is a community-developed open source project on a mission to help you share your content with the world.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/universalviewer/examples.git"
+  },
+  "keywords": [
+    "IIIF",
+    "viewer",
+    "3D",
+    "OpenSeadragon",
+    "PDF"
+  ],
+  "author": "Edward Silverton <ed@edsilv.com> (http://edsilv.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/universalviewer/universalviewer/issues"
+  },
+  "homepage": "https://github.com/universalviewer/universalviewer",
+  "devDependencies": {
+    
+  },
+  "dependencies": {
+    
+  }
+}

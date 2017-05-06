@@ -3709,30 +3709,30 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    class ResourceFormat extends Manifesto.StringValue {
+    class MediaType extends Manifesto.StringValue {
         // todo: use getters when ES3 target is no longer required.
         jpg() {
-            return new ResourceFormat(ResourceFormat.JPG.toString());
+            return new MediaType(MediaType.JPG.toString());
         }
         mp4() {
-            return new ResourceFormat(ResourceFormat.MP4.toString());
+            return new MediaType(MediaType.MP4.toString());
         }
         pdf() {
-            return new ResourceFormat(ResourceFormat.PDF.toString());
+            return new MediaType(MediaType.PDF.toString());
         }
         threejs() {
-            return new ResourceFormat(ResourceFormat.THREEJS.toString());
+            return new MediaType(MediaType.THREEJS.toString());
         }
         webm() {
-            return new ResourceFormat(ResourceFormat.WEBM.toString());
+            return new MediaType(MediaType.WEBM.toString());
         }
     }
-    ResourceFormat.JPG = new ResourceFormat("image/jpeg");
-    ResourceFormat.MP4 = new ResourceFormat("video/mp4");
-    ResourceFormat.PDF = new ResourceFormat("application/pdf");
-    ResourceFormat.THREEJS = new ResourceFormat("application/vnd.threejs+json");
-    ResourceFormat.WEBM = new ResourceFormat("video/webm");
-    Manifesto.ResourceFormat = ResourceFormat;
+    MediaType.JPG = new MediaType("image/jpeg");
+    MediaType.MP4 = new MediaType("video/mp4");
+    MediaType.PDF = new MediaType("application/pdf");
+    MediaType.THREEJS = new MediaType("application/vnd.threejs+json");
+    MediaType.WEBM = new MediaType("video/webm");
+    Manifesto.MediaType = MediaType;
 })(Manifesto || (Manifesto = {}));
 
 var Manifesto;
@@ -4103,7 +4103,7 @@ var Manifesto;
             const rotation = 0;
             let quality = 'default';
             let width = w;
-            var size;
+            let size;
             // if an info.json has been loaded
             if (this.externalResource && this.externalResource.data && this.externalResource.data['@id']) {
                 id = this.externalResource.data['@id'];
@@ -4120,16 +4120,16 @@ var Manifesto;
             }
             else {
                 // info.json hasn't been loaded yet
-                var images = this.getImages();
+                const images = this.getImages();
                 if (images && images.length) {
-                    var firstImage = images[0];
-                    var resource = firstImage.getResource();
-                    var services = resource.getServices();
+                    const firstImage = images[0];
+                    const resource = firstImage.getResource();
+                    const services = resource.getServices();
                     if (!width) {
                         width = resource.getWidth();
                     }
                     if (services.length) {
-                        var service = services[0];
+                        const service = services[0];
                         id = service.id;
                         quality = Manifesto.Utils.getImageQuality(service.getProfile());
                     }
@@ -4141,7 +4141,7 @@ var Manifesto;
                 }
             }
             size = width + ',';
-            var uri = [id, region, size, rotation, quality + '.jpg'].join('/');
+            const uri = [id, region, size, rotation, quality + '.jpg'].join('/');
             return uri;
         }
         // Presentation API 3.0
@@ -4159,8 +4159,8 @@ var Manifesto;
             }
             const annotations = annotationPage.getItems();
             for (let i = 0; i < annotations.length; i++) {
-                var a = annotations[i];
-                var annotation = new Manifesto.Annotation(a, this.options);
+                const a = annotations[i];
+                const annotation = new Manifesto.Annotation(a, this.options);
                 content.push(annotation);
             }
             return content;
@@ -4170,8 +4170,8 @@ var Manifesto;
             if (!this.__jsonld.images)
                 return images;
             for (let i = 0; i < this.__jsonld.images.length; i++) {
-                var a = this.__jsonld.images[i];
-                var annotation = new Manifesto.Annotation(a, this.options);
+                const a = this.__jsonld.images[i];
+                const annotation = new Manifesto.Annotation(a, this.options);
                 images.push(annotation);
             }
             return images;
@@ -5155,10 +5155,10 @@ var url = require("url");
 var Manifesto;
 (function (Manifesto) {
     class Utils {
-        static getResourceFormat(format) {
-            format = format.toLowerCase();
-            format = format.split(';')[0];
-            return format.trim();
+        static getMediaType(type) {
+            type = type.toLowerCase();
+            type = type.split(';')[0];
+            return type.trim();
         }
         static getImageQuality(profile) {
             const p = profile.toString();
@@ -5837,9 +5837,9 @@ global.manifesto = global.Manifesto = module.exports = {
     ElementType: new Manifesto.ElementType(),
     IIIFResourceType: new Manifesto.IIIFResourceType(),
     ManifestType: new Manifesto.ManifestType(),
+    MediaType: new Manifesto.MediaType(),
     MetadataItem: Manifesto.MetadataItem,
     RenderingFormat: new Manifesto.RenderingFormat(),
-    ResourceFormat: new Manifesto.ResourceFormat(),
     ResourceType: new Manifesto.ResourceType(),
     ServiceProfile: new Manifesto.ServiceProfile(),
     Translation: Manifesto.Translation,
@@ -5915,7 +5915,7 @@ var Manifesto;
         getFormat() {
             const format = this.getProperty('format');
             if (format) {
-                return new Manifesto.ResourceFormat(Manifesto.Utils.getResourceFormat(format));
+                return new Manifesto.MediaType(Manifesto.Utils.getMediaType(format));
             }
             return null;
         }
@@ -5972,7 +5972,7 @@ var Manifesto;
         getFormat() {
             const format = this.getProperty('format');
             if (format) {
-                return new Manifesto.ResourceFormat(format.toLowerCase());
+                return new Manifesto.MediaType(format.toLowerCase());
             }
             return null;
         }
@@ -13221,7 +13221,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// manifold v1.1.11 https://github.com/viewdir/manifold#readme
+// manifold v1.1.12 https://github.com/viewdir/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 ///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/> 
@@ -13324,33 +13324,35 @@ var Manifold;
         Bootstrapper.prototype.bootstrap = function () {
             var that = this;
             return new Promise(function (resolve, reject) {
-                var msie = that._msieversion();
-                // if not a recent version of IE
-                if (msie > 0 && msie < 11) {
-                    if (msie === 9) {
-                        // CORS not available, use jsonp
-                        var settings = {
-                            url: that._options.iiifResourceUri,
-                            type: 'GET',
-                            dataType: 'jsonp',
-                            jsonp: 'callback',
-                            jsonpCallback: 'manifestCallback'
-                        };
-                        $.ajax(settings);
-                        global.manifestCallback = function (json) {
-                            that._loaded(that, JSON.stringify(json), resolve, reject);
-                        };
-                    }
-                    else if (msie === 10) {
-                        $.getJSON(that._options.iiifResourceUri, function (json) {
-                            that._loaded(that, JSON.stringify(json), resolve, reject);
-                        });
-                    }
-                }
-                else {
+                var msie = that._detectIE();
+                if (msie === false) {
                     manifesto.loadManifest(that._options.iiifResourceUri).then(function (json) {
                         that._loaded(that, json, resolve, reject);
                     });
+                }
+                else {
+                    // if not a recent version of IE
+                    if (msie > 0) {
+                        if (msie === 9) {
+                            // CORS not available, use jsonp
+                            var settings = {
+                                url: that._options.iiifResourceUri,
+                                type: 'GET',
+                                dataType: 'jsonp',
+                                jsonp: 'callback',
+                                jsonpCallback: 'manifestCallback'
+                            };
+                            $.ajax(settings);
+                            global.manifestCallback = function (json) {
+                                that._loaded(that, JSON.stringify(json), resolve, reject);
+                            };
+                        }
+                        else {
+                            $.getJSON(that._options.iiifResourceUri, function (json) {
+                                that._loaded(that, JSON.stringify(json), resolve, reject);
+                            });
+                        }
+                    }
                 }
             });
         };
@@ -13400,15 +13402,35 @@ var Manifold;
                 resolve(helper);
             }
         };
-        Bootstrapper.prototype._msieversion = function () {
-            var ua = global.navigator.userAgent;
-            var msie = ua.indexOf("MSIE ");
+        Bootstrapper.prototype._detectIE = function () {
+            var ua = window.navigator.userAgent;
+            // Test values; Uncomment to check result …
+            // IE 10
+            // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+            // IE 11
+            // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+            // Edge 12 (Spartan)
+            // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+            // Edge 13
+            // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+            var msie = ua.indexOf('MSIE ');
             if (msie > 0) {
-                return parseInt(ua.substring(msie + 5, ua.indexOf(".", msie)));
+                // IE 10 or older => return version number
+                return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
             }
-            else {
-                return 0;
+            var trident = ua.indexOf('Trident/');
+            if (trident > 0) {
+                // IE 11 => return version number
+                var rv = ua.indexOf('rv:');
+                return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
             }
+            var edge = ua.indexOf('Edge/');
+            if (edge > 0) {
+                // Edge (IE 12+) => return version number
+                return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+            }
+            // other browser
+            return false;
         };
         return Bootstrapper;
     }());
@@ -17363,17 +17385,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
     exports.BaseExtension = BaseExtension;
 });
 //# sourceMappingURL=BaseExtension.js.map
-define('modules/uv-shared-module/Bookmark',["require", "exports"], function (require, exports) {
-    "use strict";
-    exports.__esModule = true;
-    var Bookmark = (function () {
-        function Bookmark() {
-        }
-        return Bookmark;
-    }());
-    exports.Bookmark = Bookmark;
-});
-//# sourceMappingURL=Bookmark.js.map
 define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
     "use strict";
     exports.__esModule = true;
@@ -17536,7 +17547,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
+define('extensions/uv-default-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
     exports.__esModule = true;
     var DownloadDialogue = (function (_super) {
@@ -17562,21 +17573,165 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
     exports.DownloadDialogue = DownloadDialogue;
 });
 //# sourceMappingURL=DownloadDialogue.js.map
-define('extensions/uv-mediaelement-extension/Events',["require", "exports"], function (require, exports) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", "./BaseView", "./Utils"], function (require, exports, Shell_1, BaseView_1, Utils_1) {
     "use strict";
     exports.__esModule = true;
-    var Events = (function () {
-        function Events() {
+    var CenterPanel = (function (_super) {
+        __extends(CenterPanel, _super);
+        function CenterPanel($element) {
+            return _super.call(this, $element, false, true) || this;
         }
-        return Events;
-    }());
-    Events.namespace = 'mediaelementExtension.';
-    Events.MEDIA_ENDED = Events.namespace + 'mediaEnded';
-    Events.MEDIA_PAUSED = Events.namespace + 'mediaPaused';
-    Events.MEDIA_PLAYED = Events.namespace + 'mediaPlayed';
-    exports.Events = Events;
+        CenterPanel.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+            this.$title = $('<div class="title"></div>');
+            this.$element.append(this.$title);
+            this.$content = $('<div id="content" class="content"></div>');
+            this.$element.append(this.$content);
+            this.$attribution = $('<div class="attribution">\
+                                   <div class="header">\
+                                       <div class="title"></div>\
+                                       <div class="close"></div>\
+                                   </div>\
+                                   <div class="main">\
+                                       <div class="attribution-text"></div>\
+                                       <div class="license"></div>\
+                                       <div class="logo"></div>\
+                                   </div>\
+                              </div>');
+            this.$attribution.find('.header .title').text(this.content.attribution);
+            this.$content.append(this.$attribution);
+            this.$attribution.hide();
+            this.$closeAttributionButton = this.$attribution.find('.header .close');
+            this.$closeAttributionButton.on('click', function (e) {
+                e.preventDefault();
+                _this.$attribution.hide();
+            });
+            if (!Utils.Bools.getBool(this.options.titleEnabled, true)) {
+                this.$title.hide();
+            }
+        };
+        CenterPanel.prototype.updateAttribution = function () {
+            var _this = this;
+            var attribution = this.extension.helper.getAttribution();
+            //var license = this.provider.getLicense();
+            //var logo = this.provider.getLogo();
+            var enabled = Utils.Bools.getBool(this.options.attributionEnabled, true);
+            if (!attribution || !enabled) {
+                return;
+            }
+            this.$attribution.show();
+            var $attribution = this.$attribution.find('.attribution-text');
+            var $license = this.$attribution.find('.license');
+            var $logo = this.$attribution.find('.logo');
+            $attribution.html(Utils_1.UVUtils.sanitize(attribution));
+            $attribution.find('img').one("load", function () {
+                _this.resize();
+            }).each(function () {
+                if (this.complete)
+                    $(this).load();
+            });
+            $attribution.targetBlank();
+            $attribution.toggleExpandText(this.options.trimAttributionCount, function () {
+                _this.resize();
+            });
+            //if (license){
+            //    $license.append('<a href="' + license + '">' + license + '</a>');
+            //} else {
+            $license.hide();
+            //}
+            //
+            //if (logo){
+            //    $logo.append('<img src="' + logo + '"/>');
+            //} else {
+            $logo.hide();
+            //}
+        };
+        CenterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            var leftPanelWidth = Shell_1.Shell.$leftPanel.is(':visible') ? Math.floor(Shell_1.Shell.$leftPanel.width()) : 0;
+            var rightPanelWidth = Shell_1.Shell.$rightPanel.is(':visible') ? Math.floor(Shell_1.Shell.$rightPanel.width()) : 0;
+            var width = Math.floor(this.$element.parent().width() - leftPanelWidth - rightPanelWidth);
+            this.$element.css({
+                'left': leftPanelWidth,
+                'width': width
+            });
+            var titleHeight;
+            if (this.options && this.options.titleEnabled === false) {
+                titleHeight = 0;
+            }
+            else {
+                titleHeight = this.$title.height();
+            }
+            this.$content.height(this.$element.height() - titleHeight);
+            this.$content.width(this.$element.width());
+            if (this.$attribution && this.$attribution.is(':visible')) {
+                this.$attribution.css('top', this.$content.height() - this.$attribution.outerHeight() - this.$attribution.verticalMargins());
+            }
+        };
+        return CenterPanel;
+    }(BaseView_1.BaseView));
+    exports.CenterPanel = CenterPanel;
 });
-//# sourceMappingURL=Events.js.map
+//# sourceMappingURL=CenterPanel.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
+    "use strict";
+    exports.__esModule = true;
+    var FileLinkCenterPanel = (function (_super) {
+        __extends(FileLinkCenterPanel, _super);
+        function FileLinkCenterPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        FileLinkCenterPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('fileLinkCenterPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+                _this.openMedia(resources);
+            });
+            this.$downloadLink = $('<a target="_blank"></a>');
+            this.$content.append(this.$downloadLink);
+            this.title = this.extension.helper.getLabel();
+        };
+        FileLinkCenterPanel.prototype.openMedia = function (resources) {
+            var _this = this;
+            this.extension.getExternalResources(resources).then(function () {
+                var canvas = _this.extension.helper.getCurrentCanvas();
+                _this.$downloadLink.text(String.format(_this.content.downloadLink, canvas.getLabel()));
+                //this.$downloadLink.attr('href', canvas.thumbnail);
+            });
+        };
+        FileLinkCenterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            if (this.title) {
+                this.$title.ellipsisFill(this.title);
+            }
+        };
+        return FileLinkCenterPanel;
+    }(CenterPanel_1.CenterPanel));
+    exports.FileLinkCenterPanel = FileLinkCenterPanel;
+});
+//# sourceMappingURL=FileLinkCenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18020,288 +18175,6 @@ define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-
     exports.HelpDialogue = HelpDialogue;
 });
 //# sourceMappingURL=HelpDialogue.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", "./BaseView", "./Utils"], function (require, exports, Shell_1, BaseView_1, Utils_1) {
-    "use strict";
-    exports.__esModule = true;
-    var CenterPanel = (function (_super) {
-        __extends(CenterPanel, _super);
-        function CenterPanel($element) {
-            return _super.call(this, $element, false, true) || this;
-        }
-        CenterPanel.prototype.create = function () {
-            var _this = this;
-            _super.prototype.create.call(this);
-            this.$title = $('<div class="title"></div>');
-            this.$element.append(this.$title);
-            this.$content = $('<div id="content" class="content"></div>');
-            this.$element.append(this.$content);
-            this.$attribution = $('<div class="attribution">\
-                                   <div class="header">\
-                                       <div class="title"></div>\
-                                       <div class="close"></div>\
-                                   </div>\
-                                   <div class="main">\
-                                       <div class="attribution-text"></div>\
-                                       <div class="license"></div>\
-                                       <div class="logo"></div>\
-                                   </div>\
-                              </div>');
-            this.$attribution.find('.header .title').text(this.content.attribution);
-            this.$content.append(this.$attribution);
-            this.$attribution.hide();
-            this.$closeAttributionButton = this.$attribution.find('.header .close');
-            this.$closeAttributionButton.on('click', function (e) {
-                e.preventDefault();
-                _this.$attribution.hide();
-            });
-            if (!Utils.Bools.getBool(this.options.titleEnabled, true)) {
-                this.$title.hide();
-            }
-        };
-        CenterPanel.prototype.updateAttribution = function () {
-            var _this = this;
-            var attribution = this.extension.helper.getAttribution();
-            //var license = this.provider.getLicense();
-            //var logo = this.provider.getLogo();
-            var enabled = Utils.Bools.getBool(this.options.attributionEnabled, true);
-            if (!attribution || !enabled) {
-                return;
-            }
-            this.$attribution.show();
-            var $attribution = this.$attribution.find('.attribution-text');
-            var $license = this.$attribution.find('.license');
-            var $logo = this.$attribution.find('.logo');
-            $attribution.html(Utils_1.UVUtils.sanitize(attribution));
-            $attribution.find('img').one("load", function () {
-                _this.resize();
-            }).each(function () {
-                if (this.complete)
-                    $(this).load();
-            });
-            $attribution.targetBlank();
-            $attribution.toggleExpandText(this.options.trimAttributionCount, function () {
-                _this.resize();
-            });
-            //if (license){
-            //    $license.append('<a href="' + license + '">' + license + '</a>');
-            //} else {
-            $license.hide();
-            //}
-            //
-            //if (logo){
-            //    $logo.append('<img src="' + logo + '"/>');
-            //} else {
-            $logo.hide();
-            //}
-        };
-        CenterPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            var leftPanelWidth = Shell_1.Shell.$leftPanel.is(':visible') ? Math.floor(Shell_1.Shell.$leftPanel.width()) : 0;
-            var rightPanelWidth = Shell_1.Shell.$rightPanel.is(':visible') ? Math.floor(Shell_1.Shell.$rightPanel.width()) : 0;
-            var width = Math.floor(this.$element.parent().width() - leftPanelWidth - rightPanelWidth);
-            this.$element.css({
-                'left': leftPanelWidth,
-                'width': width
-            });
-            var titleHeight;
-            if (this.options && this.options.titleEnabled === false) {
-                titleHeight = 0;
-            }
-            else {
-                titleHeight = this.$title.height();
-            }
-            this.$content.height(this.$element.height() - titleHeight);
-            this.$content.width(this.$element.width());
-            if (this.$attribution && this.$attribution.is(':visible')) {
-                this.$attribution.css('top', this.$content.height() - this.$attribution.outerHeight() - this.$attribution.verticalMargins());
-            }
-        };
-        return CenterPanel;
-    }(BaseView_1.BaseView));
-    exports.CenterPanel = CenterPanel;
-});
-//# sourceMappingURL=CenterPanel.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-mediaelement-extension/Events", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, Events_1, CenterPanel_1) {
-    "use strict";
-    exports.__esModule = true;
-    var MediaElementCenterPanel = (function (_super) {
-        __extends(MediaElementCenterPanel, _super);
-        function MediaElementCenterPanel($element) {
-            return _super.call(this, $element) || this;
-        }
-        MediaElementCenterPanel.prototype.create = function () {
-            this.setConfig('mediaelementCenterPanel');
-            _super.prototype.create.call(this);
-            var that = this;
-            // events.
-            // only full screen video
-            if (this.isVideo()) {
-                $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
-                    if (that.component.isFullScreen) {
-                        that.player.enterFullScreen(false);
-                    }
-                    else {
-                        that.player.exitFullScreen(false);
-                    }
-                });
-            }
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
-                that.openMedia(resources);
-            });
-            this.$container = $('<div class="container"></div>');
-            this.$content.append(this.$container);
-            this.title = this.extension.helper.getLabel();
-        };
-        MediaElementCenterPanel.prototype.openMedia = function (resources) {
-            var _this = this;
-            var that = this;
-            this.extension.getExternalResources(resources).then(function () {
-                _this.$container.empty();
-                var canvas = _this.extension.helper.getCurrentCanvas();
-                _this.mediaHeight = _this.config.defaultHeight;
-                _this.mediaWidth = _this.config.defaultWidth;
-                _this.$container.height(_this.mediaHeight);
-                _this.$container.width(_this.mediaWidth);
-                var poster = _this.extension.getPosterImageUri();
-                var sources = [];
-                $.each(canvas.getRenderings(), function (index, rendering) {
-                    sources.push({
-                        type: rendering.getFormat().toString(),
-                        src: rendering.id
-                    });
-                });
-                if (_this.isVideo()) {
-                    _this.$media = $('<video controls="controls" preload="none"></video>');
-                    _this.$container.append(_this.$media);
-                    _this.player = new MediaElementPlayer($('video')[0], {
-                        //pluginPath: this.extension.data.root + 'lib/mediaelement/',
-                        poster: poster,
-                        features: ['playpause', 'current', 'progress', 'volume'],
-                        success: function (mediaElement, originalNode) {
-                            mediaElement.addEventListener('canplay', function () {
-                                that.resize();
-                            });
-                            mediaElement.addEventListener('play', function () {
-                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
-                            });
-                            mediaElement.addEventListener('pause', function () {
-                                // mediaelement creates a pause event before the ended event. ignore this.
-                                if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
-                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
-                                }
-                            });
-                            mediaElement.addEventListener('ended', function () {
-                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
-                            });
-                            mediaElement.setSrc(sources);
-                        }
-                    });
-                }
-                else {
-                    // Try to find an MP3, since this is most likely to work:
-                    var preferredSource = 0;
-                    for (var i in sources) {
-                        if (sources[i].type === "audio/mp3") {
-                            preferredSource = i;
-                            break;
-                        }
-                    }
-                    _this.$media = $('<audio controls="controls" preload="none"></audio>');
-                    _this.$container.append(_this.$media);
-                    _this.player = new MediaElementPlayer($('audio')[0], {
-                        poster: poster,
-                        defaultAudioWidth: that.mediaWidth,
-                        defaultAudioHeight: that.mediaHeight,
-                        showPosterWhenPaused: true,
-                        showPosterWhenEnded: true,
-                        success: function (mediaElement, originalNode) {
-                            mediaElement.addEventListener('canplay', function () {
-                                that.resize();
-                            });
-                            mediaElement.addEventListener('play', function () {
-                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
-                            });
-                            mediaElement.addEventListener('pause', function () {
-                                // mediaelement creates a pause event before the ended event. ignore this.
-                                if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
-                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
-                                }
-                            });
-                            mediaElement.addEventListener('ended', function () {
-                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
-                            });
-                            mediaElement.setSrc(sources);
-                        }
-                    });
-                }
-                _this.resize();
-            });
-        };
-        MediaElementCenterPanel.prototype.isVideo = function () {
-            return this.extension.isVideo();
-        };
-        MediaElementCenterPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            // if in Firefox < v13 don't resize the media container.
-            if (window.browserDetect.browser === 'Firefox' && window.browserDetect.version < 13) {
-                this.$container.width(this.mediaWidth);
-                this.$container.height(this.mediaHeight);
-            }
-            else {
-                // fit media to available space.
-                var size = Utils.Measurements.Dimensions.fitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
-                this.$container.height(size.height);
-                this.$container.width(size.width);
-                if (this.player && !this.extension.isFullScreen()) {
-                    this.$media.width(size.width);
-                    this.$media.height(size.height);
-                }
-            }
-            var left = Math.floor((this.$content.width() - this.$container.width()) / 2);
-            var top = Math.floor((this.$content.height() - this.$container.height()) / 2);
-            this.$container.css({
-                'left': left,
-                'top': top
-            });
-            if (this.title) {
-                this.$title.ellipsisFill(this.title);
-            }
-            if (this.player) {
-                if (!this.isVideo() || (this.isVideo() && !this.component.isFullScreen)) {
-                    this.player.setPlayerSize();
-                    this.player.setControlsSize();
-                    var $mejs = $('.mejs__container');
-                    $mejs.css({
-                        'margin-top': (this.$container.height() - $mejs.height()) / 2
-                    });
-                }
-            }
-        };
-        return MediaElementCenterPanel;
-    }(CenterPanel_1.CenterPanel));
-    exports.MediaElementCenterPanel = MediaElementCenterPanel;
-});
-//# sourceMappingURL=MediaElementCenterPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -19200,7 +19073,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-mediaelement-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
+define('extensions/uv-default-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
     exports.__esModule = true;
     var SettingsDialogue = (function (_super) {
@@ -19515,6 +19388,393 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
     exports.ShareDialogue = ShareDialogue;
 });
 //# sourceMappingURL=ShareDialogue.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-default-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
+    "use strict";
+    exports.__esModule = true;
+    var ShareDialogue = (function (_super) {
+        __extends(ShareDialogue, _super);
+        function ShareDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        ShareDialogue.prototype.create = function () {
+            this.setConfig('shareDialogue');
+            _super.prototype.create.call(this);
+        };
+        ShareDialogue.prototype.update = function () {
+            _super.prototype.update.call(this);
+            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
+            this.$code.val(this.code);
+        };
+        ShareDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return ShareDialogue;
+    }(ShareDialogue_1.ShareDialogue));
+    exports.ShareDialogue = ShareDialogue;
+});
+//# sourceMappingURL=ShareDialogue.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-default-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "./DownloadDialogue", "../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, DownloadDialogue_1, FileLinkCenterPanel_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+    "use strict";
+    exports.__esModule = true;
+    var Extension = (function (_super) {
+        __extends(Extension, _super);
+        function Extension() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Extension.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+            // listen for mediaelement enter/exit fullscreen events.
+            $(window).bind('enterfullscreen', function () {
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+            });
+            $(window).bind('exitfullscreen', function () {
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.viewCanvas(canvasIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
+            });
+        };
+        Extension.prototype.createModules = function () {
+            _super.prototype.createModules.call(this);
+            if (this.isHeaderPanelEnabled()) {
+                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+            }
+            else {
+                Shell_1.Shell.$headerPanel.hide();
+            }
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(Shell_1.Shell.$leftPanel);
+            }
+            this.centerPanel = new FileLinkCenterPanel_1.FileLinkCenterPanel(Shell_1.Shell.$centerPanel);
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+            }
+            if (this.isFooterPanelEnabled()) {
+                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
+            }
+            else {
+                Shell_1.Shell.$footerPanel.hide();
+            }
+            this.$helpDialogue = $('<div class="overlay help"></div>');
+            Shell_1.Shell.$overlays.append(this.$helpDialogue);
+            this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
+            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
+            this.$shareDialogue = $('<div class="overlay share"></div>');
+            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
+            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel.init();
+            }
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel.init();
+            }
+        };
+        Extension.prototype.update = function () {
+            _super.prototype.update.call(this);
+        };
+        Extension.prototype.isLeftPanelEnabled = function () {
+            return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true)
+                && ((this.helper.isMultiCanvas() || this.helper.isMultiSequence()) || this.helper.hasResources());
+        };
+        Extension.prototype.getEmbedScript = function (template, width, height) {
+            var configUri = this.data.config.uri || '';
+            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
+            return script;
+        };
+        return Extension;
+    }(BaseExtension_1.BaseExtension));
+    exports.Extension = Extension;
+});
+//# sourceMappingURL=Extension.js.map
+define('modules/uv-shared-module/Bookmark',["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.__esModule = true;
+    var Bookmark = (function () {
+        function Bookmark() {
+        }
+        return Bookmark;
+    }());
+    exports.Bookmark = Bookmark;
+});
+//# sourceMappingURL=Bookmark.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
+    "use strict";
+    exports.__esModule = true;
+    var DownloadDialogue = (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        DownloadDialogue.prototype.create = function () {
+            this.setConfig('downloadDialogue');
+            _super.prototype.create.call(this);
+        };
+        DownloadDialogue.prototype.open = function ($triggerButton) {
+            _super.prototype.open.call(this, $triggerButton);
+            this.addEntireFileDownloadOptions();
+            this.updateNoneAvailable();
+            this.resize();
+        };
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            return _super.prototype.isDownloadOptionAvailable.call(this, option);
+        };
+        return DownloadDialogue;
+    }(DownloadDialogue_1.DownloadDialogue));
+    exports.DownloadDialogue = DownloadDialogue;
+});
+//# sourceMappingURL=DownloadDialogue.js.map
+define('extensions/uv-mediaelement-extension/Events',["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.__esModule = true;
+    var Events = (function () {
+        function Events() {
+        }
+        return Events;
+    }());
+    Events.namespace = 'mediaelementExtension.';
+    Events.MEDIA_ENDED = Events.namespace + 'mediaEnded';
+    Events.MEDIA_PAUSED = Events.namespace + 'mediaPaused';
+    Events.MEDIA_PLAYED = Events.namespace + 'mediaPlayed';
+    exports.Events = Events;
+});
+//# sourceMappingURL=Events.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-mediaelement-extension/Events", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, Events_1, CenterPanel_1) {
+    "use strict";
+    exports.__esModule = true;
+    var MediaElementCenterPanel = (function (_super) {
+        __extends(MediaElementCenterPanel, _super);
+        function MediaElementCenterPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        MediaElementCenterPanel.prototype.create = function () {
+            this.setConfig('mediaelementCenterPanel');
+            _super.prototype.create.call(this);
+            var that = this;
+            // events.
+            // only full screen video
+            if (this.isVideo()) {
+                $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+                    if (that.component.isFullScreen) {
+                        that.player.enterFullScreen(false);
+                    }
+                    else {
+                        that.player.exitFullScreen(false);
+                    }
+                });
+            }
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+                that.openMedia(resources);
+            });
+            this.$container = $('<div class="container"></div>');
+            this.$content.append(this.$container);
+            this.title = this.extension.helper.getLabel();
+        };
+        MediaElementCenterPanel.prototype.openMedia = function (resources) {
+            var _this = this;
+            var that = this;
+            this.extension.getExternalResources(resources).then(function () {
+                _this.$container.empty();
+                var canvas = _this.extension.helper.getCurrentCanvas();
+                _this.mediaHeight = _this.config.defaultHeight;
+                _this.mediaWidth = _this.config.defaultWidth;
+                _this.$container.height(_this.mediaHeight);
+                _this.$container.width(_this.mediaWidth);
+                var poster = _this.extension.getPosterImageUri();
+                var sources = [];
+                $.each(canvas.getRenderings(), function (index, rendering) {
+                    sources.push({
+                        type: rendering.getFormat().toString(),
+                        src: rendering.id
+                    });
+                });
+                if (_this.isVideo()) {
+                    _this.$media = $('<video controls="controls" preload="none"></video>');
+                    _this.$container.append(_this.$media);
+                    _this.player = new MediaElementPlayer($('video')[0], {
+                        //pluginPath: this.extension.data.root + 'lib/mediaelement/',
+                        poster: poster,
+                        features: ['playpause', 'current', 'progress', 'volume'],
+                        success: function (mediaElement, originalNode) {
+                            mediaElement.addEventListener('canplay', function () {
+                                that.resize();
+                            });
+                            mediaElement.addEventListener('play', function () {
+                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                            });
+                            mediaElement.addEventListener('pause', function () {
+                                // mediaelement creates a pause event before the ended event. ignore this.
+                                if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
+                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                }
+                            });
+                            mediaElement.addEventListener('ended', function () {
+                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                            });
+                            mediaElement.setSrc(sources);
+                        }
+                    });
+                }
+                else {
+                    // Try to find an MP3, since this is most likely to work:
+                    var preferredSource = 0;
+                    for (var i in sources) {
+                        if (sources[i].type === "audio/mp3") {
+                            preferredSource = i;
+                            break;
+                        }
+                    }
+                    _this.$media = $('<audio controls="controls" preload="none"></audio>');
+                    _this.$container.append(_this.$media);
+                    _this.player = new MediaElementPlayer($('audio')[0], {
+                        poster: poster,
+                        defaultAudioWidth: that.mediaWidth,
+                        defaultAudioHeight: that.mediaHeight,
+                        showPosterWhenPaused: true,
+                        showPosterWhenEnded: true,
+                        success: function (mediaElement, originalNode) {
+                            mediaElement.addEventListener('canplay', function () {
+                                that.resize();
+                            });
+                            mediaElement.addEventListener('play', function () {
+                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                            });
+                            mediaElement.addEventListener('pause', function () {
+                                // mediaelement creates a pause event before the ended event. ignore this.
+                                if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
+                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                }
+                            });
+                            mediaElement.addEventListener('ended', function () {
+                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                            });
+                            mediaElement.setSrc(sources);
+                        }
+                    });
+                }
+                _this.resize();
+            });
+        };
+        MediaElementCenterPanel.prototype.isVideo = function () {
+            return this.extension.isVideo();
+        };
+        MediaElementCenterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            // if in Firefox < v13 don't resize the media container.
+            if (window.browserDetect.browser === 'Firefox' && window.browserDetect.version < 13) {
+                this.$container.width(this.mediaWidth);
+                this.$container.height(this.mediaHeight);
+            }
+            else {
+                // fit media to available space.
+                var size = Utils.Measurements.Dimensions.fitRect(this.mediaWidth, this.mediaHeight, this.$content.width(), this.$content.height());
+                this.$container.height(size.height);
+                this.$container.width(size.width);
+                if (this.player && !this.extension.isFullScreen()) {
+                    this.$media.width(size.width);
+                    this.$media.height(size.height);
+                }
+            }
+            var left = Math.floor((this.$content.width() - this.$container.width()) / 2);
+            var top = Math.floor((this.$content.height() - this.$container.height()) / 2);
+            this.$container.css({
+                'left': left,
+                'top': top
+            });
+            if (this.title) {
+                this.$title.ellipsisFill(this.title);
+            }
+            if (this.player) {
+                if (!this.isVideo() || (this.isVideo() && !this.component.isFullScreen)) {
+                    this.player.setPlayerSize();
+                    this.player.setControlsSize();
+                    var $mejs = $('.mejs__container');
+                    $mejs.css({
+                        'margin-top': (this.$container.height() - $mejs.height()) / 2
+                    });
+                }
+            }
+        };
+        return MediaElementCenterPanel;
+    }(CenterPanel_1.CenterPanel));
+    exports.MediaElementCenterPanel = MediaElementCenterPanel;
+});
+//# sourceMappingURL=MediaElementCenterPanel.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-mediaelement-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
+    "use strict";
+    exports.__esModule = true;
+    var SettingsDialogue = (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        SettingsDialogue.prototype.create = function () {
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+        };
+        return SettingsDialogue;
+    }(SettingsDialogue_1.SettingsDialogue));
+    exports.SettingsDialogue = SettingsDialogue;
+});
+//# sourceMappingURL=SettingsDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -25034,7 +25294,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension"], function (require, exports, BaseEvents_1, Extension_1, Extension_2, Extension_3, Extension_4) {
+define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./extensions/uv-default-extension/Extension", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension"], function (require, exports, BaseEvents_1, Extension_1, Extension_2, Extension_3, Extension_4, Extension_5) {
     "use strict";
     exports.__esModule = true;
     var UVComponent = (function (_super) {
@@ -25053,24 +25313,28 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             }
             this._extensions = {};
             this._extensions[manifesto.ElementType.canvas().toString()] = {
-                type: Extension_2.Extension,
+                type: Extension_3.Extension,
                 name: 'uv-seadragon-extension'
             };
             this._extensions[manifesto.ElementType.movingimage().toString()] = {
-                type: Extension_1.Extension,
+                type: Extension_2.Extension,
                 name: 'uv-mediaelement-extension'
             };
             this._extensions[manifesto.ElementType.physicalobject().toString()] = {
-                type: Extension_4.Extension,
+                type: Extension_5.Extension,
                 name: 'uv-virtex-extension'
             };
             this._extensions[manifesto.ElementType.sound().toString()] = {
-                type: Extension_1.Extension,
+                type: Extension_2.Extension,
                 name: 'uv-mediaelement-extension'
             };
             this._extensions[manifesto.RenderingFormat.pdf().toString()] = {
-                type: Extension_3.Extension,
+                type: Extension_4.Extension,
                 name: 'uv-pdf-extension'
+            };
+            this._extensions['default'] = {
+                type: Extension_1.Extension,
+                name: 'uv-default-extension'
             };
             this.set(this.options.data);
             return success;
@@ -25179,18 +25443,34 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                     that._error("Canvas " + data.canvasIndex + " not found.");
                     return;
                 }
-                var canvasType = canvas.getType();
-                // try using canvasType
-                var extension = that._extensions[canvasType.toString()];
-                // if there isn't an extension for the canvasType, try the format
-                if (!extension) {
-                    var format = canvas.getProperty('format');
-                    extension = that._extensions[format];
+                var extension = null;
+                // canvasType will always be "canvas" in IIIF presentation 3.0
+                // to determine the correct extension to use, we need to inspect canvas.content.items[0].format
+                // which is an iana media type: http://www.iana.org/assignments/media-types/media-types.xhtml
+                var content = canvas.getContent();
+                if (content.length) {
+                    var annotation = content[0];
+                    var body = annotation.getBody();
+                    if (body) {
+                        var format = body[0].getFormat();
+                        if (format) {
+                            extension = that._extensions[format.toString()];
+                        }
+                    }
                 }
-                // if there still isn't a matching extension, show an error.
+                else {
+                    var canvasType = canvas.getType();
+                    // try using canvasType
+                    extension = that._extensions[canvasType.toString()];
+                    // if there isn't an extension for the canvasType, try the format
+                    if (!extension) {
+                        var format = canvas.getProperty('format');
+                        extension = that._extensions[format];
+                    }
+                }
+                // if there still isn't a matching extension, use the default extension.
                 if (!extension) {
-                    _this._error('No matching UV extension found.');
-                    return;
+                    extension = that._extensions['default'];
                 }
                 that._configure(data, extension, function (config) {
                     data.config = config;
@@ -25310,7 +25590,9 @@ if (typeof jQuery === "function") {
     window.CustomEvent = CustomEvent;
     return;
 })();
-// things in src/lib that are generic to all extensions
+// - things in src/lib that are generic to all extensions
+// - bundled data providers
+// - UVComponent
 requirejs([
     './lib/base64.min.js',
     './lib/browserdetect.js',
