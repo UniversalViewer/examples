@@ -726,7 +726,7 @@
           "visible": true
         },
         {
-          "@id": "manifest/defaultextension.json",
+          "@id": "https://edsilv.github.io/test-manifests/defaultextension.json",
           "@type": "sc:Manifest",
           "label": "Default Extension",
           "visible": true

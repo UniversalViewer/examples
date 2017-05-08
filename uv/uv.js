@@ -5876,11 +5876,11 @@ var Manifesto;
                 if (body.items) {
                     for (var i = 0; i < body.items.length; i++) {
                         const b = body.items[i];
-                        bodies.push(b);
+                        bodies.push(new Manifesto.AnnotationBody(b, this.options));
                     }
                 }
                 else {
-                    bodies.push(new Manifesto.AnnotationBody(body));
+                    bodies.push(new Manifesto.AnnotationBody(body, this.options));
                 }
             }
             return bodies;
@@ -17385,194 +17385,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
     exports.BaseExtension = BaseExtension;
 });
 //# sourceMappingURL=BaseExtension.js.map
-define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
-    "use strict";
-    exports.__esModule = true;
-    var DownloadOption = (function () {
-        function DownloadOption(value) {
-            this.value = value;
-        }
-        DownloadOption.prototype.toString = function () {
-            return this.value;
-        };
-        return DownloadOption;
-    }());
-    DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
-    DownloadOption.dynamicCanvasRenderings = new DownloadOption("dynamicCanvasRenderings");
-    DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
-    DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
-    DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
-    DownloadOption.selection = new DownloadOption("selection");
-    DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
-    DownloadOption.wholeImagesHighRes = new DownloadOption("wholeImagesHighRes");
-    DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
-    exports.DownloadOption = DownloadOption;
-});
-//# sourceMappingURL=DownloadOption.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseEvents_1, Dialogue_1, DownloadOption_1) {
-    "use strict";
-    exports.__esModule = true;
-    var DownloadDialogue = (function (_super) {
-        __extends(DownloadDialogue, _super);
-        function DownloadDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        DownloadDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('downloadDialogue');
-            _super.prototype.create.call(this);
-            this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
-            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, $triggerButton) {
-                _this.open($triggerButton);
-            });
-            $.subscribe(this.closeCommand, function () {
-                _this.close();
-            });
-            // create ui.
-            this.$title = $('<h1>' + this.content.title + '</h1>');
-            this.$content.append(this.$title);
-            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
-            this.$content.append(this.$noneAvailable);
-            this.$downloadOptions = $('<ol class="options"></ol>');
-            this.$content.append(this.$downloadOptions);
-            this.$footer = $('<div class="footer"></div>');
-            this.$content.append(this.$footer);
-            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
-            this.$footer.append(this.$termsOfUseButton);
-            this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
-            });
-            // hide
-            this.$element.hide();
-            this.updateTermsOfUseButton();
-        };
-        DownloadDialogue.prototype.addEntireFileDownloadOptions = function () {
-            var _this = this;
-            if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.entireFileAsOriginal)) {
-                this.$downloadOptions.empty();
-                // add each file src
-                var canvas = this.extension.helper.getCurrentCanvas();
-                var renderingFound_1 = false;
-                $.each(canvas.getRenderings(), function (index, rendering) {
-                    var renderingFormat = rendering.getFormat();
-                    var format = '';
-                    if (renderingFormat) {
-                        format = renderingFormat.toString();
-                    }
-                    _this.addEntireFileDownloadOption(rendering.id, Manifesto.TranslationCollection.getValue(rendering.getLabel()), format);
-                    renderingFound_1 = true;
-                });
-                if (!renderingFound_1) {
-                    this.addEntireFileDownloadOption(canvas.id, '', '');
-                }
-            }
-        };
-        DownloadDialogue.prototype.addEntireFileDownloadOption = function (uri, label, format) {
-            if (label) {
-                label += " ({0})";
-            }
-            else {
-                label = this.content.entireFileAsOriginal;
-            }
-            var fileType;
-            if (format) {
-                fileType = Utils.Files.simplifyMimeType(format);
-            }
-            else {
-                fileType = this.getFileExtension(uri);
-            }
-            this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + String.format(label, fileType) + '</li>');
-        };
-        DownloadDialogue.prototype.updateNoneAvailable = function () {
-            if (!this.$downloadOptions.find('li:visible').length) {
-                this.$noneAvailable.show();
-            }
-            else {
-                // select first option.
-                this.$noneAvailable.hide();
-            }
-        };
-        DownloadDialogue.prototype.updateTermsOfUseButton = function () {
-            var attribution = this.extension.helper.getAttribution(); // todo: this should eventually use a suitable IIIF 'terms' field.
-            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && attribution) {
-                this.$termsOfUseButton.show();
-            }
-            else {
-                this.$termsOfUseButton.hide();
-            }
-        };
-        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
-            return fileUri.split('.').pop();
-        };
-        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            switch (option) {
-                case DownloadOption_1.DownloadOption.entireFileAsOriginal:
-                    // check if ui-extensions disable it
-                    var uiExtensions = this.extension.helper.manifest.getService(manifesto.ServiceProfile.uiExtensions());
-                    if (uiExtensions && !this.extension.helper.isUIEnabled('mediaDownload')) {
-                        return false;
-                    }
-            }
-            return true;
-        };
-        DownloadDialogue.prototype.close = function () {
-            _super.prototype.close.call(this);
-        };
-        DownloadDialogue.prototype.resize = function () {
-            this.setDockedPosition();
-        };
-        return DownloadDialogue;
-    }(Dialogue_1.Dialogue));
-    exports.DownloadDialogue = DownloadDialogue;
-});
-//# sourceMappingURL=DownloadDialogue.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-default-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
-    "use strict";
-    exports.__esModule = true;
-    var DownloadDialogue = (function (_super) {
-        __extends(DownloadDialogue, _super);
-        function DownloadDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        DownloadDialogue.prototype.create = function () {
-            this.setConfig('downloadDialogue');
-            _super.prototype.create.call(this);
-        };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
-            this.addEntireFileDownloadOptions();
-            this.updateNoneAvailable();
-            this.resize();
-        };
-        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            return _super.prototype.isDownloadOptionAvailable.call(this, option);
-        };
-        return DownloadDialogue;
-    }(DownloadDialogue_1.DownloadDialogue));
-    exports.DownloadDialogue = DownloadDialogue;
-});
-//# sourceMappingURL=DownloadDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -17694,7 +17506,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
+define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Utils"], function (require, exports, BaseEvents_1, CenterPanel_1, Utils_1) {
     "use strict";
     exports.__esModule = true;
     var FileLinkCenterPanel = (function (_super) {
@@ -17709,16 +17521,42 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
             });
-            this.$downloadLink = $('<a target="_blank"></a>');
-            this.$content.append(this.$downloadLink);
+            this.$scroll = $('<div class="scroll"><div>');
+            this.$content.append(this.$scroll);
+            this.$downloadLinks = $('<ul></ul>');
+            this.$scroll.append(this.$downloadLinks);
+            this.$downloadLinkTemplate = $('<li><img><a target="_blank" download></a></li>');
             this.title = this.extension.helper.getLabel();
         };
         FileLinkCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
             this.extension.getExternalResources(resources).then(function () {
                 var canvas = _this.extension.helper.getCurrentCanvas();
-                _this.$downloadLink.text(String.format(_this.content.downloadLink, canvas.getLabel()));
-                //this.$downloadLink.attr('href', canvas.thumbnail);
+                var annotations = canvas.getContent();
+                var $link;
+                for (var i = 0; i < annotations.length; i++) {
+                    var annotation = annotations[i];
+                    if (!annotation.getBody().length) {
+                        continue;
+                    }
+                    $link = _this.$downloadLinkTemplate.clone();
+                    var $a = $link.find('a');
+                    var $img = $link.find('img');
+                    var annotationBody = annotation.getBody()[0];
+                    $a.prop('href', annotationBody.getProperty('id'));
+                    var label = Manifesto.TranslationCollection.getValue(annotationBody.getLabel());
+                    if (label) {
+                        $a.text(String.format(_this.content.downloadLink, Utils_1.UVUtils.sanitize(label)));
+                    }
+                    var thumbnail = annotation.getProperty('thumbnail');
+                    if (thumbnail) {
+                        $img.prop('src', thumbnail);
+                    }
+                    else {
+                        $img.hide();
+                    }
+                    _this.$downloadLinks.append($link);
+                }
             });
         };
         FileLinkCenterPanel.prototype.resize = function () {
@@ -17726,6 +17564,7 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
             if (this.title) {
                 this.$title.ellipsisFill(this.title);
             }
+            this.$scroll.height(this.$content.height() - this.$scroll.verticalMargins());
         };
         return FileLinkCenterPanel;
     }(CenterPanel_1.CenterPanel));
@@ -19433,7 +19272,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-default-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "./DownloadDialogue", "../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, DownloadDialogue_1, FileLinkCenterPanel_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-default-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, FileLinkCenterPanel_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
     exports.__esModule = true;
     var Extension = (function (_super) {
@@ -19482,9 +19321,6 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
             this.$helpDialogue = $('<div class="overlay help"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$downloadDialogue = $('<div class="overlay download"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
-            this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
             this.$shareDialogue = $('<div class="overlay share"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
@@ -19526,6 +19362,158 @@ define('modules/uv-shared-module/Bookmark',["require", "exports"], function (req
     exports.Bookmark = Bookmark;
 });
 //# sourceMappingURL=Bookmark.js.map
+define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.__esModule = true;
+    var DownloadOption = (function () {
+        function DownloadOption(value) {
+            this.value = value;
+        }
+        DownloadOption.prototype.toString = function () {
+            return this.value;
+        };
+        return DownloadOption;
+    }());
+    DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
+    DownloadOption.dynamicCanvasRenderings = new DownloadOption("dynamicCanvasRenderings");
+    DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
+    DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
+    DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
+    DownloadOption.selection = new DownloadOption("selection");
+    DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
+    DownloadOption.wholeImagesHighRes = new DownloadOption("wholeImagesHighRes");
+    DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
+    exports.DownloadOption = DownloadOption;
+});
+//# sourceMappingURL=DownloadOption.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseEvents_1, Dialogue_1, DownloadOption_1) {
+    "use strict";
+    exports.__esModule = true;
+    var DownloadDialogue = (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        DownloadDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('downloadDialogue');
+            _super.prototype.create.call(this);
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
+            $.subscribe(this.openCommand, function (e, $triggerButton) {
+                _this.open($triggerButton);
+            });
+            $.subscribe(this.closeCommand, function () {
+                _this.close();
+            });
+            // create ui.
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
+            this.$content.append(this.$noneAvailable);
+            this.$downloadOptions = $('<ol class="options"></ol>');
+            this.$content.append(this.$downloadOptions);
+            this.$footer = $('<div class="footer"></div>');
+            this.$content.append(this.$footer);
+            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
+            this.$footer.append(this.$termsOfUseButton);
+            this.$termsOfUseButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
+            });
+            // hide
+            this.$element.hide();
+            this.updateTermsOfUseButton();
+        };
+        DownloadDialogue.prototype.addEntireFileDownloadOptions = function () {
+            var _this = this;
+            if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.entireFileAsOriginal)) {
+                this.$downloadOptions.empty();
+                // add each file src
+                var canvas = this.extension.helper.getCurrentCanvas();
+                var renderingFound_1 = false;
+                $.each(canvas.getRenderings(), function (index, rendering) {
+                    var renderingFormat = rendering.getFormat();
+                    var format = '';
+                    if (renderingFormat) {
+                        format = renderingFormat.toString();
+                    }
+                    _this.addEntireFileDownloadOption(rendering.id, Manifesto.TranslationCollection.getValue(rendering.getLabel()), format);
+                    renderingFound_1 = true;
+                });
+                if (!renderingFound_1) {
+                    this.addEntireFileDownloadOption(canvas.id, '', '');
+                }
+            }
+        };
+        DownloadDialogue.prototype.addEntireFileDownloadOption = function (uri, label, format) {
+            if (label) {
+                label += " ({0})";
+            }
+            else {
+                label = this.content.entireFileAsOriginal;
+            }
+            var fileType;
+            if (format) {
+                fileType = Utils.Files.simplifyMimeType(format);
+            }
+            else {
+                fileType = this.getFileExtension(uri);
+            }
+            this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + String.format(label, fileType) + '</li>');
+        };
+        DownloadDialogue.prototype.updateNoneAvailable = function () {
+            if (!this.$downloadOptions.find('li:visible').length) {
+                this.$noneAvailable.show();
+            }
+            else {
+                // select first option.
+                this.$noneAvailable.hide();
+            }
+        };
+        DownloadDialogue.prototype.updateTermsOfUseButton = function () {
+            var attribution = this.extension.helper.getAttribution(); // todo: this should eventually use a suitable IIIF 'terms' field.
+            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && attribution) {
+                this.$termsOfUseButton.show();
+            }
+            else {
+                this.$termsOfUseButton.hide();
+            }
+        };
+        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
+            return fileUri.split('.').pop();
+        };
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            switch (option) {
+                case DownloadOption_1.DownloadOption.entireFileAsOriginal:
+                    // check if ui-extensions disable it
+                    var uiExtensions = this.extension.helper.manifest.getService(manifesto.ServiceProfile.uiExtensions());
+                    if (uiExtensions && !this.extension.helper.isUIEnabled('mediaDownload')) {
+                        return false;
+                    }
+            }
+            return true;
+        };
+        DownloadDialogue.prototype.close = function () {
+            _super.prototype.close.call(this);
+        };
+        DownloadDialogue.prototype.resize = function () {
+            this.setDockedPosition();
+        };
+        return DownloadDialogue;
+    }(Dialogue_1.Dialogue));
+    exports.DownloadDialogue = DownloadDialogue;
+});
+//# sourceMappingURL=DownloadDialogue.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||

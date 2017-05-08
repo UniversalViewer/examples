@@ -455,6 +455,22 @@
   font-size: 11px;
   text-transform: uppercase;
 }
+.uv .centerPanel .content .scroll {
+  margin: 10px 10px 10px 20px;
+  overflow: auto;
+}
+.uv .centerPanel .content .scroll ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.uv .centerPanel .content .scroll ul li {
+  margin: 0 0 10px 0;
+}
+.uv .centerPanel .content .scroll ul li img {
+  width: 60px;
+  margin: 0 10px 0 0;
+}
 .uv {
   margin: 0;
   padding: 0;
