@@ -730,6 +730,24 @@
           "@type": "sc:Manifest",
           "label": "Default Extension",
           "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/pres3-3d.json",
+          "@type": "sc:Manifest",
+          "label": "Presentation 3 3D",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/pres3-pdf.json",
+          "@type": "sc:Manifest",
+          "label": "Presentation 3 PDF",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/pres3-video.json",
+          "@type": "sc:Manifest",
+          "label": "Presentation 3 Video",
+          "visible": true
         }
       ]
     },

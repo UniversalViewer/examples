@@ -17277,6 +17277,20 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 });
             }
         };
+        BaseExtension.prototype.getMediaFormats = function (canvas) {
+            var annotations = canvas.getContent();
+            if (annotations && annotations.length) {
+                var annotation = annotations[0];
+                return annotation.getBody();
+            }
+            else {
+                var body = {
+                    id: canvas.id,
+                    type: canvas.getType()
+                };
+                return [body];
+            }
+        };
         BaseExtension.prototype.viewCanvas = function (canvasIndex) {
             if (this.helper.isCanvasIndexOutOfRange(canvasIndex)) {
                 this.showMessage(this.data.config.content.canvasIndexOutOfRange);
@@ -19626,12 +19640,29 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                 _this.$container.width(_this.mediaWidth);
                 var poster = _this.extension.getPosterImageUri();
                 var sources = [];
-                $.each(canvas.getRenderings(), function (index, rendering) {
-                    sources.push({
-                        type: rendering.getFormat().toString(),
-                        src: rendering.id
+                var renderings = canvas.getRenderings();
+                if (renderings && renderings.length) {
+                    $.each(canvas.getRenderings(), function (index, rendering) {
+                        sources.push({
+                            type: rendering.getFormat().toString(),
+                            src: rendering.id
+                        });
                     });
-                });
+                }
+                else {
+                    var formats = _this.extension.getMediaFormats(_this.extension.helper.getCurrentCanvas());
+                    if (formats && formats.length) {
+                        $.each(formats, function (index, format) {
+                            var type = format.getFormat();
+                            if (type) {
+                                sources.push({
+                                    type: type.toString(),
+                                    src: format.id
+                                });
+                            }
+                        });
+                    }
+                }
                 if (_this.isVideo()) {
                     _this.$media = $('<video controls="controls" preload="none"></video>');
                     _this.$container.append(_this.$media);
@@ -19930,11 +19961,38 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
         };
         // todo: use canvas.getThumbnail()
         Extension.prototype.getPosterImageUri = function () {
-            return this.helper.getCurrentCanvas().getProperty('thumbnail');
+            var canvas = this.helper.getCurrentCanvas();
+            var annotations = canvas.getContent();
+            if (annotations && annotations.length) {
+                return annotations[0].getProperty('thumbnail');
+            }
+            else {
+                return canvas.getProperty('thumbnail');
+            }
+        };
+        Extension.prototype.isVideoFormat = function (type) {
+            var videoFormats = [manifesto.MediaType.mp4().toString(), manifesto.MediaType.webm().toString()];
+            return videoFormats.indexOf(type) != -1;
         };
         Extension.prototype.isVideo = function () {
-            var elementType = this.helper.getElementType();
-            return elementType.toString() === manifesto.ElementType.movingimage().toString();
+            var canvas = this.helper.getCurrentCanvas();
+            var annotations = canvas.getContent();
+            if (annotations && annotations.length) {
+                var formats = this.getMediaFormats(canvas);
+                for (var i = 0; i < formats.length; i++) {
+                    var format = formats[i];
+                    var type = format.getFormat();
+                    if (type) {
+                        if (this.isVideoFormat(type.toString())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            else {
+                return canvas.getType().toString() === manifesto.ElementType.movingimage().toString();
+            }
+            throw (new Error("Unable to determine media type"));
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
@@ -24788,9 +24846,16 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         PDFCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
             this.extension.getExternalResources(resources).then(function () {
+                var mediaUri = null;
                 var canvas = _this.extension.helper.getCurrentCanvas();
-                var pdfUri = canvas.id;
-                window.PDFObject.embed(pdfUri, '#content', { id: "PDF" });
+                var formats = _this.extension.getMediaFormats(canvas);
+                if (formats && formats.length) {
+                    mediaUri = formats[0].id;
+                }
+                else {
+                    mediaUri = canvas.id;
+                }
+                window.PDFObject.embed(mediaUri, '#content', { id: "PDF" });
             });
         };
         PDFCenterPanel.prototype.resize = function () {
@@ -25146,11 +25211,19 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             var _this = this;
             this.extension.getExternalResources(resources).then(function () {
                 _this.$viewport.empty();
+                var mediaUri = null;
                 var canvas = _this.extension.helper.getCurrentCanvas();
+                var formats = _this.extension.getMediaFormats(canvas);
+                if (formats && formats.length) {
+                    mediaUri = formats[0].id;
+                }
+                else {
+                    mediaUri = canvas.id;
+                }
                 _this.viewport = new Virtex.Viewport({
                     target: _this.$viewport[0],
                     data: {
-                        file: canvas.id,
+                        file: mediaUri,
                         fullscreenEnabled: false,
                         type: new Virtex.FileType("application/vnd.threejs+json"),
                         showStats: _this.options.showStats
