@@ -13681,9 +13681,17 @@ var Manifold;
             return 0;
         };
         Helper.prototype.getInfoUri = function (canvas) {
+            var content = canvas.getContent();
             var images = canvas.getImages();
-            // if the canvas has images it's IIIF
-            if (images && images.length) {
+            if (content && content.length) {
+                var annotation = content[0];
+                var annotationBody = annotation.getBody();
+                if (annotationBody.length) {
+                    return annotationBody[0].id;
+                }
+                return null;
+            }
+            else if (images && images.length) {
                 var infoUri = null;
                 var firstImage = images[0];
                 var resource = firstImage.getResource();
@@ -25319,6 +25327,23 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             this._extensions[manifesto.RenderingFormat.pdf().toString()] = {
                 type: Extension_4.Extension,
                 name: 'uv-pdf-extension'
+            };
+            // presentation 3
+            this._extensions[manifesto.MediaType.pdf().toString()] = {
+                type: Extension_4.Extension,
+                name: 'uv-pdf-extension'
+            };
+            this._extensions[manifesto.MediaType.mp4().toString()] = {
+                type: Extension_2.Extension,
+                name: 'uv-mediaelement-extension'
+            };
+            this._extensions[manifesto.MediaType.webm().toString()] = {
+                type: Extension_2.Extension,
+                name: 'uv-mediaelement-extension'
+            };
+            this._extensions[manifesto.MediaType.threejs().toString()] = {
+                type: Extension_5.Extension,
+                name: 'uv-virtex-extension'
             };
             this._extensions['default'] = {
                 type: Extension_1.Extension,
