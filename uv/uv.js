@@ -19457,23 +19457,39 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             this.updateTermsOfUseButton();
         };
         DownloadDialogue.prototype.addEntireFileDownloadOptions = function () {
-            var _this = this;
             if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.entireFileAsOriginal)) {
                 this.$downloadOptions.empty();
                 // add each file src
                 var canvas = this.extension.helper.getCurrentCanvas();
-                var renderingFound_1 = false;
-                $.each(canvas.getRenderings(), function (index, rendering) {
+                var renderingFound = false;
+                var renderings = canvas.getRenderings();
+                for (var i = 0; i < renderings.length; i++) {
+                    var rendering = renderings[i];
                     var renderingFormat = rendering.getFormat();
                     var format = '';
                     if (renderingFormat) {
                         format = renderingFormat.toString();
                     }
-                    _this.addEntireFileDownloadOption(rendering.id, Manifesto.TranslationCollection.getValue(rendering.getLabel()), format);
-                    renderingFound_1 = true;
-                });
-                if (!renderingFound_1) {
-                    this.addEntireFileDownloadOption(canvas.id, '', '');
+                    this.addEntireFileDownloadOption(rendering.id, Manifesto.TranslationCollection.getValue(rendering.getLabel()), format);
+                    renderingFound = true;
+                }
+                if (!renderingFound) {
+                    var annotationFound = false;
+                    var annotations = canvas.getContent();
+                    for (var i = 0; i < annotations.length; i++) {
+                        var annotation = annotations[i];
+                        var body = annotation.getBody();
+                        if (body.length) {
+                            var format = body[0].getFormat();
+                            if (format) {
+                                this.addEntireFileDownloadOption(body[0].id, '', format.toString());
+                                annotationFound = true;
+                            }
+                        }
+                    }
+                    if (!annotationFound) {
+                        this.addEntireFileDownloadOption(canvas.id, '', '');
+                    }
                 }
             }
         };
