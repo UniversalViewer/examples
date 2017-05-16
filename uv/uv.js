@@ -17545,9 +17545,9 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
             });
             this.$scroll = $('<div class="scroll"><div>');
             this.$content.append(this.$scroll);
-            this.$downloadLinks = $('<ul></ul>');
-            this.$scroll.append(this.$downloadLinks);
-            this.$downloadLinkTemplate = $('<li><img><a target="_blank" download></a></li>');
+            this.$downloadItems = $('<ol></ol>');
+            this.$scroll.append(this.$downloadItems);
+            this.$downloadItemTemplate = $('<li><img><div class="col2"><a class="filename" target="_blank" download></a><span class="label"></span><a class="description" target="_blank" download></a></div></li>');
             this.title = this.extension.helper.getLabel();
         };
         FileLinkCenterPanel.prototype.openMedia = function (resources) {
@@ -17555,29 +17555,38 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
             this.extension.getExternalResources(resources).then(function () {
                 var canvas = _this.extension.helper.getCurrentCanvas();
                 var annotations = canvas.getContent();
-                var $link;
+                var $item;
                 for (var i = 0; i < annotations.length; i++) {
                     var annotation = annotations[i];
                     if (!annotation.getBody().length) {
                         continue;
                     }
-                    $link = _this.$downloadLinkTemplate.clone();
-                    var $a = $link.find('a');
-                    var $img = $link.find('img');
+                    $item = _this.$downloadItemTemplate.clone();
+                    var $fileName = $item.find('.filename');
+                    var $label = $item.find('.label');
+                    var $thumb = $item.find('img');
+                    var $description = $item.find('.description');
                     var annotationBody = annotation.getBody()[0];
-                    $a.prop('href', annotationBody.getProperty('id'));
+                    var id = annotationBody.getProperty('id');
+                    $fileName.prop('href', id);
+                    $fileName.text(id.substr(id.lastIndexOf('/') + 1));
                     var label = Manifesto.TranslationCollection.getValue(annotationBody.getLabel());
                     if (label) {
-                        $a.text(String.format(_this.content.downloadLink, Utils_1.UVUtils.sanitize(label)));
+                        $label.text(Utils_1.UVUtils.sanitize(label));
                     }
                     var thumbnail = annotation.getProperty('thumbnail');
                     if (thumbnail) {
-                        $img.prop('src', thumbnail);
+                        $thumb.prop('src', thumbnail);
                     }
                     else {
-                        $img.hide();
+                        $thumb.hide();
                     }
-                    _this.$downloadLinks.append($link);
+                    var description = annotationBody.getProperty('description');
+                    if (description) {
+                        $description.text(Utils_1.UVUtils.sanitize(description));
+                        $description.prop('href', id);
+                    }
+                    _this.$downloadItems.append($item);
                 }
             });
         };
