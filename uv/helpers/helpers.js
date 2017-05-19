@@ -78,21 +78,25 @@ function createUV(selector, data, dataProvider) {
             return;
         }
 
-        var elem = $parent[0];
+        BigScreen.toggle();
 
-        if (isFullScreen) {
-            var requestFullScreen = getRequestFullScreen(elem);
-            if (requestFullScreen) {
-                requestFullScreen.call(elem);
-                resize();
-            }
-        } else {
-            var exitFullScreen = getExitFullScreen();
-            if (exitFullScreen) {
-                exitFullScreen.call(document);
-                resize();
-            }
-        }
+        resize();
+
+        // var elem = $parent[0];
+
+        // if (isFullScreen) {
+        //     var requestFullScreen = getRequestFullScreen(elem);
+        //     if (requestFullScreen) {
+        //         requestFullScreen.call(elem);
+        //         resize();
+        //     }
+        // } else {
+        //     var exitFullScreen = getExitFullScreen();
+        //     if (exitFullScreen) {
+        //         exitFullScreen.call(document);
+        //         resize();
+        //     }
+        // }
     });
 
     uv.on('error', function(message) {
