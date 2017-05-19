@@ -15,11 +15,6 @@
           "label": "Wunder der Vererbung"
         },
         {
-          "@id": "http://wellcomelibrary.org/iiif/b23984971/manifest",
-          "@type": "sc:Manifest",
-          "label": "Nervous system in a fruit fly larva"
-        },
-        {
           "@id": "http://wellcomelibrary.org/iiif/b23984958/manifest",
           "@type": "sc:Manifest",
           "label": "Greenfly Eye"
@@ -278,7 +273,8 @@
         {
           "@id": "https://ipfs.io/ipfs/QmPXKbC96wb6zuUhd8m2HDoovZUqi3gFHbbL9W8vAEQX8a/Add_11831.json",
           "@type": "sc:Manifest",
-          "label": "Add_11831 (3D)"
+          "label": "Add_11831 (3D)",
+          "visible": false
         },
         {
           "@id": "https://ipfs.io/ipfs/QmPXKbC96wb6zuUhd8m2HDoovZUqi3gFHbbL9W8vAEQX8a/Add_4709.json",
@@ -747,6 +743,12 @@
           "@id": "https://edsilv.github.io/test-manifests/pres3-video.json",
           "@type": "sc:Manifest",
           "label": "Presentation 3 Video",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/10_babel",
+          "@type": "sc:Manifest",
+          "label": "Max Width",
           "visible": true
         }
       ]

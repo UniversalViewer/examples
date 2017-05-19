@@ -601,6 +601,9 @@
 .uv .centerPanel .content .virtex {
   background: none;
 }
+.uv .centerPanel .content .virtex #oldie a {
+  color: #26b5cc !important;
+}
 .uv {
   margin: 0;
   padding: 0;

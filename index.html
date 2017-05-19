@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="uv/helpers/uv.css">
     <script type="text/javascript" src="lib/utils/dist/utils.js"></script>
     <script type="text/javascript" src="uv/lib/offline.js"></script>
-    <script type="text/javascript" src="uv/uv.js"></script>
     <script type="text/javascript" src="uv/helpers/helpers.js"></script>
     <style>
         body {
@@ -172,6 +171,9 @@
         });
 
     </script>
+
+    <!-- Put at the bottom of the page to ensure that the uvLoaded event isn't fired before a listener is registered -->
+    <script type="text/javascript" src="uv/uv.js"></script>
 
 </body>
 </html>

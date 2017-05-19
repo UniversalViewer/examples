@@ -38,20 +38,20 @@ function createUV(selector, data, dataProvider) {
        
     });
 
-    uv.on('collectionIndexChanged', function(index) {
-        dataProvider.set('c', index);
+    uv.on('collectionIndexChanged', function(collectionIndex) {
+        dataProvider.set('c', collectionIndex);
     });
 
-    uv.on('manifestIndexChanged', function(index) {
-        dataProvider.set('m', index);
+    uv.on('manifestIndexChanged', function(manifestIndex) {
+        dataProvider.set('m', manifestIndex);
     });
 
-    uv.on('sequenceIndexChanged', function(index) {
-        dataProvider.set('s', index);
+    uv.on('sequenceIndexChanged', function(sequenceIndex) {
+        dataProvider.set('s', sequenceIndex);
     });
 
-    uv.on('canvasIndexChanged', function(index) {
-        dataProvider.set('cv', index);
+    uv.on('canvasIndexChanged', function(canvasIndex) {
+        dataProvider.set('cv', canvasIndex);
     });
 
     uv.on('openseadragonExtension.rotationChanged', function(rotation) {
@@ -62,7 +62,7 @@ function createUV(selector, data, dataProvider) {
         dataProvider.set('xywh', xywh);
     });
 
-    uv.on('openseadragonExtension.currentViewUri', function(obj) {
+    uv.on('openseadragonExtension.currentViewUri', function(data) {
         //console.log('openseadragonExtension.currentViewUri', obj);
     });
 
@@ -71,10 +71,10 @@ function createUV(selector, data, dataProvider) {
         uv.set(data);
     });
 
-    uv.on('toggleFullScreen', function(obj) {
-        isFullScreen = obj.isFullScreen;
+    uv.on('toggleFullScreen', function(data) {
+        isFullScreen = data.isFullScreen;
 
-        if (obj.overrideFullScreen) {
+        if (data.overrideFullScreen) {
             return;
         }
 
@@ -99,7 +99,7 @@ function createUV(selector, data, dataProvider) {
         console.error(message);
     });
 
-    uv.on('bookmark', function(bookmark) {
+    uv.on('bookmark', function(data) {
 
         var absUri = parent.document.URL;
         var parts = Utils.Urls.getUrlParts(absUri);
@@ -109,9 +109,9 @@ function createUV(selector, data, dataProvider) {
             relUri = "/" + relUri;
         }
 
-        bookmark.path = relUri;
+        data.path = relUri;
 
-        console.log('bookmark', bookmark);
+        console.log('bookmark', data);
     });
 
     $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function(e) {
