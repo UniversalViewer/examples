@@ -17008,8 +17008,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
             this.$element.prop('tabindex', 0);
-            if (!this.data.isHomeDomain)
-                this.$element.addClass('embedded');
             if (this.data.isLightbox)
                 this.$element.addClass('lightbox');
             this.$element.on('mousemove', function (e) {
@@ -17096,15 +17094,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                         $.publish(event);
                     }
                 });
-                if (this.data.isHomeDomain) {
-                    $.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
-                        if (_this.isOverlayActive()) {
-                            $.publish(BaseEvents_1.BaseEvents.ESCAPE);
-                        }
+                $.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
+                    if (_this.isOverlayActive()) {
                         $.publish(BaseEvents_1.BaseEvents.ESCAPE);
-                        $.publish(BaseEvents_1.BaseEvents.RESIZE);
-                    });
-                }
+                    }
+                    $.publish(BaseEvents_1.BaseEvents.ESCAPE);
+                    $.publish(BaseEvents_1.BaseEvents.RESIZE);
+                });
             }
             this.$element.append('<a href="/" id="top"></a>');
             this.$element.append('<iframe id="commsFrame" style="display:none"></iframe>');
@@ -17590,17 +17586,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             return uri + "?t=" + Utils.Dates.getTimeStamp();
         };
         BaseExtension.prototype.isDeepLinkingEnabled = function () {
-            return (this.data.isHomeDomain && this.data.isOnlyInstance);
-        };
-        BaseExtension.prototype.isOnHomeDomain = function () {
-            return this.isDeepLinkingEnabled();
+            return this.data.deepLinkingEnabled;
         };
         BaseExtension.prototype.getDomain = function () {
             var parts = Utils.Urls.getUrlParts(this.helper.iiifResourceUri);
             return parts.host;
-        };
-        BaseExtension.prototype.getEmbedDomain = function () {
-            return this.data.embedDomain;
         };
         BaseExtension.prototype.getSettings = function () {
             if (Utils.Bools.getBool(this.data.config.options.saveUserSettings, false)) {
@@ -18162,7 +18152,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
         };
         FooterPanel.prototype.updateOpenButton = function () {
             var configEnabled = Utils.Bools.getBool(this.options.openEnabled, false);
-            if (configEnabled && !this.extension.data.isHomeDomain) {
+            if (configEnabled && Utils.Documents.isInIFrame()) {
                 this.$openButton.show();
             }
             else {
@@ -19820,9 +19810,9 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
                 && ((this.helper.isMultiCanvas() || this.helper.isMultiSequence()) || this.helper.hasResources());
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.data.config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return script;
+            //const configUri: string = this.data.config.uri || '';
+            //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
+            return ''; // script;
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
@@ -20427,9 +20417,9 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.data.config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return script;
+            //const configUri: string = this.data.config.uri || '';
+            //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
+            return ''; // script;
         };
         // todo: use canvas.getThumbnail()
         Extension.prototype.getPosterImageUri = function () {
@@ -25039,9 +25029,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return infoUri;
         };
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
-            var configUri = this.data.config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
-            return script;
+            //const configUri = this.data.config.uri || '';
+            //const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
+            return ''; // script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
             if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
@@ -25514,9 +25504,9 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             }
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.data.config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return script;
+            //const configUri = this.data.config.uri || '';
+            //const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
+            return ''; // script;
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
@@ -25818,9 +25808,9 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
-            var configUri = this.data.config.uri || '';
-            var script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return script;
+            //const configUri: string = this.data.config.uri || '';
+            //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
+            return ''; // script;
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
@@ -25907,13 +25897,9 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 collectionIndex: 0,
                 config: null,
                 configUri: null,
-                domain: null,
-                embedDomain: null,
-                embedScriptUri: null,
+                deepLinkingEnabled: true,
                 iiifResourceUri: '',
-                isHomeDomain: true,
                 isLightbox: false,
-                isOnlyInstance: true,
                 isReload: false,
                 limitLocales: false,
                 locales: [
@@ -25991,7 +25977,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 locale: data.locales[0].name
             }).then(function (helper) {
                 var trackingLabel = helper.getTrackingLabel();
-                trackingLabel += ', URI: ' + data.embedDomain;
+                trackingLabel += ', URI: ' + (window.location !== window.parent.location) ? document.referrer : document.location;
                 window.trackingLabel = trackingLabel;
                 var sequence = helper.getSequenceByIndex(data.sequenceIndex);
                 if (!sequence) {
