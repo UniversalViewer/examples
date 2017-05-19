@@ -78,25 +78,27 @@ function createUV(selector, data, dataProvider) {
             return;
         }
 
-        BigScreen.toggle();
+        var elem;
 
-        resize();
+        if (isInIFrame()) {
+            elem = $parent.closest('iframe');
+        } else {
+            elem = $parent[0];
+        }
 
-        // var elem = $parent[0];
-
-        // if (isFullScreen) {
-        //     var requestFullScreen = getRequestFullScreen(elem);
-        //     if (requestFullScreen) {
-        //         requestFullScreen.call(elem);
-        //         resize();
-        //     }
-        // } else {
-        //     var exitFullScreen = getExitFullScreen();
-        //     if (exitFullScreen) {
-        //         exitFullScreen.call(document);
-        //         resize();
-        //     }
-        // }
+        if (isFullScreen) {
+            var requestFullScreen = getRequestFullScreen(elem);
+            if (requestFullScreen) {
+                requestFullScreen.call(elem);
+                resize();
+            }
+        } else {
+            var exitFullScreen = getExitFullScreen();
+            if (exitFullScreen) {
+                exitFullScreen.call(document);
+                resize();
+            }
+        }
     });
 
     uv.on('error', function(message) {
@@ -127,6 +129,14 @@ function createUV(selector, data, dataProvider) {
     });
 
     return uv;
+}
+
+function isInIFrame() {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
 }
 
 function getRequestFullScreen(elem) {

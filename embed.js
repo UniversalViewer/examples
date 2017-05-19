@@ -1,4 +1,8 @@
+<<<<<<< HEAD:embed.js
 // uv-2.0.1
+=======
+// uv-2.0.1
+>>>>>>> 4520cf77996d61ceb4e89f4530b06cc0e15e2213:uv/lib/embed.js
 
 //https://raw.githubusercontent.com/jfriend00/docReady/master/docready.js
 (function(funcName, baseObj) {
