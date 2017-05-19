@@ -18160,8 +18160,9 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             }
         };
         FooterPanel.prototype.updateFullScreenButton = function () {
-            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true)) {
+            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true) || Utils.Documents.isInIFrame()) {
                 this.$fullScreenBtn.hide();
+                return;
             }
             if (this.extension.data.isLightbox) {
                 this.$fullScreenBtn.addClass('lightbox');

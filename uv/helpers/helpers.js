@@ -78,13 +78,7 @@ function createUV(selector, data, dataProvider) {
             return;
         }
 
-        var elem;
-
-        if (isInIFrame()) {
-            elem = $parent.closest('iframe');
-        } else {
-            elem = $parent[0];
-        }
+        var elem = $parent[0];
 
         if (isFullScreen) {
             var requestFullScreen = getRequestFullScreen(elem);
@@ -129,14 +123,6 @@ function createUV(selector, data, dataProvider) {
     });
 
     return uv;
-}
-
-function isInIFrame() {
-    try {
-        return window.self !== window.top;
-    } catch (e) {
-        return true;
-    }
 }
 
 function getRequestFullScreen(elem) {
