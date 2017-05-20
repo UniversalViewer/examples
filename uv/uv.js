@@ -18160,7 +18160,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             }
         };
         FooterPanel.prototype.updateFullScreenButton = function () {
-            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true) || Utils.Documents.isInIFrame()) {
+            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true)) {
                 this.$fullScreenBtn.hide();
                 return;
             }
@@ -18180,7 +18180,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
         };
         FooterPanel.prototype.updateEmbedButton = function () {
             if (this.extension.helper.isUIEnabled('embed') && Utils.Bools.getBool(this.options.embedEnabled, false)) {
-                //current jquery version sets display to 'inline' in mobile version, while this should remain hidden (see media query)
+                // current jquery version sets display to 'inline' in mobile version, while this should remain hidden (see media query)
                 if (!$.browser.mobile) {
                     this.$embedButton.show();
                 }
