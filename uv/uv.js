@@ -17601,12 +17601,15 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             }
             pathname = pathname.substr(0, pathname.lastIndexOf('/') + 1); // remove the file name
             var appUri = origin + pathname;
-            var root = this.data.root || '';
-            if (root.startsWith('./')) {
-                root = root.substr(2);
-            }
-            if (!root.endsWith('/')) {
-                root += '/';
+            var root = '';
+            if (!Utils.Documents.isInIFrame()) {
+                root = this.data.root || '';
+                if (root.startsWith('./')) {
+                    root = root.substr(2);
+                }
+                if (!root.endsWith('/')) {
+                    root += '/';
+                }
             }
             appUri += root + 'uv.html';
             return appUri;
