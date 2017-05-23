@@ -17599,11 +17599,11 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             if (!pathname.startsWith('/')) {
                 pathname = '/' + pathname;
             }
-            pathname = pathname.substr(0, pathname.lastIndexOf('/')); // remove the file name
+            pathname = pathname.substr(0, pathname.lastIndexOf('/') + 1); // remove the file name
             var appUri = origin + pathname;
             var root = this.data.root || '';
-            if (root.startsWith('.')) {
-                root = root.substr(1);
+            if (root.startsWith('./')) {
+                root = root.substr(2);
             }
             if (!root.endsWith('/')) {
                 root += '/';
