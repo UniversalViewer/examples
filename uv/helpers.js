@@ -32,44 +32,44 @@ function createUV(selector, data, dataProvider) {
 
     uv.on('create', function(obj) {
         resize();
-    });
+    }, false);
 
     uv.on('created', function(obj) {
        
-    });
+    }, false);
 
     uv.on('collectionIndexChanged', function(collectionIndex) {
         dataProvider.set('c', collectionIndex);
-    });
+    }, false);
 
     uv.on('manifestIndexChanged', function(manifestIndex) {
         dataProvider.set('m', manifestIndex);
-    });
+    }, false);
 
     uv.on('sequenceIndexChanged', function(sequenceIndex) {
         dataProvider.set('s', sequenceIndex);
-    });
+    }, false);
 
     uv.on('canvasIndexChanged', function(canvasIndex) {
         dataProvider.set('cv', canvasIndex);
-    });
+    }, false);
 
     uv.on('openseadragonExtension.rotationChanged', function(rotation) {
         dataProvider.set('r', rotation);
-    });
+    }, false);
 
     uv.on('openseadragonExtension.xywhChanged', function(xywh) {
         dataProvider.set('xywh', xywh);
-    });
+    }, false);
 
     uv.on('openseadragonExtension.currentViewUri', function(data) {
         //console.log('openseadragonExtension.currentViewUri', obj);
-    });
+    }, false);
 
     uv.on('reload', function(data) {
         data.isReload = true;
         uv.set(data);
-    });
+    }, false);
 
     uv.on('toggleFullScreen', function(data) {
         isFullScreen = data.isFullScreen;
@@ -93,11 +93,11 @@ function createUV(selector, data, dataProvider) {
                 resize();
             }
         }
-    });
+    }, false);
 
     uv.on('error', function(message) {
         console.error(message);
-    });
+    }, false);
 
     uv.on('bookmark', function(data) {
 
@@ -112,7 +112,7 @@ function createUV(selector, data, dataProvider) {
         data.path = relUri;
 
         console.log('bookmark', data);
-    });
+    },false);
 
     $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function(e) {
         if (e.type === 'webkitfullscreenchange' && !document.webkitIsFullScreen ||

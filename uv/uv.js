@@ -17592,6 +17592,25 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             var parts = Utils.Urls.getUrlParts(this.helper.iiifResourceUri);
             return parts.host;
         };
+        BaseExtension.prototype.getAppUri = function () {
+            var parts = Utils.Urls.getUrlParts(document.location.href);
+            var origin = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+            var pathname = parts.pathname;
+            if (!pathname.startsWith('/')) {
+                pathname = '/' + pathname;
+            }
+            pathname = pathname.substr(0, pathname.lastIndexOf('/')); // remove the file name
+            var appUri = origin + pathname;
+            var root = this.data.root || '';
+            if (root.startsWith('.')) {
+                root = root.substr(1);
+            }
+            if (!root.endsWith('/')) {
+                root += '/';
+            }
+            appUri += root + 'uv.html';
+            return appUri;
+        };
         BaseExtension.prototype.getSettings = function () {
             if (Utils.Bools.getBool(this.data.config.options.saveUserSettings, false)) {
                 var settings = Utils.Storage.get("uv.settings", Utils.StorageType.local);
@@ -25032,12 +25051,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
             //const configUri = this.data.config.uri || '';
             // const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
-            var parts = Utils.Urls.getUrlParts(document.location.href);
-            var origin = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
-            var appUri = origin + '/' + parts.pathname;
-            if (!appUri.endsWith('uv.html')) {
-                appUri += 'uv.html';
-            }
+            var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&xywh=" + zoom + "&r=" + rotation;
             var script = String.format(template, iframeSrc, width, height);
             return script;
