@@ -18160,7 +18160,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             }
         };
         FooterPanel.prototype.updateFullScreenButton = function () {
-            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true)) {
+            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true) || !Utils.Documents.supportsFullscreen()) {
                 this.$fullScreenBtn.hide();
                 return;
             }
@@ -25032,7 +25032,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
             //const configUri = this.data.config.uri || '';
             var parts = Utils.Urls.getUrlParts(document.location.href);
-            var appUri = parts.origin + parts.pathname;
+            var origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+            var appUri = origin + parts.pathname;
             if (!appUri.endsWith('uv.html')) {
                 appUri += 'uv.html';
             }
