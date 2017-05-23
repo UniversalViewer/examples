@@ -25031,8 +25031,12 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
             //const configUri = this.data.config.uri || '';
-            //const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
-            return ''; // script;
+            var parts = Utils.Urls.getUrlParts(document.location.href);
+            var appUri = parts.baseURI;
+            //const iframeSrc: string = `${appUri}#?manifest=${this.helper.iiifResourceUri}&c=${this.helper.collectionIndex}&m=${this.helper.manifestIndex}&s=${this.helper.sequenceIndex}&cv=${this.helper.canvasIndex}&xywh=${zoom}&r=${rotation}`;
+            var script = String.format(template, appUri, width, height);
+            // const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
+            return script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
             if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }

@@ -389,6 +389,11 @@
           "@id": "http://dms-data.stanford.edu/data/manifests/kn/mw497gz1295/manifest.json",
           "@type": "sc:Manifest",
           "label": "Japanese Songbook"
+        },
+        {
+          "@id": "http://files.universalviewer.io/manifests/stanford/hc941fm6529.json",
+          "@type": "sc:Manifest",
+          "label": "Vertebra"
         }
       ]
     },
