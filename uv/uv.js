@@ -25031,15 +25031,15 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         };
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
             //const configUri = this.data.config.uri || '';
+            // const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
             var parts = Utils.Urls.getUrlParts(document.location.href);
-            var origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
-            var appUri = origin + parts.pathname;
+            var origin = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+            var appUri = origin + '/' + parts.pathname;
             if (!appUri.endsWith('uv.html')) {
                 appUri += 'uv.html';
             }
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&xywh=" + zoom + "&r=" + rotation;
             var script = String.format(template, iframeSrc, width, height);
-            // const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
             return script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
