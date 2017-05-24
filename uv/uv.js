@@ -19835,7 +19835,10 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
         Extension.prototype.getEmbedScript = function (template, width, height) {
             //const configUri: string = this.data.config.uri || '';
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return ''; // script;
+            var appUri = this.getAppUri();
+            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
+            var script = String.format(template, iframeSrc, width, height);
+            return script;
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
@@ -20442,7 +20445,10 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
         Extension.prototype.getEmbedScript = function (template, width, height) {
             //const configUri: string = this.data.config.uri || '';
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return ''; // script;
+            var appUri = this.getAppUri();
+            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
+            var script = String.format(template, iframeSrc, width, height);
+            return script;
         };
         // todo: use canvas.getThumbnail()
         Extension.prototype.getPosterImageUri = function () {
@@ -25532,7 +25538,10 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.getEmbedScript = function (template, width, height) {
             //const configUri = this.data.config.uri || '';
             //const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return ''; // script;
+            var appUri = this.getAppUri();
+            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
+            var script = String.format(template, iframeSrc, width, height);
+            return script;
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
@@ -25836,7 +25845,10 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
         Extension.prototype.getEmbedScript = function (template, width, height) {
             //const configUri: string = this.data.config.uri || '';
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            return ''; // script;
+            var appUri = this.getAppUri();
+            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
+            var script = String.format(template, iframeSrc, width, height);
+            return script;
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
