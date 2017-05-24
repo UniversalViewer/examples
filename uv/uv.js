@@ -16309,10 +16309,17 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             var top = Math.floor(this.extension.height() - this.$element.outerHeight(true));
             var left = 0;
             var arrowLeft = 0;
+            var normalisedPos = 0;
             if (this.$triggerButton) {
                 // get the normalised position of the button
-                var normalisedPos = Math.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
+                if (this.extension.isMobileView()) {
+                    normalisedPos = Math.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
+                }
+                else {
+                    normalisedPos = Math.normalise(this.$triggerButton.position().left, 0, this.extension.width());
+                }
                 left = Math.floor((this.extension.width() * normalisedPos) - (this.$element.width() * normalisedPos));
+                //left = Math.floor((this.extension.width() * normalisedPos));
                 arrowLeft = (this.$element.width() * normalisedPos);
             }
             this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
@@ -17776,6 +17783,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.isOverlayActive = function () {
             return Shell_1.Shell.$overlays.is(':visible');
         };
+        BaseExtension.prototype.isMobileView = function () {
+            return this.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString();
+        };
         BaseExtension.prototype.viewManifest = function (manifest) {
             var data = {};
             data.iiifResourceUri = this.helper.iiifResourceUri;
@@ -18071,7 +18081,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEvents", "./BaseView", "./MetricType"], function (require, exports, BaseEvents_1, BaseView_1, MetricType_1) {
+define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEvents", "./BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var FooterPanel = (function (_super) {
@@ -18156,7 +18166,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
                 return;
             }
             // otherwise, check metric
-            if (this.extension.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString()) {
+            if (this.extension.isMobileView()) {
                 this.$options.addClass('minimiseButtons');
             }
             else {
@@ -18165,7 +18175,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
         };
         FooterPanel.prototype.updateMoreInfoButton = function () {
             var configEnabled = Utils.Bools.getBool(this.options.moreInfoEnabled, false);
-            if (configEnabled && this.extension.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString()) {
+            if (configEnabled && this.extension.isMobileView()) {
                 this.$moreInfoButton.show();
             }
             else {
@@ -20824,7 +20834,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Events", "./GalleryView", "../uv-shared-module/LeftPanel", "../uv-shared-module/MetricType", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseEvents_1, Events_1, GalleryView_1, LeftPanel_1, MetricType_1, Mode_1, ThumbsView_1, TreeView_1) {
+define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Events", "./GalleryView", "../uv-shared-module/LeftPanel", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseEvents_1, Events_1, GalleryView_1, LeftPanel_1, Mode_1, ThumbsView_1, TreeView_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ContentLeftPanel = (function (_super) {
@@ -20848,7 +20858,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 _this.collapseFull();
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                if (_this.extension.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString()) {
+                if (_this.extension.isMobileView()) {
                     if (_this.isFullyExpanded) {
                         _this.collapseFull();
                     }
@@ -23437,7 +23447,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Bounds", "../uv-shared-module/CenterPanel", "../../extensions/uv-seadragon-extension/Events", "../uv-shared-module/MetricType", "../uv-shared-module/Utils"], function (require, exports, BaseEvents_1, Bounds_1, CenterPanel_1, Events_1, MetricType_1, Utils_1) {
+define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Bounds", "../uv-shared-module/CenterPanel", "../../extensions/uv-seadragon-extension/Events", "../uv-shared-module/Utils"], function (require, exports, BaseEvents_1, Bounds_1, CenterPanel_1, Events_1, Utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SeadragonCenterPanel = (function (_super) {
@@ -23527,7 +23537,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.updateResponsiveView = function () {
             this.setNavigatorVisible();
-            if (this.extension.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString()) {
+            if (this.extension.isMobileView()) {
                 this.viewer.autoHideControls = false;
                 this.$viewportNavButtons.hide();
             }
@@ -24203,7 +24213,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             }
         };
         SeadragonCenterPanel.prototype.setNavigatorVisible = function () {
-            var navigatorEnabled = Utils.Bools.getBool(this.extension.getSettings().navigatorEnabled, true) && this.extension.metric.toString() !== MetricType_1.MetricType.MOBILELANDSCAPE.toString();
+            var navigatorEnabled = Utils.Bools.getBool(this.extension.getSettings().navigatorEnabled, true) && !this.extension.isMobileView();
             this.viewer.navigator.setVisible(navigatorEnabled);
             if (navigatorEnabled) {
                 this.$navigator.show();
@@ -24397,7 +24407,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/AnnotationResults", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "./Events", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-shared-module/MetricType", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AnnotationResults_1, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, Events_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, MetricType_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/AnnotationResults", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "./Events", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AnnotationResults_1, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, Events_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AnnotationGroup = Manifold.AnnotationGroup;
@@ -24415,7 +24425,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var _this = this;
             _super.prototype.create.call(this);
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                if (_this.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString()) {
+                if (_this.isMobileView()) {
                     var settings = {};
                     settings.pagingEnabled = false;
                     _this.updateSettings(settings);
@@ -24477,7 +24487,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
-                if (_this.metric.toString() !== MetricType_1.MetricType.MOBILELANDSCAPE.toString()) {
+                if (!_this.isMobileView()) {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
