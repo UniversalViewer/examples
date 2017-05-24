@@ -2042,7 +2042,7 @@ input[type=range]:focus::-ms-fill-upper {
   position: absolute;
   width: 190px;
   padding: 10px 10px 10px 10px;
-  margin: 10px 0 5px 15px;
+  margin: 10px 0 15px 15px;
   font-size: 11px;
 }
 .uv .centerPanel .content .attribution .header {
@@ -2857,10 +2857,16 @@ input[type=range]:focus::-ms-fill-upper {
   .uv .headerPanel {
     display: none;
   }
-  .uv .leftPanel {
+  .uv .mainPanel {
+    margin-top: 0px !important;
+  }
+  .uv .mainPanel .leftPanel {
     display: none;
   }
-  .uv .rightPanel {
+  .uv .mainPanel .centerPanel .title {
+    padding-top: 5px !important;
+  }
+  .uv .mainPanel .rightPanel {
     display: none;
   }
   .uv .footerPanel {

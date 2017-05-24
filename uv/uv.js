@@ -16311,9 +16311,9 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             var arrowLeft = 0;
             if (this.$triggerButton) {
                 // get the normalised position of the button
-                var buttonPos = Math.normalise(this.$triggerButton.position().left, 0, this.extension.width());
-                left = Math.floor((this.extension.width() * buttonPos) - (this.$element.width() * buttonPos));
-                arrowLeft = (this.$element.width() * buttonPos);
+                var normalisedPos = Math.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
+                left = Math.floor((this.extension.width() * normalisedPos) - (this.$element.width() * normalisedPos));
+                arrowLeft = (this.$element.width() * normalisedPos);
             }
             this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
             this.$element.css({
