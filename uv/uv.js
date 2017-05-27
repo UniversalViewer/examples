@@ -4452,7 +4452,12 @@ var Manifesto;
             return [];
         };
         IIIFResource.prototype.getIIIFResourceType = function () {
-            return new Manifesto.IIIFResourceType(this.getProperty('@type'));
+            var type = this.getProperty('type');
+            if (type) {
+                return new Manifesto.IIIFResourceType(type);
+            }
+            type = this.getProperty('@type');
+            return new Manifesto.IIIFResourceType(type);
         };
         IIIFResource.prototype.getLogo = function () {
             var logo = this.getProperty('logo');
@@ -4487,10 +4492,22 @@ var Manifesto;
             return this.defaultTree;
         };
         IIIFResource.prototype.isCollection = function () {
-            return this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.COLLECTION.toString();
+            if (this.getIIIFResourceType().toString().toLowerCase() === 'collection') {
+                return true;
+            }
+            else if (this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.COLLECTION.toString()) {
+                return true;
+            }
+            return false;
         };
         IIIFResource.prototype.isManifest = function () {
-            return this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.MANIFEST.toString();
+            if (this.getIIIFResourceType().toString().toLowerCase() === 'manifest') {
+                return true;
+            }
+            else if (this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.MANIFEST.toString()) {
+                return true;
+            }
+            return false;
         };
         IIIFResource.prototype.load = function () {
             var that = this;
@@ -4499,13 +4516,17 @@ var Manifesto;
                     resolve(that);
                 }
                 else {
-                    var options = that.options;
-                    options.navDate = that.getNavDate();
-                    Manifesto.Utils.loadResource(that.__jsonld['@id']).then(function (data) {
-                        that.parentLabel = Manifesto.TranslationCollection.getValue(that.getLabel(), options.locale);
-                        var parsed = Manifesto.Deserialiser.parse(data, options);
+                    var options_1 = that.options;
+                    options_1.navDate = that.getNavDate();
+                    var id = that.__jsonld.id;
+                    if (!id) {
+                        id = that.__jsonld['@id'];
+                    }
+                    Manifesto.Utils.loadResource(id).then(function (data) {
+                        that.parentLabel = Manifesto.TranslationCollection.getValue(that.getLabel(), options_1.locale);
+                        var parsed = Manifesto.Deserialiser.parse(data, options_1);
                         that = Object.assign(that, parsed);
-                        that.index = options.index;
+                        that.index = options_1.index;
                         resolve(that);
                     });
                 }
@@ -5260,11 +5281,21 @@ var Manifesto;
             }
         };
         Deserialiser.parseMember = function (json, options) {
-            if (json['@type'].toLowerCase() === 'sc:manifest') {
-                return this.parseManifest(json, options);
+            if (json['@type']) {
+                if (json['@type'].toLowerCase() === 'sc:manifest') {
+                    return this.parseManifest(json, options);
+                }
+                else if (json['@type'].toLowerCase() === 'sc:collection') {
+                    return this.parseCollection(json, options);
+                }
             }
-            else if (json['@type'].toLowerCase() === 'sc:collection') {
-                return this.parseCollection(json, options);
+            else if (json.type) {
+                if (json.type.toLowerCase() === 'manifest') {
+                    return this.parseManifest(json, options);
+                }
+                else if (json.type.toLowerCase() === 'collection') {
+                    return this.parseCollection(json, options);
+                }
             }
             return null;
         };
@@ -13807,7 +13838,8 @@ var Manifold;
             if (!bootstrapper._options.iiifResource) {
                 bootstrapper._options.iiifResource = iiifResource;
             }
-            if (iiifResource.getIIIFResourceType().toString() === manifesto.IIIFResourceType.collection().toString()) {
+            if (iiifResource.getIIIFResourceType().toString() === manifesto.IIIFResourceType.collection().toString() ||
+                iiifResource.getIIIFResourceType().toString().toLowerCase() === 'collection') {
                 // if it's a collection and has child collections, get the collection by index
                 var collections = iiifResource.getCollections();
                 if (collections && collections.length) {
@@ -25998,10 +26030,15 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             return propChanged;
         };
         UVComponent.prototype._propertyChanged = function (data, propertyName) {
-            return !!data[propertyName] && this.extension.data[propertyName] !== data[propertyName];
+            if (this.extension) {
+                return !!data[propertyName] && this.extension.data[propertyName] !== data[propertyName];
+            }
+            return false;
         };
         UVComponent.prototype.get = function (key) {
-            return this.extension.data[key];
+            if (this.extension) {
+                return this.extension.data[key];
+            }
         };
         UVComponent.prototype._reload = function (data) {
             var _this = this;
@@ -26147,17 +26184,23 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         };
         UVComponent.prototype._createExtension = function (extension, data, helper) {
             this.extension = new extension.type();
-            this.extension.component = this;
-            this.extension.data = data;
-            this.extension.helper = helper;
-            this.extension.name = extension.name;
-            this.extension.create();
+            if (this.extension) {
+                this.extension.component = this;
+                this.extension.data = data;
+                this.extension.helper = helper;
+                this.extension.name = extension.name;
+                this.extension.create();
+            }
         };
         UVComponent.prototype.exitFullScreen = function () {
-            this.extension.exitFullScreen();
+            if (this.extension) {
+                this.extension.exitFullScreen();
+            }
         };
         UVComponent.prototype.resize = function () {
-            this.extension.resize();
+            if (this.extension) {
+                this.extension.resize();
+            }
         };
         return UVComponent;
     }(_Components.BaseComponent));
