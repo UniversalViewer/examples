@@ -25761,9 +25761,11 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
                 else {
                     mediaUri = canvas.id;
                 }
+                var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
                 _this.viewport = new Virtex.Viewport({
                     target: _this.$viewport[0],
                     data: {
+                        antialias: !isAndroid,
                         file: mediaUri,
                         fullscreenEnabled: false,
                         type: new Virtex.FileType("application/vnd.threejs+json"),
