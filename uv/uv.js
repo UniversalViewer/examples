@@ -25100,10 +25100,10 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return infoUri;
         };
         Extension.prototype.getEmbedScript = function (template, width, height, zoom, rotation) {
-            //const configUri = this.data.config.uri || '';
-            // const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, zoom, rotation, width, height, this.data.embedScriptUri);
+            var config = this.data.config.uri || '';
+            var locales = this.getSerializedLocales();
             var appUri = this.getAppUri();
-            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&xywh=" + zoom + "&r=" + rotation;
+            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&config=" + config + "&locales=" + locales + "&xywh=" + zoom + "&r=" + rotation;
             var script = String.format(template, iframeSrc, width, height);
             return script;
         };
