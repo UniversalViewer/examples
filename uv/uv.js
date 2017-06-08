@@ -17480,6 +17480,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.dependencyLoaded = function (index, dep) {
         };
         BaseExtension.prototype.dependenciesLoaded = function () {
+            var _this = this;
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
@@ -17487,19 +17488,25 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             this.createModules();
             this.modulesCreated();
             $.publish(BaseEvents_1.BaseEvents.RESIZE); // initial sizing
-            $.publish(BaseEvents_1.BaseEvents.CREATED);
-            this.update();
-            this._setDefaultFocus();
+            setTimeout(function () {
+                _this.update();
+                $.publish(BaseEvents_1.BaseEvents.CREATED);
+                _this._setDefaultFocus();
+            }, 1);
         };
         BaseExtension.prototype.update = function () {
-            var _this = this;
-            // allow 1ms for subclasses to subscribe to events.
-            setTimeout(function () {
-                $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [_this.data.collectionIndex]);
-                $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [_this.data.manifestIndex]);
-                $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [_this.data.sequenceIndex]);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.data.canvasIndex]);
-            }, 1);
+            if (!this.isCreated || (this.data.collectionIndex !== this.helper.collectionIndex)) {
+                $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.data.collectionIndex]);
+            }
+            if (!this.isCreated || (this.data.manifestIndex !== this.helper.manifestIndex)) {
+                $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.data.manifestIndex]);
+            }
+            if (!this.isCreated || (this.data.sequenceIndex !== this.helper.sequenceIndex)) {
+                $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.data.sequenceIndex]);
+            }
+            if (!this.isCreated || (this.data.canvasIndex !== this.helper.canvasIndex)) {
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.data.canvasIndex]);
+            }
         };
         BaseExtension.prototype._setDefaultFocus = function () {
             var _this = this;
@@ -23913,6 +23920,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 }
             }
             this.setNavigatorVisible();
+            //setTimeout(() => {
             this.overlayAnnotations();
             this.updateBounds();
             var annotationRect = this.getInitialAnnotationRect();
@@ -23922,6 +23930,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 this.zoomToAnnotation(annotationRect);
             }
             this.isFirstLoad = false;
+            //}, 1000);
         };
         SeadragonCenterPanel.prototype.updateBounds = function () {
             var settings = this.extension.getSettings();
@@ -24743,15 +24752,14 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
         };
         Extension.prototype.update = function () {
-            var _this = this;
             _super.prototype.update.call(this);
-            Utils.Async.waitFor(function () {
-                return _this.centerPanel && _this.centerPanel.isCreated;
-            }, function () {
-                _this.checkForAnnotations();
-                _this.checkForSearchParam();
-                _this.checkForRotationParam();
-            });
+            //Utils.Async.waitFor(() => {
+            //    return this.centerPanel && this.centerPanel.isCreated;
+            //}, () => {
+            this.checkForAnnotations();
+            this.checkForSearchParam();
+            this.checkForRotationParam();
+            //});
         };
         Extension.prototype.checkForAnnotations = function () {
             if (this.data.annotations) {
@@ -24759,6 +24767,19 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 $.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
                 this.annotate(annotations);
             }
+        };
+        Extension.prototype.annotate = function (annotations, terms) {
+            this.annotations = annotations;
+            // sort the annotations by canvasIndex
+            this.annotations = annotations.sort(function (a, b) {
+                return a.canvasIndex - b.canvasIndex;
+            });
+            var annotationResults = new AnnotationResults_1.AnnotationResults();
+            annotationResults.terms = terms;
+            annotationResults.annotations = this.annotations;
+            $.publish(BaseEvents_1.BaseEvents.ANNOTATIONS, [annotationResults]);
+            // reload current index as it may contain annotations.
+            //$.publish(BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex]);
         };
         Extension.prototype.checkForSearchParam = function () {
             // if a h value is in the hash params, do a search.
@@ -25202,19 +25223,6 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     });
                 }
             });
-        };
-        Extension.prototype.annotate = function (annotations, terms) {
-            this.annotations = annotations;
-            // sort the annotations by canvasIndex
-            this.annotations = annotations.sort(function (a, b) {
-                return a.canvasIndex - b.canvasIndex;
-            });
-            var annotationResults = new AnnotationResults_1.AnnotationResults();
-            annotationResults.terms = terms;
-            annotationResults.annotations = this.annotations;
-            $.publish(BaseEvents_1.BaseEvents.ANNOTATIONS, [annotationResults]);
-            // reload current index as it may contain annotations.
-            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex]);
         };
         Extension.prototype.getSearchResults = function (searchUri, terms, searchResults, cb) {
             var _this = this;
