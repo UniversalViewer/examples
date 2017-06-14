@@ -26,10 +26,10 @@
 </head>
 <body>
 
-    <div>
+    <!--<div>
         <h1>UV v3.0 alpha testing</h1>
         <p>Please report any issues you find on the <a href="https://github.com/UniversalViewer/universalviewer/milestone/8" target="_blank">UV 3.0 milestone</a></p>
-    </div>
+    </div>-->
 
     <div id="uv" class="uv"></div>
 
@@ -47,7 +47,7 @@
     <div>
         <!--<textarea id="annotations" rows="10" cols="50" placeholder="annotations"></textarea>
         <button id="updateAnnotations">Update</button>-->
-        <button id="addAnnotation" disabled>Add Annotation</button>
+        <!--<button id="addAnnotation" disabled>Add Annotation</button>-->
     </div>
 
     <script type="text/javascript">
@@ -161,16 +161,16 @@
             });
         });
 
-        annotationList = {
-            "@context": "http://iiif.io/api/search/0/context.json",
-            "@id": "http://wellcomelibrary.org/iiif/b18035723/manifest",
-            "@type": "sc:AnnotationList",
-            "within": {
-                "@type": "sc:Layer"
-            },
-            "startIndex": 0,
-            "resources": []
-        };
+        // annotationList = {
+        //     "@context": "http://iiif.io/api/search/0/context.json",
+        //     "@id": "http://wellcomelibrary.org/iiif/b18035723/manifest",
+        //     "@type": "sc:AnnotationList",
+        //     "within": {
+        //         "@type": "sc:Layer"
+        //     },
+        //     "startIndex": 0,
+        //     "resources": []
+        // };
 
         // $('#updateAnnotations').on('click', function() {
             
@@ -181,24 +181,24 @@
         //     });
         // });
 
-        var $addAnnotation = $('#addAnnotation');
+        // var $addAnnotation = $('#addAnnotation');
 
-        // load test annotations
-        $.getJSON('test-annotations.json', function(testAnnotations) {
+        // // load test annotations
+        // $.getJSON('test-annotations.json', function(testAnnotations) {
 
-            $addAnnotation.prop('disabled', false);
+        //     $addAnnotation.prop('disabled', false);
 
-            $addAnnotation.on('click', function() {
+        //     $addAnnotation.on('click', function() {
 
-                var annotation = testAnnotations[Math.floor(Math.random() * testAnnotations.length)];
-                annotation.on = "https://wellcomelibrary.org/iiif/b18035723/canvas/c0#xywh=909,3067,339,50";
-                annotationList.resources.push(annotation);
+        //         var annotation = testAnnotations[Math.floor(Math.random() * testAnnotations.length)];
+        //         annotation.on = "https://wellcomelibrary.org/iiif/b18035723/canvas/c0#xywh=909,3067,339,50";
+        //         annotationList.resources.push(annotation);
 
-                uv.set({
-                    annotations: annotationList
-                });
-            });
-        });
+        //         uv.set({
+        //             annotations: annotationList
+        //         });
+        //     });
+        // });
 
     </script>
 
