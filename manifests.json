@@ -515,6 +515,20 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "National Gallery of Art (UK)",
+      "visible": true,
+      "manifests": [
+        {
+          "@id": "http://media.nga.gov/public/manifests/nga_highlights.json",
+          "@type": "sc:Manifest",
+          "label": "NGA Highlights"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "World Digital Library",
       "visible": false,
       "manifests": [
