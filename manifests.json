@@ -515,7 +515,7 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
-      "label": "National Gallery of Art (UK)",
+      "label": "National Gallery of Art (US)",
       "visible": true,
       "manifests": [
         {
