@@ -769,6 +769,12 @@
           "@type": "sc:Manifest",
           "label": "Max Width",
           "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/02_degraded",
+          "@type": "sc:Manifest",
+          "label": "Degraded",
+          "visible": true
         }
       ]
     },
