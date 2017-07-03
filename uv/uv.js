@@ -15643,7 +15643,7 @@ define('UVDataProvider',["require", "exports"], function (require, exports) {
         function UVDataProvider() {
         }
         UVDataProvider.prototype.get = function (key, defaultValue) {
-            return new Object();
+            return null;
         };
         UVDataProvider.prototype.set = function (key, value) {
         };
