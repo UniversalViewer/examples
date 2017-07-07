@@ -771,7 +771,7 @@
           "visible": true
         },
         {
-          "@id": "https://iiifauth.digtest.co.uk/manifest/02_degraded",
+          "@id": "https://iiifauth.digtest.co.uk/manifest/11_kitty_joyner",
           "@type": "sc:Manifest",
           "label": "Degraded",
           "visible": true

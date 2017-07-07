@@ -5700,10 +5700,10 @@ var Manifesto;
                 request.end();
             });
         };
-        Utils.loadExternalResourcesAuth1 = function (resources, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, showOutOfOptionsMessages) {
+        Utils.loadExternalResourcesAuth1 = function (resources, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, handleMovedTemporarily, showOutOfOptionsMessages) {
             return new Promise(function (resolve, reject) {
                 var promises = resources.map(function (resource) {
-                    return Utils.loadExternalResourceAuth1(resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, showOutOfOptionsMessages);
+                    return Utils.loadExternalResourceAuth1(resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, handleMovedTemporarily, showOutOfOptionsMessages);
                 });
                 Promise.all(promises)
                     .then(function () {
@@ -5713,7 +5713,7 @@ var Manifesto;
                 });
             });
         };
-        Utils.loadExternalResourceAuth1 = function (resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, showOutOfOptionsMessages) {
+        Utils.loadExternalResourceAuth1 = function (resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, handleMovedTemporarily, showOutOfOptionsMessages) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -5721,12 +5721,12 @@ var Manifesto;
                         case 1:
                             _a.sent();
                             if (!(resource.status === HTTPStatusCode.MOVED_TEMPORARILY || resource.status === HTTPStatusCode.UNAUTHORIZED)) return [3 /*break*/, 3];
-                            return [4 /*yield*/, Utils.doAuthChain(resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, showOutOfOptionsMessages)];
+                            return [4 /*yield*/, Utils.doAuthChain(resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, handleMovedTemporarily, showOutOfOptionsMessages)];
                         case 2:
                             _a.sent();
                             _a.label = 3;
                         case 3:
-                            if (resource.status === HTTPStatusCode.OK) {
+                            if (resource.status === HTTPStatusCode.OK || resource.status === HTTPStatusCode.MOVED_TEMPORARILY) {
                                 return [2 /*return*/, resource];
                             }
                             throw Utils.createAuthorizationFailedError();
@@ -5734,7 +5734,7 @@ var Manifesto;
                 });
             });
         };
-        Utils.doAuthChain = function (resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, showOutOfOptionsMessages) {
+        Utils.doAuthChain = function (resource, openContentProviderInteraction, openTokenService, userInteractedWithContentProvider, getContentProviderInteraction, handleMovedTemporarily, showOutOfOptionsMessages) {
             return __awaiter(this, void 0, void 0, function () {
                 var serviceToTry, lastAttempted, kioskInteraction, contentProviderInteraction, contentProviderInteraction;
                 return __generator(this, function (_a) {
@@ -5745,34 +5745,40 @@ var Manifesto;
                             if (!resource.isAccessControlled()) {
                                 return [2 /*return*/, resource]; // no services found
                             }
+                            if (!(!resource.isResponseHandled && resource.status === HTTPStatusCode.MOVED_TEMPORARILY)) return [3 /*break*/, 2];
+                            return [4 /*yield*/, handleMovedTemporarily(resource)];
+                        case 1:
+                            _a.sent();
+                            return [2 /*return*/, resource];
+                        case 2:
                             serviceToTry = null;
                             lastAttempted = null;
                             // repetition of logic is left in these steps for clarity:
                             // Looking for external pattern
                             serviceToTry = resource.externalService;
-                            if (!serviceToTry) return [3 /*break*/, 2];
+                            if (!serviceToTry) return [3 /*break*/, 4];
                             serviceToTry.options = resource.options;
                             lastAttempted = serviceToTry;
                             return [4 /*yield*/, Utils.attemptResourceWithToken(resource, openTokenService, serviceToTry)];
-                        case 1:
+                        case 3:
                             _a.sent();
                             return [2 /*return*/, resource];
-                        case 2:
+                        case 4:
                             // Looking for kiosk pattern
                             serviceToTry = resource.kioskService;
-                            if (!serviceToTry) return [3 /*break*/, 5];
+                            if (!serviceToTry) return [3 /*break*/, 7];
                             serviceToTry.options = resource.options;
                             lastAttempted = serviceToTry;
                             kioskInteraction = openContentProviderInteraction(serviceToTry);
-                            if (!kioskInteraction) return [3 /*break*/, 5];
+                            if (!kioskInteraction) return [3 /*break*/, 7];
                             return [4 /*yield*/, userInteractedWithContentProvider(kioskInteraction)];
-                        case 3:
+                        case 5:
                             _a.sent();
                             return [4 /*yield*/, Utils.attemptResourceWithToken(resource, openTokenService, serviceToTry)];
-                        case 4:
+                        case 6:
                             _a.sent();
                             return [2 /*return*/, resource];
-                        case 5:
+                        case 7:
                             // The code for the next two patterns is identical (other than the profile name).
                             // The difference is in the expected behaviour of
                             //
@@ -5782,42 +5788,42 @@ var Manifesto;
                             // a session, whereas for login the user might spend some time entering credentials etc.
                             // Looking for clickthrough pattern
                             serviceToTry = resource.clickThroughService;
-                            if (!serviceToTry) return [3 /*break*/, 9];
+                            if (!serviceToTry) return [3 /*break*/, 11];
                             serviceToTry.options = resource.options;
                             lastAttempted = serviceToTry;
-                            return [4 /*yield*/, getContentProviderInteraction(serviceToTry)];
-                        case 6:
+                            return [4 /*yield*/, getContentProviderInteraction(resource, serviceToTry)];
+                        case 8:
                             contentProviderInteraction = _a.sent();
-                            if (!contentProviderInteraction) return [3 /*break*/, 9];
+                            if (!contentProviderInteraction) return [3 /*break*/, 11];
                             // should close immediately
                             return [4 /*yield*/, userInteractedWithContentProvider(contentProviderInteraction)];
-                        case 7:
+                        case 9:
                             // should close immediately
                             _a.sent();
                             return [4 /*yield*/, Utils.attemptResourceWithToken(resource, openTokenService, serviceToTry)];
-                        case 8:
+                        case 10:
                             _a.sent();
                             return [2 /*return*/, resource];
-                        case 9:
+                        case 11:
                             // Looking for login pattern
                             serviceToTry = resource.loginService;
-                            if (!serviceToTry) return [3 /*break*/, 13];
+                            if (!serviceToTry) return [3 /*break*/, 15];
                             serviceToTry.options = resource.options;
                             lastAttempted = serviceToTry;
-                            return [4 /*yield*/, getContentProviderInteraction(serviceToTry)];
-                        case 10:
+                            return [4 /*yield*/, getContentProviderInteraction(resource, serviceToTry)];
+                        case 12:
                             contentProviderInteraction = _a.sent();
-                            if (!contentProviderInteraction) return [3 /*break*/, 13];
+                            if (!contentProviderInteraction) return [3 /*break*/, 15];
                             // we expect the user to spend some time interacting
                             return [4 /*yield*/, userInteractedWithContentProvider(contentProviderInteraction)];
-                        case 11:
+                        case 13:
                             // we expect the user to spend some time interacting
                             _a.sent();
                             return [4 /*yield*/, Utils.attemptResourceWithToken(resource, openTokenService, serviceToTry)];
-                        case 12:
+                        case 14:
                             _a.sent();
                             return [2 /*return*/, resource];
-                        case 13:
+                        case 15:
                             // nothing worked! Use the most recently tried service as the source of
                             // messages to show to the user.
                             if (lastAttempted) {
@@ -15687,108 +15693,108 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
     var BaseEvents = (function () {
         function BaseEvents() {
         }
+        BaseEvents.ACCEPT_TERMS = 'acceptTerms';
+        BaseEvents.ANNOTATION_CANVAS_CHANGED = 'annotationCanvasChanged';
+        BaseEvents.ANNOTATION_CHANGED = 'annotationChanged';
+        BaseEvents.ANNOTATIONS_CLEARED = 'annotationsCleared';
+        BaseEvents.ANNOTATIONS_EMPTY = 'annotationsEmpty';
+        BaseEvents.ANNOTATIONS = 'annotations';
+        BaseEvents.BOOKMARK = 'bookmark';
+        BaseEvents.CANVAS_INDEX_CHANGE_FAILED = 'canvasIndexChangeFailed';
+        BaseEvents.CANVAS_INDEX_CHANGED = 'canvasIndexChanged';
+        BaseEvents.CLEAR_ANNOTATIONS = 'clearAnnotations';
+        BaseEvents.CLICKTHROUGH = 'clickthrough';
+        BaseEvents.CLOSE_ACTIVE_DIALOGUE = 'closeActiveDialogue';
+        BaseEvents.CLOSE_LEFT_PANEL = 'closeLeftPanel';
+        BaseEvents.CLOSE_RIGHT_PANEL = 'closeRightPanel';
+        BaseEvents.COLLECTION_INDEX_CHANGED = 'collectionIndexChanged';
+        BaseEvents.CREATE = 'create';
+        BaseEvents.CREATED = 'created';
+        BaseEvents.DOWN_ARROW = 'downArrow';
+        BaseEvents.DOWNLOAD = 'download';
+        BaseEvents.DROP = 'drop';
+        BaseEvents.END = 'end';
+        BaseEvents.ERROR = 'error';
+        BaseEvents.ESCAPE = 'escape';
+        BaseEvents.EXIT_FULLSCREEN = 'exitFullScreen';
+        BaseEvents.EXTERNAL_LINK_CLICKED = 'externalLinkClicked';
+        BaseEvents.FEEDBACK = 'feedback';
+        BaseEvents.FORBIDDEN = 'forbidden';
+        BaseEvents.HIDE_AUTH_DIALOGUE = 'hideAuthDialogue';
+        BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE = 'hideClickthroughDialogue';
+        BaseEvents.HIDE_DOWNLOAD_DIALOGUE = 'hideDownloadDialogue';
+        BaseEvents.HIDE_EMBED_DIALOGUE = 'hideEmbedDialogue';
+        BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE = 'hideExternalContentDialogue';
+        BaseEvents.HIDE_GENERIC_DIALOGUE = 'hideGenericDialogue';
+        BaseEvents.HIDE_HELP_DIALOGUE = 'hideHelpDialogue';
+        BaseEvents.HIDE_INFORMATION = 'hideInformation';
+        BaseEvents.HIDE_LOGIN_DIALOGUE = 'hideLoginDialogue';
+        BaseEvents.HIDE_MOREINFO_DIALOGUE = 'hideMoreInfoDialogue';
+        BaseEvents.HIDE_OVERLAY = 'hideOverlay';
+        BaseEvents.HIDE_RESTRICTED_DIALOGUE = 'hideRestrictedDialogue';
+        BaseEvents.HIDE_SETTINGS_DIALOGUE = 'hideSettingsDialogue';
+        BaseEvents.HIDE_SHARE_DIALOGUE = 'hideShareDialogue';
+        BaseEvents.HOME = 'home';
+        BaseEvents.LEFT_ARROW = 'leftArrow';
+        BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH = 'leftPanelCollapseFullFinish';
+        BaseEvents.LEFTPANEL_COLLAPSE_FULL_START = 'leftPanelCollapseFullStart';
+        BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH = 'leftPanelExpandFullFinish';
+        BaseEvents.LEFTPANEL_EXPAND_FULL_START = 'leftPanelExpandFullStart';
+        BaseEvents.LOAD_FAILED = 'loadFailed';
+        BaseEvents.LOGIN_FAILED = 'loginFailed';
+        BaseEvents.LOGIN = 'login';
+        BaseEvents.LOGOUT = 'logout';
+        BaseEvents.MANIFEST_INDEX_CHANGED = 'manifestIndexChanged';
+        BaseEvents.METRIC_CHANGED = 'metricChanged';
+        BaseEvents.MINUS = 'minus';
+        BaseEvents.NOT_FOUND = 'notFound';
+        BaseEvents.OPEN_EXTERNAL_RESOURCE = 'openExternalResource';
+        BaseEvents.OPEN_LEFT_PANEL = 'openLeftPanel';
+        BaseEvents.OPEN_RIGHT_PANEL = 'openRightPanel';
+        BaseEvents.OPEN = 'open';
+        BaseEvents.PAGE_DOWN = 'pageDown';
+        BaseEvents.PAGE_UP = 'pageUp';
+        BaseEvents.PLUS = 'plus';
+        BaseEvents.REDIRECT = 'redirect';
+        BaseEvents.REFRESH = 'refresh';
+        BaseEvents.RELOAD = 'reload';
+        BaseEvents.RESIZE = 'resize';
+        BaseEvents.RESOURCE_DEGRADED = 'resourceDegraded';
+        BaseEvents.RETRY = 'retry';
+        BaseEvents.RETURN = 'return';
+        BaseEvents.RIGHT_ARROW = 'rightArrow';
+        BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH = 'rightPanelCollapseFullFinish';
+        BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START = 'rightPanelCollapseFullStart';
+        BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH = 'rightPanelExpandFullFinish';
+        BaseEvents.RIGHTPANEL_EXPAND_FULL_START = 'rightPanelExpandFullStart';
+        BaseEvents.SEQUENCE_INDEX_CHANGED = 'sequenceIndexChanged';
+        BaseEvents.SETTINGS_CHANGED = 'settingsChanged';
+        BaseEvents.SHOW_AUTH_DIALOGUE = 'showAuthDialogue';
+        BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE = 'showClickThroughDialogue';
+        BaseEvents.SHOW_DOWNLOAD_DIALOGUE = 'showDownloadDialogue';
+        BaseEvents.SHOW_EMBED_DIALOGUE = 'showEmbedDialogue';
+        BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE = 'showExternalContentDialogue';
+        BaseEvents.SHOW_GENERIC_DIALOGUE = 'showGenericDialogue';
+        BaseEvents.SHOW_HELP_DIALOGUE = 'showHelpDialogue';
+        BaseEvents.SHOW_INFORMATION = 'showInformation';
+        BaseEvents.SHOW_LOGIN_DIALOGUE = 'showLoginDialogue';
+        BaseEvents.SHOW_MESSAGE = 'showMessage';
+        BaseEvents.SHOW_MOREINFO_DIALOGUE = 'showMoreInfoDialogue';
+        BaseEvents.SHOW_OVERLAY = 'showOverlay';
+        BaseEvents.SHOW_RESTRICTED_DIALOGUE = 'showRestrictedDialogue';
+        BaseEvents.SHOW_SETTINGS_DIALOGUE = 'showSettingsDialogue';
+        BaseEvents.SHOW_SHARE_DIALOGUE = 'showShareDialogue';
+        BaseEvents.SHOW_TERMS_OF_USE = 'showTermsOfUse';
+        BaseEvents.THUMB_SELECTED = 'thumbSelected';
+        BaseEvents.TOGGLE_EXPAND_LEFT_PANEL = 'toggleExpandLeftPanel';
+        BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL = 'toggleExpandRightPanel';
+        BaseEvents.TOGGLE_FULLSCREEN = 'toggleFullScreen';
+        BaseEvents.UP_ARROW = 'upArrow';
+        BaseEvents.UPDATE_SETTINGS = 'updateSettings';
+        BaseEvents.VIEW_FULL_TERMS = 'viewFullTerms';
+        BaseEvents.WINDOW_UNLOAD = 'windowUnload';
         return BaseEvents;
     }());
-    BaseEvents.ACCEPT_TERMS = 'acceptTerms';
-    BaseEvents.ANNOTATION_CANVAS_CHANGED = 'annotationCanvasChanged';
-    BaseEvents.ANNOTATION_CHANGED = 'annotationChanged';
-    BaseEvents.ANNOTATIONS_CLEARED = 'annotationsCleared';
-    BaseEvents.ANNOTATIONS_EMPTY = 'annotationsEmpty';
-    BaseEvents.ANNOTATIONS = 'annotations';
-    BaseEvents.BOOKMARK = 'bookmark';
-    BaseEvents.CANVAS_INDEX_CHANGE_FAILED = 'canvasIndexChangeFailed';
-    BaseEvents.CANVAS_INDEX_CHANGED = 'canvasIndexChanged';
-    BaseEvents.CLEAR_ANNOTATIONS = 'clearAnnotations';
-    BaseEvents.CLICKTHROUGH = 'clickthrough';
-    BaseEvents.CLOSE_ACTIVE_DIALOGUE = 'closeActiveDialogue';
-    BaseEvents.CLOSE_LEFT_PANEL = 'closeLeftPanel';
-    BaseEvents.CLOSE_RIGHT_PANEL = 'closeRightPanel';
-    BaseEvents.COLLECTION_INDEX_CHANGED = 'collectionIndexChanged';
-    BaseEvents.CREATE = 'create';
-    BaseEvents.CREATED = 'created';
-    BaseEvents.DOWN_ARROW = 'downArrow';
-    BaseEvents.DOWNLOAD = 'download';
-    BaseEvents.DROP = 'drop';
-    BaseEvents.END = 'end';
-    BaseEvents.ERROR = 'error';
-    BaseEvents.ESCAPE = 'escape';
-    BaseEvents.EXIT_FULLSCREEN = 'exitFullScreen';
-    BaseEvents.EXTERNAL_LINK_CLICKED = 'externalLinkClicked';
-    BaseEvents.FEEDBACK = 'feedback';
-    BaseEvents.FORBIDDEN = 'forbidden';
-    BaseEvents.HIDE_AUTH_DIALOGUE = 'hideAuthDialogue';
-    BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE = 'hideClickthroughDialogue';
-    BaseEvents.HIDE_DOWNLOAD_DIALOGUE = 'hideDownloadDialogue';
-    BaseEvents.HIDE_EMBED_DIALOGUE = 'hideEmbedDialogue';
-    BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE = 'hideExternalContentDialogue';
-    BaseEvents.HIDE_GENERIC_DIALOGUE = 'hideGenericDialogue';
-    BaseEvents.HIDE_HELP_DIALOGUE = 'hideHelpDialogue';
-    BaseEvents.HIDE_INFORMATION = 'hideInformation';
-    BaseEvents.HIDE_LOGIN_DIALOGUE = 'hideLoginDialogue';
-    BaseEvents.HIDE_MOREINFO_DIALOGUE = 'hideMoreInfoDialogue';
-    BaseEvents.HIDE_OVERLAY = 'hideOverlay';
-    BaseEvents.HIDE_RESTRICTED_DIALOGUE = 'hideRestrictedDialogue';
-    BaseEvents.HIDE_SETTINGS_DIALOGUE = 'hideSettingsDialogue';
-    BaseEvents.HIDE_SHARE_DIALOGUE = 'hideShareDialogue';
-    BaseEvents.HOME = 'home';
-    BaseEvents.LEFT_ARROW = 'leftArrow';
-    BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH = 'leftPanelCollapseFullFinish';
-    BaseEvents.LEFTPANEL_COLLAPSE_FULL_START = 'leftPanelCollapseFullStart';
-    BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH = 'leftPanelExpandFullFinish';
-    BaseEvents.LEFTPANEL_EXPAND_FULL_START = 'leftPanelExpandFullStart';
-    BaseEvents.LOAD_FAILED = 'loadFailed';
-    BaseEvents.LOGIN_FAILED = 'loginFailed';
-    BaseEvents.LOGIN = 'login';
-    BaseEvents.LOGOUT = 'logout';
-    BaseEvents.MANIFEST_INDEX_CHANGED = 'manifestIndexChanged';
-    BaseEvents.METRIC_CHANGED = 'metricChanged';
-    BaseEvents.MINUS = 'minus';
-    BaseEvents.NOT_FOUND = 'notFound';
-    BaseEvents.OPEN_EXTERNAL_RESOURCE = 'openExternalResource';
-    BaseEvents.OPEN_LEFT_PANEL = 'openLeftPanel';
-    BaseEvents.OPEN_RIGHT_PANEL = 'openRightPanel';
-    BaseEvents.OPEN = 'open';
-    BaseEvents.PAGE_DOWN = 'pageDown';
-    BaseEvents.PAGE_UP = 'pageUp';
-    BaseEvents.PLUS = 'plus';
-    BaseEvents.REDIRECT = 'redirect';
-    BaseEvents.REFRESH = 'refresh';
-    BaseEvents.RELOAD = 'reload';
-    BaseEvents.RESIZE = 'resize';
-    BaseEvents.RESOURCE_DEGRADED = 'resourceDegraded';
-    BaseEvents.RETRY = 'retry';
-    BaseEvents.RETURN = 'return';
-    BaseEvents.RIGHT_ARROW = 'rightArrow';
-    BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH = 'rightPanelCollapseFullFinish';
-    BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START = 'rightPanelCollapseFullStart';
-    BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH = 'rightPanelExpandFullFinish';
-    BaseEvents.RIGHTPANEL_EXPAND_FULL_START = 'rightPanelExpandFullStart';
-    BaseEvents.SEQUENCE_INDEX_CHANGED = 'sequenceIndexChanged';
-    BaseEvents.SETTINGS_CHANGED = 'settingsChanged';
-    BaseEvents.SHOW_AUTH_DIALOGUE = 'showAuthDialogue';
-    BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE = 'showClickThroughDialogue';
-    BaseEvents.SHOW_DOWNLOAD_DIALOGUE = 'showDownloadDialogue';
-    BaseEvents.SHOW_EMBED_DIALOGUE = 'showEmbedDialogue';
-    BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE = 'showExternalContentDialogue';
-    BaseEvents.SHOW_GENERIC_DIALOGUE = 'showGenericDialogue';
-    BaseEvents.SHOW_HELP_DIALOGUE = 'showHelpDialogue';
-    BaseEvents.SHOW_INFORMATION = 'showInformation';
-    BaseEvents.SHOW_LOGIN_DIALOGUE = 'showLoginDialogue';
-    BaseEvents.SHOW_MESSAGE = 'showMessage';
-    BaseEvents.SHOW_MOREINFO_DIALOGUE = 'showMoreInfoDialogue';
-    BaseEvents.SHOW_OVERLAY = 'showOverlay';
-    BaseEvents.SHOW_RESTRICTED_DIALOGUE = 'showRestrictedDialogue';
-    BaseEvents.SHOW_SETTINGS_DIALOGUE = 'showSettingsDialogue';
-    BaseEvents.SHOW_SHARE_DIALOGUE = 'showShareDialogue';
-    BaseEvents.SHOW_TERMS_OF_USE = 'showTermsOfUse';
-    BaseEvents.THUMB_SELECTED = 'thumbSelected';
-    BaseEvents.TOGGLE_EXPAND_LEFT_PANEL = 'toggleExpandLeftPanel';
-    BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL = 'toggleExpandRightPanel';
-    BaseEvents.TOGGLE_FULLSCREEN = 'toggleFullScreen';
-    BaseEvents.UP_ARROW = 'upArrow';
-    BaseEvents.UPDATE_SETTINGS = 'updateSettings';
-    BaseEvents.VIEW_FULL_TERMS = 'viewFullTerms';
-    BaseEvents.WINDOW_UNLOAD = 'windowUnload';
     exports.BaseEvents = BaseEvents;
 });
 //# sourceMappingURL=BaseEvents.js.map
@@ -15821,9 +15827,9 @@ define('modules/uv-shared-module/LoginWarningMessages',["require", "exports"], f
     var LoginWarningMessages = (function () {
         function LoginWarningMessages() {
         }
+        LoginWarningMessages.FORBIDDEN = "forbiddenResourceMessage";
         return LoginWarningMessages;
     }());
-    LoginWarningMessages.FORBIDDEN = "forbiddenResourceMessage";
     exports.LoginWarningMessages = LoginWarningMessages;
 });
 //# sourceMappingURL=LoginWarningMessages.js.map
@@ -16067,7 +16073,7 @@ define('modules/uv-shared-module/Utils',["require", "exports"], function (requir
     exports.UVUtils = UVUtils;
 });
 //# sourceMappingURL=Utils.js.map
-define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "./Utils"], function (require, exports, BaseEvents_1, Utils_1) {
+define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "./Utils", "./InformationArgs", "./InformationType"], function (require, exports, BaseEvents_1, Utils_1, InformationArgs_1, InformationType_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Auth1 = (function () {
@@ -16081,7 +16087,7 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                     resource.options = options;
                     return resource;
                 });
-                manifesto.Utils.loadExternalResourcesAuth1(resourcesToLoad, Auth1.openContentProviderInteraction, Auth1.openTokenService, Auth1.userInteractedWithContentProvider, Auth1.getContentProviderInteraction, Auth1.showOutOfOptionsMessages).then(function (r) {
+                manifesto.Utils.loadExternalResourcesAuth1(resourcesToLoad, Auth1.openContentProviderInteraction, Auth1.openTokenService, Auth1.userInteractedWithContentProvider, Auth1.getContentProviderInteraction, Auth1.handleMovedTemporarily, Auth1.showOutOfOptionsMessages).then(function (r) {
                     resolve(r);
                 })['catch'](function (error) {
                     switch (error.name) {
@@ -16125,7 +16131,15 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                 }, 500);
             });
         };
-        Auth1.getContentProviderInteraction = function (service) {
+        Auth1.handleMovedTemporarily = function (resource) {
+            return new Promise(function (resolve) {
+                var informationArgs = new InformationArgs_1.InformationArgs(InformationType_1.InformationType.DEGRADED_RESOURCE, resource);
+                $.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
+                resource.isResponseHandled = true;
+                resolve();
+            });
+        };
+        Auth1.getContentProviderInteraction = function (resource, service) {
             return new Promise(function (resolve) {
                 $.publish(BaseEvents_1.BaseEvents.SHOW_AUTH_DIALOGUE, [{
                         service: service,
@@ -16187,9 +16201,9 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                 }
             }
         };
+        Auth1.messages = {};
         return Auth1;
     }());
-    Auth1.messages = {};
     exports.Auth1 = Auth1;
 });
 //# sourceMappingURL=Auth1.js.map
@@ -16740,10 +16754,10 @@ define('modules/uv-shared-module/MetricType',["require", "exports", "./StringVal
         function MetricType() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        MetricType.MOBILELANDSCAPE = new MetricType("mobilelandscape");
+        MetricType.LAPTOP = new MetricType("laptop");
         return MetricType;
     }(StringValue_1.StringValue));
-    MetricType.MOBILELANDSCAPE = new MetricType("mobilelandscape");
-    MetricType.LAPTOP = new MetricType("laptop");
     exports.MetricType = MetricType;
 });
 //# sourceMappingURL=MetricType.js.map
@@ -18490,7 +18504,7 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
             if (this.$informationBox.is(':visible')) {
                 var $actions = this.$informationBox.find('.actions');
                 var $message = this.$informationBox.find('.message');
-                $message.width(this.$element.width() - $message.horizontalMargins() - $actions.outerWidth(true) - this.$informationBox.find('.close').outerWidth(true) - 1);
+                $message.width(Math.floor(this.$element.width()) - Math.ceil($message.horizontalMargins()) - Math.ceil($actions.outerWidth(true)) - Math.ceil(this.$informationBox.find('.close').outerWidth(true)) - 2);
                 $message.ellipsisFill(this.information.message);
             }
             // hide toggle buttons below minimum width
@@ -19920,17 +19934,17 @@ define('modules/uv-shared-module/DownloadOption',["require", "exports"], functio
         DownloadOption.prototype.toString = function () {
             return this.value;
         };
+        DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
+        DownloadOption.dynamicCanvasRenderings = new DownloadOption("dynamicCanvasRenderings");
+        DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
+        DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
+        DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
+        DownloadOption.selection = new DownloadOption("selection");
+        DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
+        DownloadOption.wholeImagesHighRes = new DownloadOption("wholeImagesHighRes");
+        DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
         return DownloadOption;
     }());
-    DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
-    DownloadOption.dynamicCanvasRenderings = new DownloadOption("dynamicCanvasRenderings");
-    DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
-    DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
-    DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
-    DownloadOption.selection = new DownloadOption("selection");
-    DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
-    DownloadOption.wholeImagesHighRes = new DownloadOption("wholeImagesHighRes");
-    DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
     exports.DownloadOption = DownloadOption;
 });
 //# sourceMappingURL=DownloadOption.js.map
@@ -20120,12 +20134,12 @@ define('extensions/uv-mediaelement-extension/Events',["require", "exports"], fun
     var Events = (function () {
         function Events() {
         }
+        Events.namespace = 'mediaelementExtension.';
+        Events.MEDIA_ENDED = Events.namespace + 'mediaEnded';
+        Events.MEDIA_PAUSED = Events.namespace + 'mediaPaused';
+        Events.MEDIA_PLAYED = Events.namespace + 'mediaPlayed';
         return Events;
     }());
-    Events.namespace = 'mediaelementExtension.';
-    Events.MEDIA_ENDED = Events.namespace + 'mediaEnded';
-    Events.MEDIA_PAUSED = Events.namespace + 'mediaPaused';
-    Events.MEDIA_PLAYED = Events.namespace + 'mediaPlayed';
     exports.Events = Events;
 });
 //# sourceMappingURL=Events.js.map
@@ -20561,48 +20575,48 @@ define('extensions/uv-seadragon-extension/Events',["require", "exports"], functi
     var Events = (function () {
         function Events() {
         }
+        Events.namespace = 'openseadragonExtension.';
+        Events.CURRENT_VIEW_URI = Events.namespace + 'currentViewUri';
+        Events.FIRST = Events.namespace + 'first';
+        Events.GALLERY_DECREASE_SIZE = Events.namespace + 'galleryDecreaseSize';
+        Events.GALLERY_INCREASE_SIZE = Events.namespace + 'galleryIncreaseSize';
+        Events.GALLERY_THUMB_SELECTED = Events.namespace + 'galleryThumbSelected';
+        Events.HIDE_MULTISELECT_DIALOGUE = Events.namespace + 'hideMultiSelectDialogue';
+        Events.IMAGE_SEARCH = Events.namespace + 'imageSearch';
+        Events.LAST = Events.namespace + 'last';
+        Events.MODE_CHANGED = Events.namespace + 'modeChanged';
+        Events.MULTISELECT_CHANGE = Events.namespace + 'multiSelectChange';
+        Events.MULTISELECTION_MADE = Events.namespace + 'multiSelectionMade';
+        Events.NEXT_SEARCH_RESULT = Events.namespace + 'nextSearchResult';
+        Events.NEXT = Events.namespace + 'next';
+        Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'nextImagesSearchResultUnavailable';
+        Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'prevImagesSearchResultUnavailable';
+        Events.OPEN_THUMBS_VIEW = Events.namespace + 'openThumbsView';
+        Events.OPEN_TREE_VIEW = Events.namespace + 'openTreeView';
+        Events.PAGE_SEARCH = Events.namespace + 'pageSearch';
+        Events.PAGING_TOGGLED = Events.namespace + 'pagingToggled';
+        Events.PREV_SEARCH_RESULT = Events.namespace + 'prevSearchResult';
+        Events.PREV = Events.namespace + 'prev';
+        Events.PRINT = Events.namespace + 'print';
+        Events.ROTATE = Events.namespace + 'rotate';
+        Events.SEADRAGON_ANIMATION_FINISH = Events.namespace + 'animationFinish';
+        Events.SEADRAGON_ANIMATION_START = Events.namespace + 'animationStart';
+        Events.SEADRAGON_ANIMATION = Events.namespace + 'animation';
+        Events.SEADRAGON_OPEN = Events.namespace + 'open';
+        Events.SEADRAGON_RESIZE = Events.namespace + 'resize';
+        Events.SEADRAGON_ROTATION = Events.namespace + 'rotationChanged';
+        Events.SEARCH_PREVIEW_FINISH = Events.namespace + 'searchPreviewFinish';
+        Events.SEARCH_PREVIEW_START = Events.namespace + 'searchPreviewStart';
+        Events.SEARCH = Events.namespace + 'search';
+        Events.SHOW_MULTISELECT_DIALOGUE = Events.namespace + 'showMultiSelectDialogue';
+        Events.THUMB_MULTISELECTED = Events.namespace + 'thumbMultiSelected';
+        Events.TREE_NODE_MULTISELECTED = Events.namespace + 'treeNodeMultiSelected';
+        Events.TREE_NODE_SELECTED = Events.namespace + 'treeNodeSelected';
+        Events.XYWH_CHANGED = Events.namespace + 'xywhChanged';
+        Events.ZOOM_IN = Events.namespace + 'zoomIn';
+        Events.ZOOM_OUT = Events.namespace + 'zoomOut';
         return Events;
     }());
-    Events.namespace = 'openseadragonExtension.';
-    Events.CURRENT_VIEW_URI = Events.namespace + 'currentViewUri';
-    Events.FIRST = Events.namespace + 'first';
-    Events.GALLERY_DECREASE_SIZE = Events.namespace + 'galleryDecreaseSize';
-    Events.GALLERY_INCREASE_SIZE = Events.namespace + 'galleryIncreaseSize';
-    Events.GALLERY_THUMB_SELECTED = Events.namespace + 'galleryThumbSelected';
-    Events.HIDE_MULTISELECT_DIALOGUE = Events.namespace + 'hideMultiSelectDialogue';
-    Events.IMAGE_SEARCH = Events.namespace + 'imageSearch';
-    Events.LAST = Events.namespace + 'last';
-    Events.MODE_CHANGED = Events.namespace + 'modeChanged';
-    Events.MULTISELECT_CHANGE = Events.namespace + 'multiSelectChange';
-    Events.MULTISELECTION_MADE = Events.namespace + 'multiSelectionMade';
-    Events.NEXT_SEARCH_RESULT = Events.namespace + 'nextSearchResult';
-    Events.NEXT = Events.namespace + 'next';
-    Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'nextImagesSearchResultUnavailable';
-    Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'prevImagesSearchResultUnavailable';
-    Events.OPEN_THUMBS_VIEW = Events.namespace + 'openThumbsView';
-    Events.OPEN_TREE_VIEW = Events.namespace + 'openTreeView';
-    Events.PAGE_SEARCH = Events.namespace + 'pageSearch';
-    Events.PAGING_TOGGLED = Events.namespace + 'pagingToggled';
-    Events.PREV_SEARCH_RESULT = Events.namespace + 'prevSearchResult';
-    Events.PREV = Events.namespace + 'prev';
-    Events.PRINT = Events.namespace + 'print';
-    Events.ROTATE = Events.namespace + 'rotate';
-    Events.SEADRAGON_ANIMATION_FINISH = Events.namespace + 'animationFinish';
-    Events.SEADRAGON_ANIMATION_START = Events.namespace + 'animationStart';
-    Events.SEADRAGON_ANIMATION = Events.namespace + 'animation';
-    Events.SEADRAGON_OPEN = Events.namespace + 'open';
-    Events.SEADRAGON_RESIZE = Events.namespace + 'resize';
-    Events.SEADRAGON_ROTATION = Events.namespace + 'rotationChanged';
-    Events.SEARCH_PREVIEW_FINISH = Events.namespace + 'searchPreviewFinish';
-    Events.SEARCH_PREVIEW_START = Events.namespace + 'searchPreviewStart';
-    Events.SEARCH = Events.namespace + 'search';
-    Events.SHOW_MULTISELECT_DIALOGUE = Events.namespace + 'showMultiSelectDialogue';
-    Events.THUMB_MULTISELECTED = Events.namespace + 'thumbMultiSelected';
-    Events.TREE_NODE_MULTISELECTED = Events.namespace + 'treeNodeMultiSelected';
-    Events.TREE_NODE_SELECTED = Events.namespace + 'treeNodeSelected';
-    Events.XYWH_CHANGED = Events.namespace + 'xywhChanged';
-    Events.ZOOM_IN = Events.namespace + 'zoomIn';
-    Events.ZOOM_OUT = Events.namespace + 'zoomOut';
     exports.Events = Events;
 });
 //# sourceMappingURL=Events.js.map
@@ -20694,10 +20708,10 @@ define('extensions/uv-seadragon-extension/Mode',["require", "exports"], function
         Mode.prototype.toString = function () {
             return this.value;
         };
+        Mode.image = new Mode("image");
+        Mode.page = new Mode("page");
         return Mode;
     }());
-    Mode.image = new Mode("image");
-    Mode.page = new Mode("page");
     exports.Mode = Mode;
 });
 //# sourceMappingURL=Mode.js.map
@@ -21400,15 +21414,15 @@ define('extensions/uv-seadragon-extension/DownloadType',["require", "exports"], 
     var DownloadType = (function () {
         function DownloadType() {
         }
+        DownloadType.CURRENTVIEW = "currentView";
+        DownloadType.ENTIREDOCUMENTASPDF = "entireDocumentAsPdf";
+        DownloadType.ENTIREDOCUMENTASTEXT = "entireDocumentAsText";
+        DownloadType.WHOLEIMAGEHIGHRES = "wholeImageHighRes";
+        DownloadType.WHOLEIMAGESHIGHRES = "wholeImageHighRes";
+        DownloadType.WHOLEIMAGELOWRES = "wholeImageLowRes";
+        DownloadType.UNKNOWN = "unknown";
         return DownloadType;
     }());
-    DownloadType.CURRENTVIEW = "currentView";
-    DownloadType.ENTIREDOCUMENTASPDF = "entireDocumentAsPdf";
-    DownloadType.ENTIREDOCUMENTASTEXT = "entireDocumentAsText";
-    DownloadType.WHOLEIMAGEHIGHRES = "wholeImageHighRes";
-    DownloadType.WHOLEIMAGESHIGHRES = "wholeImageHighRes";
-    DownloadType.WHOLEIMAGELOWRES = "wholeImageLowRes";
-    DownloadType.UNKNOWN = "unknown";
     exports.DownloadType = DownloadType;
 });
 //# sourceMappingURL=DownloadType.js.map
