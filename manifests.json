@@ -771,9 +771,21 @@
           "visible": true
         },
         {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/01_standard-login",
+          "@type": "sc:Manifest",
+          "label": "Standard Login",
+          "visible": true
+        },
+        {
           "@id": "https://iiifauth.digtest.co.uk/manifest/11_kitty_joyner",
           "@type": "sc:Manifest",
-          "label": "Degraded",
+          "label": "Degraded: Kitty Joyner",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/02_degraded",
+          "@type": "sc:Manifest",
+          "label": "Degraded: Gauguin",
           "visible": true
         }
       ]

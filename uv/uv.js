@@ -17712,6 +17712,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 image: thumbnail
             };
         };
+        BaseExtension.prototype.getCanvasResource = function (canvas) {
+            if (this.resources) {
+                return this.resources.en().where(function (r) { return r.index === canvas.index; }).first();
+            }
+            return null;
+        };
         BaseExtension.prototype.getPagedIndices = function (canvasIndex) {
             if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
             return [canvasIndex];
@@ -21848,23 +21854,29 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             return null;
         };
         DownloadDialogue.prototype.getCanvasDimensions = function (canvas) {
+            var canvasResource = this.extension.getCanvasResource(canvas);
             // externalResource may not have loaded yet
-            if (canvas.externalResource.data) {
-                return new Size(canvas.externalResource.data.width, canvas.externalResource.data.height);
+            if (canvasResource) {
+                return new Size(canvasResource.width, canvasResource.height);
             }
             return new Size(0, 0);
         };
         DownloadDialogue.prototype.getCanvasMaxDimensions = function (canvas) {
-            if (canvas.externalResource.data && canvas.externalResource.data.profile[1]) {
-                return new Size(canvas.externalResource.data.profile[1].maxWidth, canvas.externalResource.data.profile[1].maxHeight);
+            var canvasResource = this.extension.getCanvasResource(canvas);
+            if (canvasResource && canvasResource.profile) {
+                var profile = canvasResource.profile.en().where(function (p) { return p["maxWidth"]; }).first();
+                if (profile) {
+                    return new Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
+                }
             }
             return null;
         };
         DownloadDialogue.prototype.getCanvasComputedDimensions = function (canvas) {
             var size = this.getCanvasDimensions(canvas);
             var maxSize = this.getCanvasMaxDimensions(canvas);
-            if (!maxSize)
-                return null;
+            if (!maxSize) {
+                return size;
+            }
             var finalWidth = size.width;
             var finalHeight = size.height;
             // if the maxWidth is less than the advertised width
@@ -21882,6 +21894,9 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             return new Size(finalWidth, finalHeight);
         };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            if (!this.extension.resources) {
+                return false;
+            }
             switch (option) {
                 case DownloadOption_1.DownloadOption.currentViewAsJpg:
                 case DownloadOption_1.DownloadOption.dynamicCanvasRenderings:
@@ -21892,13 +21907,14 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                         this.extension.isPagingSettingEnabled() && this.extension.resources && this.extension.resources.length === 1) {
                         var maxSize = this.getCanvasMaxDimensions(this.extension.helper.getCurrentCanvas());
                         if (maxSize) {
-                            if (typeof (maxSize.width) === 'undefined') {
+                            if (maxSize.width <= this.options.maxImageWidth) {
                                 return true;
                             }
-                            else if (maxSize.width <= this.options.maxImageWidth) {
-                                return true;
+                            else {
+                                return false;
                             }
                         }
+                        return true;
                     }
                     return false;
                 case DownloadOption_1.DownloadOption.wholeImagesHighRes:
@@ -24196,6 +24212,9 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.getAnnotationOverlayRects = function (annotationGroup) {
             var newRects = [];
+            if (!this.extension.resources) {
+                return newRects;
+            }
             var resource = this.extension.resources.en().where(function (x) { return x.index === annotationGroup.canvasIndex; }).first();
             var index = this.extension.resources.indexOf(resource);
             var offsetX = 0;
@@ -25001,9 +25020,11 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             height = Math.min(height, canvas.getHeight());
             var regionWidth = width;
             var regionHeight = height;
-            if (canvas.externalResource.data && canvas.externalResource.data.profile && canvas.externalResource.data.profile[1]) {
-                var maxSize = new Size(canvas.externalResource.data.profile[1].maxWidth, canvas.externalResource.data.profile[1].maxHeight);
-                if (!(typeof (maxSize.width) === 'undefined') && !(typeof (maxSize.height) === 'undefined')) {
+            var canvasResource = this.getCanvasResource(canvas);
+            if (canvasResource && canvasResource.profile) {
+                var profile = canvasResource.profile.en().where(function (p) { return p["maxWidth"]; }).first();
+                if (profile) {
+                    var maxSize = new Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
                     if (width > maxSize.width) {
                         var newWidth = maxSize.width;
                         height = Math.round(newWidth * (height / width));
