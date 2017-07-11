@@ -17712,12 +17712,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 image: thumbnail
             };
         };
-        BaseExtension.prototype.getCanvasResource = function (canvas) {
-            if (this.resources) {
-                return this.resources.en().where(function (r) { return r.index === canvas.index; }).first();
-            }
-            return null;
-        };
         BaseExtension.prototype.getPagedIndices = function (canvasIndex) {
             if (canvasIndex === void 0) { canvasIndex = this.helper.canvasIndex; }
             return [canvasIndex];
@@ -21842,8 +21836,9 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 var width = size.width;
                 var uri = canvas.getCanonicalImageUri(width);
                 var uri_parts = uri.split('/');
-                // if maxwidth is set in info.json, you must include a height.
-                // if () {
+                // todo: if maxwidth is set in info.json, you must include a height.
+                // if (canvas.) {
+                //      uri_parts[uri_parts.length - 3] = 
                 // }
                 var rotation = this.extension.getViewerRotation();
                 uri_parts[uri_parts.length - 2] = String(rotation);
@@ -21863,17 +21858,15 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             return null;
         };
         DownloadDialogue.prototype.getCanvasDimensions = function (canvas) {
-            var canvasResource = this.extension.getCanvasResource(canvas);
             // externalResource may not have loaded yet
-            if (canvasResource) {
-                return new Size(canvasResource.width, canvasResource.height);
+            if (canvas.externalResource.data) {
+                return new Size(canvas.externalResource.data.width, canvas.externalResource.data.height);
             }
             return new Size(0, 0);
         };
         DownloadDialogue.prototype.getCanvasMaxDimensions = function (canvas) {
-            var canvasResource = this.extension.getCanvasResource(canvas);
-            if (canvasResource && canvasResource.profile) {
-                var profile = canvasResource.profile.en().where(function (p) { return p["maxWidth"]; }).first();
+            if (canvas.externalResource.data && canvas.externalResource.data.profile) {
+                var profile = canvas.externalResource.data.profile.en().where(function (p) { return p["maxWidth"]; }).first();
                 if (profile) {
                     return new Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
                 }
@@ -25029,9 +25022,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             height = Math.min(height, canvas.getHeight());
             var regionWidth = width;
             var regionHeight = height;
-            var canvasResource = this.getCanvasResource(canvas);
-            if (canvasResource && canvasResource.profile) {
-                var profile = canvasResource.profile.en().where(function (p) { return p["maxWidth"]; }).first();
+            if (canvas.externalResource.data && canvas.externalResource.data.profile) {
+                var profile = canvas.externalResource.data.profile.en().where(function (p) { return p["maxWidth"]; }).first();
                 if (profile) {
                     var maxSize = new Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
                     if (width > maxSize.width) {
