@@ -4332,6 +4332,17 @@ var Manifesto;
             var uri = [id, region, size, rotation, quality + '.jpg'].join('/');
             return uri;
         };
+        Canvas.prototype.getMaxDimensions = function () {
+            var maxDimensions = null;
+            var profile;
+            if (this.externalResource.data && this.externalResource.data.profile) {
+                profile = this.externalResource.data.profile.en().where(function (p) { return p["maxWidth" || "maxwidth"]; }).first();
+                if (profile) {
+                    maxDimensions = new Manifesto.Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
+                }
+            }
+            return maxDimensions;
+        };
         // Presentation API 3.0
         Canvas.prototype.getContent = function () {
             var content = [];
@@ -6269,6 +6280,18 @@ var Manifesto;
     Manifesto.TranslationCollection = TranslationCollection;
 })(Manifesto || (Manifesto = {}));
 
+var Manifesto;
+(function (Manifesto) {
+    var Size = (function () {
+        function Size(width, height) {
+            this.width = width;
+            this.height = height;
+        }
+        return Size;
+    }());
+    Manifesto.Size = Size;
+})(Manifesto || (Manifesto = {}));
+
 global.manifesto = global.Manifesto = module.exports = {
     AnnotationMotivation: new Manifesto.AnnotationMotivation(),
     ElementType: new Manifesto.ElementType(),
@@ -6279,6 +6302,7 @@ global.manifesto = global.Manifesto = module.exports = {
     RenderingFormat: new Manifesto.RenderingFormat(),
     ResourceType: new Manifesto.ResourceType(),
     ServiceProfile: new Manifesto.ServiceProfile(),
+    Size: Manifesto.Size,
     Translation: Manifesto.Translation,
     TranslationCollection: Manifesto.TranslationCollection,
     TreeNode: Manifesto.TreeNode,
@@ -21445,7 +21469,7 @@ var __extends = (this && this.__extends) || (function () {
 define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "./Events", "../../modules/uv-dialogues-module/DownloadDialogue", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseEvents_1, Events_1, DownloadDialogue_1, DownloadOption_1, DownloadType_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var Size = Utils.Measurements.Size;
+    var Size = Manifesto.Size;
     var DownloadDialogue = (function (_super) {
         __extends(DownloadDialogue, _super);
         function DownloadDialogue($element) {
@@ -21546,7 +21570,10 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             type = DownloadType_1.DownloadType.WHOLEIMAGESHIGHRES;
                             break;
                         case DownloadOption_1.DownloadOption.wholeImageLowResAsJpg.toString():
-                            window.open(that.extension.getConfinedImageUri(canvas, that.options.confinedImageSize));
+                            var imageUri = that.extension.getConfinedImageUri(canvas, that.options.confinedImageSize);
+                            if (imageUri) {
+                                window.open(imageUri);
+                            }
                             type = DownloadType_1.DownloadType.WHOLEIMAGELOWRES;
                             break;
                     }
@@ -21836,10 +21863,6 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 var width = size.width;
                 var uri = canvas.getCanonicalImageUri(width);
                 var uri_parts = uri.split('/');
-                // todo: if maxwidth is set in info.json, you must include a height.
-                // if (canvas.) {
-                //      uri_parts[uri_parts.length - 3] = 
-                // }
                 var rotation = this.extension.getViewerRotation();
                 uri_parts[uri_parts.length - 2] = String(rotation);
                 uri = uri_parts.join('/');
@@ -21864,36 +21887,19 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             }
             return new Size(0, 0);
         };
-        DownloadDialogue.prototype.getCanvasMaxDimensions = function (canvas) {
-            if (canvas.externalResource.data && canvas.externalResource.data.profile) {
-                var profile = canvas.externalResource.data.profile.en().where(function (p) { return p["maxWidth"]; }).first();
-                if (profile) {
-                    return new Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
-                }
-            }
-            return null;
-        };
         DownloadDialogue.prototype.getCanvasComputedDimensions = function (canvas) {
-            var size = this.getCanvasDimensions(canvas);
-            var maxSize = this.getCanvasMaxDimensions(canvas);
-            if (!maxSize) {
-                return size;
+            var imageSize = this.getCanvasDimensions(canvas);
+            var requiredSize = canvas.getMaxDimensions();
+            if (!requiredSize) {
+                return imageSize;
             }
-            var finalWidth = size.width;
-            var finalHeight = size.height;
-            // if the maxWidth is less than the advertised width
-            if (!(typeof (maxSize.width) === 'undefined') && maxSize.width < size.width) {
-                finalWidth = maxSize.width;
-                if (!(typeof (maxSize.height) === 'undefined')) {
-                    finalHeight = maxSize.height;
-                }
-                else {
-                    // calculate finalHeight
-                    var ratio = Math.normalise(maxSize.width, 0, size.width);
-                    finalHeight = Math.floor(size.height * ratio);
-                }
+            if (imageSize.width <= requiredSize.width && imageSize.height <= requiredSize.height) {
+                return imageSize;
             }
-            return new Size(finalWidth, finalHeight);
+            var scaleW = requiredSize.width / imageSize.width;
+            var scaleH = requiredSize.height / imageSize.height;
+            var scale = Math.min(scaleW, scaleH);
+            return new Size(Math.floor(imageSize.width * scale), Math.floor(imageSize.height * scale));
         };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
             if (!this.extension.resources) {
@@ -21907,9 +21913,10 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                     // if in one-up mode, or in two-up mode with a single page being shown
                     if (!this.extension.isPagingSettingEnabled() ||
                         this.extension.isPagingSettingEnabled() && this.extension.resources && this.extension.resources.length === 1) {
-                        var maxSize = this.getCanvasMaxDimensions(this.extension.helper.getCurrentCanvas());
-                        if (maxSize) {
-                            if (maxSize.width <= this.options.maxImageWidth) {
+                        var canvas = this.extension.helper.getCurrentCanvas();
+                        var maxDimensions = canvas.getMaxDimensions();
+                        if (maxDimensions) {
+                            if (maxDimensions.width <= this.options.maxImageWidth) {
                                 return true;
                             }
                             else {
@@ -24492,7 +24499,6 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AnnotationGroup = Manifold.AnnotationGroup;
-    var Size = Utils.Measurements.Size;
     var Extension = (function (_super) {
         __extends(Extension, _super);
         function Extension() {
@@ -25009,6 +25015,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
             else if (x < 0) {
                 width = width + x;
+            }
+            if (x < 0) {
                 x = 0;
             }
             if (y + height > canvas.getHeight()) {
@@ -25016,31 +25024,30 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
             else if (y < 0) {
                 height = height + y;
+            }
+            if (y < 0) {
                 y = 0;
             }
             width = Math.min(width, canvas.getWidth());
             height = Math.min(height, canvas.getHeight());
             var regionWidth = width;
             var regionHeight = height;
-            if (canvas.externalResource.data && canvas.externalResource.data.profile) {
-                var profile = canvas.externalResource.data.profile.en().where(function (p) { return p["maxWidth"]; }).first();
-                if (profile) {
-                    var maxSize = new Size(profile.maxWidth, profile.maxHeight ? profile.maxHeight : profile.maxWidth);
-                    if (width > maxSize.width) {
-                        var newWidth = maxSize.width;
-                        height = Math.round(newWidth * (height / width));
-                        width = newWidth;
-                    }
-                    if (height > maxSize.height) {
-                        var newHeight = maxSize.height;
-                        width = Math.round((width / height) * newHeight);
-                        height = newHeight;
-                    }
+            var maxDimensions = canvas.getMaxDimensions();
+            if (maxDimensions) {
+                if (width > maxDimensions.width) {
+                    var newWidth = maxDimensions.width;
+                    height = Math.round(newWidth * (height / width));
+                    width = newWidth;
+                }
+                if (height > maxDimensions.height) {
+                    var newHeight = maxDimensions.height;
+                    width = Math.round((width / height) * newHeight);
+                    height = newHeight;
                 }
             }
-            dimensions.region = new Size(regionWidth, regionHeight);
+            dimensions.region = new manifesto.Size(regionWidth, regionHeight);
             dimensions.regionPos = new Point_1.Point(x, y);
-            dimensions.size = new Size(width, height);
+            dimensions.size = new manifesto.Size(width, height);
             return dimensions;
         };
         // keep this around for reference
@@ -25084,9 +25091,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         //     if (regionTop < 0) regionTop = 0;
         //     if (regionLeft < 0) regionLeft = 0;
         //     var dimensions: CroppedImageDimensions = new CroppedImageDimensions();
-        //     dimensions.region = new Size(regionWidth, regionHeight);
+        //     dimensions.region = new manifesto.Size(regionWidth, regionHeight);
         //     dimensions.regionPos = new Point(regionLeft, regionTop);
-        //     dimensions.size = new Size(sizeWidth, sizeHeight);
+        //     dimensions.size = new manifesto.Size(sizeWidth, sizeHeight);
         //     return dimensions;
         // }
         Extension.prototype.getCroppedImageUri = function (canvas, viewer) {
@@ -25095,12 +25102,16 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             if (!viewer.viewport)
                 return null;
             var dimensions = this.getCroppedImageDimensions(canvas, viewer);
-            if (!dimensions)
+            if (!dimensions) {
                 return null;
+            }
             // construct uri
             // {baseuri}/{id}/{region}/{size}/{rotation}/{quality}.jpg
             var baseUri = this.getImageBaseUri(canvas);
             var id = this.getImageId(canvas);
+            if (!id) {
+                return null;
+            }
             var region = dimensions.regionPos.x + "," + dimensions.regionPos.y + "," + dimensions.region.width + "," + dimensions.region.height;
             var size = dimensions.size.width + ',' + dimensions.size.height;
             var rotation = this.getViewerRotation();
@@ -25108,7 +25119,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return baseUri + "/" + id + "/" + region + "/" + size + "/" + rotation + "/" + quality + ".jpg";
         };
         Extension.prototype.getConfinedImageDimensions = function (canvas, width) {
-            var dimensions = new Size(0, 0);
+            var dimensions = new manifesto.Size(0, 0);
             dimensions.width = width;
             var normWidth = Math.normalise(width, 0, canvas.getWidth());
             dimensions.height = Math.floor(canvas.getHeight() * normWidth);
@@ -25118,6 +25129,9 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var baseUri = this.getImageBaseUri(canvas);
             // {baseuri}/{id}/{region}/{size}/{rotation}/{quality}.jpg
             var id = this.getImageId(canvas);
+            if (!id) {
+                return null;
+            }
             var region = 'full';
             var dimensions = this.getConfinedImageDimensions(canvas, width);
             var size = dimensions.width + ',' + dimensions.height;
@@ -25126,10 +25140,13 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return baseUri + "/" + id + "/" + region + "/" + size + "/" + rotation + "/" + quality + ".jpg";
         };
         Extension.prototype.getImageId = function (canvas) {
-            var id = this.getInfoUri(canvas);
-            // First trim off info.json, then extract ID:
-            id = id.substr(0, id.lastIndexOf("/"));
-            return id.substr(id.lastIndexOf("/") + 1);
+            if (canvas.externalResource) {
+                var id = canvas.externalResource.data['@id'];
+                if (id) {
+                    return id.substr(id.lastIndexOf("/") + 1);
+                }
+            }
+            return null;
         };
         Extension.prototype.getImageBaseUri = function (canvas) {
             var uri = this.getInfoUri(canvas);
