@@ -17760,9 +17760,15 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             var resourcesToLoad = [];
             $.each(indices, function (i, index) {
                 var canvas = _this.helper.getCanvasByIndex(index);
-                var r = new Manifold.ExternalResource(canvas, _this.helper.getInfoUri);
-                r.index = index;
-                // used to reload resources with isResponseHandled = true.
+                var r;
+                if (!canvas.externalResource) {
+                    r = new Manifold.ExternalResource(canvas, _this.helper.getInfoUri);
+                    r.index = index;
+                }
+                else {
+                    r = canvas.externalResource;
+                }
+                // reload resources if passed
                 if (resources) {
                     var found = resources.find(function (f) {
                         return f.dataUri === r.dataUri;
@@ -21836,6 +21842,9 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 var width = size.width;
                 var uri = canvas.getCanonicalImageUri(width);
                 var uri_parts = uri.split('/');
+                // if maxwidth is set in info.json, you must include a height.
+                // if () {
+                // }
                 var rotation = this.extension.getViewerRotation();
                 uri_parts[uri_parts.length - 2] = String(rotation);
                 uri = uri_parts.join('/');
