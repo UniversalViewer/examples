@@ -20064,12 +20064,6 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             }
         };
         DownloadDialogue.prototype.addEntireFileDownloadOption = function (uri, label, format) {
-            if (label) {
-                label += " ({0})";
-            }
-            else {
-                label = this.content.entireFileAsOriginal;
-            }
             var fileType;
             if (format) {
                 fileType = Utils.Files.simplifyMimeType(format);
@@ -20077,7 +20071,13 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             else {
                 fileType = this.getFileExtension(uri);
             }
-            this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + String.format(label, fileType) + '</li>');
+            if (!label) {
+                label = this.content.entireFileAsOriginal;
+            }
+            if (fileType) {
+                label += " (" + fileType + ")";
+            }
+            this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + label + '</li>');
         };
         DownloadDialogue.prototype.updateNoneAvailable = function () {
             if (!this.$downloadOptions.find('li:visible').length) {
@@ -20098,7 +20098,12 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             }
         };
         DownloadDialogue.prototype.getFileExtension = function (fileUri) {
-            return fileUri.split('.').pop();
+            var extension = fileUri.split('.').pop();
+            // if it's not a valid file extension
+            if (extension.length > 5 || extension.indexOf('/') !== -1) {
+                return null;
+            }
+            return extension;
         };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
             switch (option) {
