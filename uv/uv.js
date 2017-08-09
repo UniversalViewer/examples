@@ -16602,7 +16602,7 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
         Auth1.showOutOfOptionsMessages = function (service) {
             var errorMessage = "";
             if (service.getFailureHeader()) {
-                errorMessage += service.getFailureHeader() + '\n';
+                errorMessage += '<p>' + service.getFailureHeader() + '</p>';
             }
             if (service.getFailureDescription()) {
                 errorMessage += service.getFailureDescription();
@@ -16800,6 +16800,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
         };
         Dialogue.prototype.open = function ($triggerButton) {
             var _this = this;
+            this.$element.attr('aria-hidden', 'false');
             this.$element.show();
             if ($triggerButton && $triggerButton.length) {
                 this.$triggerButton = $triggerButton;
@@ -16839,6 +16840,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
         Dialogue.prototype.close = function () {
             if (!this.isActive)
                 return;
+            this.$element.attr('aria-hidden', 'true');
             this.$element.hide();
             this.isActive = false;
             $.publish(this.closeCommand);
@@ -17383,7 +17385,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "
             Shell.$element.append(Shell.$mobileFooterPanel);
             Shell.$overlays = $('<div class="overlays"></div>');
             Shell.$element.append(Shell.$overlays);
-            Shell.$genericDialogue = $('<div class="overlay genericDialogue"></div>');
+            Shell.$genericDialogue = $('<div class="overlay genericDialogue" aria-hidden="true"></div>');
             Shell.$overlays.append(Shell.$genericDialogue);
             Shell.$overlays.on('click', function (e) {
                 if ($(e.target).hasClass('overlays')) {
@@ -17841,16 +17843,16 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
         };
         BaseExtension.prototype.createModules = function () {
-            this.$authDialogue = $('<div class="overlay auth"></div>');
+            this.$authDialogue = $('<div class="overlay auth" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$authDialogue);
             this.authDialogue = new AuthDialogue_1.AuthDialogue(this.$authDialogue);
-            this.$clickThroughDialogue = $('<div class="overlay clickthrough"></div>');
+            this.$clickThroughDialogue = $('<div class="overlay clickthrough" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$clickThroughDialogue);
             this.clickThroughDialogue = new ClickThroughDialogue_1.ClickThroughDialogue(this.$clickThroughDialogue);
-            this.$restrictedDialogue = $('<div class="overlay login"></div>');
+            this.$restrictedDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$restrictedDialogue);
             this.restrictedDialogue = new RestrictedDialogue_1.RestrictedDialogue(this.$restrictedDialogue);
-            this.$loginDialogue = $('<div class="overlay login"></div>');
+            this.$loginDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$loginDialogue);
             this.loginDialogue = new LoginDialogue_1.LoginDialogue(this.$loginDialogue);
         };
@@ -18587,21 +18589,21 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             });
             this.$options = $('<div class="options"></div>');
             this.$element.append(this.$options);
-            this.$feedbackButton = $('<a class="feedback" title="' + this.content.feedback + '" tabindex="0">' + this.content.feedback + '</a>');
+            this.$feedbackButton = $('<button class="feedback imageBtn" title="' + this.content.feedback + '" tabindex="0"><i></i></button>');
             this.$options.prepend(this.$feedbackButton);
-            this.$openButton = $('<a class="open" title="' + this.content.open + '" tabindex="0">' + this.content.open + '</a>');
+            this.$openButton = $('<button class="open imageBtn" title="' + this.content.open + '" tabindex="0"><i></i></button>');
             this.$options.prepend(this.$openButton);
-            this.$bookmarkButton = $('<a class="bookmark" title="' + this.content.bookmark + '" tabindex="0">' + this.content.bookmark + '</a>');
+            this.$bookmarkButton = $('<button class="bookmark imageBtn" title="' + this.content.bookmark + '" tabindex="0"><i></i></button>');
             this.$options.prepend(this.$bookmarkButton);
-            this.$shareButton = $('<a href="#" class="share" title="' + this.content.share + '" tabindex="0">' + this.content.share + '</a>');
+            this.$shareButton = $('<button class="share imageBtn" title="' + this.content.share + '" tabindex="0"><i></i></button>');
             this.$options.append(this.$shareButton);
-            this.$embedButton = $('<a href="#" class="embed" title="' + this.content.embed + '" tabindex="0">' + this.content.embed + '</a>');
+            this.$embedButton = $('<button class="embed imageBtn" title="' + this.content.embed + '" tabindex="0"><i></i></button>');
             this.$options.append(this.$embedButton);
-            this.$downloadButton = $('<a class="download" title="' + this.content.download + '" tabindex="0">' + this.content.download + '</a>');
+            this.$downloadButton = $('<button class="download imageBtn" title="' + this.content.download + '" tabindex="0"><i></i></button>');
             this.$options.prepend(this.$downloadButton);
-            this.$moreInfoButton = $('<a href="#" class="moreInfo" title="' + this.content.moreInfo + '" tabindex="0">' + this.content.moreInfo + '</a>');
+            this.$moreInfoButton = $('<button class="moreInfo imageBtn" title="' + this.content.moreInfo + '" tabindex="0"><i></i></button>');
             this.$options.prepend(this.$moreInfoButton);
-            this.$fullScreenBtn = $('<a href="#" class="fullScreen" title="' + this.content.fullScreen + '" tabindex="0">' + this.content.fullScreen + '</a>');
+            this.$fullScreenBtn = $('<button class="fullScreen imageBtn" title="' + this.content.fullScreen + '" tabindex="0"><i></i></button>');
             this.$options.append(this.$fullScreenBtn);
             this.$openButton.onPressed(function () {
                 $.publish(BaseEvents_1.BaseEvents.OPEN);
@@ -18683,12 +18685,10 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             }
             if (this.extension.isFullScreen()) {
                 this.$fullScreenBtn.swapClass('fullScreen', 'exitFullscreen');
-                this.$fullScreenBtn.text(this.content.exitFullScreen);
                 this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
             }
             else {
                 this.$fullScreenBtn.swapClass('exitFullscreen', 'fullScreen');
-                this.$fullScreenBtn.text(this.content.fullScreen);
                 this.$fullScreenBtn.attr('title', this.content.fullScreen);
             }
         };
@@ -18838,13 +18838,15 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
             //this.$rightOptions.append(this.$helpButton);
             this.$localeToggleButton = $('<a class="localeToggle" tabindex="0"></a>');
             this.$rightOptions.append(this.$localeToggleButton);
-            this.$settingsButton = $('<a class="imageBtn settings" tabindex="0"></a>');
+            this.$settingsButton = $('<button class="imageBtn settings" tabindex="0"><i></i></button>');
             this.$settingsButton.attr('title', this.content.settings);
             this.$rightOptions.append(this.$settingsButton);
-            this.$informationBox = $('<div class="informationBox"> \
+            this.$informationBox = $('<div class="informationBox" aria-hidden="true"> \
                                     <div class="message"></div> \
                                     <div class="actions"></div> \
-                                    <div class="close"></div> \
+                                    <button type="button" class="close" aria-label="Close"> \
+                                        <span aria-hidden="true">&times;</span>\
+                                    </button> \
                                   </div>');
             this.$element.append(this.$informationBox);
             this.$informationBox.hide();
@@ -18902,12 +18904,14 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
                 $action.on('click', action.action);
                 $actions.append($action);
             }
+            this.$informationBox.attr('aria-hidden', 'false');
             this.$informationBox.show();
             this.$element.addClass('showInformation');
             this.extension.resize();
         };
         HeaderPanel.prototype.hideInformation = function () {
             this.$element.removeClass('showInformation');
+            this.$informationBox.attr('aria-hidden', 'true');
             this.$informationBox.hide();
             this.extension.resize();
         };
@@ -19090,6 +19094,9 @@ define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./Base
             (autoToggled) ? this.autoToggled = true : this.autoToggled = false;
             // if collapsing, hide contents immediately.
             if (this.isExpanded) {
+                this.$top.attr('aria-hidden', 'true');
+                this.$main.attr('aria-hidden', 'true');
+                this.$closed.attr('aria-hidden', 'false');
                 this.$top.hide();
                 this.$main.hide();
                 this.$closed.show();
@@ -19106,6 +19113,9 @@ define('modules/uv-shared-module/BaseExpandPanel',["require", "exports", "./Base
             this.isExpanded = !this.isExpanded;
             // if expanded show content when animation finished.
             if (this.isExpanded) {
+                this.$top.attr('aria-hidden', 'false');
+                this.$main.attr('aria-hidden', 'false');
+                this.$closed.attr('aria-hidden', 'true');
                 this.$closed.hide();
                 this.$top.show();
                 this.$main.show();
@@ -19571,7 +19581,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                         var src = $thumb.attr('data-src');
                         src += '?t=' + Utils.Dates.getTimeStamp();
                         //console.log(i, src);
-                        var $img = $('<img src="' + src + '" />');
+                        var $img = $('<img src="' + src + '" alt=""/>');
                         // fade in on load.
                         $img.hide().load(function () {
                             $(this).fadeIn(fadeDuration, function () {
@@ -20303,13 +20313,13 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$helpDialogue = $('<div class="overlay help"></div>');
+            this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$shareDialogue = $('<div class="overlay share"></div>');
+            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -20898,16 +20908,16 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$helpDialogue = $('<div class="overlay help"></div>');
+            this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="overlay share"></div>');
+            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -22722,7 +22732,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
-            this.$printButton = $('<a class="print" title="' + this.content.print + '" tabindex="0">' + this.content.print + '</a>');
+            this.$printButton = $('<button class="print imageBtn" title="' + this.content.print + '" tabindex="0"><i></i></button>');
             this.$options.prepend(this.$printButton);
             // search input.
             this.$searchContainer = $('<div class="search"></div>');
@@ -23450,9 +23460,9 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             });
             this.$prevOptions = $('<div class="prevOptions"></div>');
             this.$centerOptions.append(this.$prevOptions);
-            this.$firstButton = $('<a class="imageBtn first" tabindex="0"></a>');
+            this.$firstButton = $('<button class="imageBtn first" tabindex="0"><i></i></button>');
             this.$prevOptions.append(this.$firstButton);
-            this.$prevButton = $('<a class="imageBtn prev" tabindex="0"></a>');
+            this.$prevButton = $('<button class="imageBtn prev" tabindex="0"><i></i></button>');
             this.$prevOptions.append(this.$prevButton);
             this.$modeOptions = $('<div class="mode"></div>');
             this.$centerOptions.append(this.$modeOptions);
@@ -23522,9 +23532,9 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$search.append(this.$searchButton);
             this.$nextOptions = $('<div class="nextOptions"></div>');
             this.$centerOptions.append(this.$nextOptions);
-            this.$nextButton = $('<a class="imageBtn next" tabindex="0"></a>');
+            this.$nextButton = $('<button class="imageBtn next" tabindex="0"><i></i></button>');
             this.$nextOptions.append(this.$nextButton);
-            this.$lastButton = $('<a class="imageBtn last" tabindex="0"></a>');
+            this.$lastButton = $('<button class="imageBtn last" tabindex="0"><i></i></button>');
             this.$nextOptions.append(this.$lastButton);
             if (this.isPageModeEnabled()) {
                 this.$pageModeOption.attr('checked', 'checked');
@@ -23543,13 +23553,13 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             else {
                 this.$pageModeLabel.text(this.content.page);
             }
-            this.$galleryButton = $('<a class="imageBtn gallery" title="' + this.content.gallery + '" tabindex="0"></a>');
+            this.$galleryButton = $('<button class="imageBtn gallery" title="' + this.content.gallery + '" tabindex="0"><i></i></button>');
             this.$rightOptions.prepend(this.$galleryButton);
             this.$pagingToggleButtons = $('<div class="pagingToggleButtons"></div>');
             this.$rightOptions.prepend(this.$pagingToggleButtons);
-            this.$oneUpButton = $('<a class="imageBtn one-up" title="' + this.content.oneUp + '" tabindex="0"></a>');
+            this.$oneUpButton = $('<button class="imageBtn one-up" title="' + this.content.oneUp + '" tabindex="0"><i></i></button>');
             this.$pagingToggleButtons.append(this.$oneUpButton);
-            this.$twoUpButton = $('<a class="imageBtn two-up" title="' + this.content.twoUp + '" tabindex="0"></a>');
+            this.$twoUpButton = $('<button class="imageBtn two-up" title="' + this.content.twoUp + '" tabindex="0"><i></i></button>');
             this.$pagingToggleButtons.append(this.$twoUpButton);
             this.updatePagingToggle();
             this.updateGalleryButton();
@@ -24148,6 +24158,13 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             // when mouse move stopped
             this.$element.on('mousemove', function () {
                 // if over element, hide controls.
+                // When over prev/next buttons keep controls enabled
+                if (_this.$prevButton.ismouseover()) {
+                    return;
+                }
+                if (_this.$nextButton.ismouseover()) {
+                    return;
+                }
                 if (!_this.$viewer.find('.navigator').ismouseover()) {
                     if (!_this.controlsVisible)
                         return;
@@ -24186,6 +24203,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.resize();
         };
         SeadragonCenterPanel.prototype.createNavigationButtons = function () {
+            var _this = this;
             var viewingDirection = this.extension.helper.getViewingDirection();
             this.$prevButton = $('<div class="paging btn prev" tabindex="0"></div>');
             this.$prevButton.prop('title', this.content.previous);
@@ -24233,6 +24251,19 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                         $.publish(Events_1.Events.PREV);
                         break;
                 }
+            });
+            // When Prev/Next buttons are focused, make sure the controls are enabled
+            this.$prevButton.on('focus', function () {
+                if (_this.controlsVisible)
+                    return;
+                _this.controlsVisible = true;
+                _this.viewer.setControlsEnabled(true);
+            });
+            this.$nextButton.on('focus', function () {
+                if (_this.controlsVisible)
+                    return;
+                _this.controlsVisible = true;
+                _this.viewer.setControlsEnabled(true);
             });
         };
         SeadragonCenterPanel.prototype.openMedia = function (resources) {
@@ -25170,25 +25201,25 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$helpDialogue = $('<div class="overlay help"></div>');
+            this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$moreInfoDialogue = $('<div class="overlay moreInfo"></div>');
+            this.$moreInfoDialogue = $('<div class="overlay moreInfo" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$moreInfoDialogue);
             this.moreInfoDialogue = new MoreInfoDialogue_1.MoreInfoDialogue(this.$moreInfoDialogue);
-            this.$multiSelectDialogue = $('<div class="overlay multiSelect"></div>');
+            this.$multiSelectDialogue = $('<div class="overlay multiSelect" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$multiSelectDialogue);
             this.multiSelectDialogue = new MultiSelectDialogue_1.MultiSelectDialogue(this.$multiSelectDialogue);
-            this.$shareDialogue = $('<div class="overlay share"></div>');
+            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
-            this.$externalContentDialogue = $('<div class="overlay externalContent"></div>');
+            this.$externalContentDialogue = $('<div class="overlay externalContent" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$externalContentDialogue);
             this.externalContentDialogue = new ExternalContentDialogue_1.ExternalContentDialogue(this.$externalContentDialogue);
             if (this.isHeaderPanelEnabled()) {
@@ -26017,13 +26048,13 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="overlay share"></div>');
+            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -26189,11 +26220,11 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             });
             this.$navigation = $('<div class="navigation"></div>');
             this.$content.prepend(this.$navigation);
-            this.$zoomInButton = $('<a class="imageBtn zoomIn" title="' + this.content.zoomIn + '"></a>');
+            this.$zoomInButton = $('<button class="imageBtn zoomIn" title="' + this.content.zoomIn + '"><i></i></button>');
             this.$navigation.append(this.$zoomInButton);
-            this.$zoomOutButton = $('<a class="imageBtn zoomOut" title="' + this.content.zoomOut + '"></a>');
+            this.$zoomOutButton = $('<button class="imageBtn zoomOut" title="' + this.content.zoomOut + '"><i></i></button>');
             this.$navigation.append(this.$zoomOutButton);
-            this.$vrButton = $('<a class="imageBtn vr" title="' + this.content.vr + '"></a>');
+            this.$vrButton = $('<button class="imageBtn vr" title="' + this.content.vr + '"><i></i></button>');
             this.$navigation.append(this.$vrButton);
             this.$viewport = $('<div class="virtex"></div>');
             this.$content.prepend(this.$viewport);
@@ -26313,13 +26344,13 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$downloadDialogue = $('<div class="overlay download"></div>');
+            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="overlay share"></div>');
+            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings"></div>');
+            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
