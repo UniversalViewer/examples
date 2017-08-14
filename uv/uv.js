@@ -18794,7 +18794,8 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
                     loginAction.label = args.param.loginService.getConfirmLabel();
                     var resource_1 = args.param;
                     loginAction.action = function () {
-                        //resource.authHoldingPage = window.open("", "_blank");
+                        resource_1.authHoldingPage = "test";
+                        //(<any>resource).authHoldingPage = window.open("", "_blank");
                         $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
                         $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
                     };
