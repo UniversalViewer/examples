@@ -16519,8 +16519,12 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                 });
             });
         };
-        Auth1.openContentProviderInteraction = function (service) {
+        Auth1.getCookieServiceUrl = function (service) {
             var cookieServiceUrl = service.id + "?origin=" + Auth1.getOrigin();
+            return cookieServiceUrl;
+        };
+        Auth1.openContentProviderInteraction = function (service) {
+            var cookieServiceUrl = Auth1.getCookieServiceUrl(service);
             return window.open(cookieServiceUrl);
         };
         // determine the postMessage-style origin for a URL
@@ -16554,9 +16558,10 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
         };
         Auth1.getContentProviderInteraction = function (resource, service) {
             return new Promise(function (resolve) {
-                if (!resource.contentProviderInteractionEnabled) {
-                    var win = Auth1.openContentProviderInteraction(service);
-                    resolve(win);
+                if (resource.authHoldingPage) {
+                    // redirect holding page
+                    resource.authHoldingPage.location.href = Auth1.getCookieServiceUrl(service);
+                    resolve(resource.authHoldingPage);
                 }
                 else {
                     $.publish(BaseEvents_1.BaseEvents.SHOW_AUTH_DIALOGUE, [{
@@ -18786,8 +18791,8 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
                     var loginAction = new InformationAction_1.InformationAction();
                     loginAction.label = args.param.loginService.getConfirmLabel();
                     var resource_1 = args.param;
-                    resource_1.contentProviderInteractionEnabled = false;
                     loginAction.action = function () {
+                        resource_1.authHoldingPage = window.open("", "_blank");
                         $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
                         $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
                     };
