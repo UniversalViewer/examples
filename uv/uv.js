@@ -16560,8 +16560,10 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
             return new Promise(function (resolve) {
                 if (resource.authHoldingPage) {
                     // redirect holding page
-                    resource.authHoldingPage.location.href = Auth1.getCookieServiceUrl(service);
-                    resolve(resource.authHoldingPage);
+                    //(<any>resource).authHoldingPage.location.href = Auth1.getCookieServiceUrl(service);
+                    //resolve((<any>resource).authHoldingPage);
+                    var win = Auth1.openContentProviderInteraction(service);
+                    resolve(win);
                 }
                 else {
                     $.publish(BaseEvents_1.BaseEvents.SHOW_AUTH_DIALOGUE, [{
@@ -18792,7 +18794,7 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
                     loginAction.label = args.param.loginService.getConfirmLabel();
                     var resource_1 = args.param;
                     loginAction.action = function () {
-                        resource_1.authHoldingPage = window.open("", "_blank");
+                        //resource.authHoldingPage = window.open("", "_blank");
                         $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
                         $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
                     };
