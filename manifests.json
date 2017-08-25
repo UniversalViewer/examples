@@ -787,6 +787,18 @@
           "@type": "sc:Manifest",
           "label": "Degraded: Gauguin",
           "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/auth1-standard.json",
+          "@type": "sc:Manifest",
+          "label": "Multiple Auth1 Standard",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/auth1-degraded.json",
+          "@type": "sc:Manifest",
+          "label": "Multiple Auth1 Degraded",
+          "visible": true
         }
       ]
     },
