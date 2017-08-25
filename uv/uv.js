@@ -3518,7 +3518,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.1.3 https://github.com/viewdir/manifesto
+// manifesto v2.1.4 https://github.com/viewdir/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 ///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/>   
@@ -16844,14 +16844,21 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             });
             this.$top = $('<div class="top"></div>');
             this.$element.append(this.$top);
-            this.$closeButton = $('<a href="#" class="close" tabindex="0">' + this.content.close + '</a>');
-            this.$top.append(this.$closeButton);
+            this.$closeButton = $('<button type="button" class="btn btn-default close" tabindex="0">' + this.content.close + '</button>');
             this.$middle = $('<div class="middle"></div>');
             this.$element.append(this.$middle);
             this.$content = $('<div class="content"></div>');
             this.$middle.append(this.$content);
+            this.$buttons = $('<div class="buttons"></div>');
+            this.$middle.append(this.$buttons);
             this.$bottom = $('<div class="bottom"></div>');
             this.$element.append(this.$bottom);
+            if (this.config.topCloseButtonEnabled) {
+                this.$top.append(this.$closeButton);
+            }
+            else {
+                this.$buttons.append(this.$closeButton);
+            }
             this.$closeButton.on('click', function (e) {
                 e.preventDefault();
                 _this.close();
@@ -16988,15 +16995,12 @@ define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-
             this.$content.append('\
             <div>\
                 <p class="message scroll"></p>\
-                <div class="buttons">\
-                    <a class="confirm btn btn-primary" href="#" target="_parent"></a>\
-                    <a class="cancel btn btn-primary" href="#"></a>\
-                </div>\
             </div>');
+            this.$buttons.prepend(this._buttonsToAdd());
             this.$message = this.$content.find('.message');
-            this.$confirmButton = this.$content.find('.confirm');
+            this.$confirmButton = this.$buttons.find('.confirm');
             this.$confirmButton.text(this.content.confirm);
-            this.$cancelButton = this.$content.find('.cancel');
+            this.$cancelButton = this.$buttons.find('.close');
             this.$cancelButton.text(this.content.cancel);
             this.$element.hide();
             this.$confirmButton.on('click', function (e) {
@@ -17037,6 +17041,14 @@ define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-
         };
         AuthDialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
+        };
+        AuthDialogue.prototype._buttonsToAdd = function () {
+            var buttonsToAdd = '<a class="confirm btn btn-primary" href="#" target="_parent"></a>';
+            // If the top button is enabled, add an additional close button for consistency.
+            if (this.config.topCloseButtonEnabled) {
+                buttonsToAdd += '<button class="close btn btn-default"></button>';
+            }
+            return buttonsToAdd;
         };
         return AuthDialogue;
     }(Dialogue_1.Dialogue));
@@ -17392,9 +17404,10 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
             });
             this.$message = $('<p></p>');
             this.$content.append(this.$message);
-            this.$acceptButton = $('<a href="#" class="btn btn-primary accept default"></a>');
-            this.$content.append(this.$acceptButton);
-            this.$acceptButton.text(this.content.ok);
+            this.$acceptButton = $("\n          <button class=\"btn btn-primary accept default\">\n            " + this.content.ok + "\n          </button>\n        ");
+            this.$buttons.append(this.$acceptButton);
+            // Hide the redundant close button
+            this.$buttons.find('.close').hide();
             this.$acceptButton.onPressed(function () {
                 _this.accept();
             });
@@ -18476,17 +18489,7 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
             this.$element.append(this.$title);
             this.$content = $('<div id="content" class="content"></div>');
             this.$element.append(this.$content);
-            this.$attribution = $('<div class="attribution">\
-                                   <div class="header">\
-                                       <div class="title"></div>\
-                                       <div class="close"></div>\
-                                   </div>\
-                                   <div class="main">\
-                                       <div class="attribution-text"></div>\
-                                       <div class="license"></div>\
-                                       <div class="logo"></div>\
-                                   </div>\
-                              </div>');
+            this.$attribution = $("\n                                <div class=\"attribution\">\n                                  <div class=\"header\">\n                                    <div class=\"title\"></div>\n                                    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n                                      <span aria-hidden=\"true\">&times;</span>\n                                    </button>\n                                  </div>\n                                  <div class=\"main\">\n                                    <div class=\"attribution-text\"></div>\n                                    <div class=\"license\"></div>\n                                    <div class=\"logo\"></div>\n                                  </div>\n                                </div>\n        ");
             this.$attribution.find('.header .title').text(this.content.attribution);
             this.$content.append(this.$attribution);
             this.$attribution.hide();
@@ -20081,7 +20084,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             this.$shareView.append(this.$shareHeader);
             this.$shareLink = $('<a class="shareLink" onclick="return false;"></a>');
             this.$shareView.append(this.$shareLink);
-            this.$shareInput = $('<input class="shareInput" type="text" readonly="true" />');
+            this.$shareInput = $("<input class=\"shareInput\" type=\"text\" readonly aria-label=\"" + this.content.shareUrl + "\"/>");
             this.$shareView.append(this.$shareInput);
             this.$shareFrame = $('<iframe class="shareFrame"></iframe>');
             this.$shareView.append(this.$shareFrame);
@@ -20093,23 +20096,23 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             // this.$embedView.find('.leftCol').append(this.$link);
             // this.$image = $('<img class="share" />');
             // this.$embedView.append(this.$image);
-            this.$code = $('<input class="code" type="text" readonly="true" />');
+            this.$code = $("<input class=\"code\" type=\"text\" readonly aria-label=\"" + this.content.embed + "\"/>");
             this.$embedView.append(this.$code);
             this.$customSize = $('<div class="customSize"></div>');
             this.$embedView.append(this.$customSize);
             this.$size = $('<span class="size">' + this.content.size + '</span>');
             this.$customSize.append(this.$size);
-            this.$customSizeDropDown = $('<select id="size"></select>');
+            this.$customSizeDropDown = $('<select id="size" aria-label="' + this.content.size + '"></select>');
             this.$customSize.append(this.$customSizeDropDown);
             this.$customSizeDropDown.append('<option value="small" data-width="560" data-height="420">560 x 420</option>');
             this.$customSizeDropDown.append('<option value="medium" data-width="640" data-height="480">640 x 480</option>');
             this.$customSizeDropDown.append('<option value="large" data-width="800" data-height="600">800 x 600</option>');
             this.$customSizeDropDown.append('<option value="custom">' + this.content.customSize + '</option>');
-            this.$widthInput = $('<input class="width" type="text" maxlength="10" />');
+            this.$widthInput = $('<input class="width" type="text" maxlength="10" aria-label="' + this.content.width + '"/>');
             this.$customSize.append(this.$widthInput);
             this.$x = $('<span class="x">x</span>');
             this.$customSize.append(this.$x);
-            this.$heightInput = $('<input class="height" type="text" maxlength="10" />');
+            this.$heightInput = $('<input class="height" type="text" maxlength="10" aria-label="' + this.content.height + '"/>');
             this.$customSize.append(this.$heightInput);
             var iiifUrl = this.extension.getIIIFShareUrl();
             this.$iiifButton = $('<a class="imageBtn iiif" href="' + iiifUrl + '" title="' + this.content.iiif + '" target="_blank"></a>');
@@ -21486,7 +21489,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             this.$tabsContent.append(this.$options);
             this.$topOptions = $('<div class="top"></div>');
             this.$options.append(this.$topOptions);
-            this.$treeSelect = $('<select></select>');
+            this.$treeSelect = $('<select aria-label="' + this.content.manifestRanges + '"></select>');
             this.$topOptions.append(this.$treeSelect);
             this.$bottomOptions = $('<div class="bottom"></div>');
             this.$options.append(this.$bottomOptions);
@@ -22013,10 +22016,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             this.$selectionButton = $('<li class="option"><input id="' + DownloadOption_1.DownloadOption.selection.toString() + '" type="radio" name="downloadOptions" tabindex="0" /><label id="' + DownloadOption_1.DownloadOption.selection.toString() + 'label" for="' + DownloadOption_1.DownloadOption.selection.toString() + '"></label></li>');
             this.$sequenceOptions.append(this.$selectionButton);
             this.$selectionButton.hide();
-            this.$buttonsContainer = $('<div class="buttons"></div>');
-            this.$content.append(this.$buttonsContainer);
             this.$downloadButton = $('<a class="btn btn-primary" href="#" tabindex="0">' + this.content.download + '</a>');
-            this.$buttonsContainer.append(this.$downloadButton);
+            this.$buttons.prepend(this.$downloadButton);
             this.$explanatoryTextTemplate = $('<span class="explanatory"></span>');
             var that = this;
             this.$downloadButton.on('click', function (e) {
@@ -22834,7 +22835,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             this.$searchOptions.append(this.$searchLabel);
             this.$searchTextContainer = $('<div class="searchTextContainer"></div>');
             this.$searchOptions.append(this.$searchTextContainer);
-            this.$searchText = $('<input class="searchText" type="text" maxlength="100" value="' + this.content.enterKeyword + '" />');
+            this.$searchText = $('<input class="searchText" type="text" maxlength="100" value="' + this.content.enterKeyword + '" aria-label="' + this.content.searchWithin + '"/>');
             this.$searchTextContainer.append(this.$searchText);
             this.$searchButton = $('<a class="imageButton searchButton" tabindex="0"></a>');
             this.$searchTextContainer.append(this.$searchButton);
@@ -23567,11 +23568,11 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$modeOptions.append(this.$pageModeOption);
             this.$search = $('<div class="search"></div>');
             this.$centerOptions.append(this.$search);
-            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="0"/>');
+            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="0" aria-label="' + this.content.pageSearchLabel + '"/>');
             this.$search.append(this.$searchText);
             if (Utils.Bools.getBool(this.options.autoCompleteBoxEnabled, true)) {
                 this.$searchText.hide();
-                this.$autoCompleteBox = $('<input class="autocompleteText" type="text" maxlength="100" />');
+                this.$autoCompleteBox = $('<input class="autocompleteText" type="text" maxlength="100" aria-label="' + this.content.pageSearchLabel + '"/>');
                 this.$search.append(this.$autoCompleteBox);
                 new AutoComplete_1.AutoComplete(this.$autoCompleteBox, function (term, cb) {
                     var results = [];
