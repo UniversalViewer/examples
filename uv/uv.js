@@ -3518,7 +3518,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.1.4 https://github.com/viewdir/manifesto
+// manifesto v2.1.7 https://github.com/viewdir/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 ///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/>   
@@ -3702,12 +3702,12 @@ var Manifesto;
         IIIFResourceType.prototype.sequence = function () {
             return new IIIFResourceType(IIIFResourceType.SEQUENCE.toString());
         };
-        IIIFResourceType.ANNOTATION = new IIIFResourceType("oa:annotation");
-        IIIFResourceType.CANVAS = new IIIFResourceType("sc:canvas");
-        IIIFResourceType.COLLECTION = new IIIFResourceType("sc:collection");
-        IIIFResourceType.MANIFEST = new IIIFResourceType("sc:manifest");
-        IIIFResourceType.RANGE = new IIIFResourceType("sc:range");
-        IIIFResourceType.SEQUENCE = new IIIFResourceType("sc:sequence");
+        IIIFResourceType.ANNOTATION = new IIIFResourceType("annotation");
+        IIIFResourceType.CANVAS = new IIIFResourceType("canvas");
+        IIIFResourceType.COLLECTION = new IIIFResourceType("collection");
+        IIIFResourceType.MANIFEST = new IIIFResourceType("manifest");
+        IIIFResourceType.RANGE = new IIIFResourceType("range");
+        IIIFResourceType.SEQUENCE = new IIIFResourceType("sequence");
         return IIIFResourceType;
     }(Manifesto.StringValue));
     Manifesto.IIIFResourceType = IIIFResourceType;
@@ -4155,7 +4155,7 @@ var Manifesto;
             return _this;
         }
         ManifestResource.prototype.getIIIFResourceType = function () {
-            return new Manifesto.IIIFResourceType(this.getProperty('@type'));
+            return new Manifesto.IIIFResourceType(Manifesto.Utils.normaliseType(this.getProperty('type')));
         };
         ManifestResource.prototype.getLabel = function () {
             return Manifesto.TranslationCollection.parse(this.getProperty('label'), this.options.locale);
@@ -4413,7 +4413,7 @@ var Manifesto;
         //
         //            if (!_endsWith(id, '/')) {
         //                id += '/';
-        //            }
+        //            } 
         //
         //            uri = id + 'full/' + width + ',/0/' + Utils.getImageQuality(service.getProfile()) + '.jpg';
         //        }
@@ -4477,12 +4477,7 @@ var Manifesto;
             return [];
         };
         IIIFResource.prototype.getIIIFResourceType = function () {
-            var type = this.getProperty('type');
-            if (type) {
-                return new Manifesto.IIIFResourceType(type);
-            }
-            type = this.getProperty('@type');
-            return new Manifesto.IIIFResourceType(type);
+            return new Manifesto.IIIFResourceType(Manifesto.Utils.normaliseType(this.getProperty('type')));
         };
         IIIFResource.prototype.getLogo = function () {
             var logo = this.getProperty('logo');
@@ -4517,19 +4512,13 @@ var Manifesto;
             return this.defaultTree;
         };
         IIIFResource.prototype.isCollection = function () {
-            if (this.getIIIFResourceType().toString().toLowerCase() === 'collection') {
-                return true;
-            }
-            else if (this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.COLLECTION.toString()) {
+            if (this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.COLLECTION.toString()) {
                 return true;
             }
             return false;
         };
         IIIFResource.prototype.isManifest = function () {
-            if (this.getIIIFResourceType().toString().toLowerCase() === 'manifest') {
-                return true;
-            }
-            else if (this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.MANIFEST.toString()) {
+            if (this.getIIIFResourceType().toString() === Manifesto.IIIFResourceType.MANIFEST.toString()) {
                 return true;
             }
             return false;
@@ -4593,7 +4582,7 @@ var Manifesto;
         }
         Manifest.prototype.getDefaultTree = function () {
             _super.prototype.getDefaultTree.call(this);
-            this.defaultTree.data.type = Manifesto.TreeNodeType.MANIFEST.toString();
+            this.defaultTree.data.type = Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.MANIFEST.toString());
             if (!this.isLoaded) {
                 return this.defaultTree;
             }
@@ -4630,7 +4619,7 @@ var Manifesto;
             if (this.__jsonld.structures && this.__jsonld.structures.length) {
                 for (var i = 0; i < this.__jsonld.structures.length; i++) {
                     var r = this.__jsonld.structures[i];
-                    if (r['@id'] === id) {
+                    if (r['@id'] === id || r.id === id) {
                         return r;
                     }
                 }
@@ -4662,25 +4651,26 @@ var Manifesto;
             else {
                 parentRange.members.push(range);
             }
-            if (r.ranges) {
-                for (var i = 0; i < r.ranges.length; i++) {
-                    this._parseRanges(r.ranges[i], path + '/' + i, range);
+            if (r.members) {
+                for (var i = 0; i < r.members.length; i++) {
+                    var child = r.members[i];
+                    // todo: use constants
+                    if (child['@type'] && child['@type'].toLowerCase() === 'sc:range' || child['type'] && child['type'].toLowerCase() === 'range') {
+                        this._parseRanges(child, path + '/' + i, range);
+                    }
+                    else if (child['@type'] && child['@type'].toLowerCase() === 'sc:canvas' || child['type'] && child['type'].toLowerCase() === 'canvas') {
+                        // store the ids on the __jsonld object to be used by Range.getCanvasIds()
+                        if (!range.canvases) {
+                            range.canvases = [];
+                        }
+                        var id_1 = child['@id'] || child.id;
+                        range.canvases.push(id_1);
+                    }
                 }
             }
-            if (r.members) {
-                var _loop_1 = function (i) {
-                    var child = r.members[i];
-                    // only add to members if not already parsed from backwards-compatible ranges/canvases arrays
-                    if (r.members.en().where(function (m) { return m.id === child.id; }).first()) {
-                        return "continue";
-                    }
-                    if (child['@type'].toLowerCase() === 'sc:range') {
-                        this_1._parseRanges(child, path + '/' + i, range);
-                    }
-                };
-                var this_1 = this;
-                for (var i = 0; i < r.members.length; i++) {
-                    _loop_1(i);
+            else if (r.ranges) {
+                for (var i = 0; i < r.ranges.length; i++) {
+                    this._parseRanges(r.ranges[i], path + '/' + i, range);
                 }
             }
         };
@@ -4836,7 +4826,7 @@ var Manifesto;
          */
         Collection.prototype.getDefaultTree = function () {
             _super.prototype.getDefaultTree.call(this);
-            this.defaultTree.data.type = Manifesto.TreeNodeType.COLLECTION.toString();
+            this.defaultTree.data.type = Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.COLLECTION.toString());
             this._parseManifests(this);
             this._parseCollections(this);
             Manifesto.Utils.generateTreeNodeIds(this.defaultTree);
@@ -4850,7 +4840,7 @@ var Manifesto;
                     tree.label = manifest.parentLabel || Manifesto.TranslationCollection.getValue(manifest.getLabel(), this.options.locale) || 'manifest ' + (i + 1);
                     tree.navDate = manifest.getNavDate();
                     tree.data.id = manifest.id;
-                    tree.data.type = Manifesto.TreeNodeType.MANIFEST.toString();
+                    tree.data.type = Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.MANIFEST.toString());
                     parentCollection.defaultTree.addNode(tree);
                 }
             }
@@ -4863,7 +4853,7 @@ var Manifesto;
                     tree.label = collection.parentLabel || Manifesto.TranslationCollection.getValue(collection.getLabel(), this.options.locale) || 'collection ' + (i + 1);
                     tree.navDate = collection.getNavDate();
                     tree.data.id = collection.id;
-                    tree.data.type = Manifesto.TreeNodeType.COLLECTION.toString();
+                    tree.data.type = Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.COLLECTION.toString());
                     parentCollection.defaultTree.addNode(tree);
                     this._parseCollections(collection);
                 }
@@ -4890,8 +4880,8 @@ var Manifesto;
         __extends(Range, _super);
         function Range(jsonld, options) {
             var _this = _super.call(this, jsonld, options) || this;
-            _this._canvases = null;
             _this._ranges = null;
+            _this.canvases = null;
             _this.members = [];
             return _this;
         }
@@ -4899,14 +4889,17 @@ var Manifesto;
             if (this.__jsonld.canvases) {
                 return this.__jsonld.canvases;
             }
+            else if (this.canvases) {
+                return this.canvases;
+            }
             return [];
         };
-        Range.prototype.getCanvases = function () {
-            if (this._canvases) {
-                return this._canvases;
-            }
-            return this._canvases = this.members.en().where(function (m) { return m.isCanvas(); }).toArray();
-        };
+        // getCanvases(): ICanvas[] {
+        //     if (this._canvases) {
+        //         return this._canvases;
+        //     }
+        //     return this._canvases = <ICanvas[]>this.members.en().where(m => m.isCanvas()).toArray();
+        // }
         Range.prototype.getRanges = function () {
             if (this._ranges) {
                 return this._ranges;
@@ -4943,7 +4936,7 @@ var Manifesto;
         Range.prototype._parseTreeNode = function (node, range) {
             node.label = Manifesto.TranslationCollection.getValue(range.getLabel(), this.options.locale);
             node.data = range;
-            node.data.type = Manifesto.TreeNodeType.RANGE.toString();
+            node.data.type = Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.RANGE.toString());
             range.treeNode = node;
             var ranges = range.getRanges();
             if (ranges && ranges.length) {
@@ -5023,7 +5016,9 @@ var Manifesto;
         Sequence.prototype.getCanvasById = function (id) {
             for (var i = 0; i < this.getTotalCanvases(); i++) {
                 var canvas = this.getCanvasByIndex(i);
-                if (canvas.id === id) {
+                // normalise canvas id
+                var canvasId = Manifesto.Utils.normaliseUrl(canvas.id);
+                if (Manifesto.Utils.normaliseUrl(id) === canvasId) {
                     return canvas;
                 }
             }
@@ -5454,13 +5449,13 @@ var Manifesto;
             node.parentNode = this;
         };
         TreeNode.prototype.isCollection = function () {
-            return this.data.type === Manifesto.TreeNodeType.COLLECTION.toString();
+            return this.data.type === Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.COLLECTION.toString());
         };
         TreeNode.prototype.isManifest = function () {
-            return this.data.type === Manifesto.TreeNodeType.MANIFEST.toString();
+            return this.data.type === Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.MANIFEST.toString());
         };
         TreeNode.prototype.isRange = function () {
-            return this.data.type === Manifesto.TreeNodeType.RANGE.toString();
+            return this.data.type === Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.RANGE.toString());
         };
         return TreeNode;
     }());
@@ -5494,9 +5489,9 @@ var Manifesto;
         TreeNodeType.prototype.range = function () {
             return new TreeNodeType(TreeNodeType.RANGE.toString());
         };
-        TreeNodeType.COLLECTION = new TreeNodeType("sc:collection");
-        TreeNodeType.MANIFEST = new TreeNodeType("sc:manifest");
-        TreeNodeType.RANGE = new TreeNodeType("sc:range");
+        TreeNodeType.COLLECTION = new TreeNodeType("collection");
+        TreeNodeType.MANIFEST = new TreeNodeType("manifest");
+        TreeNodeType.RANGE = new TreeNodeType("range");
         return TreeNodeType;
     }(Manifesto.StringValue));
     Manifesto.TreeNodeType = TreeNodeType;
@@ -5613,10 +5608,23 @@ var Manifesto;
                 Utils.generateTreeNodeIds(n, i);
             }
         };
+        Utils.normaliseType = function (type) {
+            type = type.toLowerCase();
+            if (type.indexOf(':') !== -1) {
+                var split = type.split(':');
+                return split[1];
+            }
+            return type;
+        };
+        Utils.normaliseUrl = function (url) {
+            url = url.substr(url.indexOf('://'));
+            if (url.indexOf('#') !== -1) {
+                url = url.split('#')[0];
+            }
+            return url;
+        };
         Utils.normalisedUrlsMatch = function (url1, url2) {
-            var url1norm = url1.substr(url1.indexOf('://'));
-            var url2norm = url1.substr(url1.indexOf('://'));
-            return url1norm === url2norm;
+            return Utils.normaliseUrl(url1) === Utils.normaliseUrl(url2);
         };
         Utils.isImageProfile = function (profile) {
             if (Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE0.toString()) ||
@@ -14149,7 +14157,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// manifold v1.2.2 https://github.com/viewdir/manifold#readme
+// manifold v1.2.5 https://github.com/viewdir/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 ///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/> 
@@ -14602,6 +14610,13 @@ var Manifold;
         };
         Helper.prototype.getCurrentSequence = function () {
             return this.getSequenceByIndex(this.sequenceIndex);
+        };
+        Helper.prototype.getDescription = function () {
+            var description = this.manifest.getDescription();
+            if (description) {
+                return Manifesto.TranslationCollection.getValue(description);
+            }
+            return null;
         };
         Helper.prototype.getElementType = function (element) {
             if (!element) {
@@ -18377,7 +18392,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.viewManifest = function (manifest) {
             var data = {};
             data.iiifResourceUri = this.helper.iiifResourceUri;
-            data.collectionIndex = this.helper.getCollectionIndex(manifest);
+            data.collectionIndex = this.helper.getCollectionIndex(manifest) || 0;
             data.manifestIndex = manifest.index;
             data.sequenceIndex = 0;
             data.canvasIndex = 0;
@@ -21388,8 +21403,7 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             });
         };
         TreeView.prototype.databind = function () {
-            this.treeComponent.options.data = this.treeData;
-            this.treeComponent.set(new Object()); // todo: should be passing options.data
+            this.treeComponent.set(this.treeData);
             this.resize();
         };
         TreeView.prototype.show = function () {
