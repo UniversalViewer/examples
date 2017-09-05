@@ -303,6 +303,9 @@
     height: 250px;
   }
 }
+.uv {
+  background-color: red !important;
+}
 .uv .leftPanel .views .thumbsView {
   overflow: auto;
 }
@@ -425,10 +428,95 @@
 .uv .leftPanel .top .title {
   text-transform: uppercase;
 }
-.uv .leftPanel ul {
-  margin: 10px 10px 10px 10px;
-  padding: 0;
-  list-style-type: none;
+.uv .leftPanel .tabs {
+  height: 25px;
+  border-bottom: 1px solid #373737;
+}
+.uv .leftPanel .tabs .tab {
+  color: #fff;
+  background-color: #211f1f;
+  display: inline-block;
+  text-align: center;
+  line-height: 22px;
+  height: 22px;
+  overflow: hidden;
+  width: 75px;
+  margin: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.uv .leftPanel .tabs .tab.first {
+  margin: 0 0 0 10px;
+}
+.uv .leftPanel .tabs .tab.on {
+  border: 1px solid #373737;
+  border-bottom: 1px solid #211f1f;
+  color: #14a4c3;
+  margin-bottom: -1px;
+  height: 25px;
+  line-height: 25px;
+}
+.uv .leftPanel .tabsContent {
+  padding: 10px 10px 10px 10px;
+}
+.uv .leftPanel .tabsContent .options {
+  padding: 0 0 10px 0;
+}
+.uv .leftPanel .tabsContent .options .top {
+  overflow: hidden;
+  height: auto;
+}
+.uv .leftPanel .tabsContent .options .bottom {
+  overflow: hidden;
+}
+.uv .leftPanel .tabsContent .options .bottom .left {
+  float: left;
+}
+.uv .leftPanel .tabsContent .options .bottom .left .treeView {
+  padding: 5px 0 0 0;
+}
+.uv .leftPanel .tabsContent .options .bottom .left .treeView span {
+  display: block;
+  float: left;
+  color: #fff;
+  padding: 5px 4px 0 0;
+  font-size: 11px;
+}
+.uv .leftPanel .tabsContent .options .bottom .left .treeView select {
+  float: left;
+  font-size: 11px;
+}
+.uv .leftPanel .tabsContent .options .bottom .right {
+  float: right;
+  overflow: hidden;
+}
+.uv .leftPanel .tabsContent .options .bottom .right .multiSelect .multiSelectAll {
+  float: left;
+}
+.uv .leftPanel .tabsContent .options .bottom .right .multiSelect .btn {
+  margin-left: 10px;
+}
+.uv .leftPanel .tabsContent .btn-group .btn {
+  padding: 0 5px 0 5px;
+  background: #565656;
+  color: #9a9a9a;
+  width: 55px;
+}
+.uv .leftPanel .tabsContent .btn-group .btn.on {
+  background: #DDD;
+  color: #000;
+}
+.uv .leftPanel .views .treeView {
+  font-weight: normal;
+  overflow: auto;
+}
+.uv.browser-Explorer .leftPanel .views .galleryView .header input[type="range"] {
+  margin-top: -11px;
+}
+.uv.browser-Firefox .leftPanel .views .galleryView .header input[type="range"] {
+  margin-top: 9px;
+  overflow: hidden;
 }
 .uv .rightPanel .top .title {
   text-transform: uppercase;
@@ -458,12 +546,6 @@
 .uv .rightPanel .main .groups .items .item .header {
   font-size: 11px;
   text-transform: uppercase;
-}
-.uv .centerPanel .content .container {
-  margin: 0 20px 0 20px;
-}
-.uv .centerPanel .content #pdfContainer {
-  overflow: auto;
 }
 .uv {
   margin: 0;
@@ -2467,16 +2549,6 @@ input[type=range]:focus::-ms-fill-upper {
   .uv .mobileFooter {
     display: none;
   }
-}
-.uv .leftPanel .thumbsView .thumb .wrap {
-  border: none;
-}
-.uv .leftPanel .thumbsView .thumb .wrap img {
-  display: block;
-  width: 90px;
-}
-.uv .leftPanel .thumbsView .thumb.selected .wrap {
-  border: none;
 }
 .uv.cy-gb .headerPanel .options .centerOptions {
   width: 432px;
