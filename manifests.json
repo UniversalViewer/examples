@@ -649,6 +649,12 @@
           "@type": "sc:Manifest",
           "label": "Bust of Queen Nefertiti",
           "visible": true
+        },
+        {
+          "@id": "http://files.blokdust.io/manifests/stanford/vertebra.json",
+          "@type": "sc:Manifest",
+          "label": "Vertebra",
+          "visible": true
         }
       ]
     },
