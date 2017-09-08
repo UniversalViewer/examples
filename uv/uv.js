@@ -3518,14 +3518,14 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.1.7 https://github.com/viewdir/manifesto
+// manifesto v2.1.8 https://github.com/viewdir/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 ///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/>   
 
 var Manifesto;
 (function (Manifesto) {
-    var StringValue = (function () {
+    var StringValue = /** @class */ (function () {
         function StringValue(value) {
             this.value = "";
             if (value) {
@@ -3552,7 +3552,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var AnnotationMotivation = (function (_super) {
+    var AnnotationMotivation = /** @class */ (function (_super) {
         __extends(AnnotationMotivation, _super);
         function AnnotationMotivation() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -3631,54 +3631,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ElementType = (function (_super) {
-        __extends(ElementType, _super);
-        function ElementType() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        // todo: use getters when ES3 target is no longer required.
-        ElementType.prototype.canvas = function () {
-            return new ElementType(ElementType.CANVAS.toString());
-        };
-        ElementType.prototype.document = function () {
-            return new ElementType(ElementType.DOCUMENT.toString());
-        };
-        ElementType.prototype.image = function () {
-            return new ElementType(ElementType.IMAGE.toString());
-        };
-        ElementType.prototype.movingimage = function () {
-            return new ElementType(ElementType.MOVINGIMAGE.toString());
-        };
-        ElementType.prototype.physicalobject = function () {
-            return new ElementType(ElementType.PHYSICALOBJECT.toString());
-        };
-        ElementType.prototype.sound = function () {
-            return new ElementType(ElementType.SOUND.toString());
-        };
-        ElementType.CANVAS = new ElementType("sc:canvas");
-        ElementType.DOCUMENT = new ElementType("foaf:document");
-        ElementType.IMAGE = new ElementType("dcTypes:image");
-        ElementType.MOVINGIMAGE = new ElementType("dctypes:movingimage");
-        ElementType.PHYSICALOBJECT = new ElementType("dctypes:physicalobject");
-        ElementType.SOUND = new ElementType("dctypes:sound");
-        return ElementType;
-    }(Manifesto.StringValue));
-    Manifesto.ElementType = ElementType;
-})(Manifesto || (Manifesto = {}));
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Manifesto;
-(function (Manifesto) {
-    var IIIFResourceType = (function (_super) {
+    var IIIFResourceType = /** @class */ (function (_super) {
         __extends(IIIFResourceType, _super);
         function IIIFResourceType() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -3725,7 +3678,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ManifestType = (function (_super) {
+    var ManifestType = /** @class */ (function (_super) {
         __extends(ManifestType, _super);
         function ManifestType() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -3760,7 +3713,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var RenderingFormat = (function (_super) {
+    var RenderingFormat = /** @class */ (function (_super) {
         __extends(RenderingFormat, _super);
         function RenderingFormat() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -3795,7 +3748,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var MediaType = (function (_super) {
+    var MediaType = /** @class */ (function (_super) {
         __extends(MediaType, _super);
         function MediaType() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -3838,23 +3791,43 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ResourceType = (function (_super) {
+    var ResourceType = /** @class */ (function (_super) {
         __extends(ResourceType, _super);
         function ResourceType() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
         // todo: use getters when ES3 target is no longer required.
+        ResourceType.prototype.canvas = function () {
+            return new ResourceType(ResourceType.CANVAS.toString());
+        };
         ResourceType.prototype.choice = function () {
             return new ResourceType(ResourceType.CHOICE.toString());
+        };
+        ResourceType.prototype.document = function () {
+            return new ResourceType(ResourceType.DOCUMENT.toString());
         };
         ResourceType.prototype.image = function () {
             return new ResourceType(ResourceType.IMAGE.toString());
         };
+        ResourceType.prototype.movingimage = function () {
+            return new ResourceType(ResourceType.MOVINGIMAGE.toString());
+        };
+        ResourceType.prototype.physicalobject = function () {
+            return new ResourceType(ResourceType.PHYSICALOBJECT.toString());
+        };
+        ResourceType.prototype.sound = function () {
+            return new ResourceType(ResourceType.SOUND.toString());
+        };
         ResourceType.prototype.text = function () {
             return new ResourceType(ResourceType.TEXT.toString());
         };
+        ResourceType.CANVAS = new ResourceType("canvas");
         ResourceType.CHOICE = new ResourceType("choice");
-        ResourceType.IMAGE = new ResourceType("dctypes:image");
+        ResourceType.DOCUMENT = new ResourceType("document");
+        ResourceType.IMAGE = new ResourceType("image");
+        ResourceType.MOVINGIMAGE = new ResourceType("movingimage");
+        ResourceType.PHYSICALOBJECT = new ResourceType("physicalobject");
+        ResourceType.SOUND = new ResourceType("sound");
         ResourceType.TEXT = new ResourceType("textualbody");
         return ResourceType;
     }(Manifesto.StringValue));
@@ -3873,7 +3846,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ServiceProfile = (function (_super) {
+    var ServiceProfile = /** @class */ (function (_super) {
         __extends(ServiceProfile, _super);
         function ServiceProfile() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -4037,7 +4010,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ViewingDirection = (function (_super) {
+    var ViewingDirection = /** @class */ (function (_super) {
         __extends(ViewingDirection, _super);
         function ViewingDirection() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -4076,7 +4049,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ViewingHint = (function (_super) {
+    var ViewingHint = /** @class */ (function (_super) {
         __extends(ViewingHint, _super);
         function ViewingHint() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -4113,7 +4086,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var JSONLDResource = (function () {
+    var JSONLDResource = /** @class */ (function () {
         function JSONLDResource(jsonld) {
             this.__jsonld = jsonld;
             this.context = this.getProperty('context');
@@ -4147,7 +4120,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var ManifestResource = (function (_super) {
+    var ManifestResource = /** @class */ (function (_super) {
         __extends(ManifestResource, _super);
         function ManifestResource(jsonld, options) {
             var _this = _super.call(this, jsonld) || this;
@@ -4251,12 +4224,19 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Element = (function (_super) {
-        __extends(Element, _super);
-        function Element(jsonld, options) {
+    var Resource = /** @class */ (function (_super) {
+        __extends(Resource, _super);
+        function Resource(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
         }
-        Element.prototype.getResources = function () {
+        Resource.prototype.getFormat = function () {
+            var format = this.getProperty('format');
+            if (format) {
+                return new Manifesto.MediaType(format.toLowerCase());
+            }
+            return null;
+        };
+        Resource.prototype.getResources = function () {
             var resources = [];
             if (!this.__jsonld.resources)
                 return resources;
@@ -4267,12 +4247,34 @@ var Manifesto;
             }
             return resources;
         };
-        Element.prototype.getType = function () {
-            return new Manifesto.ElementType(this.getProperty('type'));
+        Resource.prototype.getType = function () {
+            var type = this.getProperty('type');
+            if (type) {
+                return new Manifesto.ResourceType(Manifesto.Utils.normaliseType(type));
+            }
+            return null;
         };
-        return Element;
+        Resource.prototype.getWidth = function () {
+            return this.getProperty('width');
+        };
+        Resource.prototype.getHeight = function () {
+            return this.getProperty('height');
+        };
+        Resource.prototype.getMaxWidth = function () {
+            return this.getProperty('maxWidth');
+        };
+        Resource.prototype.getMaxHeight = function () {
+            var maxHeight = this.getProperty('maxHeight');
+            // if a maxHeight hasn't been specified, default to maxWidth.
+            // maxWidth in essence becomes maxEdge
+            if (!maxHeight) {
+                return this.getMaxWidth();
+            }
+            return null;
+        };
+        return Resource;
     }(Manifesto.ManifestResource));
-    Manifesto.Element = Element;
+    Manifesto.Resource = Resource;
 })(Manifesto || (Manifesto = {}));
 
 var __extends = (this && this.__extends) || (function () {
@@ -4287,7 +4289,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Canvas = (function (_super) {
+    var Canvas = /** @class */ (function (_super) {
         __extends(Canvas, _super);
         function Canvas(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
@@ -4431,7 +4433,7 @@ var Manifesto;
             return this.getProperty('height');
         };
         return Canvas;
-    }(Manifesto.Element));
+    }(Manifesto.Resource));
     Manifesto.Canvas = Canvas;
 })(Manifesto || (Manifesto = {}));
 
@@ -4447,7 +4449,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var IIIFResource = (function (_super) {
+    var IIIFResource = /** @class */ (function (_super) {
         __extends(IIIFResource, _super);
         function IIIFResource(jsonld, options) {
             var _this = _super.call(this, jsonld, options) || this;
@@ -4563,7 +4565,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Manifest = (function (_super) {
+    var Manifest = /** @class */ (function (_super) {
         __extends(Manifest, _super);
         function Manifest(jsonld, options) {
             var _this = _super.call(this, jsonld, options) || this;
@@ -4779,7 +4781,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Collection = (function (_super) {
+    var Collection = /** @class */ (function (_super) {
         __extends(Collection, _super);
         function Collection(jsonld, options) {
             var _this = _super.call(this, jsonld, options) || this;
@@ -4876,7 +4878,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Range = (function (_super) {
+    var Range = /** @class */ (function (_super) {
         __extends(Range, _super);
         function Range(jsonld, options) {
             var _this = _super.call(this, jsonld, options) || this;
@@ -4965,7 +4967,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Rendering = (function (_super) {
+    var Rendering = /** @class */ (function (_super) {
         __extends(Rendering, _super);
         function Rendering(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
@@ -4990,7 +4992,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Sequence = (function (_super) {
+    var Sequence = /** @class */ (function (_super) {
         __extends(Sequence, _super);
         function Sequence(jsonld, options) {
             var _this = _super.call(this, jsonld, options) || this;
@@ -5211,7 +5213,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var Deserialiser = (function () {
+    var Deserialiser = /** @class */ (function () {
         function Deserialiser() {
         }
         Deserialiser.parse = function (manifest, options) {
@@ -5342,7 +5344,7 @@ var Manifesto;
         return Deserialiser;
     }());
     Manifesto.Deserialiser = Deserialiser;
-    var Serialiser = (function () {
+    var Serialiser = /** @class */ (function () {
         function Serialiser() {
         }
         Serialiser.serialise = function (manifest) {
@@ -5366,7 +5368,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Service = (function (_super) {
+    var Service = /** @class */ (function (_super) {
         __extends(Service, _super);
         function Service(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
@@ -5415,7 +5417,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var Thumb = (function () {
+    var Thumb = /** @class */ (function () {
         function Thumb(width, canvas) {
             this.data = canvas;
             this.index = canvas.index;
@@ -5438,7 +5440,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var TreeNode = (function () {
+    var TreeNode = /** @class */ (function () {
         function TreeNode(label, data) {
             this.label = label;
             this.data = data || {};
@@ -5474,7 +5476,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var TreeNodeType = (function (_super) {
+    var TreeNodeType = /** @class */ (function (_super) {
         __extends(TreeNodeType, _super);
         function TreeNodeType() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -5537,7 +5539,7 @@ var https = require("https");
 var url = require("url");
 var Manifesto;
 (function (Manifesto) {
-    var Utils = (function () {
+    var Utils = /** @class */ (function () {
         function Utils() {
         }
         Utils.getMediaType = function (type) {
@@ -6209,7 +6211,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var MetadataItem = (function () {
+    var MetadataItem = /** @class */ (function () {
         function MetadataItem(defaultLocale) {
             this.defaultLocale = defaultLocale;
         }
@@ -6259,7 +6261,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var Translation = (function () {
+    var Translation = /** @class */ (function () {
         function Translation(value, locale) {
             this.value = value;
             this.locale = locale;
@@ -6281,7 +6283,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var TranslationCollection = (function (_super) {
+    var TranslationCollection = /** @class */ (function (_super) {
         __extends(TranslationCollection, _super);
         function TranslationCollection() {
             return _super !== null && _super.apply(this, arguments) || this;
@@ -6338,7 +6340,7 @@ var Manifesto;
 
 var Manifesto;
 (function (Manifesto) {
-    var Size = (function () {
+    var Size = /** @class */ (function () {
         function Size(width, height) {
             this.width = width;
             this.height = height;
@@ -6350,7 +6352,6 @@ var Manifesto;
 
 global.manifesto = global.Manifesto = module.exports = {
     AnnotationMotivation: new Manifesto.AnnotationMotivation(),
-    ElementType: new Manifesto.ElementType(),
     IIIFResourceType: new Manifesto.IIIFResourceType(),
     ManifestType: new Manifesto.ManifestType(),
     MediaType: new Manifesto.MediaType(),
@@ -6392,7 +6393,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var Annotation = (function (_super) {
+    var Annotation = /** @class */ (function (_super) {
         __extends(Annotation, _super);
         function Annotation(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
@@ -6447,7 +6448,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var AnnotationBody = (function (_super) {
+    var AnnotationBody = /** @class */ (function (_super) {
         __extends(AnnotationBody, _super);
         function AnnotationBody(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
@@ -6462,7 +6463,7 @@ var Manifesto;
         AnnotationBody.prototype.getType = function () {
             var type = this.getProperty('type');
             if (type) {
-                return new Manifesto.ResourceType(type.toLowerCase());
+                return new Manifesto.ResourceType(Manifesto.Utils.normaliseType(this.getProperty('type')));
             }
             return null;
         };
@@ -6483,7 +6484,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Manifesto;
 (function (Manifesto) {
-    var AnnotationPage = (function (_super) {
+    var AnnotationPage = /** @class */ (function (_super) {
         __extends(AnnotationPage, _super);
         function AnnotationPage(jsonld, options) {
             return _super.call(this, jsonld, options) || this;
@@ -6514,61 +6515,6 @@ var Manifesto;
 
 
 
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Manifesto;
-(function (Manifesto) {
-    var Resource = (function (_super) {
-        __extends(Resource, _super);
-        function Resource(jsonld, options) {
-            return _super.call(this, jsonld, options) || this;
-        }
-        Resource.prototype.getFormat = function () {
-            var format = this.getProperty('format');
-            if (format) {
-                return new Manifesto.MediaType(format.toLowerCase());
-            }
-            return null;
-        };
-        Resource.prototype.getType = function () {
-            var type = this.getProperty('type');
-            if (type) {
-                return new Manifesto.ResourceType(type.toLowerCase());
-            }
-            return null;
-        };
-        Resource.prototype.getWidth = function () {
-            return this.getProperty('width');
-        };
-        Resource.prototype.getHeight = function () {
-            return this.getProperty('height');
-        };
-        Resource.prototype.getMaxWidth = function () {
-            return this.getProperty('maxWidth');
-        };
-        Resource.prototype.getMaxHeight = function () {
-            var maxHeight = this.getProperty('maxHeight');
-            // if a maxHeight hasn't been specified, default to maxWidth.
-            // maxWidth in essence becomes maxEdge
-            if (!maxHeight) {
-                return this.getMaxWidth();
-            }
-            return null;
-        };
-        return Resource;
-    }(Manifesto.ManifestResource));
-    Manifesto.Resource = Resource;
-})(Manifesto || (Manifesto = {}));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"http":30,"https":8,"url":35}],2:[function(require,module,exports){
@@ -14157,7 +14103,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// manifold v1.2.5 https://github.com/viewdir/manifold#readme
+// manifold v1.2.6 https://github.com/viewdir/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 ///<reference path="../node_modules/typescript/lib/lib.es6.d.ts"/> 
@@ -14605,9 +14551,6 @@ var Manifold;
         Helper.prototype.getCurrentCanvas = function () {
             return this.getCurrentSequence().getCanvasByIndex(this.canvasIndex);
         };
-        Helper.prototype.getCurrentElement = function () {
-            return this.getCanvasByIndex(this.canvasIndex);
-        };
         Helper.prototype.getCurrentSequence = function () {
             return this.getSequenceByIndex(this.sequenceIndex);
         };
@@ -14617,12 +14560,6 @@ var Manifold;
                 return Manifesto.TranslationCollection.getValue(description);
             }
             return null;
-        };
-        Helper.prototype.getElementType = function (element) {
-            if (!element) {
-                element = this.getCurrentCanvas();
-            }
-            return element.getType();
         };
         Helper.prototype.getFirstPageIndex = function () {
             return 0;
@@ -14817,10 +14754,6 @@ var Manifold;
         Helper.prototype.getRelated = function () {
             return this.manifest.getRelated();
         };
-        Helper.prototype.getResources = function () {
-            var element = this.getCurrentElement();
-            return element.getResources();
-        };
         Helper.prototype.getSearchService = function () {
             return this.manifest.getService(manifesto.ServiceProfile.search());
         };
@@ -14946,7 +14879,8 @@ var Manifold;
             return related['format'] === 'text/html';
         };
         Helper.prototype.hasResources = function () {
-            return this.getResources().length > 0;
+            var canvas = this.getCurrentCanvas();
+            return canvas.getResources().length > 0;
         };
         Helper.prototype.isBottomToTop = function () {
             return this.getViewingDirection().toString() === manifesto.ViewingDirection.bottomToTop().toString();
@@ -18353,9 +18287,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 return annotation.getBody();
             }
             else {
+                // legacy IxIF compatibility
                 var body = {
                     id: canvas.id,
-                    type: canvas.getType()
+                    type: canvas.getType(),
+                    getFormat: function () {
+                        return '';
+                    }
                 };
                 return [body];
             }
@@ -18630,8 +18568,10 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
                     var $description = $item.find('.description');
                     var annotationBody = annotation.getBody()[0];
                     var id = annotationBody.getProperty('id');
-                    $fileName.prop('href', id);
-                    $fileName.text(id.substr(id.lastIndexOf('/') + 1));
+                    if (id) {
+                        $fileName.prop('href', id);
+                        $fileName.text(id.substr(id.lastIndexOf('/') + 1));
+                    }
                     var label = Manifesto.TranslationCollection.getValue(annotationBody.getLabel());
                     if (label) {
                         $label.text(Utils_1.UVUtils.sanitize(label));
@@ -18646,7 +18586,9 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
                     var description = annotationBody.getProperty('description');
                     if (description) {
                         $description.text(Utils_1.UVUtils.sanitize(description));
-                        $description.prop('href', id);
+                        if (id) {
+                            $description.prop('href', id);
+                        }
                     }
                     _this.$downloadItems.append($item);
                 }
@@ -19720,8 +19662,12 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
             this.$element.hide();
         };
         ThumbsView.prototype.isPDF = function () {
-            // todo: use constants
-            return (this.extension.helper.getElementType().toString().includes("pdf"));
+            var canvas = this.extension.helper.getCurrentCanvas();
+            var type = canvas.getType();
+            if (type) {
+                return (type.toString().includes("pdf"));
+            }
+            return false;
         };
         ThumbsView.prototype.setLabel = function () {
             $(this.$thumbs).find('span.index').hide();
@@ -19846,7 +19792,7 @@ define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "ex
         };
         ResourcesLeftPanel.prototype.dataBind = function () {
             this.dataBindThumbsView();
-            var annotations = this.extension.helper.getResources();
+            var annotations = this.extension.helper.getCurrentCanvas().getResources();
             if (annotations.length === 0) {
                 this.$resourcesView.hide();
             }
@@ -21053,10 +20999,10 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
             if (this.isVideo()) {
-                bookmark.type = manifesto.ElementType.movingimage().toString();
+                bookmark.type = manifesto.ResourceType.movingimage().toString();
             }
             else {
-                bookmark.type = manifesto.ElementType.sound().toString();
+                bookmark.type = manifesto.ResourceType.sound().toString();
             }
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
@@ -21099,7 +21045,10 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
                 }
             }
             else {
-                return canvas.getType().toString() === manifesto.ElementType.movingimage().toString();
+                var type = canvas.getType();
+                if (type) {
+                    return type.toString() === manifesto.ResourceType.movingimage().toString();
+                }
             }
             throw (new Error("Unable to determine media type"));
         };
@@ -21711,10 +21660,12 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                     var searchResult = searchResults[i];
                     // find the thumb with the same canvasIndex and add the searchResult
                     var thumb = thumbs.en().where(function (t) { return t.index === searchResult.canvasIndex; }).first();
-                    // clone the data so searchResults isn't persisted on the canvas.
-                    var data = $.extend(true, {}, thumb.data);
-                    data.searchResults = searchResult.rects.length;
-                    thumb.data = data;
+                    if (thumb) {
+                        // clone the data so searchResults isn't persisted on the canvas.
+                        var data = $.extend(true, {}, thumb.data);
+                        data.searchResults = searchResult.rects.length;
+                        thumb.data = data;
+                    }
                 };
                 for (var i = 0; i < searchResults.length; i++) {
                     _loop_1(i);
@@ -25527,7 +25478,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             bookmark.thumb = canvas.getCanonicalImageUri(this.data.config.options.bookmarkThumbWidth);
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
-            bookmark.type = manifesto.ElementType.image().toString();
+            bookmark.type = manifesto.ResourceType.image().toString();
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.print = function () {
@@ -26179,7 +26130,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             bookmark.thumb = canvas.getProperty('thumbnail');
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
-            bookmark.type = manifesto.ElementType.document().toString();
+            bookmark.type = manifesto.ResourceType.document().toString();
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
@@ -26365,11 +26316,18 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
                 var mediaUri = null;
                 var canvas = _this.extension.helper.getCurrentCanvas();
                 var formats = _this.extension.getMediaFormats(canvas);
+                var resourceType = null;
+                // default to threejs format.
+                var fileType = new Virtex.FileType("application/vnd.threejs+json");
                 if (formats && formats.length) {
                     mediaUri = formats[0].id;
+                    resourceType = formats[0].getFormat();
                 }
                 else {
                     mediaUri = canvas.id;
+                }
+                if (resourceType) {
+                    fileType = new Virtex.FileType(resourceType.toString());
                 }
                 var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
                 _this.viewport = new Virtex.Viewport({
@@ -26378,7 +26336,7 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
                         antialias: !isAndroid,
                         file: mediaUri,
                         fullscreenEnabled: false,
-                        type: new Virtex.FileType("application/vnd.threejs+json"),
+                        type: fileType,
                         showStats: _this.options.showStats
                     }
                 });
@@ -26493,7 +26451,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             bookmark.thumb = canvas.getProperty('thumbnail');
             bookmark.title = this.helper.getLabel();
             bookmark.trackingLabel = window.trackingLabel;
-            bookmark.type = manifesto.ElementType.physicalobject().toString();
+            bookmark.type = manifesto.ResourceType.physicalobject().toString();
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
@@ -26537,19 +26495,19 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 console.error("UV failed to initialise");
             }
             this._extensions = {};
-            this._extensions[manifesto.ElementType.canvas().toString()] = {
+            this._extensions[manifesto.ResourceType.canvas().toString()] = {
                 type: Extension_3.Extension,
                 name: 'uv-seadragon-extension'
             };
-            this._extensions[manifesto.ElementType.movingimage().toString()] = {
+            this._extensions[manifesto.ResourceType.movingimage().toString()] = {
                 type: Extension_2.Extension,
                 name: 'uv-mediaelement-extension'
             };
-            this._extensions[manifesto.ElementType.physicalobject().toString()] = {
+            this._extensions[manifesto.ResourceType.physicalobject().toString()] = {
                 type: Extension_5.Extension,
                 name: 'uv-virtex-extension'
             };
-            this._extensions[manifesto.ElementType.sound().toString()] = {
+            this._extensions[manifesto.ResourceType.sound().toString()] = {
                 type: Extension_2.Extension,
                 name: 'uv-mediaelement-extension'
             };
@@ -26698,13 +26656,22 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                         var format = body[0].getFormat();
                         if (format) {
                             extension = that._extensions[format.toString()];
+                            if (!extension) {
+                                // try type
+                                var type = body[0].getType();
+                                if (type) {
+                                    extension = that._extensions[type.toString()];
+                                }
+                            }
                         }
                     }
                 }
                 else {
                     var canvasType = canvas.getType();
-                    // try using canvasType
-                    extension = that._extensions[canvasType.toString()];
+                    if (canvasType) {
+                        // try using canvasType
+                        extension = that._extensions[canvasType.toString()];
+                    }
                     // if there isn't an extension for the canvasType, try the format
                     if (!extension) {
                         var format = canvas.getProperty('format');
