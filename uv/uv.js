@@ -19136,15 +19136,18 @@ define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", ".
             });
         };
         ThumbsView.prototype.addSelectedClassToThumbs = function (index) {
-            if (this.extension.isPagingSettingEnabled()) {
-                var indices = this.extension.getPagedIndices(index);
-                for (var i = 0; i < indices.length; i++) {
-                    this.getThumbByIndex(indices[i]).addClass('selected');
-                }
+            var indices = this.extension.getPagedIndices(index);
+            for (var i = 0; i < indices.length; i++) {
+                this.getThumbByIndex(indices[i]).addClass('selected');
             }
-            else {
-                this.getThumbByIndex(index).addClass('selected');
-            }
+            // if ((<ISeadragonExtension>this.extension).isPagingSettingEnabled()) {
+            //     const indices: number[] = this.extension.getPagedIndices(index);
+            //     for (let i = 0; i < indices.length; i++) {
+            //         this.getThumbByIndex(indices[i]).addClass('selected');
+            //     }
+            // } else {
+            //     this.getThumbByIndex(index).addClass('selected');
+            // }
         };
         ThumbsView.prototype.isPageModeEnabled = function () {
             if (typeof this.extension.getMode === "function") {
@@ -20635,34 +20638,18 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             this.extension.getExternalResources(resources).then(function () {
                 _this.avcomponent.set({
                     helper: _this.extension.helper,
-                    defaultCanvasHeight: 400,
-                    defaultCanvasWidth: 600
+                    defaultAspectRatio: 0.56
                 });
                 _this.resize();
             });
         };
         AVCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            // const left: number = Math.floor((this.$content.width() - this.$container.width()) / 2);
-            // const top: number = Math.floor((this.$content.height() - this.$container.height()) / 2);
-            // this.$container.css({
-            //     'left': left,
-            //     'top': top
-            // });
             if (this.title) {
                 this.$title.ellipsisFill(this.title);
             }
             this.$avcomponent.height(this.$content.height());
-            // if (this.player) {
-            //     if (!this.isVideo() || (this.isVideo() && !this.component.isFullScreen)) {
-            //         this.player.setPlayerSize();
-            //         this.player.setControlsSize();
-            //         const $mejs: JQuery = $('.mejs__container');
-            //         $mejs.css({
-            //             'margin-top': (this.$container.height() - $mejs.height()) / 2
-            //         });
-            //     }
-            // }
+            this.avcomponent.resize();
         };
         return AVCenterPanel;
     }(CenterPanel_1.CenterPanel));

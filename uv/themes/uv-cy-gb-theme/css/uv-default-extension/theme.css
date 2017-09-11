@@ -2012,6 +2012,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .iiif-av-component {
   position: relative;
+  overflow: hidden;
 }
 .iiif-av-component .canvasContainer {
   position: relative;
@@ -2080,6 +2081,7 @@ input[type=range]:focus::-ms-fill-upper {
   margin-left: -8px;
   background: transparent;
   border: none;
+  z-index: 1;
 }
 .iiif-av-component .timelineContainer .ui-slider-handle:focus {
   outline: none;
