@@ -649,13 +649,7 @@
           "@type": "sc:Manifest",
           "label": "Bust of Queen Nefertiti",
           "visible": true
-        },
-        {
-          "@id": "http://files.blokdust.io/manifests/stanford/vertebra.json",
-          "@type": "sc:Manifest",
-          "label": "Vertebra",
-          "visible": true
-        }
+        }       
       ]
     },
     {
@@ -753,9 +747,15 @@
           "visible": true
         },
         {
-          "@id": "https://edsilv.github.io/test-manifests/pres3-3d.json",
+          "@id": "http://files.blokdust.io/manifests/stanford/vertebra.json",
           "@type": "sc:Manifest",
-          "label": "Presentation 3 3D",
+          "label": "Presentation 3: Vertebra (obj)",
+          "visible": true
+        },
+        {
+          "@id": "https://files.blokdust.io/manifests/xavieraure/harbour.json",
+          "@type": "sc:Manifest",
+          "label": "Presentation 3: The Harbour (obj)",
           "visible": true
         },
         {
@@ -805,7 +805,7 @@
           "@type": "sc:Manifest",
           "label": "Multiple Auth1 Degraded",
           "visible": true
-        }
+        } 
       ]
     },
     {
