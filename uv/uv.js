@@ -18489,13 +18489,13 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
             this.galleryComponent.on('thumbSelected', function (thumb) {
                 $.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
                 $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
-            });
+            }, false);
             this.galleryComponent.on('decreaseSize', function () {
                 $.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
-            });
+            }, false);
             this.galleryComponent.on('increaseSize', function () {
                 $.publish(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
-            });
+            }, false);
         };
         GalleryView.prototype.databind = function () {
             this.galleryComponent.options.data = this.galleryData;
@@ -19231,15 +19231,12 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
                 target: this.$tree[0],
                 data: this.treeData
             });
-            // todo: casting as <any> is necessary because IBaseComponent doesn't implement ITinyEmitter
-            // it is mixed-in a runtime. figure out how to add .on etc to IBaseComponent without needing
-            // to implement it in BaseComponent.
             this.treeComponent.on('treeNodeSelected', function (node) {
                 $.publish(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, [node]);
-            });
+            }, false);
             this.treeComponent.on('treeNodeMultiSelected', function (node) {
                 $.publish(BaseEvents_1.BaseEvents.TREE_NODE_MULTISELECTED, [node]);
-            });
+            }, false);
         };
         TreeView.prototype.databind = function () {
             this.treeComponent.set(this.treeData);
@@ -23759,7 +23756,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             this.galleryComponent.on('multiSelectionMade', function (ids) {
                 $.publish(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, [ids]);
                 that.close();
-            });
+            }, false);
             this.$element.hide();
         };
         MultiSelectDialogue.prototype.isPageModeEnabled = function () {
