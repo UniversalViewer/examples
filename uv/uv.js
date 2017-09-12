@@ -16129,7 +16129,11 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
         BaseEvents.EXIT_FULLSCREEN = 'exitFullScreen';
         BaseEvents.EXTERNAL_LINK_CLICKED = 'externalLinkClicked';
         BaseEvents.FEEDBACK = 'feedback';
+        BaseEvents.FIRST = 'first';
         BaseEvents.FORBIDDEN = 'forbidden';
+        BaseEvents.GALLERY_DECREASE_SIZE = 'galleryDecreaseSize';
+        BaseEvents.GALLERY_INCREASE_SIZE = 'galleryIncreaseSize';
+        BaseEvents.GALLERY_THUMB_SELECTED = 'galleryThumbSelected';
         BaseEvents.HIDE_AUTH_DIALOGUE = 'hideAuthDialogue';
         BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE = 'hideClickthroughDialogue';
         BaseEvents.HIDE_DOWNLOAD_DIALOGUE = 'hideDownloadDialogue';
@@ -16140,11 +16144,13 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
         BaseEvents.HIDE_INFORMATION = 'hideInformation';
         BaseEvents.HIDE_LOGIN_DIALOGUE = 'hideLoginDialogue';
         BaseEvents.HIDE_MOREINFO_DIALOGUE = 'hideMoreInfoDialogue';
+        BaseEvents.HIDE_MULTISELECT_DIALOGUE = 'hideMultiSelectDialogue';
         BaseEvents.HIDE_OVERLAY = 'hideOverlay';
         BaseEvents.HIDE_RESTRICTED_DIALOGUE = 'hideRestrictedDialogue';
         BaseEvents.HIDE_SETTINGS_DIALOGUE = 'hideSettingsDialogue';
         BaseEvents.HIDE_SHARE_DIALOGUE = 'hideShareDialogue';
         BaseEvents.HOME = 'home';
+        BaseEvents.LAST = 'last';
         BaseEvents.LEFT_ARROW = 'leftArrow';
         BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH = 'leftPanelCollapseFullFinish';
         BaseEvents.LEFTPANEL_COLLAPSE_FULL_START = 'leftPanelCollapseFullStart';
@@ -16157,14 +16163,20 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
         BaseEvents.MANIFEST_INDEX_CHANGED = 'manifestIndexChanged';
         BaseEvents.METRIC_CHANGED = 'metricChanged';
         BaseEvents.MINUS = 'minus';
+        BaseEvents.MULTISELECT_CHANGE = 'multiSelectChange';
+        BaseEvents.MULTISELECTION_MADE = 'multiSelectionMade';
+        BaseEvents.NEXT = 'next';
         BaseEvents.NOT_FOUND = 'notFound';
         BaseEvents.OPEN_EXTERNAL_RESOURCE = 'openExternalResource';
         BaseEvents.OPEN_LEFT_PANEL = 'openLeftPanel';
         BaseEvents.OPEN_RIGHT_PANEL = 'openRightPanel';
+        BaseEvents.OPEN_THUMBS_VIEW = 'openThumbsView';
+        BaseEvents.OPEN_TREE_VIEW = 'openTreeView';
         BaseEvents.OPEN = 'open';
         BaseEvents.PAGE_DOWN = 'pageDown';
         BaseEvents.PAGE_UP = 'pageUp';
         BaseEvents.PLUS = 'plus';
+        BaseEvents.PREV = 'prev';
         BaseEvents.REDIRECT = 'redirect';
         BaseEvents.REFRESH = 'refresh';
         BaseEvents.RELOAD = 'reload';
@@ -16190,15 +16202,19 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
         BaseEvents.SHOW_LOGIN_DIALOGUE = 'showLoginDialogue';
         BaseEvents.SHOW_MESSAGE = 'showMessage';
         BaseEvents.SHOW_MOREINFO_DIALOGUE = 'showMoreInfoDialogue';
+        BaseEvents.SHOW_MULTISELECT_DIALOGUE = 'showMultiSelectDialogue';
         BaseEvents.SHOW_OVERLAY = 'showOverlay';
         BaseEvents.SHOW_RESTRICTED_DIALOGUE = 'showRestrictedDialogue';
         BaseEvents.SHOW_SETTINGS_DIALOGUE = 'showSettingsDialogue';
         BaseEvents.SHOW_SHARE_DIALOGUE = 'showShareDialogue';
         BaseEvents.SHOW_TERMS_OF_USE = 'showTermsOfUse';
+        BaseEvents.THUMB_MULTISELECTED = 'thumbMultiSelected';
         BaseEvents.THUMB_SELECTED = 'thumbSelected';
         BaseEvents.TOGGLE_EXPAND_LEFT_PANEL = 'toggleExpandLeftPanel';
         BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL = 'toggleExpandRightPanel';
         BaseEvents.TOGGLE_FULLSCREEN = 'toggleFullScreen';
+        BaseEvents.TREE_NODE_MULTISELECTED = 'treeNodeMultiSelected';
+        BaseEvents.TREE_NODE_SELECTED = 'treeNodeSelected';
         BaseEvents.UP_ARROW = 'upArrow';
         BaseEvents.UPDATE_SETTINGS = 'updateSettings';
         BaseEvents.VIEW_FULL_TERMS = 'viewFullTerms';
@@ -18432,57 +18448,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
     exports.BaseExtension = BaseExtension;
 });
 //# sourceMappingURL=BaseExtension.js.map
-define('extensions/uv-seadragon-extension/Events',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Events = /** @class */ (function () {
-        function Events() {
-        }
-        Events.namespace = 'openseadragonExtension.';
-        Events.CURRENT_VIEW_URI = Events.namespace + 'currentViewUri';
-        Events.FIRST = Events.namespace + 'first';
-        Events.GALLERY_DECREASE_SIZE = Events.namespace + 'galleryDecreaseSize';
-        Events.GALLERY_INCREASE_SIZE = Events.namespace + 'galleryIncreaseSize';
-        Events.GALLERY_THUMB_SELECTED = Events.namespace + 'galleryThumbSelected';
-        Events.HIDE_MULTISELECT_DIALOGUE = Events.namespace + 'hideMultiSelectDialogue';
-        Events.IMAGE_SEARCH = Events.namespace + 'imageSearch';
-        Events.LAST = Events.namespace + 'last';
-        Events.MODE_CHANGED = Events.namespace + 'modeChanged';
-        Events.MULTISELECT_CHANGE = Events.namespace + 'multiSelectChange';
-        Events.MULTISELECTION_MADE = Events.namespace + 'multiSelectionMade';
-        Events.NEXT_SEARCH_RESULT = Events.namespace + 'nextSearchResult';
-        Events.NEXT = Events.namespace + 'next';
-        Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'nextImagesSearchResultUnavailable';
-        Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'prevImagesSearchResultUnavailable';
-        Events.OPEN_THUMBS_VIEW = Events.namespace + 'openThumbsView';
-        Events.OPEN_TREE_VIEW = Events.namespace + 'openTreeView';
-        Events.PAGE_SEARCH = Events.namespace + 'pageSearch';
-        Events.PAGING_TOGGLED = Events.namespace + 'pagingToggled';
-        Events.PREV_SEARCH_RESULT = Events.namespace + 'prevSearchResult';
-        Events.PREV = Events.namespace + 'prev';
-        Events.PRINT = Events.namespace + 'print';
-        Events.ROTATE = Events.namespace + 'rotate';
-        Events.SEADRAGON_ANIMATION_FINISH = Events.namespace + 'animationFinish';
-        Events.SEADRAGON_ANIMATION_START = Events.namespace + 'animationStart';
-        Events.SEADRAGON_ANIMATION = Events.namespace + 'animation';
-        Events.SEADRAGON_OPEN = Events.namespace + 'open';
-        Events.SEADRAGON_RESIZE = Events.namespace + 'resize';
-        Events.SEADRAGON_ROTATION = Events.namespace + 'rotationChanged';
-        Events.SEARCH_PREVIEW_FINISH = Events.namespace + 'searchPreviewFinish';
-        Events.SEARCH_PREVIEW_START = Events.namespace + 'searchPreviewStart';
-        Events.SEARCH = Events.namespace + 'search';
-        Events.SHOW_MULTISELECT_DIALOGUE = Events.namespace + 'showMultiSelectDialogue';
-        Events.THUMB_MULTISELECTED = Events.namespace + 'thumbMultiSelected';
-        Events.TREE_NODE_MULTISELECTED = Events.namespace + 'treeNodeMultiSelected';
-        Events.TREE_NODE_SELECTED = Events.namespace + 'treeNodeSelected';
-        Events.XYWH_CHANGED = Events.namespace + 'xywhChanged';
-        Events.ZOOM_IN = Events.namespace + 'zoomIn';
-        Events.ZOOM_OUT = Events.namespace + 'zoomOut';
-        return Events;
-    }());
-    exports.Events = Events;
-});
-//# sourceMappingURL=Events.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18493,7 +18458,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Events"], function (require, exports, BaseEvents_1, BaseView_1, Events_1) {
+define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var GalleryView = /** @class */ (function (_super) {
@@ -18522,14 +18487,14 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
                 data: this.galleryData
             });
             this.galleryComponent.on('thumbSelected', function (thumb) {
-                $.publish(Events_1.Events.GALLERY_THUMB_SELECTED, [thumb]);
+                $.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
                 $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
             });
             this.galleryComponent.on('decreaseSize', function () {
-                $.publish(Events_1.Events.GALLERY_DECREASE_SIZE);
+                $.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
             });
             this.galleryComponent.on('increaseSize', function () {
-                $.publish(Events_1.Events.GALLERY_INCREASE_SIZE);
+                $.publish(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
             });
         };
         GalleryView.prototype.databind = function () {
@@ -19101,6 +19066,41 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
     exports.ThumbsView = ThumbsView;
 });
 //# sourceMappingURL=ThumbsView.js.map
+define('extensions/uv-seadragon-extension/Events',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Events = /** @class */ (function () {
+        function Events() {
+        }
+        Events.namespace = 'openseadragonExtension.';
+        Events.CURRENT_VIEW_URI = Events.namespace + 'currentViewUri';
+        Events.IMAGE_SEARCH = Events.namespace + 'imageSearch';
+        Events.MODE_CHANGED = Events.namespace + 'modeChanged';
+        Events.NEXT_SEARCH_RESULT = Events.namespace + 'nextSearchResult';
+        Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'nextImagesSearchResultUnavailable';
+        Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE = Events.namespace + 'prevImagesSearchResultUnavailable';
+        Events.PAGE_SEARCH = Events.namespace + 'pageSearch';
+        Events.PAGING_TOGGLED = Events.namespace + 'pagingToggled';
+        Events.PREV_SEARCH_RESULT = Events.namespace + 'prevSearchResult';
+        Events.PRINT = Events.namespace + 'print';
+        Events.ROTATE = Events.namespace + 'rotate';
+        Events.SEADRAGON_ANIMATION_FINISH = Events.namespace + 'animationFinish';
+        Events.SEADRAGON_ANIMATION_START = Events.namespace + 'animationStart';
+        Events.SEADRAGON_ANIMATION = Events.namespace + 'animation';
+        Events.SEADRAGON_OPEN = Events.namespace + 'open';
+        Events.SEADRAGON_RESIZE = Events.namespace + 'resize';
+        Events.SEADRAGON_ROTATION = Events.namespace + 'rotationChanged';
+        Events.SEARCH_PREVIEW_FINISH = Events.namespace + 'searchPreviewFinish';
+        Events.SEARCH_PREVIEW_START = Events.namespace + 'searchPreviewStart';
+        Events.SEARCH = Events.namespace + 'search';
+        Events.XYWH_CHANGED = Events.namespace + 'xywhChanged';
+        Events.ZOOM_IN = Events.namespace + 'zoomIn';
+        Events.ZOOM_OUT = Events.namespace + 'zoomOut';
+        return Events;
+    }());
+    exports.Events = Events;
+});
+//# sourceMappingURL=Events.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -19210,7 +19210,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseView", "../../extensions/uv-seadragon-extension/Events"], function (require, exports, BaseView_1, Events_1) {
+define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var TreeView = /** @class */ (function (_super) {
@@ -19235,10 +19235,10 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             // it is mixed-in a runtime. figure out how to add .on etc to IBaseComponent without needing
             // to implement it in BaseComponent.
             this.treeComponent.on('treeNodeSelected', function (node) {
-                $.publish(Events_1.Events.TREE_NODE_SELECTED, [node]);
+                $.publish(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, [node]);
             });
             this.treeComponent.on('treeNodeMultiSelected', function (node) {
-                $.publish(Events_1.Events.TREE_NODE_MULTISELECTED, [node]);
+                $.publish(BaseEvents_1.BaseEvents.TREE_NODE_MULTISELECTED, [node]);
             });
         };
         TreeView.prototype.databind = function () {
@@ -19280,7 +19280,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-seadragon-extension/Events", "./GalleryView", "../uv-shared-module/LeftPanel", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseEvents_1, Events_1, GalleryView_1, LeftPanel_1, Mode_1, ThumbsView_1, TreeView_1) {
+define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "./GalleryView", "../uv-shared-module/LeftPanel", "../../extensions/uv-seadragon-extension/Mode", "./ThumbsView", "./TreeView"], function (require, exports, BaseEvents_1, GalleryView_1, LeftPanel_1, Mode_1, ThumbsView_1, TreeView_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ContentLeftPanel = /** @class */ (function (_super) {
@@ -19300,7 +19300,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.databind();
             });
-            $.subscribe(Events_1.Events.GALLERY_THUMB_SELECTED, function () {
+            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, function () {
                 _this.collapseFull();
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
@@ -19383,11 +19383,11 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             this.$treeViewOptions.hide();
             this.$treeButton.onPressed(function () {
                 _this.openTreeView();
-                $.publish(Events_1.Events.OPEN_TREE_VIEW);
+                $.publish(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW);
             });
             this.$thumbsButton.onPressed(function () {
                 _this.openThumbsView();
-                $.publish(Events_1.Events.OPEN_THUMBS_VIEW);
+                $.publish(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW);
             });
             this.setTitle(this.content.title);
             this.$sortByVolumeButton.addClass('on');
@@ -22257,7 +22257,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "./Events", "../../modules/uv-dialogues-module/DownloadDialogue", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseEvents_1, Events_1, DownloadDialogue_1, DownloadOption_1, DownloadType_1) {
+define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-dialogues-module/DownloadDialogue", "../../modules/uv-shared-module/DownloadOption", "./DownloadType"], function (require, exports, BaseEvents_1, DownloadDialogue_1, DownloadOption_1, DownloadType_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Size = Manifesto.Size;
@@ -22344,7 +22344,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             Utils.Async.waitFor(function () {
                                 return !_this.isActive;
                             }, function () {
-                                $.publish(Events_1.Events.SHOW_MULTISELECT_DIALOGUE);
+                                $.publish(BaseEvents_1.BaseEvents.SHOW_MULTISELECT_DIALOGUE);
                             });
                             break;
                         case DownloadOption_1.DownloadOption.wholeImageHighRes.toString():
@@ -23702,7 +23702,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "exports", "../../extensions/uv-seadragon-extension/Events", "../../modules/uv-shared-module/Dialogue", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, Events_1, Dialogue_1, Mode_1) {
+define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/Dialogue", "../../extensions/uv-seadragon-extension/Mode"], function (require, exports, BaseEvents_1, Dialogue_1, Mode_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var MultiSelectDialogue = /** @class */ (function (_super) {
@@ -23715,8 +23715,8 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             this.setConfig('multiSelectDialogue');
             _super.prototype.create.call(this);
             var that = this;
-            this.openCommand = Events_1.Events.SHOW_MULTISELECT_DIALOGUE;
-            this.closeCommand = Events_1.Events.HIDE_MULTISELECT_DIALOGUE;
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_MULTISELECT_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_MULTISELECT_DIALOGUE;
             $.subscribe(this.openCommand, function () {
                 _this.open();
                 var multiSelectState = _this.extension.helper.getMultiSelectState();
@@ -23757,7 +23757,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             var $selectButton = this.$gallery.find('a.select');
             $selectButton.addClass('btn btn-primary');
             this.galleryComponent.on('multiSelectionMade', function (ids) {
-                $.publish(Events_1.Events.MULTISELECTION_MADE, [ids]);
+                $.publish(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, [ids]);
                 that.close();
             });
             this.$element.hide();
@@ -23967,10 +23967,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
-                        $.publish(Events_1.Events.FIRST);
+                        $.publish(BaseEvents_1.BaseEvents.FIRST);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Events_1.Events.LAST);
+                        $.publish(BaseEvents_1.BaseEvents.LAST);
                         break;
                 }
             });
@@ -23979,10 +23979,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Events_1.Events.PREV);
+                        $.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Events_1.Events.NEXT);
+                        $.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                 }
             });
@@ -23991,10 +23991,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Events_1.Events.NEXT);
+                        $.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Events_1.Events.PREV);
+                        $.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                 }
             });
@@ -24003,10 +24003,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
-                        $.publish(Events_1.Events.LAST);
+                        $.publish(BaseEvents_1.BaseEvents.LAST);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Events_1.Events.FIRST);
+                        $.publish(BaseEvents_1.BaseEvents.FIRST);
                         break;
                 }
             });
@@ -24607,10 +24607,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Events_1.Events.PREV);
+                        $.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Events_1.Events.NEXT);
+                        $.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                 }
             });
@@ -24623,10 +24623,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(Events_1.Events.NEXT);
+                        $.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(Events_1.Events.PREV);
+                        $.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                 }
             });
@@ -25357,18 +25357,18 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(BaseEvents_1.BaseEvents.END, function () {
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getLastPageIndex()]);
             });
-            $.subscribe(Events_1.Events.FIRST, function () {
-                _this.fire(Events_1.Events.FIRST);
+            $.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
+                _this.fire(BaseEvents_1.BaseEvents.FIRST);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getFirstPageIndex()]);
             });
-            $.subscribe(Events_1.Events.GALLERY_DECREASE_SIZE, function () {
-                _this.fire(Events_1.Events.GALLERY_DECREASE_SIZE);
+            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE, function () {
+                _this.fire(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
             });
-            $.subscribe(Events_1.Events.GALLERY_INCREASE_SIZE, function () {
-                _this.fire(Events_1.Events.GALLERY_INCREASE_SIZE);
+            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE, function () {
+                _this.fire(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
             });
-            $.subscribe(Events_1.Events.GALLERY_THUMB_SELECTED, function () {
-                _this.fire(Events_1.Events.GALLERY_THUMB_SELECTED);
+            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, function () {
+                _this.fire(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED);
             });
             $.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getFirstPageIndex()]);
@@ -25377,8 +25377,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.fire(Events_1.Events.IMAGE_SEARCH, index);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
             });
-            $.subscribe(Events_1.Events.LAST, function () {
-                _this.fire(Events_1.Events.LAST);
+            $.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
+                _this.fire(BaseEvents_1.BaseEvents.LAST);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getLastPageIndex()]);
             });
             $.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
@@ -25411,17 +25411,17 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var settings = _this.getSettings();
                 $.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, [settings]);
             });
-            $.subscribe(Events_1.Events.MULTISELECTION_MADE, function (e, ids) {
+            $.subscribe(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, function (e, ids) {
                 var args = new MultiSelectionArgs_1.MultiSelectionArgs();
                 args.manifestUri = _this.helper.iiifResourceUri;
                 args.allCanvases = ids.length === _this.helper.getCanvases().length;
                 args.canvases = ids;
                 args.format = _this.data.config.options.multiSelectionMimeType;
                 args.sequence = _this.helper.getCurrentSequence().id;
-                _this.fire(Events_1.Events.MULTISELECTION_MADE, args);
+                _this.fire(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, args);
             });
-            $.subscribe(Events_1.Events.NEXT, function () {
-                _this.fire(Events_1.Events.NEXT);
+            $.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
+                _this.fire(BaseEvents_1.BaseEvents.NEXT);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
             });
             $.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
@@ -25435,11 +25435,11 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 _this.fire(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
                 _this.prevSearchResult();
             });
-            $.subscribe(Events_1.Events.OPEN_THUMBS_VIEW, function () {
-                _this.fire(Events_1.Events.OPEN_THUMBS_VIEW);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
+                _this.fire(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW);
             });
-            $.subscribe(Events_1.Events.OPEN_TREE_VIEW, function () {
-                _this.fire(Events_1.Events.OPEN_TREE_VIEW);
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
+                _this.fire(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW);
             });
             $.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
@@ -25457,8 +25457,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(BaseEvents_1.BaseEvents.PLUS, function () {
                 _this.centerPanel.setFocus();
             });
-            $.subscribe(Events_1.Events.PREV, function () {
-                _this.fire(Events_1.Events.PREV);
+            $.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
+                _this.fire(BaseEvents_1.BaseEvents.PREV);
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
             });
             $.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
@@ -25532,8 +25532,8 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
             });
-            $.subscribe(Events_1.Events.TREE_NODE_SELECTED, function (e, node) {
-                _this.fire(Events_1.Events.TREE_NODE_SELECTED, node.data.path);
+            $.subscribe(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, function (e, node) {
+                _this.fire(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, node.data.path);
                 _this.treeNodeSelected(node);
             });
             $.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
