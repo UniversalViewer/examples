@@ -19165,6 +19165,7 @@ define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", ".
             // }
         };
         ThumbsView.prototype.isPageModeEnabled = function () {
+            // todo: move getMode to BaseExtension. call it getIndexingMode which can be Label or Index
             if (typeof this.extension.getMode === "function") {
                 return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode_1.Mode.page.toString();
             }
@@ -19984,7 +19985,6 @@ define('extensions/uv-av-extension/Events',["require", "exports"], function (req
         }
         Events.namespace = 'avExtension.';
         Events.RANGE_CHANGED = Events.namespace + 'rangeChanged';
-        Events.TREE_NODE_SELECTED = Events.namespace + 'treeNodeSelected';
         return Events;
     }());
     exports.Events = Events;
@@ -20642,14 +20642,26 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
     var AVCenterPanel = /** @class */ (function (_super) {
         __extends(AVCenterPanel, _super);
         function AVCenterPanel($element) {
-            return _super.call(this, $element) || this;
+            var _this = _super.call(this, $element) || this;
+            _this._resourceOpened = false;
+            return _this;
         }
         AVCenterPanel.prototype.create = function () {
+            var _this = this;
             this.setConfig('avCenterPanel');
             _super.prototype.create.call(this);
             var that = this;
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
-                that.openMedia(resources);
+                if (!_this._resourceOpened) {
+                    that.openMedia(resources);
+                    _this._resourceOpened = true;
+                }
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                var canvas = _this.extension.helper.getCanvasByIndex(canvasIndex);
+                if (canvas) {
+                    _this.avcomponent.showCanvas(canvas.id);
+                }
             });
             $.subscribe(Events_1.Events.RANGE_CHANGED, function (e, range) {
                 that.viewRange(range);
@@ -20672,23 +20684,19 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             });
         };
         AVCenterPanel.prototype.viewRange = function (range) {
-            var r = range;
-            console.log(r);
-            // const canvasId = node.data.canvases[0];
-            // const canvas = helper.getCanvasById(canvasId);
-            // if (canvas) {
-            //     showCanvas(canvas.id);
-            //     const canvasInstance = getCanvasInstanceByID(canvasId);
-            //     const temporal = /t=([^&]+)/g.exec(canvasId);
-            //     if (temporal && temporal[1]) {
-            //         const rangeTiming = temporal[1].split(',');
-            //         canvasInstance.setCurrentTime(rangeTiming[0]);
-            //         canvasInstance.playCanvas();
-            //     }
-            //     //logMessage('SELECT RANGE: '+ node.label);
-            // } else {
-            //     //logMessage('ERROR: Could not find canvas for range '+ node.label);
-            // }
+            if (!range.canvases || !range.canvases.length)
+                return;
+            var canvasId = range.canvases[0];
+            var canvas = this.extension.helper.getCanvasById(canvasId);
+            if (canvas) {
+                this.avcomponent.playCanvas(canvasId);
+            }
+        };
+        AVCenterPanel.prototype.viewCanvas = function (canvasIndex) {
+            var canvas = this.extension.helper.getCanvasByIndex(canvasIndex);
+            if (canvas) {
+                this.avcomponent.showCanvas(canvas.id);
+            }
         };
         AVCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -21177,9 +21185,12 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(Events_1.Events.TREE_NODE_SELECTED, function (e, node) {
-                _this.fire(Events_1.Events.TREE_NODE_SELECTED, node.data.path);
+            $.subscribe(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, function (e, node) {
+                _this.fire(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, node.data.path);
                 _this.treeNodeSelected(node);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
+                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
             });
         };
         Extension.prototype.createModules = function () {
@@ -21231,6 +21242,14 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
                 this.footerPanel.init();
             }
         };
+        Extension.prototype.isLeftPanelEnabled = function () {
+            var isEnabled = _super.prototype.isLeftPanelEnabled.call(this);
+            var tree = this.helper.getTree();
+            if (tree && tree.nodes.length) {
+                isEnabled = true;
+            }
+            return isEnabled;
+        };
         Extension.prototype.update = function () {
             _super.prototype.update.call(this);
         };
@@ -21261,6 +21280,16 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             if (!range)
                 return;
             $.publish(Events_1.Events.RANGE_CHANGED, [range]);
+            if (range.canvases && range.canvases.length) {
+                var canvasId = range.canvases[0];
+                var canvas = this.helper.getCanvasById(canvasId);
+                if (canvas) {
+                    var canvasIndex = canvas.index;
+                    if (canvasIndex !== this.helper.canvasIndex) {
+                        $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
+                    }
+                }
+            }
         };
         return Extension;
     }(BaseExtension_1.BaseExtension));
