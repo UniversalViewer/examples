@@ -22523,11 +22523,11 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
             _super.prototype.create.call(this);
             this.$spacer = $('<div class="spacer"></div>');
             this.$options.prepend(this.$spacer);
-            this.$rotateButton = $('<a class="rotate" title="' + this.content.rotateRight + '" tabindex="0">' + this.content.rotateRight + '</a>');
+            this.$rotateButton = $("\n            <button class=\"btn imageBtn rotate\" title=\"" + this.content.rotateRight + "\">\n                <i class=\"uv-icon-rotate\" aria-hidden=\"true\"></i>\n            </button>\n        ");
             this.$options.prepend(this.$rotateButton);
-            this.$zoomOutButton = $('<a class="zoomOut" title="' + this.content.zoomOut + '" tabindex="0">' + this.content.zoomOut + '</a>');
+            this.$zoomOutButton = $("\n            <button class=\"btn imageBtn zoomOut\" title=\"" + this.content.zoomOut + "\">\n                <i class=\"uv-icon-zoom-out\" aria-hidden=\"true\"></i>\n            </button>\n        ");
             this.$options.prepend(this.$zoomOutButton);
-            this.$zoomInButton = $('<a class="zoomIn" title="' + this.content.zoomIn + '" tabindex="0">' + this.content.zoomIn + '</a>');
+            this.$zoomInButton = $("\n            <button class=\"btn imageBtn zoomIn\" title=\"" + this.content.zoomOut + "\">\n                <i class=\"uv-icon-zoom-in\" aria-hidden=\"true\"></i>\n            </button>\n        ");
             this.$options.prepend(this.$zoomInButton);
             this.$zoomInButton.onPressed(function () {
                 $.publish(Events_1.Events.ZOOM_IN);
