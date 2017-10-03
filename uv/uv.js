@@ -17699,6 +17699,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.data.canvasIndex = canvasIndex;
+                _this.lastCanvasIndex = _this.helper.canvasIndex;
+                _this.helper.canvasIndex = canvasIndex;
                 _this.fire(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.data.canvasIndex);
             });
             $.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
@@ -18343,10 +18345,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.viewCanvas = function (canvasIndex) {
             if (this.helper.isCanvasIndexOutOfRange(canvasIndex)) {
                 this.showMessage(this.data.config.content.canvasIndexOutOfRange);
-                canvasIndex = 0;
+                return;
             }
-            this.lastCanvasIndex = this.helper.canvasIndex;
-            this.helper.canvasIndex = canvasIndex;
             $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
         };
         BaseExtension.prototype.showMessage = function (message, acceptCallback, buttonText, allowClose) {
