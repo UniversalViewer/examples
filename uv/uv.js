@@ -18112,15 +18112,18 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             }
         };
         BaseExtension.prototype._updateMetric = function () {
-            for (var i = 0; i < this.metrics.length; i++) {
-                var metric = this.metrics[i];
-                if (this.width() > metric.minWidth && this.width() <= metric.maxWidth) {
-                    if (this.metric !== metric.type) {
-                        this.metric = metric.type;
-                        $.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
+            var _this = this;
+            setTimeout(function () {
+                for (var i = 0; i < _this.metrics.length; i++) {
+                    var metric = _this.metrics[i];
+                    if (_this.width() > metric.minWidth && _this.width() <= metric.maxWidth) {
+                        if (_this.metric !== metric.type) {
+                            _this.metric = metric.type;
+                            $.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
+                        }
                     }
                 }
-            }
+            }, 1);
         };
         BaseExtension.prototype.resize = function () {
             this._updateMetric();
