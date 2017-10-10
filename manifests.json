@@ -813,7 +813,7 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "AV",
-      "visible": true,
+      "visible": false,
       "manifests": [
         {
           "@id": "https://viewdir.github.io/iiif-av-component/examples/data/bl/01_gapless_audio.json",
