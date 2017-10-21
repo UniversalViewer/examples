@@ -16,16 +16,19 @@
     "url": "https://github.com/universalviewer/universalviewer/issues"
   },
   "scripts": {
+    "postinstall": "opencollective postinstall"
   },
   "homepage": "https://github.com/universalviewer/universalviewer",
   "devDependencies": {
-    "async": "^0.9.0",
-    "base-component": "viewdir/base-component#v1.0.8",
+    "async": "^0.9.0"
+  },
+  "dependencies": {
+    "base-component": "iiif-commons/base-component#v1.0.8",
     "chalk": "^0.5.1",
     "cucumber": "^0.4.5",
     "eventemitter2": "^1.0.3",
     "exjs": "BSick7/exjs",
-    "extensions": "edsilv/extensions",
+    "extensions": "edsilv/extensions#v0.1.11",
     "glob": "^4.3.5",
     "glob-array": "^0.1.2",
     "grunt": "^0.4.5",
@@ -41,24 +44,30 @@
     "grunt-text-replace": "~0.3.7",
     "grunt-typescript": "^0.8.0",
     "hooker": "^0.2.3",
-    "http-status-codes": "edsilv/http-status-codes",
-    "iiif-gallery-component": "viewdir/iiif-gallery-component#v1.0.6",
-    "iiif-metadata-component": "viewdir/iiif-metadata-component#v1.0.10",
-    "iiif-tree-component": "viewdir/iiif-tree-component#v1.0.7",
-    "jquery-plugins": "edsilv/jquery-plugins",
-    "jquery-tiny-pubsub": "edsilv/jquery-tiny-pubsub",
-    "json-schema-generator": "krg7880/json-schema-generator",
-    "key-codes": "edsilv/key-codes",
+    "http-status-codes": "edsilv/http-status-codes#v0.0.5",
+    "iiif-gallery-component": "iiif-commons/iiif-gallery-component#v1.0.6",
+    "iiif-metadata-component": "iiif-commons/iiif-metadata-component#v1.0.10",
+    "iiif-tree-component": "iiif-commons/iiif-tree-component#v1.0.7",
+    "jquery-plugins": "edsilv/jquery-plugins#v0.0.26",
+    "jquery-tiny-pubsub": "edsilv/jquery-tiny-pubsub#v0.7.2",
+    "json-schema-generator": "edsilv/json-schema-generator",
+    "key-codes": "edsilv/key-codes#v0.0.6",
     "less": "^2.4.0",
     "lodash": "^3.1.0",
-    "manifold": "viewdir/manifold#v1.1.12",
+    "manifold": "iiif-commons/manifold#edgefix",
     "ncp": "^2.0.0",
+    "opencollective": "^1.0.3",
     "openseadragon": "^2.2.1",
     "protractor": "1.3.1",
     "requirejs": "2.2.0",
     "three.js": "^0.73.0",
     "units": "edsilv/Units",
-    "utils": "edsilv/utils",
+    "utils": "edsilv/utils#v0.0.38",
     "virtex3d": "^0.2.6"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/universalviewer",
+    "logo": "https://opencollective.com/opencollective/logo.txt"
   }
 }
