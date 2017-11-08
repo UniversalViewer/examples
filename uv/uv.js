@@ -18965,6 +18965,9 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
             this.$settingsButton.onPressed(function () {
                 $.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
+            if (!Utils.Bools.getBool(this.options.centerOptionsEnabled, true)) {
+                this.$centerOptions.hide();
+            }
             this.updateLocaleToggle();
             this.updateSettingsButton();
         };
