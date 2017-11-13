@@ -6543,6 +6543,7 @@ var Manifesto;
 
 
 
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"http":30,"https":8,"url":35}],2:[function(require,module,exports){
 'use strict'
@@ -14349,21 +14350,67 @@ var Manifold;
 var Manifold;
 (function (Manifold) {
     var ExternalResource = /** @class */ (function () {
-        function ExternalResource(resource, dataUriFunc, index, authApiVersion) {
-            if (authApiVersion === void 0) { authApiVersion = 0.9; }
+        function ExternalResource(canvas, options) {
+            // todo:
+            // get the height and width of the resource if available
+            // and set on externalresource
             this.authHoldingPage = null;
             this.clickThroughService = null;
             this.externalService = null;
             this.isResponseHandled = false;
+            this.kioskService = null;
             this.loginService = null;
             this.logoutService = null;
+            this.restrictedService = null;
             this.tokenService = null;
-            resource.externalResource = this;
-            this.dataUri = dataUriFunc(resource);
-            this.index = index;
-            this.authAPIVersion = authApiVersion;
-            this._parseAuthServices(resource);
+            canvas.externalResource = this;
+            this.dataUri = this._getDataUri(canvas);
+            this.index = canvas.index;
+            this.authAPIVersion = options.authApiVersion;
+            this._parseAuthServices(canvas);
         }
+        ExternalResource.prototype._getDataUri = function (canvas) {
+            var content = canvas.getContent();
+            var images = canvas.getImages();
+            if (content && content.length) {
+                var annotation = content[0];
+                var annotationBody = annotation.getBody();
+                if (annotationBody.length) {
+                    return annotationBody[0].id;
+                }
+                return null;
+            }
+            else if (images && images.length) {
+                var infoUri = null;
+                var firstImage = images[0];
+                var resource = firstImage.getResource();
+                var services = resource.getServices();
+                if (services.length) {
+                    for (var i = 0; i < services.length; i++) {
+                        var service = services[i];
+                        var id = service.id;
+                        if (!id.endsWith('/')) {
+                            id += '/';
+                        }
+                        if (manifesto.Utils.isImageProfile(service.getProfile())) {
+                            infoUri = id + 'info.json';
+                        }
+                    }
+                    return infoUri;
+                }
+                // no image services. return the image id
+                return resource.id;
+            }
+            else {
+                // Legacy IxIF
+                var service = canvas.getService(manifesto.ServiceProfile.ixif());
+                if (service) {
+                    return service.getInfoUri();
+                }
+                // return the canvas id.
+                return canvas.id;
+            }
+        };
         ExternalResource.prototype._parseAuthServices = function (resource) {
             if (this.authAPIVersion === 0.9) {
                 this.clickThroughService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.clickThrough().toString());
@@ -14412,12 +14459,19 @@ var Manifold;
             return false;
         };
         ExternalResource.prototype.hasServiceDescriptor = function () {
-            return this.dataUri.endsWith('info.json');
+            if (this.dataUri) {
+                return this.dataUri.endsWith('info.json');
+            }
+            return false;
         };
         ExternalResource.prototype.getData = function (accessToken) {
+            var _this = this;
             var that = this;
             that.data = {};
             return new Promise(function (resolve, reject) {
+                if (!_this.dataUri) {
+                    reject('There is no dataUri to fetch');
+                }
                 // check if dataUri ends with info.json
                 // if not issue a HEAD request.
                 var type = 'GET';
@@ -14460,7 +14514,7 @@ var Manifold;
                             uri = uri.substr(0, uri.lastIndexOf('/'));
                         }
                         var dataUri = that.dataUri;
-                        if (dataUri.endsWith('/info.json')) {
+                        if (dataUri && dataUri.endsWith('/info.json')) {
                             dataUri = dataUri.substr(0, dataUri.lastIndexOf('/'));
                         }
                         // if the request was redirected to a degraded version and there's a login service to get the full quality version
@@ -14589,48 +14643,6 @@ var Manifold;
         };
         Helper.prototype.getFirstPageIndex = function () {
             return 0;
-        };
-        Helper.prototype.getInfoUri = function (canvas) {
-            var content = canvas.getContent();
-            var images = canvas.getImages();
-            if (content && content.length) {
-                var annotation = content[0];
-                var annotationBody = annotation.getBody();
-                if (annotationBody.length) {
-                    return annotationBody[0].id;
-                }
-                return null;
-            }
-            else if (images && images.length) {
-                var infoUri = null;
-                var firstImage = images[0];
-                var resource = firstImage.getResource();
-                var services = resource.getServices();
-                if (services.length) {
-                    for (var i = 0; i < services.length; i++) {
-                        var service = services[i];
-                        var id = service.id;
-                        if (!id.endsWith('/')) {
-                            id += '/';
-                        }
-                        if (manifesto.Utils.isImageProfile(service.getProfile())) {
-                            infoUri = id + 'info.json';
-                        }
-                    }
-                    return infoUri;
-                }
-                // no image services. return the image id
-                return resource.id;
-            }
-            else {
-                // IxIF
-                var service = canvas.getService(manifesto.ServiceProfile.ixif());
-                if (service) {
-                    return service.getInfoUri();
-                }
-                // return the canvas id.
-                return canvas.id;
-            }
         };
         Helper.prototype.getLabel = function () {
             var label = this.manifest.getLabel();
@@ -18289,7 +18301,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 var canvas = _this.helper.getCanvasByIndex(index);
                 var r;
                 if (!canvas.externalResource) {
-                    r = new Manifold.ExternalResource(canvas, _this.helper.getInfoUri, index, _this.data.config.options.authAPIVersion);
+                    r = new Manifold.ExternalResource(canvas, {
+                        authApiVersion: _this.data.config.options.authAPIVersion
+                    });
                 }
                 else {
                     r = canvas.externalResource;
@@ -24425,8 +24439,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                                 url: resource.id,
                                 buildPyramid: false
                             },
-                            x: resource.x,
-                            y: resource.y,
                             width: resource.width,
                             success: function (item) {
                                 _this.items.push(item);
