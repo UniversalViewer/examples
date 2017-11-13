@@ -3518,7 +3518,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.1.12 https://github.com/viewdir/manifesto
+// manifesto v2.1.12 https://github.com/iiif-commons/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -4806,13 +4806,21 @@ var Manifesto;
             return this._manifests = this.members.en().where(function (m) { return m.isManifest(); }).toArray();
         };
         Collection.prototype.getCollectionByIndex = function (collectionIndex) {
-            var collection = this.getCollections()[collectionIndex];
+            var collections = this.getCollections();
+            if (!collections[collectionIndex]) {
+                throw new Error("Collection index is outside range of array");
+            }
+            var collection = collections[collectionIndex];
             collection.options.index = collectionIndex;
             // id for collection MUST be dereferenceable
             return collection.load();
         };
         Collection.prototype.getManifestByIndex = function (manifestIndex) {
-            var manifest = this.getManifests()[manifestIndex];
+            var manifests = this.getManifests();
+            if (!manifests[manifestIndex]) {
+                throw new Error("Manifest index is outside range of array");
+            }
+            var manifest = manifests[manifestIndex];
             manifest.options.index = manifestIndex;
             return manifest.load();
         };
@@ -6513,6 +6521,8 @@ var Manifesto;
     }(Manifesto.ManifestResource));
     Manifesto.AnnotationPage = AnnotationPage;
 })(Manifesto || (Manifesto = {}));
+
+
 
 
 
@@ -14596,17 +14606,21 @@ var Manifold;
                 var firstImage = images[0];
                 var resource = firstImage.getResource();
                 var services = resource.getServices();
-                for (var i = 0; i < services.length; i++) {
-                    var service = services[i];
-                    var id = service.id;
-                    if (!id.endsWith('/')) {
-                        id += '/';
+                if (services.length) {
+                    for (var i = 0; i < services.length; i++) {
+                        var service = services[i];
+                        var id = service.id;
+                        if (!id.endsWith('/')) {
+                            id += '/';
+                        }
+                        if (manifesto.Utils.isImageProfile(service.getProfile())) {
+                            infoUri = id + 'info.json';
+                        }
                     }
-                    if (manifesto.Utils.isImageProfile(service.getProfile())) {
-                        infoUri = id + 'info.json';
-                    }
+                    return infoUri;
                 }
-                return infoUri;
+                // no image services. return the image id
+                return resource.id;
             }
             else {
                 // IxIF
@@ -18306,7 +18320,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                     };
                     Auth1_1.Auth1.loadExternalResources(resourcesToLoad, storageStrategy, options).then(function (r) {
                         _this.resources = r.map(function (resource) {
+                            // copy useful properties over to the data object to be opened in center panel's openMedia
+                            // this is the info.json if there is one, which can be opened natively by openseadragon.
                             resource.data.index = resource.index;
+                            if (!resource.data['@id'] && !resource.data.id) {
+                                resource.data.id = resource.dataUri;
+                            }
                             return Utils.Objects.toPlainObject(resource.data);
                         });
                         resolve(_this.resources);
@@ -24367,7 +24386,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var _this = this;
             this.$spinner.show();
             this.items = [];
-            // todo: this should be a more specific Manifold.IImageResource
             this.extension.getExternalResources(resources).then(function (resources) {
                 // OSD can open an array info.json objects
                 //this.viewer.open(resources);
@@ -24375,19 +24393,50 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 resources = _this.getPagePositions(resources);
                 for (var i = 0; i < resources.length; i++) {
                     var resource = resources[i];
-                    _this.viewer.addTiledImage({
-                        tileSource: resource,
-                        x: resource.x,
-                        y: resource.y,
-                        width: resource.width,
-                        success: function (item) {
-                            _this.items.push(item);
-                            if (_this.items.length === resources.length) {
-                                _this.openPagesHandler();
-                            }
-                            _this.resize();
+                    if (resource.profile) {
+                        // todo: check if image profile Manifesto.Utils.isImageProfile(resource.profile)
+                        // need to check if array first
+                        /*
+    
+                        if (Array.isArray(profile)){
+                            profile = profile[0];
                         }
-                    });
+    
+                        */
+                        _this.viewer.addTiledImage({
+                            tileSource: resource,
+                            x: resource.x,
+                            y: resource.y,
+                            width: resource.width,
+                            success: function (item) {
+                                _this.items.push(item);
+                                if (_this.items.length === resources.length) {
+                                    _this.openPagesHandler();
+                                }
+                                _this.resize();
+                            }
+                        });
+                    }
+                    else {
+                        // load a static image (no tiling)
+                        _this.viewer.addTiledImage({
+                            tileSource: {
+                                type: 'image',
+                                url: resource.id,
+                                buildPyramid: false
+                            },
+                            x: resource.x,
+                            y: resource.y,
+                            width: resource.width,
+                            success: function (item) {
+                                _this.items.push(item);
+                                if (_this.items.length === resources.length) {
+                                    _this.openPagesHandler();
+                                }
+                                _this.resize();
+                            }
+                        });
+                    }
                 }
             });
         };

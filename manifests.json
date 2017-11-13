@@ -805,7 +805,19 @@
           "@type": "sc:Manifest",
           "label": "Multiple Auth1 Degraded",
           "visible": true
-        } 
+        },
+        {
+          "@id": "http://iiif.io/api/presentation/2.0/example/fixtures/1/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "No image service",
+          "visible": true
+        },
+        {
+          "@id": "https://loc.gov/item/03032405/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "No image service 2",
+          "visible": true
+        }
       ]
     },
     {
