@@ -3518,7 +3518,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.1.12 https://github.com/iiif-commons/manifesto
+// manifesto v2.1.13 https://github.com/iiif-commons/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -4330,11 +4330,25 @@ var Manifesto;
                         id = service.id;
                         quality = Manifesto.Utils.getImageQuality(service.getProfile());
                     }
+                    else if (width === resource.getWidth()) {
+                        // if the passed width is the same as the resource width
+                        // i.e. not looking for a thumbnail
+                        // return the full size image.
+                        // used for download options when loading static images.
+                        return resource.id;
+                    }
                 }
-                // todo: this is not compatible and should be moved to getThumbUri
+                // todo: should this be moved to getThumbUri?
                 if (!id) {
-                    return "undefined" == typeof this.__jsonld.thumbnail
-                        ? null : this.__jsonld.thumbnail;
+                    var thumbnail = this.getProperty('thumbnail');
+                    if (thumbnail) {
+                        if (typeof (thumbnail) === 'string') {
+                            return thumbnail;
+                        }
+                        else {
+                            return thumbnail['@id'];
+                        }
+                    }
                 }
             }
             size = width + ',';
@@ -14131,7 +14145,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// manifold v1.2.9 https://github.com/iiif-commons/manifold#readme
+// manifold v1.2.10 https://github.com/iiif-commons/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -14351,9 +14365,6 @@ var Manifold;
 (function (Manifold) {
     var ExternalResource = /** @class */ (function () {
         function ExternalResource(canvas, options) {
-            // todo:
-            // get the height and width of the resource if available
-            // and set on externalresource
             this.authHoldingPage = null;
             this.clickThroughService = null;
             this.externalService = null;
@@ -14368,6 +14379,8 @@ var Manifold;
             this.index = canvas.index;
             this.authAPIVersion = options.authApiVersion;
             this._parseAuthServices(canvas);
+            // get the height and width of the image resource if available
+            this._parseDimensions(canvas);
         }
         ExternalResource.prototype._getDataUri = function (canvas) {
             var content = canvas.getContent();
@@ -14450,6 +14463,15 @@ var Manifold;
                     this.logoutService = this.kioskService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.kioskService.getService(manifesto.ServiceProfile.auth1Token().toString());
                 }
+            }
+        };
+        ExternalResource.prototype._parseDimensions = function (canvas) {
+            var images = canvas.getImages();
+            if (images && images.length) {
+                var firstImage = images[0];
+                var resource = firstImage.getResource();
+                this.width = resource.getWidth();
+                this.height = resource.getHeight();
             }
         };
         ExternalResource.prototype.isAccessControlled = function () {
@@ -18292,7 +18314,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             var range = this.helper.getCanvasRange(this.helper.getCurrentCanvas());
             return range;
         };
-        // todo: move to manifold
+        // todo: move to manifold?
         BaseExtension.prototype.getExternalResources = function (resources) {
             var _this = this;
             var indices = this.getPagedIndices();
@@ -18334,13 +18356,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                     };
                     Auth1_1.Auth1.loadExternalResources(resourcesToLoad, storageStrategy, options).then(function (r) {
                         _this.resources = r.map(function (resource) {
-                            // copy useful properties over to the data object to be opened in center panel's openMedia
-                            // this is the info.json if there is one, which can be opened natively by openseadragon.
-                            resource.data.index = resource.index;
-                            if (!resource.data['@id'] && !resource.data.id) {
-                                resource.data.id = resource.dataUri;
-                            }
-                            return Utils.Objects.toPlainObject(resource.data);
+                            return _this._prepareResourceData(resource);
                         });
                         resolve(_this.resources);
                     });
@@ -18350,13 +18366,25 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 return new Promise(function (resolve) {
                     Auth09_1.Auth09.loadExternalResources(resourcesToLoad, storageStrategy).then(function (r) {
                         _this.resources = r.map(function (resource) {
-                            resource.data.index = resource.index;
-                            return Utils.Objects.toPlainObject(resource.data);
+                            return _this._prepareResourceData(resource);
                         });
                         resolve(_this.resources);
                     });
                 });
             }
+        };
+        // copy useful properties over to the data object to be opened in center panel's openMedia method
+        // this is the info.json if there is one, which can be opened natively by openseadragon.
+        BaseExtension.prototype._prepareResourceData = function (resource) {
+            resource.data.hasServiceDescriptor = resource.hasServiceDescriptor();
+            // if the data isn't an info.json, give it the necessary viewing properties
+            if (!resource.hasServiceDescriptor()) {
+                resource.data.id = resource.dataUri;
+                resource.data.width = resource.width;
+                resource.data.height = resource.height;
+            }
+            resource.data.index = resource.index;
+            return Utils.Objects.toPlainObject(resource.data);
         };
         BaseExtension.prototype.getMediaFormats = function (canvas) {
             var annotations = canvas.getContent();
@@ -22409,10 +22437,12 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             if (size) {
                 var width = size.width;
                 var uri = canvas.getCanonicalImageUri(width);
-                var uri_parts = uri.split('/');
-                var rotation = this.extension.getViewerRotation();
-                uri_parts[uri_parts.length - 2] = String(rotation);
-                uri = uri_parts.join('/');
+                if (canvas.externalResource && canvas.externalResource.hasServiceDescriptor()) {
+                    var uri_parts = uri.split('/');
+                    var rotation = this.extension.getViewerRotation();
+                    uri_parts[uri_parts.length - 2] = String(rotation);
+                    uri = uri_parts.join('/');
+                }
                 return uri;
             }
             return '';
@@ -22452,6 +22482,19 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             if (!this.extension.resources) {
                 return false;
             }
+            var canvas = this.extension.helper.getCurrentCanvas();
+            // if the external resource doesn't have a service descriptor
+            // only allow wholeImageHighRes
+            if (!canvas.externalResource.hasServiceDescriptor()) {
+                if (option === DownloadOption_1.DownloadOption.wholeImageHighRes) {
+                    // if in one-up mode, or in two-up mode with a single page being shown
+                    if (!this.extension.isPagingSettingEnabled() ||
+                        this.extension.isPagingSettingEnabled() && this.extension.resources && this.extension.resources.length === 1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
             switch (option) {
                 case DownloadOption_1.DownloadOption.currentViewAsJpg:
                 case DownloadOption_1.DownloadOption.dynamicCanvasRenderings:
@@ -22460,7 +22503,6 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                     // if in one-up mode, or in two-up mode with a single page being shown
                     if (!this.extension.isPagingSettingEnabled() ||
                         this.extension.isPagingSettingEnabled() && this.extension.resources && this.extension.resources.length === 1) {
-                        var canvas = this.extension.helper.getCurrentCanvas();
                         var maxDimensions = canvas.getMaxDimensions();
                         if (maxDimensions) {
                             if (maxDimensions.width <= this.options.maxImageWidth) {
@@ -22480,9 +22522,10 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                     return false;
                 case DownloadOption_1.DownloadOption.wholeImageLowResAsJpg:
                     // hide low-res option if hi-res width is smaller than constraint
-                    var size = this.getCanvasComputedDimensions(this.extension.helper.getCurrentCanvas());
-                    if (!size)
+                    var size = this.getCanvasComputedDimensions(canvas);
+                    if (!size) {
                         return false;
+                    }
                     return (!this.extension.isPagingSettingEnabled() && (size.width > this.options.confinedImageSize));
                 case DownloadOption_1.DownloadOption.selection:
                     return this.options.selectionEnabled;
@@ -24401,54 +24444,34 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$spinner.show();
             this.items = [];
             this.extension.getExternalResources(resources).then(function (resources) {
-                // OSD can open an array info.json objects
-                //this.viewer.open(resources);
                 _this.viewer.close();
                 resources = _this.getPagePositions(resources);
                 for (var i = 0; i < resources.length; i++) {
-                    var resource = resources[i];
-                    if (resource.profile) {
-                        // todo: check if image profile Manifesto.Utils.isImageProfile(resource.profile)
-                        // need to check if array first
-                        /*
-    
-                        if (Array.isArray(profile)){
-                            profile = profile[0];
-                        }
-    
-                        */
-                        _this.viewer.addTiledImage({
-                            tileSource: resource,
-                            x: resource.x,
-                            y: resource.y,
-                            width: resource.width,
-                            success: function (item) {
-                                _this.items.push(item);
-                                if (_this.items.length === resources.length) {
-                                    _this.openPagesHandler();
-                                }
-                                _this.resize();
-                            }
-                        });
+                    var data = resources[i];
+                    var tileSource = void 0;
+                    if (data.hasServiceDescriptor) {
+                        tileSource = data;
                     }
                     else {
-                        // load a static image (no tiling)
-                        _this.viewer.addTiledImage({
-                            tileSource: {
-                                type: 'image',
-                                url: resource.id,
-                                buildPyramid: false
-                            },
-                            width: resource.width,
-                            success: function (item) {
-                                _this.items.push(item);
-                                if (_this.items.length === resources.length) {
-                                    _this.openPagesHandler();
-                                }
-                                _this.resize();
-                            }
-                        });
+                        tileSource = {
+                            type: 'image',
+                            url: data.id,
+                            buildPyramid: false
+                        };
                     }
+                    _this.viewer.addTiledImage({
+                        tileSource: tileSource,
+                        x: data.x,
+                        y: data.y,
+                        width: data.width,
+                        success: function (item) {
+                            _this.items.push(item);
+                            if (_this.items.length === resources.length) {
+                                _this.openPagesHandler();
+                            }
+                            _this.resize();
+                        }
+                    });
                 }
             });
         };
