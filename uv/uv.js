@@ -16343,7 +16343,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                             if (resource.clickThroughService) {
                                 var win_1 = window.open(resource.clickThroughService.id);
                                 var pollTimer_1 = window.setInterval(function () {
-                                    if (win_1.closed) {
+                                    if (win_1 && win_1.closed) {
                                         window.clearInterval(pollTimer_1);
                                         $.publish(BaseEvents_1.BaseEvents.CLICKTHROUGH);
                                         resolve();
@@ -16378,7 +16378,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                             if (resource.loginService) {
                                 var win_2 = window.open(resource.loginService.id + "?t=" + new Date().getTime());
                                 var pollTimer_2 = window.setInterval(function () {
-                                    if (win_2.closed) {
+                                    if (win_2 && win_2.closed) {
                                         window.clearInterval(pollTimer_2);
                                         $.publish(BaseEvents_1.BaseEvents.LOGIN);
                                         resolve();
@@ -16390,7 +16390,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                             if (resource.logoutService) {
                                 var win_3 = window.open(resource.logoutService.id + "?t=" + new Date().getTime());
                                 var pollTimer_3 = window.setInterval(function () {
-                                    if (win_3.closed) {
+                                    if (win_3 && win_3.closed) {
                                         window.clearInterval(pollTimer_3);
                                         $.publish(BaseEvents_1.BaseEvents.LOGOUT);
                                         resolve();
@@ -20860,14 +20860,6 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                     });
                 }
                 else {
-                    // Try to find an MP3, since this is most likely to work:
-                    var preferredSource = 0;
-                    for (var i in sources) {
-                        if (sources[i].type === "audio/mp3") {
-                            preferredSource = i;
-                            break;
-                        }
-                    }
                     _this.$media = $('<audio controls="controls" preload="none"></audio>');
                     _this.$container.append(_this.$media);
                     _this.player = new MediaElementPlayer($('audio')[0], {
@@ -25579,14 +25571,12 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             }
         };
         Extension.prototype.nextSearchResult = function () {
-            var foundResult;
             if (!this.annotations)
                 return;
             // get the first result with an index greater than the current index.
             for (var i = 0; i < this.annotations.length; i++) {
                 var result = this.annotations[i];
                 if (result && result.canvasIndex >= this.getNextPageIndex()) {
-                    foundResult = result;
                     $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [result.canvasIndex]);
                     break;
                 }
