@@ -22634,15 +22634,14 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AutoComplete = /** @class */ (function () {
+        //private _navigationKeyDownCodes: number[] = [KeyCodes.KeyDown.Backspace, KeyCodes.KeyDown.Spacebar, KeyCodes.KeyDown.Tab, KeyCodes.KeyDown.LeftArrow, KeyCodes.KeyDown.RightArrow, KeyCodes.KeyDown.Delete];
+        //private _validKeyPressCodes: number[] = [KeyCodes.KeyPress.GraveAccent, KeyCodes.KeyPress.DoubleQuote];
+        //private _lastKeyDownWasNavigation: boolean = false;
         function AutoComplete(element, autoCompleteFunc, parseResultsFunc, onSelect, delay, minChars, positionAbove) {
             if (delay === void 0) { delay = 300; }
             if (minChars === void 0) { minChars = 2; }
             if (positionAbove === void 0) { positionAbove = false; }
             var _this = this;
-            // valid keys that are not 
-            this._validKeyDownCodes = [KeyCodes.KeyDown.Backspace, KeyCodes.KeyDown.Spacebar, KeyCodes.KeyDown.Tab, KeyCodes.KeyDown.LeftArrow, KeyCodes.KeyDown.RightArrow, KeyCodes.KeyDown.Delete];
-            this._validKeyPressCodes = [KeyCodes.KeyPress.GraveAccent, KeyCodes.KeyPress.DoubleQuote];
-            this._lastKeyDownWasValid = false;
             this._$element = element;
             this._autoCompleteFunc = autoCompleteFunc;
             this._delay = delay;
@@ -22669,10 +22668,9 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
                 };
             })();
             var that = this;
-            // validate
             this._$element.on("keydown", function (e) {
                 var originalEvent = e.originalEvent;
-                that._lastKeyDownWasValid = that._isValidKeyDown(originalEvent);
+                //that._lastKeyDownWasNavigation = that._isNavigationKeyDown(originalEvent);
                 var charCode = Utils.Keyboard.getCharCode(originalEvent);
                 var cancelEvent = false;
                 if (charCode === KeyCodes.KeyDown.LeftArrow) {
@@ -22688,14 +22686,14 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
                 }
             });
             // prevent invalid characters being entered
-            this._$element.on("keypress", function (e) {
-                var isValidKeyPress = that._isValidKeyPress(e.originalEvent);
-                if (!(that._lastKeyDownWasValid || isValidKeyPress)) {
-                    e.preventDefault();
-                    return false;
-                }
-                return true;
-            });
+            // this._$element.on("keypress", function(e: JQueryEventObject) {
+            //     const isValidKeyPress: boolean = that._isValidKeyPress(<KeyboardEvent>e.originalEvent);
+            //     if (!(that._lastKeyDownWasNavigation || isValidKeyPress)) {
+            //         e.preventDefault();
+            //         return false;
+            //     }
+            //     return true;
+            // });
             // auto complete
             this._$element.on("keyup", function (e) {
                 // if pressing enter without a list item selected
@@ -22743,16 +22741,16 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
             });
             this._hideResults();
         }
-        AutoComplete.prototype._isValidKeyDown = function (e) {
-            var isValid = this._validKeyDownCodes.includes(Utils.Keyboard.getCharCode(e));
-            return isValid;
-        };
-        AutoComplete.prototype._isValidKeyPress = function (e) {
-            var charCode = Utils.Keyboard.getCharCode(e);
-            var key = String.fromCharCode(charCode);
-            var isValid = key.isAlphanumeric() || this._validKeyPressCodes.includes(charCode);
-            return isValid;
-        };
+        // private _isNavigationKeyDown(e: KeyboardEvent): boolean {
+        //     const isNavigationKeyDown: boolean = this._navigationKeyDownCodes.includes(Utils.Keyboard.getCharCode(e));
+        //     return isNavigationKeyDown;
+        // }
+        // private _isValidKeyPress(e: KeyboardEvent): boolean {
+        //     const charCode: number = Utils.Keyboard.getCharCode(e);
+        //     const key: string = String.fromCharCode(charCode);
+        //     const isValid: boolean = key.isAlphanumeric() || this._validKeyPressCodes.includes(charCode);
+        //     return isValid;
+        // }
         AutoComplete.prototype._getTerms = function () {
             return this._$element.val().trim();
         };
