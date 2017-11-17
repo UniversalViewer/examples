@@ -14145,7 +14145,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// manifold v1.2.10 https://github.com/iiif-commons/manifold#readme
+// manifold v1.2.11 https://github.com/iiif-commons/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -24139,6 +24139,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             _super.prototype.create.call(this);
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.prepend(this.$viewer);
+            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (e, args) {
+                _this.overlayAnnotations();
+                _this.zoomToInitialAnnotation();
+            });
             $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
                 _this.viewer.gestureSettingsMouse.clickToZoom = args.clickToZoomEnabled;
             });
@@ -24582,17 +24586,33 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 }
             }
             this.setNavigatorVisible();
-            //setTimeout(() => {
             this.overlayAnnotations();
             this.updateBounds();
+            this.zoomToInitialAnnotation();
+            this.isFirstLoad = false;
+        };
+        SeadragonCenterPanel.prototype.zoomToInitialAnnotation = function () {
             var annotationRect = this.getInitialAnnotationRect();
             this.extension.previousAnnotationRect = null;
             this.extension.currentAnnotationRect = null;
             if (annotationRect && this.isZoomToSearchResultEnabled()) {
                 this.zoomToAnnotation(annotationRect);
             }
-            this.isFirstLoad = false;
-            //}, 1000);
+        };
+        SeadragonCenterPanel.prototype.overlayAnnotations = function () {
+            var annotations = this.getAnnotationsForCurrentImages();
+            for (var i = 0; i < annotations.length; i++) {
+                var annotation = annotations[i];
+                var overlayRects = this.getAnnotationOverlayRects(annotation);
+                for (var k = 0; k < overlayRects.length; k++) {
+                    var overlayRect = overlayRects[k];
+                    var div = document.createElement('div');
+                    div.id = 'searchResult-' + overlayRect.canvasIndex + '-' + overlayRect.resultIndex;
+                    div.className = 'searchOverlay';
+                    div.title = Utils_1.UVUtils.sanitize(overlayRect.chars);
+                    this.viewer.addOverlay(div, overlayRect);
+                }
+            }
         };
         SeadragonCenterPanel.prototype.updateBounds = function () {
             var settings = this.extension.getSettings();
@@ -24691,21 +24711,6 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.clearAnnotations = function () {
             this.$canvas.find('.searchOverlay').hide();
-        };
-        SeadragonCenterPanel.prototype.overlayAnnotations = function () {
-            var annotations = this.getAnnotationsForCurrentImages();
-            for (var i = 0; i < annotations.length; i++) {
-                var annotation = annotations[i];
-                var overlayRects = this.getAnnotationOverlayRects(annotation);
-                for (var k = 0; k < overlayRects.length; k++) {
-                    var overlayRect = overlayRects[k];
-                    var div = document.createElement('div');
-                    div.id = 'searchResult-' + overlayRect.canvasIndex + '-' + overlayRect.resultIndex;
-                    div.className = 'searchOverlay';
-                    div.title = Utils_1.UVUtils.sanitize(overlayRect.chars);
-                    this.viewer.addOverlay(div, overlayRect);
-                }
-            }
         };
         SeadragonCenterPanel.prototype.getAnnotationsForCurrentImages = function () {
             var annotationsForCurrentImages = [];
