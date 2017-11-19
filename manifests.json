@@ -817,6 +817,12 @@
           "@type": "sc:Manifest",
           "label": "No image service 2",
           "visible": true
+        },
+        {
+          "@id": "http://files.blokdust.io/manifests/oz/index.json",
+          "@type": "sc:Manifest",
+          "label": "No image service pres 3",
+          "visible": true
         }
       ]
     },

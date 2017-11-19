@@ -22208,7 +22208,16 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 // dimensions
                 var size = this.getCanvasComputedDimensions(this.extension.helper.getCurrentCanvas());
                 if (!size) {
-                    this.$wholeImageHighResButton.hide();
+                    // if there is no image service, allow the image to be downloaded directly.
+                    if (canvas.externalResource && !canvas.externalResource.hasServiceDescriptor()) {
+                        var label = String.format(this.content.wholeImageHighRes, '?', '?', mime);
+                        $label.text(label);
+                        $input.prop('title', label);
+                        this.$wholeImageHighResButton.show();
+                    }
+                    else {
+                        this.$wholeImageHighResButton.hide();
+                    }
                 }
                 else {
                     var label = hasNormalDimensions ?
@@ -22444,6 +22453,10 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 }
                 return uri;
             }
+            else if (canvas.externalResource && !canvas.externalResource.hasServiceDescriptor()) {
+                // if there is no image service, return the dataUri.
+                return canvas.externalResource.dataUri;
+            }
             return '';
         };
         DownloadDialogue.prototype.getCanvasMimeType = function (canvas) {
@@ -22459,13 +22472,20 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
         DownloadDialogue.prototype.getCanvasDimensions = function (canvas) {
             // externalResource may not have loaded yet
             if (canvas.externalResource.data) {
-                return new Size(canvas.externalResource.data.width, canvas.externalResource.data.height);
+                var width = canvas.externalResource.data.width;
+                var height = canvas.externalResource.data.height;
+                if (width && height) {
+                    return new Size(width, height);
+                }
             }
-            return new Size(0, 0);
+            return null;
         };
         DownloadDialogue.prototype.getCanvasComputedDimensions = function (canvas) {
             var imageSize = this.getCanvasDimensions(canvas);
             var requiredSize = canvas.getMaxDimensions();
+            if (!imageSize) {
+                return null;
+            }
             if (!requiredSize) {
                 return imageSize;
             }
@@ -26640,6 +26660,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 name: 'uv-pdf-extension'
             };
             // presentation 3
+            this._extensions[manifesto.MediaType.jpg().toString()] = {
+                type: Extension_3.Extension,
+                name: 'uv-seadragon-extension'
+            };
             this._extensions[manifesto.MediaType.pdf().toString()] = {
                 type: Extension_4.Extension,
                 name: 'uv-pdf-extension'
