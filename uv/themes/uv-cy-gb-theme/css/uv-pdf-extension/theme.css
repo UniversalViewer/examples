@@ -1670,6 +1670,7 @@ input[type=range]:focus::-ms-fill-upper {
   padding-bottom: 10px;
   padding-left: 10px;
   overflow: auto;
+  text-overflow: ellipsis;
 }
 .uv .overlay .middle .content h1 {
   color: #000;
@@ -1688,9 +1689,13 @@ input[type=range]:focus::-ms-fill-upper {
 .uv .overlay .middle .content p {
   margin: 0;
   padding: 10px 0 10px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .uv .overlay .middle .content p p {
   padding-top: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .uv .overlay .middle .content ol.options {
   list-style-image: none;

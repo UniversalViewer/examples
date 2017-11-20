@@ -18579,8 +18579,9 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
             var $attribution = this.$attribution.find('.attribution-text');
             var $license = this.$attribution.find('.license');
             var $logo = this.$attribution.find('.logo');
-            $attribution.html(Utils_1.UVUtils.sanitize(attribution));
-            $attribution.find('img').one("load", function () {
+            var sanitized = Utils_1.UVUtils.sanitize(attribution);
+            $attribution.html(sanitized);
+            $attribution.find('img').one('load', function () {
                 _this.resize();
             }).each(function () {
                 if (this.complete)

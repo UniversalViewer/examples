@@ -823,6 +823,12 @@
           "@type": "sc:Manifest",
           "label": "No image service pres 3",
           "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/longlicense.json",
+          "@type": "sc:Manifest",
+          "label": "Long license",
+          "visible": true
         }
       ]
     },
