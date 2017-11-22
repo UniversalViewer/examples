@@ -829,6 +829,12 @@
           "@type": "sc:Manifest",
           "label": "Long license",
           "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/test-manifests/range-renderings.json",
+          "@type": "sc:Manifest",
+          "label": "Range Renderings",
+          "visible": true
         }
       ]
     },
