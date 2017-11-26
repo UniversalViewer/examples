@@ -749,13 +749,19 @@
         {
           "@id": "http://files.blokdust.io/manifests/stanford/vertebra.json",
           "@type": "sc:Manifest",
-          "label": "Presentation 3: Vertebra (obj)",
+          "label": "Vertebra (obj)",
           "visible": true
         },
         {
           "@id": "https://files.blokdust.io/manifests/xavieraure/harbour.json",
           "@type": "sc:Manifest",
-          "label": "Presentation 3: The Harbour (obj)",
+          "label": "The Harbour (obj)",
+          "visible": true
+        },
+        {
+          "@id": "https://files.blokdust.io/manifests/demo/lidar/pub/index.json",
+          "@type": "sc:Manifest",
+          "label": "The Abbot Pub (ply)",
           "visible": true
         },
         {

@@ -26465,7 +26465,7 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
                     _this.viewport.toggleVR();
                 }
             });
-            if (!WEBVR.isAvailable()) {
+            if (!this._isVREnabled()) {
                 this.$vrButton.hide();
             }
         };
@@ -26502,6 +26502,9 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
                 });
                 _this.resize();
             });
+        };
+        VirtexCenterPanel.prototype._isVREnabled = function () {
+            return (Utils.Bools.getBool(this.config.options.vrEnabled, false) && WEBVR.isAvailable());
         };
         VirtexCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
