@@ -25342,6 +25342,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
+                _this.fire(Events_1.Events.SEADRAGON_OPEN);
             });
             $.subscribe(Events_1.Events.SEADRAGON_RESIZE, function () {
                 _this.fire(Events_1.Events.SEADRAGON_RESIZE);

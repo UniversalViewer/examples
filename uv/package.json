@@ -2,7 +2,7 @@
   "name": "universalviewer",
   "version": "3.0.0",
   "description": "The Universal Viewer is a community-developed open source project on a mission to help you share your content with the world.",
-  "scripts":{
+  "scripts": {
     "postinstall": "typings install && opencollective postinstall",
     "test": "mocha test/test.js"
   },
