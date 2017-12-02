@@ -17956,8 +17956,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             $.subscribe(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
-                // todo: Eventually this should be replaced with a suitable IIIF Presentation API field - until then, use attribution
-                var terms = _this.helper.getAttribution();
+                var terms = _this.helper.getLicense();
+                if (!terms) {
+                    terms = _this.helper.getAttribution();
+                }
                 if (terms) {
                     _this.showMessage(terms);
                 }
