@@ -18274,8 +18274,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             this.data.config.options = $.extend(this.data.config.options, settings);
         };
         BaseExtension.prototype.getLocale = function () {
-            var locale = this.data.locales[0];
-            return locale.name;
+            return this.helper.options.locale;
         };
         BaseExtension.prototype.getSharePreview = function () {
             var title = this.helper.getLabel();
