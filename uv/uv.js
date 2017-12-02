@@ -18273,6 +18273,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             }
             this.data.config.options = $.extend(this.data.config.options, settings);
         };
+        BaseExtension.prototype.getLocale = function () {
+            var locale = this.data.locales[0];
+            return locale.name;
+        };
         BaseExtension.prototype.getSharePreview = function () {
             var title = this.helper.getLabel();
             // todo: use getThumb (when implemented)
@@ -22315,7 +22319,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             else {
                 this.$selectionButton.hide();
             }
-            this.resetDynamicDownloadOptions(); // todo: not very nice
+            this.resetDynamicDownloadOptions();
             if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.rangeRendering)) {
                 if (canvas.ranges && canvas.ranges.length) {
                     for (var i = 0; i < canvas.ranges.length; i++) {
@@ -22414,7 +22418,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             for (var i = 0; i < renderings.length; i++) {
                 var rendering = renderings[i];
                 if (rendering) {
-                    var label = Manifesto.TranslationCollection.getValue(rendering.getLabel());
+                    var label = Manifesto.TranslationCollection.getValue(rendering.getLabel(), this.extension.getLocale());
                     var currentId = "downloadOption" + ++this.renderingUrlsCount;
                     if (label) {
                         label += " ({0})";
