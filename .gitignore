@@ -1,3 +1,4 @@
 .idea
 Thumbs.db
 *.map
+npm-debug.log
