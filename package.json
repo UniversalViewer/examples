@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git+https://github.com/universalviewer/examples.git"
   },
+  "scripts": {
+    "preversion": "version.js"
+  },
   "keywords": [
     "IIIF",
     "viewer",
