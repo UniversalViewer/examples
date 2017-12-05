@@ -1,13 +1,13 @@
 {
   "name": "universalviewer",
-  "version": "3.0.4",
+  "version": "3.0.2",
   "description": "The Universal Viewer is a community-developed open source project on a mission to help you share your content with the world.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/universalviewer/examples.git"
   },
   "scripts": {
-    "preversion": "echo $npm_package_version"
+    "version": "echo { \"version\": \"%npm_package_version%\" } > ./uv/info.json"
   },
   "keywords": [
     "IIIF",
