@@ -1951,7 +1951,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .headerPanel .options {
   height: 40px;
-  background-color: #211f1f;
+  background-color: #212121;
 }
 .uv .headerPanel .options .centerOptions {
   position: absolute;
@@ -2814,7 +2814,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .leftPanel {
   position: absolute;
-  background: #211f1f;
+  background: #212121;
   border: none;
 }
 .uv .centerPanel {
@@ -2822,7 +2822,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .rightPanel {
   position: absolute;
-  background: #211f1f;
+  background: #212121;
   border: none;
 }
 .uv .footerPanel {

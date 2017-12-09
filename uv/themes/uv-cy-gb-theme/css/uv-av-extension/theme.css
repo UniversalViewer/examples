@@ -2054,7 +2054,7 @@ a.ui-button:active,
 }
 .uv .leftPanel .tabs .tab {
   color: #ffffff;
-  background-color: #211f1f;
+  background-color: #212121;
   display: inline-block;
   text-align: center;
   line-height: 22px;
@@ -2071,7 +2071,7 @@ a.ui-button:active,
 }
 .uv .leftPanel .tabs .tab.on {
   border: 1px solid #373737;
-  border-bottom: 1px solid #211f1f;
+  border-bottom: 1px solid #212121;
   color: #14a4c3;
   margin-bottom: -1px;
   height: 25px;
@@ -3046,7 +3046,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .headerPanel .options {
   height: 40px;
-  background-color: #211f1f;
+  background-color: #212121;
 }
 .uv .headerPanel .options .centerOptions {
   position: absolute;
@@ -3909,7 +3909,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .leftPanel {
   position: absolute;
-  background: #211f1f;
+  background: #212121;
   border: none;
 }
 .uv .centerPanel {
@@ -3917,7 +3917,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .rightPanel {
   position: absolute;
-  background: #211f1f;
+  background: #212121;
   border: none;
 }
 .uv .footerPanel {
