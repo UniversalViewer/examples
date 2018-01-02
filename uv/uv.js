@@ -17051,7 +17051,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             var normalisedPos = 0;
             if (this.$triggerButton) {
                 // get the normalised position of the button
-                if (this.extension.isMobileMetric()) {
+                if (this.extension.isMobileView()) {
                     normalisedPos = Math.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
                 }
                 else {
@@ -17449,8 +17449,6 @@ define('modules/uv-shared-module/MetricType',["require", "exports", "./StringVal
         function MetricType() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        MetricType.WATCH = new MetricType("watch");
-        MetricType.MOBILEPORTRAIT = new MetricType("mobileportrait");
         MetricType.MOBILELANDSCAPE = new MetricType("mobilelandscape");
         MetricType.LAPTOP = new MetricType("laptop");
         return MetricType;
@@ -17860,7 +17858,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             this.$element.append('<a href="/" id="top"></a>');
             this.$element.append('<iframe id="commsFrame" style="display:none"></iframe>');
-            this.$element.append('<div id="debug"><span id="watch">Watch</span><span id="mobile-portrait">Mobile Portrait</span><span id="mobile-landscape">Mobile Landscape</span><span id="laptop">Laptop</span></div>');
             $.subscribe(BaseEvents_1.BaseEvents.ACCEPT_TERMS, function () {
                 _this.fire(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
             });
@@ -18306,12 +18303,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             setTimeout(function () {
                 for (var i = 0; i < _this.metrics.length; i++) {
                     var metric = _this.metrics[i];
-                    // if the width and height is within this metric's defined range
-                    if (_this.width() > metric.minWidth && _this.width() <= metric.maxWidth &&
-                        _this.height() > metric.minHeight && _this.height() <= metric.maxHeight) {
+                    if (_this.width() > metric.minWidth && _this.width() <= metric.maxWidth) {
                         if (_this.metric !== metric.type) {
                             _this.metric = metric.type;
-                            console.log("metric changed", metric.type.toString());
                             $.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
                         }
                     }
@@ -18573,10 +18567,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.isOverlayActive = function () {
             return Shell_1.Shell.$overlays.is(':visible');
         };
-        BaseExtension.prototype.isMobileMetric = function () {
-            return this.metric.toString() === MetricType_1.MetricType.WATCH.toString()
-                || this.metric.toString() === MetricType_1.MetricType.MOBILEPORTRAIT.toString()
-                || this.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString();
+        BaseExtension.prototype.isMobileView = function () {
+            return this.metric.toString() === MetricType_1.MetricType.MOBILELANDSCAPE.toString();
         };
         BaseExtension.prototype.viewManifest = function (manifest) {
             var data = {};
@@ -19522,7 +19514,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 _this.collapseFull();
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                if (_this.extension.isMobileMetric()) {
+                if (_this.extension.isMobileView()) {
                     if (_this.isFullyExpanded) {
                         _this.collapseFull();
                     }
@@ -20306,7 +20298,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
                 return;
             }
             // otherwise, check metric
-            if (this.extension.isMobileMetric()) {
+            if (this.extension.isMobileView()) {
                 this.$options.addClass('minimiseButtons');
             }
             else {
@@ -20315,7 +20307,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
         };
         FooterPanel.prototype.updateMoreInfoButton = function () {
             var configEnabled = Utils.Bools.getBool(this.options.moreInfoEnabled, false);
-            if (configEnabled && this.extension.isMobileMetric()) {
+            if (configEnabled && this.extension.isMobileView()) {
                 this.$moreInfoButton.show();
             }
             else {
@@ -24726,7 +24718,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         };
         SeadragonCenterPanel.prototype.updateResponsiveView = function () {
             this.setNavigatorVisible();
-            if (this.extension.isMobileMetric()) {
+            if (this.extension.isMobileView()) {
                 this.viewer.autoHideControls = false;
                 this.$viewportNavButtons.hide();
             }
@@ -25437,7 +25429,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             }
         };
         SeadragonCenterPanel.prototype.setNavigatorVisible = function () {
-            var navigatorEnabled = Utils.Bools.getBool(this.extension.getSettings().navigatorEnabled, true) && !this.extension.isMobileMetric();
+            var navigatorEnabled = Utils.Bools.getBool(this.extension.getSettings().navigatorEnabled, true) && !this.extension.isMobileView();
             this.viewer.navigator.setVisible(navigatorEnabled);
             if (navigatorEnabled) {
                 this.$navigator.show();
@@ -25648,7 +25640,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var _this = this;
             _super.prototype.create.call(this);
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                if (_this.isMobileMetric()) {
+                if (_this.isMobileView()) {
                     var settings = {};
                     settings.pagingEnabled = false;
                     _this.updateSettings(settings);
@@ -25710,7 +25702,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
-                if (!_this.isMobileMetric()) {
+                if (!_this.isMobileView()) {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
