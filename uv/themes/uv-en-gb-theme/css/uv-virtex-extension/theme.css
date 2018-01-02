@@ -2373,6 +2373,7 @@ input[type=range]:focus::-ms-fill-upper {
   font-weight: bold;
 }
 .uv #debug {
+  display: none;
   position: fixed;
   z-index: 1000;
 }
