@@ -288,7 +288,7 @@
 .uv .overlay.auth .bottom {
   background: none;
 }
-@media only screen and (min-width: 0px) and (max-width: 640px) {
+@media only screen and (min-width: 0px) and (max-width: 480px) {
   .uv .overlay.share {
     padding: 0 0 45px 8px;
   }
@@ -2136,17 +2136,88 @@ input[type=range]:focus::-ms-fill-upper {
   display: block;
   color: #26b5cc;
 }
-@media only screen and (min-width: 0px) and (max-width: 640px) {
+.uv .headerPanel {
+  display: none;
+}
+.uv .mainPanel .leftPanel {
+  display: none;
+}
+.uv .mainPanel .rightPanel {
+  display: none;
+}
+.uv .footerPanel {
+  display: none;
+}
+.uv .mobileFooterPanel {
+  display: block;
+  position: relative;
+  height: 50px;
+}
+.uv .mobileFooterPanel .options {
+  position: absolute;
+  width: 315px;
+  height: 42px;
+}
+.uv .mobileFooterPanel .options .spacer {
+  float: left;
+  width: 30px;
+  height: 41px;
+}
+.uv .mobileFooterPanel .options .btn {
+  margin-right: 5px;
+  color: white;
+  font-size: 0;
+}
+.uv .mobileFooterPanel .options .btn.bookmark {
+  display: none;
+}
+.uv .mobileFooterPanel .options .btn.open {
+  display: none;
+}
+.uv .mobileFooterPanel .options .btn.feedback {
+  display: none;
+}
+.uv .mobileFooterPanel .options .btn.embed {
+  display: none;
+}
+.uv .mobileFooterPanel .options .btn.fullScreen {
+  display: none;
+}
+@media only screen and (min-width: 0px) and (max-width: 312px) and (min-height: 0px) and (max-height: 390px) {
+  .uv #debug #watch {
+    display: block !important;
+  }
+}
+@media only screen and (min-width: 480px) and (max-width: 800px) and (min-height: 390px) and (max-height: 480px) {
+  .uv #debug #mobile-landscape {
+    display: block !important;
+  }
+}
+@media only screen and (min-width: 312px) and (max-width: 480px) and (min-height: 390px) and (max-height: 640px) {
+  .uv #debug #mobile-portrait {
+    display: block !important;
+  }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
+  .uv #debug #laptop {
+    display: block !important;
+  }
   .uv .headerPanel {
-    display: none;
+    display: block;
   }
   .uv .mainPanel .leftPanel {
-    display: none;
+    display: block;
   }
   .uv .mainPanel .rightPanel {
-    display: none;
+    display: block;
   }
   .uv .footerPanel {
+    display: block;
+  }
+  .uv .footerPanel .moreInfo {
+    display: none;
+  }
+  .uv .mobileFooterPanel {
     display: none;
   }
 }
@@ -2181,6 +2252,23 @@ input[type=range]:focus::-ms-fill-upper {
   text-transform: none;
   padding: 0 0 0 16px;
   font-weight: bold;
+}
+.uv #debug {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+}
+.uv #debug #watch {
+  display: none;
+}
+.uv #debug #mobile-portrait {
+  display: none;
+}
+.uv #debug #mobile-landscape {
+  display: none;
+}
+.uv #debug #laptop {
+  display: none;
 }
 .uv #commsFrame {
   width: 1px;
@@ -2219,9 +2307,6 @@ input[type=range]:focus::-ms-fill-upper {
   margin-bottom: 0px;
   margin-left: 8px;
 }
-.uv .footerPanel.mobile {
-  display: none;
-}
 @media print {
   .uv .headerPanel {
     display: none;
@@ -2235,7 +2320,7 @@ input[type=range]:focus::-ms-fill-upper {
   .uv .footerPanel {
     display: none;
   }
-  .uv .mobileFooter {
+  .uv .mobileFooterPanel {
     display: none;
   }
 }
