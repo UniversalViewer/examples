@@ -17453,11 +17453,11 @@ define('modules/uv-shared-module/MetricType',["require", "exports", "./StringVal
         function MetricType() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        MetricType.WATCH = new MetricType("watch");
-        MetricType.MOBILEPORTRAIT = new MetricType("mobileportrait");
+        MetricType.DESKTOP = new MetricType("desktop");
         MetricType.MOBILELANDSCAPE = new MetricType("mobilelandscape");
-        MetricType.LAPTOP = new MetricType("laptop");
+        MetricType.MOBILEPORTRAIT = new MetricType("mobileportrait");
         MetricType.NONE = new MetricType("none");
+        MetricType.WATCH = new MetricType("watch");
         return MetricType;
     }(StringValue_1.StringValue));
     exports.MetricType = MetricType;
@@ -17865,7 +17865,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             this.$element.append('<a href="/" id="top"></a>');
             this.$element.append('<iframe id="commsFrame" style="display:none"></iframe>');
-            this.$element.append('<div id="debug"><span id="watch">Watch</span><span id="mobile-portrait">Mobile Portrait</span><span id="mobile-landscape">Mobile Landscape</span><span id="laptop">Laptop</span></div>');
+            this.$element.append('<div id="debug"><span id="watch">Watch</span><span id="mobile-portrait">Mobile Portrait</span><span id="mobile-landscape">Mobile Landscape</span><span id="desktop">Desktop</span></div>');
             $.subscribe(BaseEvents_1.BaseEvents.ACCEPT_TERMS, function () {
                 _this.fire(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
             });
@@ -18313,8 +18313,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 for (var i = 0; i < _this.metrics.length; i++) {
                     var metric = _this.metrics[i];
                     // if the width and height is within this metric's defined range
-                    if (_this.width() > metric.minWidth && _this.width() <= metric.maxWidth &&
-                        _this.height() > metric.minHeight && _this.height() <= metric.maxHeight) {
+                    if (_this.width() >= metric.minWidth && _this.width() <= metric.maxWidth &&
+                        _this.height() >= metric.minHeight && _this.height() <= metric.maxHeight) {
                         if (_this.metric !== metric.type) {
                             _this.metric = metric.type;
                             metricChanged = true;
@@ -18584,7 +18584,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             return Shell_1.Shell.$overlays.is(':visible');
         };
         BaseExtension.prototype.isDesktopMetric = function () {
-            return this.metric.toString() === MetricType_1.MetricType.LAPTOP.toString();
+            return this.metric.toString() === MetricType_1.MetricType.DESKTOP.toString();
         };
         BaseExtension.prototype.viewManifest = function (manifest) {
             var data = {};

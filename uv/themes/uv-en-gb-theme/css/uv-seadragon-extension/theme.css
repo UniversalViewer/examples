@@ -288,7 +288,7 @@
 .uv .overlay.auth .bottom {
   background: none;
 }
-@media only screen and (min-width: 0px) and (max-width: 480px) {
+@media only screen and (min-width: 0px) and (max-width: 414px) {
   .uv .overlay.share {
     padding: 0 0 45px 8px;
   }
@@ -2993,35 +2993,47 @@ input[type=range]:focus::-ms-fill-upper {
     display: block !important;
   }
 }
-@media only screen and (min-width: 480px) and (max-width: 800px) and (min-height: 390px) and (max-height: 480px) {
+@media only screen and (min-width: 640px) and (max-width: 812px) and (min-height: 360px) and (max-height: 414px) {
   .uv #debug #mobile-landscape {
     display: block !important;
   }
 }
-@media only screen and (min-width: 312px) and (max-width: 480px) and (min-height: 390px) and (max-height: 640px) {
+@media only screen and (min-width: 312px) and (max-width: 414px) and (min-height: 640px) and (max-height: 812px) {
   .uv #debug #mobile-portrait {
     display: block !important;
   }
 }
 @media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
-  .uv #debug #laptop {
+  .uv #debug #desktop {
     display: block !important;
   }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
   .uv .headerPanel {
     display: block;
   }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
   .uv .mainPanel .leftPanel {
     display: block;
   }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
   .uv .mainPanel .rightPanel {
     display: block;
   }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
   .uv .footerPanel {
     display: block;
   }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
   .uv .footerPanel .moreInfo {
     display: none;
   }
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 640px) and (max-height: 100000px) {
   .uv .mobileFooterPanel {
     display: none;
   }
@@ -3072,7 +3084,7 @@ input[type=range]:focus::-ms-fill-upper {
 .uv #debug #mobile-landscape {
   display: none;
 }
-.uv #debug #laptop {
+.uv #debug #desktop {
   display: none;
 }
 .uv #commsFrame {
