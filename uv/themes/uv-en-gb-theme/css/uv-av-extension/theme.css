@@ -1926,6 +1926,36 @@ a.ui-button:active,
   -webkit-box-shadow: 0px 0px 5px #666666;
   box-shadow: 0px 0px 5px #666666;
 }
+@media only screen and (min-width: 0px) and (max-width: 312px) and (min-height: 0px) and (max-height: 390px) {
+  .uv .centerPanel .canvasContainer {
+    display: none;
+  }
+}
+@media only screen and (min-width: 640px) and (max-width: 812px) and (min-height: 360px) and (max-height: 414px) {
+  .uv .centerPanel .canvasContainer {
+    display: none;
+  }
+}
+@media only screen and (min-width: 312px) and (max-width: 414px) and (min-height: 640px) and (max-height: 812px) {
+  .uv .centerPanel .canvasContainer {
+    display: none;
+  }
+}
+@media only screen and (min-width: 0px) and (max-width: 312px) and (min-height: 0px) and (max-height: 390px) {
+  .uv .centerPanel .optionsContainer {
+    margin-top: 110px;
+  }
+}
+@media only screen and (min-width: 640px) and (max-width: 812px) and (min-height: 360px) and (max-height: 414px) {
+  .uv .centerPanel .optionsContainer {
+    margin-top: 110px;
+  }
+}
+@media only screen and (min-width: 312px) and (max-width: 414px) and (min-height: 640px) and (max-height: 812px) {
+  .uv .centerPanel .optionsContainer {
+    margin-top: 110px;
+  }
+}
 .uv .leftPanel .views .thumbsView {
   overflow: auto;
 }
