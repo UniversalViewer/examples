@@ -288,7 +288,7 @@
 .uv .overlay.auth .bottom {
   background: none;
 }
-@media only screen and (min-width: 0px) and (max-width: 414px) {
+@media only screen and (min-width: 0px) and (max-width: 415px) {
   .uv .overlay.share {
     padding: 0 0 45px 8px;
   }
@@ -1931,12 +1931,12 @@ a.ui-button:active,
     display: none;
   }
 }
-@media only screen and (min-width: 640px) and (max-width: 812px) and (min-height: 360px) and (max-height: 414px) {
+@media only screen and (min-width: 640px) and (max-width: 813px) and (min-height: 360px) and (max-height: 415px) {
   .uv .centerPanel .canvasContainer {
     display: none;
   }
 }
-@media only screen and (min-width: 312px) and (max-width: 414px) and (min-height: 640px) and (max-height: 812px) {
+@media only screen and (min-width: 312px) and (max-width: 415px) and (min-height: 640px) and (max-height: 813px) {
   .uv .centerPanel .canvasContainer {
     display: none;
   }
@@ -1946,12 +1946,12 @@ a.ui-button:active,
     margin-top: 110px;
   }
 }
-@media only screen and (min-width: 640px) and (max-width: 812px) and (min-height: 360px) and (max-height: 414px) {
+@media only screen and (min-width: 640px) and (max-width: 813px) and (min-height: 360px) and (max-height: 415px) {
   .uv .centerPanel .optionsContainer {
     margin-top: 110px;
   }
 }
-@media only screen and (min-width: 312px) and (max-width: 414px) and (min-height: 640px) and (max-height: 812px) {
+@media only screen and (min-width: 312px) and (max-width: 415px) and (min-height: 640px) and (max-height: 813px) {
   .uv .centerPanel .optionsContainer {
     margin-top: 110px;
   }
@@ -3920,12 +3920,12 @@ input[type=range]:focus::-ms-fill-upper {
     display: block !important;
   }
 }
-@media only screen and (min-width: 640px) and (max-width: 812px) and (min-height: 360px) and (max-height: 414px) {
+@media only screen and (min-width: 640px) and (max-width: 813px) and (min-height: 360px) and (max-height: 415px) {
   .uv #debug #mobile-landscape {
     display: block !important;
   }
 }
-@media only screen and (min-width: 312px) and (max-width: 414px) and (min-height: 640px) and (max-height: 812px) {
+@media only screen and (min-width: 312px) and (max-width: 415px) and (min-height: 640px) and (max-height: 813px) {
   .uv #debug #mobile-portrait {
     display: block !important;
   }
@@ -3998,7 +3998,7 @@ input[type=range]:focus::-ms-fill-upper {
   font-weight: bold;
 }
 .uv #debug {
-  display: block;
+  display: none;
   position: fixed;
   z-index: 1000;
 }
