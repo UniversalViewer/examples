@@ -562,10 +562,35 @@
   height: 5px;
   background-color: #171717;
 }
+.virtex .loading.beforeload {
+  visibility: hidden;
+  opacity: 0;
+}
+.virtex .loading.duringload {
+  visibility: visible;
+  opacity: 1;
+}
+.virtex .loading.afterload {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 1.5s, opacity 1.5s linear;
+}
 .virtex .loading .bar {
   height: 5px;
   width: 1px;
   background-color: #fff;
+}
+.virtex.grabbable canvas {
+  cursor: move;
+  /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+.virtex.grabbable.grabbing canvas {
+  cursor: grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
 }
 #oldie {
   position: absolute;
