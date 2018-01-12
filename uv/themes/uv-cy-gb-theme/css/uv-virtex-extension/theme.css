@@ -1991,10 +1991,17 @@ input[type=range]:focus::-ms-fill-upper {
 .iiif-av-component .timelineItemContainer .timelineItem.active {
   background: #333;
 }
+.iiif-av-component .timelineContainer .durationHighlight {
+  position: absolute;
+  background: chartreuse;
+  height: 20px;
+}
 .iiif-av-component .timelineContainer .ui-slider-range {
   background: #888888;
   box-sizing: border-box;
   border-right: 2px solid #000000;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
 }
 .iiif-av-component .timelineContainer .ui-slider-handle {
   top: 0px;
