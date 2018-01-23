@@ -20964,11 +20964,6 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
                 that.viewRange(range);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                _this.avcomponent.set({
-                    limitToRange: !_this.extension.isDesktopMetric()
-                });
-            });
             this.$avcomponent = $('<div class="iiif-av-component"></div>');
             this.$content.append(this.$avcomponent);
             this.title = this.extension.helper.getLabel();
@@ -20986,7 +20981,6 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     helper: _this.extension.helper,
                     autoPlay: _this.config.options.autoPlay,
                     defaultAspectRatio: 0.56,
-                    limitToRange: false,
                     content: {
                         play: _this.content.play,
                         pause: _this.content.pause,
