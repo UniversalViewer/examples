@@ -14316,8 +14316,8 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// manifold v1.2.16 https://github.com/iiif-commons/manifold#readme
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// @iiif/manifold v1.2.17 https://github.com/iiif-commons/manifold#readme
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifmanifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
 var Manifold;
@@ -14741,6 +14741,14 @@ var Manifold;
     Manifold.ExternalResource = ExternalResource;
 })(Manifold || (Manifold = {}));
 
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var Manifold;
 (function (Manifold) {
     var Helper = /** @class */ (function () {
@@ -14983,6 +14991,76 @@ var Manifold;
             }
             return this._multiSelectState;
         };
+        Helper.prototype.getCurrentRange = function () {
+            if (this.rangeId) {
+                return this.getRangeById(this.rangeId);
+            }
+            return null;
+        };
+        Helper.prototype.getPreviousRange = function (range) {
+            var currentRange = null;
+            if (range) {
+                currentRange = range;
+            }
+            else {
+                currentRange = this.getCurrentRange();
+            }
+            if (currentRange) {
+                var flatTree = this._getFlattenedTree(this._extractChildren(this.getTree()), this._extractChildren).map(function (x) { return delete x.children && x; });
+                for (var i = 0; i < flatTree.length; i++) {
+                    var node = flatTree[i];
+                    // find current range in flattened tree
+                    if (node.data.id === currentRange.id) {
+                        // find the first node before it that has canvases
+                        while (i > 0) {
+                            i--;
+                            var prevNode = flatTree[i];
+                            if (prevNode.data.canvases && prevNode.data.canvases.length) {
+                                return prevNode.data;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            return null;
+        };
+        Helper.prototype.getNextRange = function (range) {
+            // if a range is passed, use that. otherwise get the current range.
+            var currentRange = null;
+            if (range) {
+                currentRange = range;
+            }
+            else {
+                currentRange = this.getCurrentRange();
+            }
+            if (currentRange) {
+                var flatTree = this._getFlattenedTree(this._extractChildren(this.getTree()), this._extractChildren).map(function (x) { return delete x.children && x; });
+                for (var i = 0; i < flatTree.length; i++) {
+                    var node = flatTree[i];
+                    // find current range in flattened tree
+                    if (node.data.id === currentRange.id) {
+                        // find the first node after it that has canvases
+                        while (i < flatTree.length - 1) {
+                            i++;
+                            var nextNode = flatTree[i];
+                            if (nextNode.data.canvases && nextNode.data.canvases.length) {
+                                return nextNode.data;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            return null;
+        };
+        Helper.prototype._getFlattenedTree = function (children, extractChildren, level, parent) {
+            var _this = this;
+            return Array.prototype.concat.apply(children.map(function (x) { return (__assign({}, x, { level: level || 1, parent: parent || null })); }), children.map(function (x) { return _this._getFlattenedTree(extractChildren(x) || [], extractChildren, (level || 1) + 1, x.id); }));
+        };
+        Helper.prototype._extractChildren = function (treeNode) {
+            return treeNode.nodes;
+        };
         Helper.prototype.getRanges = function () {
             return this.manifest.getAllRanges();
         };
@@ -15051,6 +15129,9 @@ var Manifold;
         Helper.prototype.getTrackingLabel = function () {
             return this.manifest.getTrackingLabel();
         };
+        Helper.prototype._getTopRanges = function () {
+            return this.iiifResource.getTopRanges();
+        };
         Helper.prototype.getTree = function (topRangeIndex, sortType) {
             // if it's a collection, use IIIFResource.getDefaultTree()
             // otherwise, get the top range by index and use Range.getTree()
@@ -15064,7 +15145,7 @@ var Manifold;
                 tree = this.iiifResource.getDefaultTree();
             }
             else {
-                var topRanges = this.iiifResource.getTopRanges();
+                var topRanges = this._getTopRanges();
                 var root = new manifesto.TreeNode();
                 root.label = 'root';
                 root.data = this.iiifResource;
@@ -27531,20 +27612,6 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
     exports.default = UVComponent;
 });
 //# sourceMappingURL=UVComponent.js.map
-/// <reference types="base-component" />
-/// <reference types="exjs" />
-/// <reference types="extensions" />
-/// <reference types="http-status-codes" />
-/// <reference types="iiif-av-component" />
-/// <reference types="iiif-gallery-component" />
-/// <reference types="iiif-metadata-component" />
-/// <reference types="iiif-tree-component" />
-/// <reference types="jquery-plugins" />
-/// <reference types="key-codes" />
-/// <reference types="manifesto.js" />
-/// <reference types="manifold" />
-/// <reference types="utils" />
-/// <reference types="virtex3d" />
 if (typeof jQuery === "function") {
     define('jquery', [], function () {
         return jQuery;
