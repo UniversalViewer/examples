@@ -18299,6 +18299,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                     if (range) {
                         $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
                     }
+                    else {
+                        console.warn('range id not found:', this.data.rangeId);
+                    }
                 }
             }
         };
@@ -20964,6 +20967,11 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
                 that.viewRange(range);
             });
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+                _this.avcomponent.set({
+                    limitToRange: !_this.extension.isDesktopMetric()
+                });
+            });
             this.$avcomponent = $('<div class="iiif-av-component"></div>');
             this.$content.append(this.$avcomponent);
             this.title = this.extension.helper.getLabel();
@@ -20981,11 +20989,15 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     helper: _this.extension.helper,
                     autoPlay: _this.config.options.autoPlay,
                     defaultAspectRatio: 0.56,
+                    limitToRange: false,
+                    doubleClickMS: 350,
                     content: {
-                        play: _this.content.play,
-                        pause: _this.content.pause,
                         currentTime: _this.content.currentTime,
-                        duration: _this.content.duration
+                        duration: _this.content.duration,
+                        next: _this.content.next,
+                        pause: _this.content.pause,
+                        play: _this.content.play,
+                        previous: _this.content.previous
                     }
                 });
                 _this.resize();
@@ -21001,7 +21013,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 Utils.Async.waitFor(function () {
                     return _this._canvasReady;
                 }, function () {
-                    _this.avcomponent.play(canvasId);
+                    _this.avcomponent.playCanvas(canvasId);
                     _this.resize();
                 });
             }
