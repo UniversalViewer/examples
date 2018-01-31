@@ -18737,6 +18737,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.isDesktopMetric = function () {
             return this.metric.toString() === MetricType_1.MetricType.DESKTOP.toString();
         };
+        // todo: use redux in manifold to get reset state
         BaseExtension.prototype.viewManifest = function (manifest) {
             var data = {};
             data.iiifResourceUri = this.helper.iiifResourceUri;
@@ -18746,6 +18747,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             data.canvasIndex = 0;
             this.reload(data);
         };
+        // todo: use redux in manifold to get reset state
         BaseExtension.prototype.viewCollection = function (collection) {
             var data = {};
             data.iiifResourceUri = this.helper.iiifResourceUri;
@@ -21046,22 +21048,63 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
-                that.viewRange(range);
+                that._viewRange(range);
+                that._setTitle();
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.avcomponent.set({
                     limitToRange: !_this.extension.isDesktopMetric()
                 });
             });
+            $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
+                _this._setTitle();
+            });
             this.$avcomponent = $('<div class="iiif-av-component"></div>');
             this.$content.append(this.$avcomponent);
-            this.title = this.extension.helper.getLabel();
             this.avcomponent = new IIIFComponents.AVComponent({
                 target: this.$avcomponent[0]
             });
             this.avcomponent.on('canvasready', function () {
                 _this._canvasReady = true;
             }, false);
+            this.avcomponent.on('previousrange', function () {
+                _this._setTitle();
+            }, false);
+            this.avcomponent.on('nextrange', function () {
+                _this._setTitle();
+            }, false);
+        };
+        AVCenterPanel.prototype._setTitle = function () {
+            var title = '';
+            var value;
+            var label;
+            // get the current range or canvas title
+            var currentRange = this.extension.helper.getCurrentRange();
+            if (currentRange) {
+                label = currentRange.getLabel();
+            }
+            else {
+                label = this.extension.helper.getCurrentCanvas().getLabel();
+            }
+            value = Manifesto.TranslationCollection.getValue(label);
+            if (value) {
+                title = value;
+            }
+            // get the parent range or manifest's title
+            if (currentRange) {
+                if (currentRange.parentRange) {
+                    label = currentRange.parentRange.getLabel();
+                    value = Manifesto.TranslationCollection.getValue(label);
+                }
+            }
+            else {
+                value = this.extension.helper.getLabel();
+            }
+            if (value) {
+                title += this.content.delimiter + value;
+            }
+            this.title = title;
+            this.resize();
         };
         AVCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
@@ -21084,7 +21127,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 _this.resize();
             });
         };
-        AVCenterPanel.prototype.viewRange = function (range) {
+        AVCenterPanel.prototype._viewRange = function (range) {
             var _this = this;
             if (!range.canvases || !range.canvases.length)
                 return;
