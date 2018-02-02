@@ -1,60 +1,54 @@
 <html>
 <head>
-    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <style>
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background: #000;
         }
 
-        .uv.left{
+        #uv1 {
             float: left;
         }
 
-        .uv.right{
+        #uv2 {
             float: right;
         }
     </style>
 </head>    
 <body>
 
-<div class="uv left" data-locale="en-GB:English (GB),cy-GB:Cymraeg" data-config="/examples/two-up-config.json" data-uri="http://wellcomelibrary.org/iiif/collection/b19974760" data-collectionindex="7" data-manifestindex="9" data-sequenceindex="0" data-canvasindex="0" data-zoom="-0.0041,-0.1143,0.5114,0.4018" data-rotation="0" style="width:800px; height:600px; background-color: #000"></div>
+<iframe id="uv1" src="http://universalviewer.io/examples/uv/uv.html#?manifest=http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json&c=0&m=0&s=0&cv=0&config=two-up-config.json&locales=en-GB:English (GB),cy-GB:Cymraeg&xywh=-1383,-197,5333,3936&r=0" width="560" height="420" allowfullscreen frameborder="0"></iframe>
 
-<div class="uv right" data-locale="en-GB:English (GB),cy-GB:Cymraeg" data-config="/examples/two-up-config.json" data-uri="http://api.bl.uk/metadata/iiif/ark:/81055/vdc_100022545251.0x000002/manifest.json" data-collectionindex="0" data-manifestindex="0" data-sequenceindex="0" data-canvasindex="0" style="width:800px; height:600px; background-color: #000"></div>
-
-<script type="text/javascript" id="embedUV" src="http://universalviewer.io/examples/uv/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>
-
-<!--<script type="text/javascript" id="embedUV" src="http://localhost:8001/src/lib/embed.js"></script><script type="text/javascript">/* wordpress fix */</script>-->
+<iframe id="uv2" src="http://universalviewer.io/examples/uv/uv.html#?manifest=http://sanddragon.bl.uk/IIIFMetadataService/egerton_ms_3512.json&c=0&m=0&s=0&cv=0&config=two-up-config.json&locales=en-GB:English (GB),cy-GB:Cymraeg&xywh=-1383,-197,5333,3936&r=0" width="560" height="420" allowfullscreen frameborder="0"></iframe>
 
 <script>
 
-    $(function() {
-        
-        var isFullSreen = false;
-        var $leftUV = $('.uv.left');
-        var $rightUV = $('.uv.right');
-                
-        window.onresize = function() {
-            resize();
-        };
+    var uv1, uv2;
 
-        $(document).bind('uv.onToggleFullScreen', function (event, obj) {
-            isFullSreen = obj.isFullScreen;
-        });
+    function resize() {
+        var width = window.innerWidth / 2;
+        var height = window.innerHeight;
 
-        function resize() {
-            var windowWidth = window.innerWidth;
-            var windowHeight = window.innerHeight;
-            var width = (isFullSreen) ? windowWidth : windowWidth / 2;
-            $leftUV.width(width);
-            $leftUV.height(windowHeight);
-            $rightUV.width(width);
-            $rightUV.height(windowHeight);
-        }
-        
+        uv1.style.width = width;
+        uv1.style.height = height;
+
+        uv2.style.width = width;
+        uv2.style.height = height;
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+
+        uv1 = document.querySelector('#uv1');
+        uv2 = document.querySelector('#uv2');
+
+        window.addEventListener('resize', resize);
+
         resize();
-    });
+
+    }, false);
+    
     
 </script>
 
