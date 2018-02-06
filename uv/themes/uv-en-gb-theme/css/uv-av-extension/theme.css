@@ -3562,6 +3562,7 @@ input[type=range]:focus::-ms-fill-upper {
   width: 100px;
 }
 .iiif-av-component .btn {
+  font-size: 0;
   background: 0 0;
   border: 0;
 }

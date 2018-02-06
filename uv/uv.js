@@ -16482,6 +16482,7 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
         BaseEvents.MULTISELECT_CHANGE = 'multiSelectChange';
         BaseEvents.MULTISELECTION_MADE = 'multiSelectionMade';
         BaseEvents.NEXT = 'next';
+        BaseEvents.NO_RANGE = 'norange';
         BaseEvents.NOT_FOUND = 'notFound';
         BaseEvents.OPEN_EXTERNAL_RESOURCE = 'openExternalResource';
         BaseEvents.OPEN_LEFT_PANEL = 'openLeftPanel';
@@ -19708,6 +19709,17 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 _this.selectCurrentTreeNode();
                 _this.updateTreeTabBySelection();
             });
+            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
+                if (_this.isFullyExpanded) {
+                    _this.collapseFull();
+                }
+                _this.selectCurrentTreeNode();
+                _this.updateTreeTabBySelection();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.NO_RANGE, function () {
+                _this.selectCurrentTreeNode();
+                _this.updateTreeTabBySelection();
+            });
             this.$tabs = $('<div class="tabs"></div>');
             this.$main.append(this.$tabs);
             this.$treeButton = $('<a class="index tab" tabindex="0">' + this.content.index + '</a>');
@@ -19857,7 +19869,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         };
         ContentLeftPanel.prototype.getTreeData = function () {
             return {
-                branchNodesSelectable: false,
+                branchNodesSelectable: Utils.Bools.getBool(this.config.options.branchNodesSelectable, false),
                 helper: this.extension.helper,
                 topRangeIndex: this.getSelectedTopRangeIndex(),
                 treeSortType: this.treeSortType
@@ -19868,6 +19880,9 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             var topRanges = this.extension.helper.getTopRanges();
             if (topRanges.length > 1) {
                 var index = this.getCurrentCanvasTopRangeIndex();
+                if (index === -1) {
+                    return;
+                }
                 var currentRange = topRanges[index];
                 this.setTreeTabTitle(Manifesto.TranslationCollection.getValue(currentRange.getLabel()));
             }
@@ -20114,14 +20129,17 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             }
             return topRangeIndex;
         };
+        // todo: a lot of this was written prior to manifold storing the current range id
+        // use that instead - probably after porting manifold to redux.
         ContentLeftPanel.prototype.selectCurrentTreeNode = function () {
             if (this.treeView) {
                 var node = null;
                 var currentCanvasTopRangeIndex = this.getCurrentCanvasTopRangeIndex();
                 var selectedTopRangeIndex = this.getSelectedTopRangeIndex();
                 var usingCorrectTree = currentCanvasTopRangeIndex === selectedTopRangeIndex;
-                if (currentCanvasTopRangeIndex != -1) {
-                    var range = this.extension.getCurrentCanvasRange();
+                var range = null;
+                if (currentCanvasTopRangeIndex !== -1) {
+                    range = this.extension.getCurrentCanvasRange();
                     if (range && range.treeNode) {
                         node = this.treeView.getNodeById(range.treeNode.id);
                     }
@@ -20135,7 +20153,16 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                     this.treeView.selectNode(node);
                 }
                 else {
-                    this.treeView.deselectCurrentNode();
+                    range = this.extension.helper.getCurrentRange();
+                    if (range && range.treeNode) {
+                        node = this.treeView.getNodeById(range.treeNode.id);
+                    }
+                    if (node) {
+                        this.treeView.selectNode(node);
+                    }
+                    else {
+                        this.treeView.deselectCurrentNode();
+                    }
                 }
             }
         };
@@ -21053,7 +21080,8 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.avcomponent.set({
-                    limitToRange: !_this.extension.isDesktopMetric()
+                    limitToRange: !_this.extension.isDesktopMetric(),
+                    constrainNavigationToRange: true
                 });
             });
             $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
@@ -21069,9 +21097,15 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             }, false);
             this.avcomponent.on('previousrange', function () {
                 _this._setTitle();
+                $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [_this.extension.helper.getCurrentRange()]);
             }, false);
             this.avcomponent.on('nextrange', function () {
                 _this._setTitle();
+                $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [_this.extension.helper.getCurrentRange()]);
+            }, false);
+            this.avcomponent.on('norange', function () {
+                _this._setTitle();
+                $.publish(BaseEvents_1.BaseEvents.NO_RANGE);
             }, false);
         };
         AVCenterPanel.prototype._setTitle = function () {
@@ -21115,14 +21149,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     defaultAspectRatio: 0.56,
                     limitToRange: false,
                     doubleClickMS: 350,
-                    content: {
-                        currentTime: _this.content.currentTime,
-                        duration: _this.content.duration,
-                        next: _this.content.next,
-                        pause: _this.content.pause,
-                        play: _this.content.play,
-                        previous: _this.content.previous
-                    }
+                    content: _this.content
                 });
                 _this.resize();
             });
