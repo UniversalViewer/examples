@@ -932,6 +932,21 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "DAT",
+      "visible": true,
+      "manifests": [
+        {
+          "@id": "dat://f370c50889fe51511e8dcec10537c94c02360a4c4351c5af1e353c696a255204/collection/woody/index.json",
+          "@type": "sc:Manifest",
+          "label": "Fisherman",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "Tests (require jsonp)",
       "visible": false,
       "manifests": [
