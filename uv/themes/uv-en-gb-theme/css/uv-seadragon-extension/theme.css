@@ -2140,6 +2140,13 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .headerPanel button.imageBtn {
   float: left;
+  font: 0/0 a;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
 }
 .uv .headerPanel button.imageBtn i {
   height: 30px;
