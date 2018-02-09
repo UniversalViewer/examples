@@ -910,6 +910,36 @@
           "@type": "sc:Manifest",
           "label": "One video file, segments of file associated with different canvases",
           "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98.json",
+          "@type": "sc:Manifest",
+          "label": "C1685_98 Loose ends 17/7/99",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C308_8.json",
+          "@type": "sc:Manifest",
+          "label": "C308_8 Brian Hayes programme",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C728_241.json",
+          "@type": "sc:Manifest",
+          "label": "C728_241 [Demo]",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1132_116.json",
+          "@type": "sc:Manifest",
+          "label": "C1132_116 Cliff Richard interview (Heathcliff)",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/WS0003.json",
+          "@type": "sc:Manifest",
+          "label": "WS0003 Aburria aburri r1",
+          "visible": true
         }
       ]
     },
