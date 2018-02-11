@@ -805,8 +805,8 @@
   text-decoration: underline;
 }
 .uv a:focus {
-  outline: thin dotted #333333;
-  outline: 5px auto -webkit-focus-ring-color;
+  outline: auto 2px Highlight;
+  outline: auto 5px -webkit-focus-ring-color;
   outline-offset: -2px;
 }
 .uv img {
@@ -871,8 +871,8 @@
   user-select: none;
 }
 .uv .btn:focus {
-  outline: thin dotted #333333;
-  outline: 5px auto -webkit-focus-ring-color;
+  outline: auto 2px Highlight;
+  outline: auto 5px -webkit-focus-ring-color;
   outline-offset: -2px;
 }
 .uv .btn:hover,
@@ -1246,7 +1246,6 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 }
 /* Firefox */
 input[type=range] {
-  /* fix for FF unable to apply focus style bug  */
   /*required for proper track sizing in FF*/
   width: 300px;
 }
@@ -1766,8 +1765,8 @@ input[type=range]:focus::-ms-fill-upper {
   opacity: .75;
 }
 .uv .centerPanel .content .attribution .header .close:focus {
-  outline: thin dotted #ffffff;
-  outline: 5px auto -webkit-focus-ring-color;
+  outline: auto 2px #ffffff;
+  outline: auto 5px -webkit-focus-ring-color;
   outline-offset: -2px;
 }
 .uv .centerPanel .content .attribution .main {
