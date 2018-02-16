@@ -8,10 +8,8 @@
     <title>Example page for Universal Player</title>
     <meta name="description" content="Simple HTML5 Page layout template with header, footer, sidebar etc.">
     <link rel="stylesheet" href="template-style.css">
-    <link rel="stylesheet" type="text/css" href="uv/uv.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="uv/lib/offline.js"></script>
-    <script type="text/javascript" src="uv/helpers.js"></script>
+    <script src="https://rawgit.com/edsilv/utils/master/dist/utils.min.js"></script>
 </head>
 
 <body>
@@ -32,7 +30,8 @@
 	<section id="pageContent">
         
 		<div class="viewer">
-            <div id="uv" class="uv"></div>
+            <iframe id="uv" width="998" height="400" allowfullscreen frameborder="0"></iframe>
+            <a id="expando">expando</a>
         </div>
 		
 		<main role="main">
@@ -44,10 +43,8 @@
 				<h2>Illud mollis moderatius</h2>
 				<p>Eum facete intellegat ei, ut mazim melius usu. Has elit simul primis ne, regione minimum id cum. Sea deleniti dissentiet ea. Illud mollis moderatius ut per, at qui ubique populo. Eum ad cibo legimus, vim ei quidam fastidii.</p>
 			</article>
-			
 		</main>
 		<aside>
-			
 			<div>Another sound file</div>
 			<div>Another sound file</div>
 			<div>Another sound file</div>
@@ -59,41 +56,35 @@
 	<footer>
 		<div class="viewer">Placeholder for Universal viewer at bottom of the page</div>
 		<p>&copy; You can copy and edit and publish this template but please leave a link to our website | <a href="http://html5-templates.com/" target="_blank" rel="nofollow">HTML5 Templates</a></p>
-	
 	</footer>
 
     <script type="text/javascript">
 
-        var uv, manifest, urlDataProvider;
+        $(function() {
 
-        window.addEventListener('uvLoaded', function(e) { 
+            var $uv = $('#uv');
+            var uvurl = 'https://universalviewer.io/examples/uv/uv.html#?';
+            // are there uv hash parameters?
+            var manifest = Utils.Urls.getHashParameter('manifest');
+            var rangeId = Utils.Urls.getHashParameter('rid');
 
-            manifest = 'https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1132_116.json';
+            if (manifest) {
+                uvurl += 'manifest=' + manifest;
 
-            urlDataProvider = new UV.URLDataProvider();
+                if (rangeId) {
+                    uvurl += '&rid=' + rangeId;
+                }
 
-            uv = createUV('#uv', {
-                iiifResourceUri: manifest,
-                configUri: 'template-config.json',
-                collectionIndex: Number(urlDataProvider.get('c', 0)),
-                manifestIndex: Number(urlDataProvider.get('m', 0)),
-                sequenceIndex: Number(urlDataProvider.get('s', 0)),
-                canvasIndex: Number(urlDataProvider.get('cv', 0)),
-                rotation: Number(urlDataProvider.get('r', 0)),
-                rangeId: urlDataProvider.get('rid', ''),
-                xywh: urlDataProvider.get('xywh', '')
-            }, urlDataProvider);
+                $uv.prop('src', uvurl);
+            }
 
-            uv.on('created', function() {
-                Utils.Urls.setHashParameter('manifest', manifest);
+            $('#expando').on('click', function() {
+                $uv.animate({height: "640px"}, 600);
             });
 
-        }, false);
+        });       
 
     </script>
-
-    <!-- Put at the bottom of the page to ensure that the uvLoaded event isn't fired before a listener is registered -->
-    <script type="text/javascript" src="uv/uv.js"></script>
 
 </body>
 

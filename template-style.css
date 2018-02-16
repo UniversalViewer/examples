@@ -112,7 +112,6 @@ body > section {
 .viewer {
     border:black solid 1px;
     margin-bottom:15px;
-    padding: 5px;
     background: #4D9DE7;
     height: 400px;
 }
