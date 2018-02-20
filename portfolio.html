@@ -8,9 +8,9 @@
     <title>3D PORTFOLIO</title>
     <link rel="stylesheet" type="text/css" href="uv/uv.css">
     <link rel="stylesheet" type="text/css" href="portfolio.css">
-    <script src="https://unpkg.com/iiif-gallery/dist/iiifgallery.js"></script>
-    <script src="uv/lib/offline.js"></script>
-    <script src="uv/helpers.js"></script>
+    <!-- <script type="text/javascript" src="https://unpkg.com/iiif-gallery/dist/iiifgallery.js"></script> -->
+    <script type="text/javascript" src="uv/lib/offline.js"></script>
+    <script type="text/javascript" src="uv/helpers.js"></script>
 </head>
 
 <body>
@@ -23,11 +23,11 @@
 
         <div id="uv" class="uv"></div>
 
-        <iiif-gallery manifest="https://sophiedixon.github.io/3d-portfolio/collection/index.json"></iiif-gallery>
+        <!-- <iiif-gallery manifest="https://sophiedixon.github.io/3d-portfolio/collection/index.json"></iiif-gallery> -->
 
     </main>
 
-    <script>
+    <script type="text/javascript">
 
         var uv, $uv, urlDataProvider, manifest;
 
@@ -39,7 +39,7 @@
                 uv.set({
                     root: './uv',
                     iiifResourceUri: manifest,
-                    configUri: 'portfolio-config.json',
+                    configUri: 'uv-config.json',
                     collectionIndex: 0,
                     manifestIndex: 0,
                     sequenceIndex: 0,
@@ -61,7 +61,7 @@
 
             var data = {
                 root: './uv',
-                iiifResourceUri: manifest,
+                iiifResourceUri: 'https://sophiedixon.github.io/3d-portfolio/collection/animal_skull/index.json',
                 configUri: 'portfolio-config.json',
                 collectionIndex: Number(urlDataProvider.get('c', 0)),
                 manifestIndex: Number(urlDataProvider.get('m', 0)),
@@ -82,17 +82,17 @@
                 Utils.Urls.setHashParameter('manifest', manifest);
             });
 
-            const iiifGallery = document.querySelector('iiif-gallery');
+            // const iiifGallery = document.querySelector('iiif-gallery');
 
-            iiifGallery.addEventListener('onSelectManifest', function (evt) {
-                manifest = evt.detail.id;
-                openManifest();
-            });
+            // iiifGallery.addEventListener('onSelectManifest', function (evt) {
+            //     manifest = evt.detail.id;
+            //     openManifest();
+            // });
 
-            iiifGallery.addEventListener('onSelectCollection', function (evt) {
-                manifest = evt.detail.id;
-                openManifest();
-            });
+            // iiifGallery.addEventListener('onSelectCollection', function (evt) {
+            //     manifest = evt.detail.id;
+            //     openManifest();
+            // });
 
             // are there uv hash parameters?
             manifest = Utils.Urls.getHashParameter('manifest');
@@ -100,6 +100,9 @@
             if (manifest) {
                 openManifest();
             }
+
+            manifest = 'https://sophiedixon.github.io/3d-portfolio/collection/animal_skull/index.json';
+            openManifest();
 
         }, false);
 
