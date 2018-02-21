@@ -459,6 +459,15 @@
   font-size: 11px;
   text-transform: uppercase;
 }
+.uv .centerPanel .content {
+  position: relative;
+}
+.uv .centerPanel .content button {
+  color: #fff;
+}
+.uv .centerPanel .content canvas {
+  position: absolute;
+}
 .uv .centerPanel .content .container {
   margin: 0 20px 0 20px;
 }
