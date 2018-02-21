@@ -26935,7 +26935,6 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
     Object.defineProperty(exports, "__esModule", { value: true });
     var PDFCenterPanel = /** @class */ (function (_super) {
         __extends(PDFCenterPanel, _super);
-        //private _scale: number = 0.75;
         function PDFCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
             _this._pdfDoc = null;
@@ -27018,6 +27017,9 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             this._pageRendering = true;
             // Using promise to fetch the page
             this._pdfDoc.getPage(num).then(function (page) {
+                if (_this._renderTask) {
+                    _this._renderTask.cancel();
+                }
                 var height = _this.$content.height();
                 _this._canvas.height = height;
                 _this._viewport = page.getViewport(_this._canvas.height / page.getViewport(1.0).height);
@@ -27031,15 +27033,17 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     canvasContext: _this._ctx,
                     viewport: _this._viewport
                 };
-                var renderTask = page.render(renderContext);
+                _this._renderTask = page.render(renderContext);
                 // Wait for rendering to finish
-                renderTask.promise.then(function () {
+                _this._renderTask.promise.then(function () {
                     _this._pageRendering = false;
                     if (_this._pageNumPending !== null) {
                         // New page rendering is pending
                         _this._render(_this._pageNumPending);
                         _this._pageNumPending = null;
                     }
+                }).catch(function (err) {
+                    //console.log(err);
                 });
             });
         };
@@ -27052,7 +27056,6 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             }
         };
         PDFCenterPanel.prototype.resize = function () {
-            var _this = this;
             _super.prototype.resize.call(this);
             if (!this._viewport) {
                 return;
@@ -27067,9 +27070,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             // });
             //this._viewport.width = width;
             //this._viewport.height = height;
-            setTimeout(function () {
-                _this._render(_this._pageNum);
-            }, 10);
+            this._render(this._pageNum);
         };
         return PDFCenterPanel;
     }(CenterPanel_1.CenterPanel));
