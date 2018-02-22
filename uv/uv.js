@@ -26920,6 +26920,21 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
     exports.DownloadDialogue = DownloadDialogue;
 });
 //# sourceMappingURL=DownloadDialogue.js.map
+define('extensions/uv-pdf-extension/Events',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Events = /** @class */ (function () {
+        function Events() {
+        }
+        Events.namespace = 'pdfExtension.';
+        Events.PDF_LOADED = Events.namespace + 'pdfLoaded';
+        Events.PAGE_INDEX_CHANGED = Events.namespace + 'pageIndexChanged';
+        Events.SEARCH = Events.namespace + 'search';
+        return Events;
+    }());
+    exports.Events = Events;
+});
+//# sourceMappingURL=Events.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -26930,7 +26945,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
+define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../../extensions/uv-pdf-extension/Events"], function (require, exports, BaseEvents_1, CenterPanel_1, Events_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var PDFCenterPanel = /** @class */ (function (_super) {
@@ -26938,9 +26953,9 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         function PDFCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
             _this._pdfDoc = null;
-            _this._pageNum = 1;
+            _this._pageIndex = 1;
             _this._pageRendering = false;
-            _this._pageNumPending = null;
+            _this._pageIndexPending = null;
             return _this;
         }
         PDFCenterPanel.prototype.create = function () {
@@ -26951,28 +26966,52 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             this._canvas = this._$canvas[0];
             this._ctx = this._canvas.getContext('2d');
             this.$content.append(this._$canvas);
-            this._$previousButton = $("\n          <button class=\"btn imageBtn previous\" title=\"" + this.content.previous + "\">\n            <i class=\"uv-icon-previous\" aria-hidden=\"true\"></i>" + this.content.previous + "\n          </button>\n        ");
-            this.$content.append(this._$previousButton);
-            this._$nextButton = $("\n          <button class=\"btn imageBtn next\" title=\"" + this.content.next + "\">\n            <i class=\"uv-icon-next\" aria-hidden=\"true\"></i>" + this.content.next + "\n          </button>\n        ");
-            this.$content.append(this._$nextButton);
-            this._$previousButton.on('click', function (e) {
-                e.preventDefault();
-                if (_this._pageNum <= 1) {
-                    return;
-                }
-                _this._pageNum--;
-                _this._queueRenderPage(_this._pageNum);
-            });
-            this._$nextButton.on('click', function (e) {
-                e.preventDefault();
-                if (_this._pageNum >= _this._pdfDoc.numPages) {
-                    return;
-                }
-                _this._pageNum++;
-                _this._queueRenderPage(_this._pageNum);
-            });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                _this._pageIndex = 1;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                if (_this._pageIndex <= 1) {
+                    return;
+                }
+                _this._pageIndex--;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                if (_this._pageIndex >= _this._pdfDoc.numPages) {
+                    return;
+                }
+                _this._pageIndex++;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                _this._pageIndex = _this._pdfDoc.numPages;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(Events_1.Events.SEARCH, function (e, pageIndex) {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                if (pageIndex < 1 || pageIndex > _this._pdfDoc.numPages) {
+                    return;
+                }
+                _this._pageIndex = pageIndex;
+                _this._queueRenderPage(_this._pageIndex);
             });
         };
         PDFCenterPanel.prototype.openMedia = function (resources) {
@@ -26990,7 +27029,8 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 PDFJS.disableWorker = true;
                 PDFJS.getDocument(mediaUri).then(function (pdfDoc) {
                     _this._pdfDoc = pdfDoc;
-                    _this._render(_this._pageNum);
+                    _this._render(_this._pageIndex);
+                    $.publish(Events_1.Events.PDF_LOADED, [pdfDoc]);
                     // this._pdfDoc.getMetadata().then((data: any) => {
                     //     console.log('metadata', data);
                     // });
@@ -27007,15 +27047,9 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 //window.PDFObject.embed(mediaUri, '#content', { id: "PDF" });
             });
         };
-        // whenResized(cb: () => void): void {
-        //     Utils.Async.waitFor(() => {
-        //         return this.isResized;
-        //     }, cb);
-        // }
         PDFCenterPanel.prototype._render = function (num) {
             var _this = this;
             this._pageRendering = true;
-            // Using promise to fetch the page
             this._pdfDoc.getPage(num).then(function (page) {
                 if (_this._renderTask) {
                     _this._renderTask.cancel();
@@ -27036,11 +27070,12 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 _this._renderTask = page.render(renderContext);
                 // Wait for rendering to finish
                 _this._renderTask.promise.then(function () {
+                    $.publish(Events_1.Events.PAGE_INDEX_CHANGED, [_this._pageIndex]);
                     _this._pageRendering = false;
-                    if (_this._pageNumPending !== null) {
+                    if (_this._pageIndexPending !== null) {
                         // New page rendering is pending
-                        _this._render(_this._pageNumPending);
-                        _this._pageNumPending = null;
+                        _this._render(_this._pageIndexPending);
+                        _this._pageIndexPending = null;
                     }
                 }).catch(function (err) {
                     //console.log(err);
@@ -27049,7 +27084,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype._queueRenderPage = function (num) {
             if (this._pageRendering) {
-                this._pageNumPending = num;
+                this._pageIndexPending = num;
             }
             else {
                 this._render(num);
@@ -27060,23 +27095,160 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             if (!this._viewport) {
                 return;
             }
-            // const ratio: number = this._$canvas.width() / this._$canvas.height();
-            // const height: number = this.$content.height();
-            // const width: number = height * ratio;
-            // this._canvas.height = height;
-            // this._canvas.width = width;
-            // this._$canvas.css({
-            //     left: (this.$content.width() / 2) - (width / 2)
-            // });
-            //this._viewport.width = width;
-            //this._viewport.height = height;
-            this._render(this._pageNum);
+            this._render(this._pageIndex);
         };
         return PDFCenterPanel;
     }(CenterPanel_1.CenterPanel));
     exports.PDFCenterPanel = PDFCenterPanel;
 });
 //# sourceMappingURL=PDFCenterPanel.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-pdf-extension/Events", "../uv-shared-module/HeaderPanel"], function (require, exports, BaseEvents_1, Events_1, HeaderPanel_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var PDFHeaderPanel = /** @class */ (function (_super) {
+        __extends(PDFHeaderPanel, _super);
+        function PDFHeaderPanel($element) {
+            var _this = _super.call(this, $element) || this;
+            _this.firstButtonEnabled = false;
+            _this.lastButtonEnabled = false;
+            _this.nextButtonEnabled = false;
+            _this.prevButtonEnabled = false;
+            _this._pageIndex = 0;
+            _this._pdfDoc = null;
+            return _this;
+        }
+        PDFHeaderPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('pdfHeaderPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(Events_1.Events.PAGE_INDEX_CHANGED, function (e, pageIndex) {
+                _this._pageIndex = pageIndex;
+                _this.render();
+            });
+            $.subscribe(Events_1.Events.PDF_LOADED, function (e, pdfDoc) {
+                _this._pdfDoc = pdfDoc;
+            });
+            this.$prevOptions = $('<div class="prevOptions"></div>');
+            this.$centerOptions.append(this.$prevOptions);
+            this.$firstButton = $("\n          <button class=\"btn imageBtn first\" tabindex=\"0\" title=\"" + this.content.first + "\">\n            <i class=\"uv-icon-first\" aria-hidden=\"true\"></i>" + this.content.first + "\n          </button>\n        ");
+            this.$prevOptions.append(this.$firstButton);
+            this.$prevButton = $("\n          <button class=\"btn imageBtn prev\" tabindex=\"0\" title=\"" + this.content.previous + "\">\n            <i class=\"uv-icon-prev\" aria-hidden=\"true\"></i>" + this.content.previous + "\n          </button>\n        ");
+            this.$prevOptions.append(this.$prevButton);
+            this.$search = $('<div class="search"></div>');
+            this.$centerOptions.append(this.$search);
+            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="0" aria-label="' + this.content.pageSearchLabel + '"/>');
+            this.$search.append(this.$searchText);
+            this.$total = $('<span class="total"></span>');
+            this.$search.append(this.$total);
+            this.$searchButton = $('<a class="go btn btn-primary" tabindex="0">' + this.content.go + '</a>');
+            this.$search.append(this.$searchButton);
+            this.$nextOptions = $('<div class="nextOptions"></div>');
+            this.$centerOptions.append(this.$nextOptions);
+            this.$nextButton = $("\n          <button class=\"btn imageBtn next\" tabindex=\"0\" title=\"" + this.content.next + "\">\n            <i class=\"uv-icon-next\" aria-hidden=\"true\"></i>" + this.content.next + "\n          </button>\n        ");
+            this.$nextOptions.append(this.$nextButton);
+            this.$lastButton = $("\n          <button class=\"btn imageBtn last\" tabindex=\"0\" title=\"" + this.content.last + "\">\n            <i class=\"uv-icon-last\" aria-hidden=\"true\"></i>" + this.content.last + "\n          </button>\n        ");
+            this.$nextOptions.append(this.$lastButton);
+            // ui event handlers.
+            this.$firstButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.FIRST);
+            });
+            this.$prevButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.PREV);
+            });
+            this.$nextButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.NEXT);
+            });
+            this.$lastButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.LAST);
+            });
+            this.$searchText.onEnter(function () {
+                _this.$searchText.blur();
+                _this.search(_this.$searchText.val());
+            });
+            this.$searchText.click(function () {
+                $(this).select();
+            });
+            this.$searchButton.onPressed(function () {
+                _this.search(_this.$searchText.val());
+            });
+        };
+        PDFHeaderPanel.prototype.render = function () {
+            // check if the book has more than one page, otherwise hide prev/next options.
+            if (this._pdfDoc.numPages === 1) {
+                this.$centerOptions.hide();
+            }
+            this.$searchText.val(this._pageIndex);
+            var of = this.content.of;
+            this.$total.html(String.format(of, this._pdfDoc.numPages));
+        };
+        PDFHeaderPanel.prototype.search = function (value) {
+            if (!value) {
+                this.extension.showMessage(this.content.emptyValue);
+                //$.publish(BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                return;
+            }
+            var index = parseInt(this.$searchText.val(), 10);
+            if (isNaN(index)) {
+                this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.invalidNumber);
+                //$.publish(BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                return;
+            }
+            $.publish(Events_1.Events.SEARCH, [index]);
+        };
+        PDFHeaderPanel.prototype.pageIndexChanged = function (index) {
+            //this.setSearchFieldValue(index);
+            // enabled/disable buttons
+        };
+        PDFHeaderPanel.prototype.disableFirstButton = function () {
+            this.firstButtonEnabled = false;
+            this.$firstButton.disable();
+        };
+        PDFHeaderPanel.prototype.enableFirstButton = function () {
+            this.firstButtonEnabled = true;
+            this.$firstButton.enable();
+        };
+        PDFHeaderPanel.prototype.disableLastButton = function () {
+            this.lastButtonEnabled = false;
+            this.$lastButton.disable();
+        };
+        PDFHeaderPanel.prototype.enableLastButton = function () {
+            this.lastButtonEnabled = true;
+            this.$lastButton.enable();
+        };
+        PDFHeaderPanel.prototype.disablePrevButton = function () {
+            this.prevButtonEnabled = false;
+            this.$prevButton.disable();
+        };
+        PDFHeaderPanel.prototype.enablePrevButton = function () {
+            this.prevButtonEnabled = true;
+            this.$prevButton.enable();
+        };
+        PDFHeaderPanel.prototype.disableNextButton = function () {
+            this.nextButtonEnabled = false;
+            this.$nextButton.disable();
+        };
+        PDFHeaderPanel.prototype.enableNextButton = function () {
+            this.nextButtonEnabled = true;
+            this.$nextButton.enable();
+        };
+        PDFHeaderPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return PDFHeaderPanel;
+    }(HeaderPanel_1.HeaderPanel));
+    exports.PDFHeaderPanel = PDFHeaderPanel;
+});
+//# sourceMappingURL=PDFHeaderPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -27149,7 +27321,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-pdfheaderpanel-module/PDFHeaderPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, PDFHeaderPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -27200,7 +27372,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new PDFHeaderPanel_1.PDFHeaderPanel(Shell_1.Shell.$headerPanel);
             }
             else {
                 Shell_1.Shell.$headerPanel.hide();
@@ -27247,7 +27419,6 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
-            console.log(dep);
             // if (index === 0) {
             //     window.PDFObject = dep;
             // }
