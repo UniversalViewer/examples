@@ -26962,10 +26962,12 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             var _this = this;
             this.setConfig('pdfCenterPanel');
             _super.prototype.create.call(this);
+            this._$spinner = $('<div class="spinner"></div>');
+            this.$content.append(this._$spinner);
             this._$canvas = $('<canvas></canvas>');
             this._canvas = this._$canvas[0];
             this._ctx = this._canvas.getContext('2d');
-            this.$content.append(this._$canvas);
+            this.$content.prepend(this._$canvas);
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
             });
@@ -27016,6 +27018,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
+            this._$spinner.show();
             this.extension.getExternalResources(resources).then(function () {
                 var mediaUri = null;
                 var canvas = _this.extension.helper.getCurrentCanvas();
@@ -27031,18 +27034,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     _this._pdfDoc = pdfDoc;
                     _this._render(_this._pageIndex);
                     $.publish(Events_1.Events.PDF_LOADED, [pdfDoc]);
-                    // this._pdfDoc.getMetadata().then((data: any) => {
-                    //     console.log('metadata', data);
-                    // });
-                    // this._pdfDoc.getData().then((data: any) => {
-                    //     console.log('data', data);
-                    // });
-                    // this._pdfDoc.getOutline().then((data: any) => {
-                    //     console.log('outline', data);
-                    // });
-                    // this._pdfDoc.getStats().then((data: any) => {
-                    //     console.log('stats', data);
-                    // });
+                    _this._$spinner.hide();
                 });
                 //window.PDFObject.embed(mediaUri, '#content', { id: "PDF" });
             });
@@ -27092,6 +27084,8 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+            this._$spinner.css('top', (this.$content.height() / 2) - (this._$spinner.height() / 2));
+            this._$spinner.css('left', (this.$content.width() / 2) - (this._$spinner.width() / 2));
             if (!this._viewport) {
                 return;
             }
