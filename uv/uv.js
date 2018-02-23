@@ -27190,56 +27190,34 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
             this.$searchText.val(this._pageIndex);
             var of = this.content.of;
             this.$total.html(String.format(of, this._pdfDoc.numPages));
+            if (this._pageIndex === 1) {
+                this.$firstButton.disable();
+                this.$prevButton.disable();
+            }
+            else {
+                this.$firstButton.enable();
+                this.$prevButton.enable();
+            }
+            if (this._pageIndex === this._pdfDoc.numPages) {
+                this.$lastButton.disable();
+                this.$nextButton.disable();
+            }
+            else {
+                this.$lastButton.enable();
+                this.$nextButton.enable();
+            }
         };
         PDFHeaderPanel.prototype.search = function (value) {
             if (!value) {
                 this.extension.showMessage(this.content.emptyValue);
-                //$.publish(BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
             var index = parseInt(this.$searchText.val(), 10);
             if (isNaN(index)) {
                 this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.invalidNumber);
-                //$.publish(BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
             $.publish(Events_1.Events.SEARCH, [index]);
-        };
-        PDFHeaderPanel.prototype.pageIndexChanged = function (index) {
-            //this.setSearchFieldValue(index);
-            // enabled/disable buttons
-        };
-        PDFHeaderPanel.prototype.disableFirstButton = function () {
-            this.firstButtonEnabled = false;
-            this.$firstButton.disable();
-        };
-        PDFHeaderPanel.prototype.enableFirstButton = function () {
-            this.firstButtonEnabled = true;
-            this.$firstButton.enable();
-        };
-        PDFHeaderPanel.prototype.disableLastButton = function () {
-            this.lastButtonEnabled = false;
-            this.$lastButton.disable();
-        };
-        PDFHeaderPanel.prototype.enableLastButton = function () {
-            this.lastButtonEnabled = true;
-            this.$lastButton.enable();
-        };
-        PDFHeaderPanel.prototype.disablePrevButton = function () {
-            this.prevButtonEnabled = false;
-            this.$prevButton.disable();
-        };
-        PDFHeaderPanel.prototype.enablePrevButton = function () {
-            this.prevButtonEnabled = true;
-            this.$prevButton.enable();
-        };
-        PDFHeaderPanel.prototype.disableNextButton = function () {
-            this.nextButtonEnabled = false;
-            this.$nextButton.disable();
-        };
-        PDFHeaderPanel.prototype.enableNextButton = function () {
-            this.nextButtonEnabled = true;
-            this.$nextButton.enable();
         };
         PDFHeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
