@@ -724,12 +724,12 @@
   background-position: 50% 50%;
 }
 .uv .centerPanel .content .searchOverlay {
-  background-color: #14a4c3;
+  background-color: #3f8898;
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
 .uv .centerPanel .content .searchOverlay.current {
-  border: 3px solid #fff;
+  background-color: #3eddff;
 }
 .uv .openseadragon-canvas {
   outline: none;
