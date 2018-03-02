@@ -2858,137 +2858,6 @@ var KeyCodes;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])(1)
 });
-// extensions v0.2.1 https://github.com/edsilv/extensions
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/extensions.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.extensions = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-Array.prototype.clone = function () {
-    return this.slice(0);
-};
-if (!Array.prototype.includes) {
-    Array.prototype.includes = function (val) {
-        return this.indexOf(val) !== -1;
-    };
-}
-Array.prototype.insert = function (item, index) {
-    this.splice(index, 0, item);
-};
-Array.prototype.move = function (fromIndex, toIndex) {
-    this.splice(toIndex, 0, this.splice(fromIndex, 1)[0]);
-};
-Array.prototype.remove = function (item) {
-    var index = this.indexOf(item);
-    if (index > -1) {
-        this.splice(index, 1);
-    }
-};
-Array.prototype.removeAt = function (index) {
-    this.splice(index, 1);
-};
-
-if (!Math.clamp) {
-    Math.clamp = function (value, min, max) {
-        return Math.min(Math.max(value, min), max);
-    };
-}
-if (!Math.radians) {
-    Math.radians = function (degrees) {
-        return Math.TAU * (degrees / 360);
-    };
-}
-Math.distanceBetween = function (x1, y1, x2, y2) {
-    return Math.sqrt(((x2 - x1) * 2) + ((y2 - y1) * 2));
-};
-Math.lerp = function (start, stop, amount) {
-    return start + (stop - start) * amount;
-};
-Math.mag = function (a, b, c) {
-    return Math.sqrt(a * a + b * b + c * c);
-};
-Math.map = function (value, start1, stop1, start2, stop2) {
-    return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
-};
-Math.median = function (values) {
-    values.sort(function (a, b) { return a - b; });
-    var half = Math.floor(values.length / 2);
-    if (values.length % 2) {
-        return values[half];
-    }
-    else {
-        return (values[half - 1] + values[half]) / 2.0;
-    }
-};
-Math.normalise = function (num, min, max) {
-    return (num - min) / (max - min);
-};
-if (!Math.degrees) {
-    Math.degrees = function (radians) {
-        return (radians * 360) / Math.TAU;
-    };
-}
-/**
- * Get a random number between two numbers.
- * If 'high' isn't passed, get a number from 0 to 'low'.
- * @param {Number} low The low number.
- * @param {Number} [high] The high number.
- */
-Math.randomBetween = function (low, high) {
-    if (!high) {
-        high = low;
-        low = 0;
-    }
-    if (low >= high)
-        return low;
-    return low + (high - low) * Math.random();
-};
-Math.roundToDecimalPlace = function (num, dec) {
-    return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-};
-Math.TAU = Math.PI * 2;
-
-String.prototype.b64_to_utf8 = function () {
-    return decodeURIComponent(escape(window.atob(this)));
-};
-String.format = function () {
-    var s = arguments[0];
-    for (var i = 0; i < arguments.length - 1; i++) {
-        var reg = new RegExp("\\{" + i + "\\}", "gm");
-        s = s.replace(reg, arguments[i + 1]);
-    }
-    return s;
-};
-if (!String.prototype.includes) {
-    String.prototype.includes = function (str) {
-        return this.indexOf(str) !== -1;
-    };
-}
-String.prototype.isAlphanumeric = function () {
-    return /^[a-zA-Z0-9]*$/.test(this);
-};
-String.prototype.ltrim = function () {
-    return this.replace(/^\s+/, '');
-};
-String.prototype.rtrim = function () {
-    return this.replace(/\s+$/, '');
-};
-String.prototype.toCssClass = function () {
-    return this.replace(/[^a-z0-9]/g, function (s) {
-        var c = s.charCodeAt(0);
-        if (c == 32)
-            return '-';
-        if (c >= 65 && c <= 90)
-            return '_' + s.toLowerCase();
-        return '__' + ('000' + c.toString(16)).slice(-4);
-    });
-};
-String.prototype.toFileName = function () {
-    return this.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-};
-String.prototype.utf8_to_b64 = function () {
-    return window.btoa(unescape(encodeURIComponent(this)));
-};
-
-},{}]},{},[1])(1)
-});
 // http-status-codes v0.0.7 https://github.com/edsilv/http-status-codes
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/http-status-codes.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.httpStatusCodes = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
@@ -18360,15 +18229,22 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             if (!scripts.length) {
                 requirejs([depsUri], function (deps) {
                     var baseUri = that.data.root + '/lib/';
-                    // for each dependency, prepend baseUri.
+                    // for each dependency, prepend baseUri unless it starts with a ! which indicates to ignore it.
+                    // check for a requirejs.config that sets a specific path, such as the PDF extension
                     if (deps.sync) {
                         for (var i = 0; i < deps.sync.length; i++) {
-                            deps.sync[i] = baseUri + deps.sync[i];
+                            var dep = deps.sync[i];
+                            if (!dep.startsWith('!')) {
+                                deps.sync[i] = baseUri + dep;
+                            }
                         }
                     }
                     if (deps.async) {
                         for (var i = 0; i < deps.async.length; i++) {
-                            deps.async[i] = baseUri + deps.async[i];
+                            var dep = deps.async[i];
+                            if (!dep.startsWith('!')) {
+                                deps.async[i] = baseUri + dep;
+                            }
                         }
                     }
                     cb(deps);
@@ -23793,11 +23669,15 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             });
             this.$previousResultButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Events_1.Events.PREV_SEARCH_RESULT);
+                if (_this.isPreviousButtonEnabled()) {
+                    $.publish(Events_1.Events.PREV_SEARCH_RESULT);
+                }
             });
             this.$nextResultButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Events_1.Events.NEXT_SEARCH_RESULT);
+                if (_this.isNextButtonEnabled()) {
+                    $.publish(Events_1.Events.NEXT_SEARCH_RESULT);
+                }
             });
             this.$clearSearchResultsButton.on('click', function (e) {
                 e.preventDefault();
@@ -24945,6 +24825,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             _this.controlsVisible = false;
             _this.isCreated = false;
             _this.isFirstLoad = true;
+            _this.navigatedFromSearch = false;
             _this.nextButtonEnabled = false;
             _this.prevButtonEnabled = false;
             return _this;
@@ -25131,6 +25012,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$viewportNavButtonsContainer = this.$viewer.find('.openseadragon-container > div:not(.openseadragon-canvas):first');
             this.$viewportNavButtons = this.$viewportNavButtonsContainer.find('.viewportNavButton');
             this.$canvas = $(this.viewer.canvas);
+            // disable right click on canvas
             this.$canvas.on('contextmenu', function () { return false; });
             this.$navigator = this.$viewer.find(".navigator");
             this.setNavigatorVisible();
@@ -25404,7 +25286,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.setNavigatorVisible();
             this.overlayAnnotations();
             this.updateBounds();
-            this.zoomToInitialAnnotation();
+            // this only happens if prev/next search result were clicked and caused a reload
+            if (this.navigatedFromSearch) {
+                this.navigatedFromSearch = false;
+                this.zoomToInitialAnnotation();
+            }
             this.isFirstLoad = false;
         };
         SeadragonCenterPanel.prototype.zoomToInitialAnnotation = function () {
@@ -25565,44 +25451,14 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.isZoomToSearchResultEnabled = function () {
             return Utils.Bools.getBool(this.extension.data.config.options.zoomToSearchResultEnabled, true);
         };
-        SeadragonCenterPanel.prototype.nextAnnotation = function () {
-            var annotationRects = this.getAnnotationRectsForCurrentImages();
-            var annotationRect = this.extension.currentAnnotationRect;
-            var currentAnnotationRectIndex = annotationRect ? this.getAnnotationRectIndex(annotationRect) : -1;
-            var foundRect = null;
-            for (var i = currentAnnotationRectIndex + 1; i < annotationRects.length; i++) {
-                var rect = annotationRects[i];
-                // this was removed as users found it confusing.
-                // find the next visible or non-visible rect.
-                //if (rect.isVisible) {
-                //    continue;
-                //} else {
-                foundRect = rect;
-                break;
-                //}
-            }
-            if (foundRect && this.isZoomToSearchResultEnabled()) {
-                // if the rect's canvasIndex is greater than the current canvasIndex
-                if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
-                    this.extension.currentAnnotationRect = foundRect;
-                    $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
-                }
-                else {
-                    this.zoomToAnnotation(foundRect);
-                }
-            }
-            else {
-                $.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
-            }
-        };
         SeadragonCenterPanel.prototype.prevAnnotation = function () {
             var annotationRects = this.getAnnotationRectsForCurrentImages();
             var currentAnnotationRect = this.extension.currentAnnotationRect;
-            if (this.isZoomToSearchResultEnabled() && !currentAnnotationRect) {
-                return;
-            }
-            var currentAnnotationRectIndex = this.getAnnotationRectIndex(currentAnnotationRect);
+            var currentAnnotationRectIndex = currentAnnotationRect ? this.getAnnotationRectIndex(currentAnnotationRect) : annotationRects.length;
+            //const currentAnnotationRectIndex: number = this.getAnnotationRectIndex(<AnnotationRect>currentAnnotationRect);
             var foundRect = null;
+            // if there's no currentAnnotationRect selected, index is the total available annotation rects for the current images.
+            // minusing 1 makes the index the last of the available rects for the current images.
             for (var i = currentAnnotationRectIndex - 1; i >= 0; i--) {
                 var rect = annotationRects[i];
                 // this was removed as users found it confusing.
@@ -25618,6 +25474,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 // if the rect's canvasIndex is less than the current canvasIndex
                 if (foundRect.canvasIndex < this.extension.helper.canvasIndex) {
                     this.extension.currentAnnotationRect = foundRect;
+                    this.navigatedFromSearch = true;
                     $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
@@ -25625,7 +25482,42 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 }
             }
             else {
+                this.navigatedFromSearch = true;
                 $.publish(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+            }
+        };
+        SeadragonCenterPanel.prototype.nextAnnotation = function () {
+            var annotationRects = this.getAnnotationRectsForCurrentImages();
+            var currentAnnotationRect = this.extension.currentAnnotationRect;
+            var currentAnnotationRectIndex = currentAnnotationRect ? this.getAnnotationRectIndex(currentAnnotationRect) : -1;
+            var foundRect = null;
+            // if there's no currentAnnotationRect selected, index is -1.
+            // adding 1 makes the index 0 of available rects for the current images.
+            for (var i = currentAnnotationRectIndex + 1; i < annotationRects.length; i++) {
+                var rect = annotationRects[i];
+                // this was removed as users found it confusing.
+                // find the next visible or non-visible rect.
+                //if (rect.isVisible) {
+                //    continue;
+                //} else {
+                foundRect = rect;
+                break;
+                //}
+            }
+            if (foundRect && this.isZoomToSearchResultEnabled()) {
+                // if the rect's canvasIndex is greater than the current canvasIndex
+                if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
+                    this.extension.currentAnnotationRect = foundRect;
+                    this.navigatedFromSearch = true;
+                    $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
+                }
+                else {
+                    this.zoomToAnnotation(foundRect);
+                }
+            }
+            else {
+                this.navigatedFromSearch = true;
+                $.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
             }
         };
         SeadragonCenterPanel.prototype.getAnnotationRectByIndex = function (index) {
@@ -25639,18 +25531,35 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var annotationRects = this.getAnnotationRectsForCurrentImages();
             if (!annotationRects.length)
                 return null;
-            // if the previous AnnotationRect had a canvasIndex higher than the current canvasIndex
+            // if we've got this far it means that a reload has happened
+            // check if the lastCanvasIndex is greater or less than the current canvasIndex
+            // if greater than, select the last annotation on the current page
+            // if less than, select the first annotation on the current page
+            // otherwise default to the first annotation
             var previousAnnotationRect = this.extension.previousAnnotationRect;
-            if (previousAnnotationRect && previousAnnotationRect.canvasIndex > this.extension.helper.canvasIndex) {
-                return annotationRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).last();
+            if (!previousAnnotationRect) {
+                if (this.extension.lastCanvasIndex > this.extension.helper.canvasIndex) {
+                    return annotationRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).last();
+                }
             }
-            // get the first rect with the current canvasindex.
             return annotationRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).first();
         };
         SeadragonCenterPanel.prototype.zoomToAnnotation = function (annotationRect) {
             this.extension.previousAnnotationRect = this.extension.currentAnnotationRect || annotationRect;
             this.extension.currentAnnotationRect = annotationRect;
-            this.fitToBounds(new Bounds_1.Bounds(annotationRect.viewportX, annotationRect.viewportY, annotationRect.width, annotationRect.height), false);
+            // if zoomToBoundsEnabled, zoom to the annotation's bounds.
+            // otherwise, pan into view preserving the current zoom level.
+            if (Utils.Bools.getBool(this.config.options.zoomToBoundsEnabled, false)) {
+                this.fitToBounds(new Bounds_1.Bounds(annotationRect.viewportX, annotationRect.viewportY, annotationRect.width, annotationRect.height), false);
+            }
+            else {
+                var x = annotationRect.viewportX - ((this.currentBounds.w * 0.5) - annotationRect.width * 0.5);
+                var y = annotationRect.viewportY - ((this.currentBounds.h * 0.5) - annotationRect.height * 0.5);
+                var w = this.currentBounds.w;
+                var h = this.currentBounds.h;
+                var bounds = new Bounds_1.Bounds(x, y, w, h);
+                this.fitToBounds(bounds);
+            }
             this.highlightAnnotationRect(annotationRect);
             $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CHANGED);
         };
@@ -26855,6 +26764,21 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
     exports.DownloadDialogue = DownloadDialogue;
 });
 //# sourceMappingURL=DownloadDialogue.js.map
+define('extensions/uv-pdf-extension/Events',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Events = /** @class */ (function () {
+        function Events() {
+        }
+        Events.namespace = 'pdfExtension.';
+        Events.PDF_LOADED = Events.namespace + 'pdfLoaded';
+        Events.PAGE_INDEX_CHANGED = Events.namespace + 'pageIndexChanged';
+        Events.SEARCH = Events.namespace + 'search';
+        return Events;
+    }());
+    exports.Events = Events;
+});
+//# sourceMappingURL=Events.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -26865,24 +26789,132 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
+define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../../extensions/uv-pdf-extension/Events"], function (require, exports, BaseEvents_1, CenterPanel_1, Events_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var PDFCenterPanel = /** @class */ (function (_super) {
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
-            return _super.call(this, $element) || this;
+            var _this = _super.call(this, $element) || this;
+            _this._nextButtonEnabled = false;
+            _this._pageIndex = 1;
+            _this._pageIndexPending = null;
+            _this._pageRendering = false;
+            _this._pdfDoc = null;
+            _this._prevButtonEnabled = false;
+            return _this;
         }
         PDFCenterPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('pdfCenterPanel');
             _super.prototype.create.call(this);
+            this._$canvas = $('<canvas></canvas>');
+            this._$spinner = $('<div class="spinner"></div>');
+            this._canvas = this._$canvas[0];
+            this._ctx = this._canvas.getContext('2d');
+            this.$content.append(this._$spinner);
+            this._$prevButton = $('<div class="btn prev" tabindex="0"></div>');
+            this.$content.append(this._$prevButton);
+            this._$nextButton = $('<div class="btn next" tabindex="0"></div>');
+            this.$content.append(this._$nextButton);
+            this.$content.prepend(this._$canvas);
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
             });
+            $.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                _this._pageIndex = 1;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                if (_this._pageIndex <= 1) {
+                    return;
+                }
+                _this._pageIndex--;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                if (_this._pageIndex >= _this._pdfDoc.numPages) {
+                    return;
+                }
+                _this._pageIndex++;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                _this._pageIndex = _this._pdfDoc.numPages;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            $.subscribe(Events_1.Events.SEARCH, function (e, pageIndex) {
+                if (!_this._pdfDoc) {
+                    return;
+                }
+                if (pageIndex < 1 || pageIndex > _this._pdfDoc.numPages) {
+                    return;
+                }
+                _this._pageIndex = pageIndex;
+                _this._queueRenderPage(_this._pageIndex);
+            });
+            this._$prevButton.onPressed(function (e) {
+                e.preventDefault();
+                if (!_this._prevButtonEnabled)
+                    return;
+                $.publish(BaseEvents_1.BaseEvents.PREV);
+            });
+            this.disablePrevButton();
+            this._$nextButton.onPressed(function (e) {
+                e.preventDefault();
+                if (!_this._nextButtonEnabled)
+                    return;
+                $.publish(BaseEvents_1.BaseEvents.NEXT);
+            });
+            this.disableNextButton();
+        };
+        PDFCenterPanel.prototype.disablePrevButton = function () {
+            this._prevButtonEnabled = false;
+            this._$prevButton.addClass('disabled');
+        };
+        PDFCenterPanel.prototype.enablePrevButton = function () {
+            this._prevButtonEnabled = true;
+            this._$prevButton.removeClass('disabled');
+        };
+        PDFCenterPanel.prototype.hidePrevButton = function () {
+            this.disablePrevButton();
+            this._$prevButton.hide();
+        };
+        PDFCenterPanel.prototype.showPrevButton = function () {
+            this.enablePrevButton();
+            this._$prevButton.show();
+        };
+        PDFCenterPanel.prototype.disableNextButton = function () {
+            this._nextButtonEnabled = false;
+            this._$nextButton.addClass('disabled');
+        };
+        PDFCenterPanel.prototype.enableNextButton = function () {
+            this._nextButtonEnabled = true;
+            this._$nextButton.removeClass('disabled');
+        };
+        PDFCenterPanel.prototype.hideNextButton = function () {
+            this.disableNextButton();
+            this._$nextButton.hide();
+        };
+        PDFCenterPanel.prototype.showNextButton = function () {
+            this.enableNextButton();
+            this._$nextButton.show();
         };
         PDFCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
+            this._$spinner.show();
             this.extension.getExternalResources(resources).then(function () {
                 var mediaUri = null;
                 var canvas = _this.extension.helper.getCurrentCanvas();
@@ -26893,17 +26925,224 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 else {
                     mediaUri = canvas.id;
                 }
-                window.PDFObject.embed(mediaUri, '#content', { id: "PDF" });
+                PDFJS.disableWorker = true;
+                PDFJS.getDocument(mediaUri).then(function (pdfDoc) {
+                    _this._pdfDoc = pdfDoc;
+                    _this._render(_this._pageIndex);
+                    $.publish(Events_1.Events.PDF_LOADED, [pdfDoc]);
+                    _this._$spinner.hide();
+                });
+                //window.PDFObject.embed(mediaUri, '#content', { id: "PDF" });
             });
+        };
+        PDFCenterPanel.prototype._render = function (num) {
+            var _this = this;
+            this._pageRendering = true;
+            this._pdfDoc.getPage(num).then(function (page) {
+                if (_this._renderTask) {
+                    _this._renderTask.cancel();
+                }
+                var height = _this.$content.height();
+                _this._canvas.height = height;
+                _this._viewport = page.getViewport(_this._canvas.height / page.getViewport(1.0).height);
+                var width = _this._viewport.width;
+                _this._canvas.width = width;
+                _this._$canvas.css({
+                    left: (_this.$content.width() / 2) - (width / 2)
+                });
+                // Render PDF page into canvas context
+                var renderContext = {
+                    canvasContext: _this._ctx,
+                    viewport: _this._viewport
+                };
+                _this._renderTask = page.render(renderContext);
+                // Wait for rendering to finish
+                _this._renderTask.promise.then(function () {
+                    $.publish(Events_1.Events.PAGE_INDEX_CHANGED, [_this._pageIndex]);
+                    _this._pageRendering = false;
+                    if (_this._pageIndexPending !== null) {
+                        // New page rendering is pending
+                        _this._render(_this._pageIndexPending);
+                        _this._pageIndexPending = null;
+                    }
+                    if (_this._pageIndex === 1) {
+                        _this.disablePrevButton();
+                    }
+                    else {
+                        _this.enablePrevButton();
+                    }
+                    if (_this._pageIndex === _this._pdfDoc.numPages) {
+                        _this.disableNextButton();
+                    }
+                    else {
+                        _this.enableNextButton();
+                    }
+                }).catch(function (err) {
+                    //console.log(err);
+                });
+            });
+        };
+        PDFCenterPanel.prototype._queueRenderPage = function (num) {
+            if (this._pageRendering) {
+                this._pageIndexPending = num;
+            }
+            else {
+                this._render(num);
+            }
         };
         PDFCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+            this._$spinner.css('top', (this.$content.height() / 2) - (this._$spinner.height() / 2));
+            this._$spinner.css('left', (this.$content.width() / 2) - (this._$spinner.width() / 2));
+            this._$prevButton.css({
+                top: (this.$content.height() - this._$prevButton.height()) / 2,
+                left: 0
+            });
+            this._$nextButton.css({
+                top: (this.$content.height() - this._$nextButton.height()) / 2,
+                left: this.$content.width() - this._$nextButton.width()
+            });
+            if (!this._viewport) {
+                return;
+            }
+            this._render(this._pageIndex);
         };
         return PDFCenterPanel;
     }(CenterPanel_1.CenterPanel));
     exports.PDFCenterPanel = PDFCenterPanel;
 });
 //# sourceMappingURL=PDFCenterPanel.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../../extensions/uv-pdf-extension/Events", "../uv-shared-module/HeaderPanel"], function (require, exports, BaseEvents_1, Events_1, HeaderPanel_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var PDFHeaderPanel = /** @class */ (function (_super) {
+        __extends(PDFHeaderPanel, _super);
+        function PDFHeaderPanel($element) {
+            var _this = _super.call(this, $element) || this;
+            _this.firstButtonEnabled = false;
+            _this.lastButtonEnabled = false;
+            _this.nextButtonEnabled = false;
+            _this.prevButtonEnabled = false;
+            _this._pageIndex = 0;
+            _this._pdfDoc = null;
+            return _this;
+        }
+        PDFHeaderPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('pdfHeaderPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(Events_1.Events.PAGE_INDEX_CHANGED, function (e, pageIndex) {
+                _this._pageIndex = pageIndex;
+                _this.render();
+            });
+            $.subscribe(Events_1.Events.PDF_LOADED, function (e, pdfDoc) {
+                _this._pdfDoc = pdfDoc;
+            });
+            this.$prevOptions = $('<div class="prevOptions"></div>');
+            this.$centerOptions.append(this.$prevOptions);
+            this.$firstButton = $("\n          <button class=\"btn imageBtn first\" tabindex=\"0\" title=\"" + this.content.first + "\">\n            <i class=\"uv-icon-first\" aria-hidden=\"true\"></i>" + this.content.first + "\n          </button>\n        ");
+            this.$prevOptions.append(this.$firstButton);
+            this.$firstButton.disable();
+            this.$prevButton = $("\n          <button class=\"btn imageBtn prev\" tabindex=\"0\" title=\"" + this.content.previous + "\">\n            <i class=\"uv-icon-prev\" aria-hidden=\"true\"></i>" + this.content.previous + "\n          </button>\n        ");
+            this.$prevOptions.append(this.$prevButton);
+            this.$prevButton.disable();
+            this.$search = $('<div class="search"></div>');
+            this.$centerOptions.append(this.$search);
+            this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="0" aria-label="' + this.content.pageSearchLabel + '"/>');
+            this.$search.append(this.$searchText);
+            this.$total = $('<span class="total"></span>');
+            this.$search.append(this.$total);
+            this.$searchButton = $('<a class="go btn btn-primary" tabindex="0">' + this.content.go + '</a>');
+            this.$search.append(this.$searchButton);
+            this.$searchButton.disable();
+            this.$nextOptions = $('<div class="nextOptions"></div>');
+            this.$centerOptions.append(this.$nextOptions);
+            this.$nextButton = $("\n          <button class=\"btn imageBtn next\" tabindex=\"0\" title=\"" + this.content.next + "\">\n            <i class=\"uv-icon-next\" aria-hidden=\"true\"></i>" + this.content.next + "\n          </button>\n        ");
+            this.$nextOptions.append(this.$nextButton);
+            this.$nextButton.disable();
+            this.$lastButton = $("\n          <button class=\"btn imageBtn last\" tabindex=\"0\" title=\"" + this.content.last + "\">\n            <i class=\"uv-icon-last\" aria-hidden=\"true\"></i>" + this.content.last + "\n          </button>\n        ");
+            this.$nextOptions.append(this.$lastButton);
+            this.$lastButton.disable();
+            // ui event handlers.
+            this.$firstButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.FIRST);
+            });
+            this.$prevButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.PREV);
+            });
+            this.$nextButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.NEXT);
+            });
+            this.$lastButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.LAST);
+            });
+            this.$searchText.onEnter(function () {
+                _this.$searchText.blur();
+                _this.search(_this.$searchText.val());
+            });
+            this.$searchText.click(function () {
+                $(this).select();
+            });
+            this.$searchButton.onPressed(function () {
+                _this.search(_this.$searchText.val());
+            });
+        };
+        PDFHeaderPanel.prototype.render = function () {
+            // check if the book has more than one page, otherwise hide prev/next options.
+            if (this._pdfDoc.numPages === 1) {
+                this.$centerOptions.hide();
+            }
+            this.$searchText.val(this._pageIndex);
+            var of = this.content.of;
+            this.$total.html(Utils.Strings.format(of, this._pdfDoc.numPages.toString()));
+            this.$searchButton.enable();
+            if (this._pageIndex === 1) {
+                this.$firstButton.disable();
+                this.$prevButton.disable();
+            }
+            else {
+                this.$firstButton.enable();
+                this.$prevButton.enable();
+            }
+            if (this._pageIndex === this._pdfDoc.numPages) {
+                this.$lastButton.disable();
+                this.$nextButton.disable();
+            }
+            else {
+                this.$lastButton.enable();
+                this.$nextButton.enable();
+            }
+        };
+        PDFHeaderPanel.prototype.search = function (value) {
+            if (!value) {
+                this.extension.showMessage(this.content.emptyValue);
+                return;
+            }
+            var index = parseInt(this.$searchText.val(), 10);
+            if (isNaN(index)) {
+                this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.invalidNumber);
+                return;
+            }
+            $.publish(Events_1.Events.SEARCH, [index]);
+        };
+        PDFHeaderPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return PDFHeaderPanel;
+    }(HeaderPanel_1.HeaderPanel));
+    exports.PDFHeaderPanel = PDFHeaderPanel;
+});
+//# sourceMappingURL=PDFHeaderPanel.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -26976,7 +27215,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-pdfheaderpanel-module/PDFHeaderPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, PDFHeaderPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -26986,6 +27225,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         }
         Extension.prototype.create = function () {
             var _this = this;
+            requirejs.config({ paths: { 'pdfjs-dist/build/pdf.combined': this.data.root + '/lib/' + 'pdf.combined' } });
             _super.prototype.create.call(this);
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
@@ -27026,7 +27266,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new PDFHeaderPanel_1.PDFHeaderPanel(Shell_1.Shell.$headerPanel);
             }
             else {
                 Shell_1.Shell.$headerPanel.hide();
@@ -27073,9 +27313,9 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
-            if (index === 0) {
-                window.PDFObject = dep;
-            }
+            // if (index === 0) {
+            //     window.PDFObject = dep;
+            // }
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
             //const configUri = this.data.config.uri || '';
@@ -27785,7 +28025,6 @@ requirejs([
     './lib/ex.es3.min.js',
     './lib/base-component.js',
     './lib/key-codes.js',
-    './lib/extensions.js',
     './lib/http-status-codes.js',
     './lib/jquery-plugins.js',
     './lib/ba-tiny-pubsub.js',
@@ -27794,7 +28033,7 @@ requirejs([
     './lib/utils.js',
     'URLDataProvider',
     'UVComponent'
-], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UVComponent) {
+], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, exjs, basecomponent, keycodes, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UVComponent) {
     window.UV = UVComponent.default;
     window.UV.URLDataProvider = URLDataProvider.default;
     window.dispatchEvent(new CustomEvent('uvLoaded'));
