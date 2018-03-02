@@ -15992,106 +15992,27 @@ var Utils;
 
 var Utils;
 (function (Utils) {
-    var Maths;
-    (function (Maths) {
-        var Vector = /** @class */ (function () {
-            function Vector(x, y) {
-                this.X = x;
-                this.Y = y;
+    var Maths = /** @class */ (function () {
+        function Maths() {
+        }
+        Maths.normalise = function (num, min, max) {
+            return (num - min) / (max - min);
+        };
+        Maths.median = function (values) {
+            values.sort(function (a, b) {
+                return a - b;
+            });
+            var half = Math.floor(values.length / 2);
+            if (values.length % 2) {
+                return values[half];
             }
-            Vector.prototype.get = function () {
-                return new Vector(this.X, this.Y);
-            };
-            Vector.prototype.set = function (x, y) {
-                this.X = x;
-                this.Y = y;
-            };
-            //get X(): number {
-            //    return this._X;
-            //}
-            //
-            //set X(value: number) {
-            //    this._X = value;
-            //    //this.OnPropertyChanged("X");
-            //}
-            //
-            //get Y(): number {
-            //    return this._Y;
-            //}
-            //
-            //set Y(value: number) {
-            //    this._Y = value;
-            //    //this.OnPropertyChanged("Y");
-            //}
-            Vector.prototype.add = function (v) {
-                this.X += v.X;
-                this.Y += v.Y;
-            };
-            Vector.add = function (v1, v2) {
-                return new Vector(v1.X + v2.X, v1.Y + v2.Y);
-            };
-            Vector.prototype.sub = function (v) {
-                this.X -= v.X;
-                this.Y -= v.Y;
-            };
-            Vector.sub = function (v1, v2) {
-                return new Vector(v1.X - v2.X, v1.Y - v2.Y);
-            };
-            Vector.prototype.mult = function (n) {
-                this.X = this.X * n;
-                this.Y = this.Y * n;
-            };
-            Vector.mult = function (v1, v2) {
-                return new Vector(v1.X * v2.X, v1.Y * v2.Y);
-            };
-            Vector.multN = function (v1, n) {
-                return new Vector(v1.X * n, v1.Y * n);
-            };
-            Vector.prototype.Div = function (n) {
-                this.X = this.X / n;
-                this.Y = this.Y / n;
-            };
-            Vector.div = function (v1, v2) {
-                return new Vector(v1.X / v2.X, v1.Y / v2.Y);
-            };
-            Vector.divN = function (v1, n) {
-                return new Vector(v1.X / n, v1.Y / n);
-            };
-            Vector.prototype.mag = function () {
-                return Math.sqrt(this.X * this.X + this.Y * this.Y);
-            };
-            Vector.prototype.magSq = function () {
-                return (this.X * this.X + this.Y * this.Y);
-            };
-            Vector.prototype.normalise = function () {
-                var m = this.mag();
-                if (m != 0 && m != 1) {
-                    this.Div(m);
-                }
-            };
-            Vector.prototype.limit = function (max) {
-                if (this.magSq() > max * max) {
-                    this.normalise();
-                    this.mult(max);
-                }
-            };
-            Vector.prototype.equals = function (v) {
-                return (this.X == v.X && this.Y == v.Y);
-            };
-            Vector.prototype.heading = function () {
-                var angle = Math.atan2(-this.Y, this.X);
-                return -1 * angle;
-            };
-            Vector.random2D = function () {
-                return Vector.fromAngle((Math.random() * (Math.PI * 2)));
-            };
-            Vector.fromAngle = function (angle) {
-                return new Vector(Math.cos(angle), Math.sin(angle));
-            };
-            return Vector;
-        }());
-        Maths.Vector = Vector;
-    })(Maths = Utils.Maths || (Utils.Maths = {}));
+            else {
+                return (values[half - 1] + values[half]) / 2.0;
+            }
+        };
+        return Maths;
+    }());
+    Utils.Maths = Maths;
 })(Utils || (Utils = {}));
 
 var Utils;
@@ -16375,6 +16296,36 @@ var Utils;
             var div = document.createElement('div');
             div.innerHTML = encoded;
             return div.firstChild.nodeValue;
+        };
+        Strings.format = function (str) {
+            var values = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                values[_i - 1] = arguments[_i];
+            }
+            for (var i = 0; i < values.length; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                str = str.replace(reg, values[i]);
+            }
+            return str;
+        };
+        Strings.isAlphanumeric = function (str) {
+            return /^[a-zA-Z0-9]*$/.test(str);
+        };
+        Strings.toCssClass = function (str) {
+            return str.replace(/[^a-z0-9]/g, function (s) {
+                var c = s.charCodeAt(0);
+                if (c == 32)
+                    return '-';
+                if (c >= 65 && c <= 90)
+                    return '_' + s.toLowerCase();
+                return '__' + ('000' + c.toString(16)).slice(-4);
+            });
+        };
+        Strings.toFileName = function (str) {
+            return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        };
+        Strings.utf8_to_b64 = function (str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
         };
         return Strings;
     }());
@@ -17300,10 +17251,10 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             if (this.$triggerButton) {
                 // get the normalised position of the button
                 if (!this.extension.isDesktopMetric()) {
-                    normalisedPos = Math.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
+                    normalisedPos = Utils.Maths.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
                 }
                 else {
-                    normalisedPos = Math.normalise(this.$triggerButton.position().left, 0, this.extension.width());
+                    normalisedPos = Utils.Maths.normalise(this.$triggerButton.position().left, 0, this.extension.width());
                 }
                 left = Math.floor((this.extension.width() * normalisedPos) - (this.$element.width() * normalisedPos));
                 //left = Math.floor((this.extension.width() * normalisedPos));
@@ -18248,7 +18199,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN);
-                var openUri = String.format(_this.data.config.options.openTemplate, _this.helper.iiifResourceUri);
+                var openUri = Utils.Strings.format(_this.data.config.options.openTemplate, _this.helper.iiifResourceUri);
                 window.open(openUri);
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL, function () {
@@ -18932,11 +18883,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.changeLocale = function (locale) {
             // re-order locales so the passed locale is first
             var data = {};
-            data.locales = this.data.locales.clone();
-            var index = data.locales.findIndex(function (l) {
+            data.locales = this.data.locales.slice(0);
+            var fromIndex = data.locales.findIndex(function (l) {
                 return l.name === locale;
             });
-            data.locales.move(index, 0);
+            var toIndex = 0;
+            data.locales.splice(toIndex, 0, data.locales.splice(fromIndex, 1)[0]);
             this.reload(data);
         };
         return BaseExtension;
@@ -19400,9 +19352,9 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                     var searchResults = Number(this.data.data.searchResults);
                     if (searchResults) {
                         if (searchResults > 1) {
-                            return String.format(that.content.searchResults, searchResults);
+                            return Utils.Strings.format(that.content.searchResults, searchResults.toString());
                         }
-                        return String.format(that.content.searchResult, searchResults);
+                        return Utils.Strings.format(that.content.searchResult, searchResults.toString());
                     }
                     return '';
                 }
@@ -19432,7 +19384,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                 var thumb = this.thumbs[i];
                 heights.push(thumb.height);
             }
-            var medianHeight = Math.median(heights);
+            var medianHeight = Utils.Maths.median(heights);
             for (var i = 0; i < this.thumbs.length; i++) {
                 var thumb = this.thumbs[i];
                 thumb.height = medianHeight;
@@ -21860,7 +21812,7 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
         Extension.prototype.getEmbedScript = function (template, width, height) {
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&rid=" + this.helper.rangeId;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         Extension.prototype.treeNodeSelected = function (node) {
@@ -22332,7 +22284,7 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         return Extension;
@@ -22766,7 +22718,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         // todo: use canvas.getThumbnail()
@@ -23014,8 +22966,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 // dimensions
                 if (dimensions) {
                     label = hasNormalDimensions ?
-                        String.format(label, dimensions.size.width, dimensions.size.height) :
-                        String.format(label, dimensions.size.height, dimensions.size.width);
+                        Utils.Strings.format(label, dimensions.size.width.toString(), dimensions.size.height.toString()) :
+                        Utils.Strings.format(label, dimensions.size.height.toString(), dimensions.size.width.toString());
                     $label.text(label);
                     $input.prop('title', label);
                     this.$currentViewAsJpgButton.data('width', dimensions.size.width);
@@ -23053,7 +23005,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 if (!size) {
                     // if there is no image service, allow the image to be downloaded directly.
                     if (canvas.externalResource && !canvas.externalResource.hasServiceDescriptor()) {
-                        var label = String.format(this.content.wholeImageHighRes, '?', '?', mime);
+                        var label = Utils.Strings.format(this.content.wholeImageHighRes, '?', '?', mime);
                         $label.text(label);
                         $input.prop('title', label);
                         this.$wholeImageHighResButton.show();
@@ -23064,8 +23016,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 }
                 else {
                     var label = hasNormalDimensions ?
-                        String.format(this.content.wholeImageHighRes, size.width, size.height, mime) :
-                        String.format(this.content.wholeImageHighRes, size.height, size.width, mime);
+                        Utils.Strings.format(this.content.wholeImageHighRes, size.width.toString(), size.height.toString(), mime) :
+                        Utils.Strings.format(this.content.wholeImageHighRes, size.height.toString(), size.width.toString(), mime);
                     $label.text(label);
                     $input.prop('title', label);
                     this.$wholeImageHighResButton.data('width', size.width);
@@ -23095,7 +23047,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 else {
                     mime = '?';
                 }
-                var label = String.format(this.content.wholeImagesHighRes, mime);
+                var label = Utils.Strings.format(this.content.wholeImagesHighRes, mime);
                 $label.text(label);
                 $input.prop('title', label);
                 this.$wholeImagesHighResButton.show();
@@ -23117,8 +23069,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 var $label = this.$wholeImageLowResAsJpgButton.find('label');
                 var size = this.extension.getConfinedImageDimensions(canvas, this.options.confinedImageSize);
                 var label = hasNormalDimensions ?
-                    String.format(this.content.wholeImageLowResAsJpg, size.width, size.height) :
-                    String.format(this.content.wholeImageLowResAsJpg, size.height, size.width);
+                    Utils.Strings.format(this.content.wholeImageLowResAsJpg, size.width.toString(), size.height.toString()) :
+                    Utils.Strings.format(this.content.wholeImageLowResAsJpg, size.height.toString(), size.width.toString());
                 $label.text(label);
                 $input.prop('title', label);
                 this.$wholeImageLowResAsJpgButton.data('width', size.width);
@@ -23264,7 +23216,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                         label = defaultLabel;
                     }
                     var mime = Utils.Files.simplifyMimeType(rendering.getFormat().toString());
-                    label = String.format(label, mime);
+                    label = Utils.Strings.format(label, mime);
                     this.renderingUrls[currentId] = rendering.id;
                     var $button = $('<li class="option dynamic"><input id="' + currentId + '" data-mime="' + mime + '" title="' + label + '" type="radio" name="downloadOptions" tabindex="0" /><label for="' + currentId + '">' + label + '</label></li>');
                     switch (type) {
@@ -23861,7 +23813,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var autocompleteService = this.extension.getAutoCompleteUri();
             if (autocompleteService) {
                 new AutoComplete_1.AutoComplete(this.$searchText, function (terms, cb) {
-                    $.getJSON(String.format(autocompleteService, terms), function (results) {
+                    $.getJSON(Utils.Strings.format(autocompleteService, terms), function (results) {
                         cb(results);
                     });
                 }, function (results) {
@@ -24070,10 +24022,10 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 if (!label) {
                     label = this.extension.helper.manifest.options.defaultLabel;
                 }
-                title = String.format(title, that.content.pageCaps, label);
+                title = Utils.Strings.format(title, that.content.pageCaps, label);
             }
             else {
-                title = String.format(title, that.content.imageCaps, canvasIndex + 1);
+                title = Utils.Strings.format(title, that.content.imageCaps, String(canvasIndex + 1));
             }
             that.$placemarkerDetailsTop.html(title);
             var searchResults = that.getSearchResults();
@@ -24087,11 +24039,11 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 var instancesFoundText = that.content.instancesFound;
                 var text = '';
                 if (result.rects.length === 1) {
-                    text = String.format(instanceFoundText, terms);
+                    text = Utils.Strings.format(instanceFoundText, terms);
                     that.$placemarkerDetailsBottom.html(text);
                 }
                 else {
-                    text = String.format(instancesFoundText, result.rects.length, terms);
+                    text = Utils.Strings.format(instancesFoundText, String(result.rects.length), terms);
                     that.$placemarkerDetailsBottom.html(text);
                 }
             }
@@ -24193,11 +24145,11 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 }
                 var lastCanvasOrderLabel = this.extension.helper.getLastCanvasLabel(true);
                 if (lastCanvasOrderLabel) {
-                    this.$pagePositionLabel.html(String.format(displaying, this.content.page, Utils_1.UVUtils.sanitize(label), Utils_1.UVUtils.sanitize(lastCanvasOrderLabel)));
+                    this.$pagePositionLabel.html(Utils.Strings.format(displaying, this.content.page, Utils_1.UVUtils.sanitize(label), Utils_1.UVUtils.sanitize(lastCanvasOrderLabel)));
                 }
             }
             else {
-                this.$pagePositionLabel.html(String.format(displaying, this.content.image, index + 1, this.extension.helper.getTotalCanvases()));
+                this.$pagePositionLabel.html(Utils.Strings.format(displaying, this.content.image, String(index + 1), this.extension.helper.getTotalCanvases().toString()));
             }
         };
         FooterPanel.prototype.isPageModeEnabled = function () {
@@ -24786,10 +24738,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.setTotal = function () {
             var of = this.content.of;
             if (this.isPageModeEnabled()) {
-                this.$total.html(String.format(of, this.extension.helper.getLastCanvasLabel(true)));
+                this.$total.html(Utils.Strings.format(of, this.extension.helper.getLastCanvasLabel(true)));
             }
             else {
-                this.$total.html(String.format(of, this.extension.helper.getTotalCanvases()));
+                this.$total.html(Utils.Strings.format(of, this.extension.helper.getTotalCanvases().toString()));
             }
         };
         PagingHeaderPanel.prototype.setSearchFieldValue = function (index) {
@@ -26600,7 +26552,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getConfinedImageDimensions = function (canvas, width) {
             var dimensions = new manifesto.Size(0, 0);
             dimensions.width = width;
-            var normWidth = Math.normalise(width, 0, canvas.getWidth());
+            var normWidth = Utils.Maths.normalise(width, 0, canvas.getWidth());
             dimensions.height = Math.floor(canvas.getHeight() * normWidth);
             return dimensions;
         };
@@ -26662,7 +26614,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var locales = this.getSerializedLocales();
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&config=" + config + "&locales=" + locales + "&xywh=" + zoom + "&r=" + rotation;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
@@ -26748,7 +26700,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var searchUri = this.getSearchServiceUri();
             if (!searchUri)
                 return;
-            searchUri = String.format(searchUri, terms);
+            searchUri = Utils.Strings.format(searchUri, terms);
             this.getSearchResults(searchUri, terms, this.annotations, function (annotations) {
                 that.isAnnotating = false;
                 if (annotations.length) {
@@ -27127,7 +27079,7 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             //const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         return Extension;
@@ -27452,7 +27404,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         return Extension;
