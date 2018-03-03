@@ -8,7 +8,7 @@
     <title>3D PORTFOLIO</title>
     <link rel="stylesheet" type="text/css" href="uv/uv.css">
     <link rel="stylesheet" type="text/css" href="portfolio.css">
-    <!-- <script type="text/javascript" src="https://unpkg.com/iiif-gallery/dist/iiifgallery.js"></script> -->
+    <script type="text/javascript" src="https://unpkg.com/iiif-gallery/dist/iiifgallery.js"></script>
     <script type="text/javascript" src="uv/lib/offline.js"></script>
     <script type="text/javascript" src="uv/helpers.js"></script>
 </head>
@@ -30,28 +30,6 @@
     <script type="text/javascript">
 
         var uv, $uv, urlDataProvider, manifest;
-
-        function openManifest() {
-
-            window.scrollTo(0, 0);
-
-            $uv.slideDown("fast", function() {
-                uv.set({
-                    root: './uv',
-                    iiifResourceUri: manifest,
-                    configUri: 'uv-config.json',
-                    collectionIndex: 0,
-                    manifestIndex: 0,
-                    sequenceIndex: 0,
-                    canvasIndex: 0,
-                    locales: [
-                        {
-                            name: 'en-GB'
-                        }
-                    ]
-                });
-            });
-        }
 
         window.addEventListener('uvLoaded', function (e) {
 
@@ -78,9 +56,24 @@
 
             uv = createUV('#uv', data, urlDataProvider);
 
-            uv.on('created', function() {
-                Utils.Urls.setHashParameter('manifest', manifest);
-            });
+            // uv.set({
+            //     root: './uv',
+            //     iiifResourceUri: 'https://sophiedixon.github.io/3d-portfolio/collection/animal_skull/index.json',
+            //     configUri: 'portfolio-config.json',
+            //     collectionIndex: 0,
+            //     manifestIndex: 0,
+            //     sequenceIndex: 0,
+            //     canvasIndex: 0,
+            //     locales: [
+            //         {
+            //             name: 'en-GB'
+            //         }
+            //     ]
+            // });
+
+            // uv.on('created', function() {
+            //     Utils.Urls.setHashParameter('manifest', manifest);
+            // });
 
             // const iiifGallery = document.querySelector('iiif-gallery');
 
@@ -95,14 +88,14 @@
             // });
 
             // are there uv hash parameters?
-            manifest = Utils.Urls.getHashParameter('manifest');
+            // manifest = Utils.Urls.getHashParameter('manifest');
 
-            if (manifest) {
-                openManifest();
-            }
+            // if (manifest) {
+            //     openManifest();
+            // }
 
-            manifest = 'https://sophiedixon.github.io/3d-portfolio/collection/animal_skull/index.json';
-            openManifest();
+            //manifest = 'https://sophiedixon.github.io/3d-portfolio/collection/animal_skull/index.json';
+            //openManifest();
 
         }, false);
 
