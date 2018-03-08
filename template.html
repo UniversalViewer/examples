@@ -30,8 +30,8 @@
 	<section id="pageContent">
         
 		<div class="viewer">
-            <iframe id="uv" width="998" height="400" allowfullscreen frameborder="0"></iframe>
-            <a id="expando">expando</a>
+            <iframe id="uv" width="920" height="400" allowfullscreen frameborder="0"></iframe>
+            <button id="expando" class="expand">expand</button>
         </div>
 		
 		<main role="main">
@@ -63,7 +63,7 @@
         $(function() {
 
             var $uv = $('#uv');
-            var uvurl = 'https://universalviewer.io/examples/uv/uv.html#?';
+            var uvurl = '/examples/uv/uv.html#?';
             // are there uv hash parameters?
             var manifest = Utils.Urls.getHashParameter('manifest');
             var rangeId = Utils.Urls.getHashParameter('rid');
@@ -79,9 +79,19 @@
             }
 
             $('#expando').on('click', function() {
-                $uv.animate({height: "640px"}, 600);
-            });
 
+				if ($('#expando').hasClass('expand')) {
+					$uv.animate({height: '640px'}, 600, function() {
+						$('#expando').removeClass('expand').addClass('collapse');
+						$('#expando').text('collapse');
+					});
+				} else {
+					$uv.animate({height: '400px'}, 600, function() {
+						$('#expando').removeClass('collapse').addClass('expand');
+						$('#expando').text('expand');
+					});
+				}
+			});
         });       
 
     </script>
