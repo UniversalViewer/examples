@@ -113,11 +113,11 @@ body > section {
     border:black solid 1px;
     margin-bottom:15px;
     background: #4D9DE7;
-    height: 400px;
+    height: 220px;
 }
 
 .viewer .uv {
-    height: 400px;
+    height: 220px;
 }
 
 @media screen and (max-width: 1000px) {
