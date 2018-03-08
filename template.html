@@ -29,9 +29,9 @@
 	</section>
 	<section id="pageContent">
         
-		<div class="viewer">
-            <iframe id="uv" width="920" height="400" allowfullscreen frameborder="0"></iframe>
-            <button id="expando" class="expand">expand</button>
+		<div id="viewer" class="viewer expandable">
+            <iframe id="uv" class="expandable" allowfullscreen frameborder="0"></iframe>
+            <br><button id="expando" class="expand">expand</button>
         </div>
 		
 		<main role="main">
@@ -62,7 +62,8 @@
 
         $(function() {
 
-            var $uv = $('#uv');
+			var $uv = $('#uv');
+			var $viewer = $('#viewer');
             var uvurl = '/examples/uv/uv.html#?';
             // are there uv hash parameters?
             var manifest = Utils.Urls.getHashParameter('manifest');
@@ -81,17 +82,35 @@
             $('#expando').on('click', function() {
 
 				if ($('#expando').hasClass('expand')) {
-					$uv.animate({height: '640px'}, 600, function() {
-						$('#expando').removeClass('expand').addClass('collapse');
-						$('#expando').text('collapse');
+					$('.expandable').each(function() {
+						$(this).animate({height: '640px'}, 600, function() {
+							$('#expando').removeClass('expand').addClass('collapse');
+							$('#expando').text('collapse');
+						});
 					});
 				} else {
-					$uv.animate({height: '400px'}, 600, function() {
-						$('#expando').removeClass('collapse').addClass('expand');
-						$('#expando').text('expand');
+					$('.expandable').each(function() {
+						$(this).animate({height: '400px'}, 600, function() {
+							$('#expando').removeClass('collapse').addClass('expand');
+							$('#expando').text('expand');
+						});
 					});
 				}
 			});
+
+			
+			function resize() {
+				var width = $viewer.width();
+				var height = $viewer.height();
+				$uv.width(width);
+				$uv.height(height);
+			}
+
+			$(window).on('resize' ,function() {
+				resize();
+			});
+
+			resize();
         });       
 
     </script>
