@@ -14290,7 +14290,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// @iiif/manifold v1.2.21 https://github.com/iiif-commons/manifold#readme
+// @iiif/manifold v1.2.22 https://github.com/iiif-commons/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifmanifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -14529,7 +14529,6 @@ var Manifold;
             canvas.externalResource = this;
             this.dataUri = this._getDataUri(canvas);
             this.index = canvas.index;
-            this.authAPIVersion = options.authApiVersion;
             this._parseAuthServices(canvas);
             // get the height and width of the image resource if available
             this._parseDimensions(canvas);
@@ -14577,28 +14576,21 @@ var Manifold;
             }
         };
         ExternalResource.prototype._parseAuthServices = function (resource) {
-            if (this.authAPIVersion === 0.9) {
-                this.clickThroughService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.clickThrough().toString());
-                this.loginService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.login().toString());
-                this.restrictedService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.restricted().toString());
-                if (this.clickThroughService) {
-                    this.logoutService = this.clickThroughService.getService(manifesto.ServiceProfile.logout().toString());
-                    this.tokenService = this.clickThroughService.getService(manifesto.ServiceProfile.token().toString());
-                }
-                else if (this.loginService) {
-                    this.logoutService = this.loginService.getService(manifesto.ServiceProfile.logout().toString());
-                    this.tokenService = this.loginService.getService(manifesto.ServiceProfile.token().toString());
-                }
-                else if (this.restrictedService) {
-                    this.logoutService = this.restrictedService.getService(manifesto.ServiceProfile.logout().toString());
-                    this.tokenService = this.restrictedService.getService(manifesto.ServiceProfile.token().toString());
-                }
+            var auth1_clickThroughService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Clickthrough().toString());
+            var auth1_loginService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Login().toString());
+            var auth1_externalService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1External().toString());
+            var auth1_kioskService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Kiosk().toString());
+            if (auth1_clickThroughService || auth1_loginService || auth1_externalService || auth1_kioskService) {
+                this.authAPIVersion = 1;
             }
             else {
-                this.clickThroughService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Clickthrough().toString());
-                this.loginService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Login().toString());
-                this.externalService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1External().toString());
-                this.kioskService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Kiosk().toString());
+                this.authAPIVersion = 0.9;
+            }
+            if (this.authAPIVersion === 1) {
+                this.clickThroughService = auth1_clickThroughService;
+                this.loginService = auth1_loginService;
+                this.externalService = auth1_externalService;
+                this.kioskService = auth1_kioskService;
                 if (this.clickThroughService) {
                     this.logoutService = this.clickThroughService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.clickThroughService.getService(manifesto.ServiceProfile.auth1Token().toString());
@@ -14614,6 +14606,23 @@ var Manifold;
                 else if (this.kioskService) {
                     this.logoutService = this.kioskService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.kioskService.getService(manifesto.ServiceProfile.auth1Token().toString());
+                }
+            }
+            else {
+                this.clickThroughService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.clickThrough().toString());
+                this.loginService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.login().toString());
+                this.restrictedService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.restricted().toString());
+                if (this.clickThroughService) {
+                    this.logoutService = this.clickThroughService.getService(manifesto.ServiceProfile.logout().toString());
+                    this.tokenService = this.clickThroughService.getService(manifesto.ServiceProfile.token().toString());
+                }
+                else if (this.loginService) {
+                    this.logoutService = this.loginService.getService(manifesto.ServiceProfile.logout().toString());
+                    this.tokenService = this.loginService.getService(manifesto.ServiceProfile.token().toString());
+                }
+                else if (this.restrictedService) {
+                    this.logoutService = this.restrictedService.getService(manifesto.ServiceProfile.logout().toString());
+                    this.tokenService = this.restrictedService.getService(manifesto.ServiceProfile.token().toString());
                 }
             }
         };
@@ -14798,7 +14807,7 @@ var Manifold;
                 return canvas.ranges; // cache
             }
             else {
-                canvas.ranges = this.manifest.getAllRanges().en().where(function (range) { return (range.getCanvasIds().en().any(function (c) { return c === canvas.id; })); }).toArray();
+                canvas.ranges = this.manifest.getAllRanges().en().where(function (range) { return (range.getCanvasIds().en().any(function (c) { return manifesto.Utils.normaliseUrl(c) === manifesto.Utils.normaliseUrl(canvas.id); })); }).toArray();
             }
             return canvas.ranges;
         };
@@ -20087,9 +20096,32 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             }
             return topRangeIndex;
         };
-        // todo: a lot of this was written prior to manifold storing the current range id
-        // use that instead - probably after porting manifold to redux.
         ContentLeftPanel.prototype.selectCurrentTreeNode = function () {
+            // todo: merge selectCurrentTreeNodeByCanvas and selectCurrentTreeNodeByRange
+            // the openseadragon extension should keep track of the current range instead of using canvas index
+            if (this.extension.name === 'uv-seadragon-extension') {
+                this.selectCurrentTreeNodeByCanvas();
+            }
+            else {
+                this.selectCurrentTreeNodeByRange();
+            }
+        };
+        ContentLeftPanel.prototype.selectCurrentTreeNodeByRange = function () {
+            if (this.treeView) {
+                var range = this.extension.helper.getCurrentRange();
+                var node = null;
+                if (range && range.treeNode) {
+                    node = this.treeView.getNodeById(range.treeNode.id);
+                }
+                if (node) {
+                    this.treeView.selectNode(node);
+                }
+                else {
+                    this.treeView.deselectCurrentNode();
+                }
+            }
+        };
+        ContentLeftPanel.prototype.selectCurrentTreeNodeByCanvas = function () {
             if (this.treeView) {
                 var node = null;
                 var currentCanvasTopRangeIndex = this.getCurrentCanvasTopRangeIndex();
@@ -20098,6 +20130,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 var range = null;
                 if (currentCanvasTopRangeIndex !== -1) {
                     range = this.extension.getCurrentCanvasRange();
+                    //range = this.extension.helper.getCurrentRange();
                     if (range && range.treeNode) {
                         node = this.treeView.getNodeById(range.treeNode.id);
                     }
@@ -21047,22 +21080,31 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             this.$avcomponent = $('<div class="iiif-av-component"></div>');
             this.$content.append(this.$avcomponent);
             this.avcomponent = new IIIFComponents.AVComponent({
-                target: this.$avcomponent[0]
+                target: this.$avcomponent[0],
+                data: {
+                    autoSelectRanges: false
+                }
             });
             this.avcomponent.on('canvasready', function () {
                 _this._canvasReady = true;
             }, false);
-            this.avcomponent.on('previousrange', function () {
-                _this._setTitle();
-                $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [_this.extension.helper.getCurrentRange()]);
-            }, false);
-            this.avcomponent.on('nextrange', function () {
-                _this._setTitle();
-                $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [_this.extension.helper.getCurrentRange()]);
-            }, false);
-            this.avcomponent.on('norange', function () {
-                _this._setTitle();
-                $.publish(BaseEvents_1.BaseEvents.NO_RANGE);
+            this.avcomponent.on('rangechanged', function (rangeId) {
+                if (rangeId) {
+                    _this._setTitle();
+                    var range = _this.extension.helper.getRangeById(rangeId);
+                    if (range) {
+                        var currentRange = _this.extension.helper.getCurrentRange();
+                        if (range !== currentRange) {
+                            $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                        }
+                    }
+                    else {
+                        $.publish(BaseEvents_1.BaseEvents.NO_RANGE);
+                    }
+                }
+                else {
+                    $.publish(BaseEvents_1.BaseEvents.NO_RANGE);
+                }
             }, false);
         };
         AVCenterPanel.prototype._setTitle = function () {
@@ -21116,19 +21158,12 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         };
         AVCenterPanel.prototype._viewRange = function (range) {
             var _this = this;
-            // todo: why not using avcomponent.playRange ?
-            if (!range.canvases || !range.canvases.length)
-                return;
-            var canvasId = range.canvases[0];
-            var canvas = this.extension.helper.getCanvasById(canvasId);
-            if (canvas) {
-                Utils.Async.waitFor(function () {
-                    return _this._canvasReady;
-                }, function () {
-                    _this.avcomponent.playCanvas(canvasId);
-                    _this.resize();
-                });
-            }
+            Utils.Async.waitFor(function () {
+                return _this._canvasReady;
+            }, function () {
+                _this.avcomponent.playRange(range.id);
+                _this.resize();
+            });
         };
         AVCenterPanel.prototype.viewCanvas = function (canvasIndex) {
             var canvas = this.extension.helper.getCanvasByIndex(canvasIndex);
