@@ -21116,6 +21116,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         };
         AVCenterPanel.prototype._viewRange = function (range) {
             var _this = this;
+            // todo: why not using avcomponent.playRange ?
             if (!range.canvases || !range.canvases.length)
                 return;
             var canvasId = range.canvases[0];
