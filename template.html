@@ -74,7 +74,9 @@
 
                 if (rangeId) {
                     uvurl += '&rid=' + rangeId;
-                }
+				}
+				
+				uvurl += '&config=' + '/examples/template-config.json';
 
                 $uv.prop('src', uvurl);
             }
