@@ -918,7 +918,7 @@
           "visible": true
         },
         {
-          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98.json",
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/loose-ends/C1685_98_P3.json",
           "@type": "sc:Manifest",
           "label": "C1685_98 Loose ends 17/7/99",
           "visible": true
