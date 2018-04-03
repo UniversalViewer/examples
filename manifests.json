@@ -376,6 +376,11 @@
       "label": "Stanford University",
       "manifests": [
         {
+          "@id": "https://purl.stanford.edu/ry222mj7473/iiif/manifest",
+          "@type": "sc:Manifest",
+          "label": "Auth"
+        },
+        {
           "@id": "http://dms-data.stanford.edu/data/manifests/RomanCoins/bb853kn3021/manifest.json",
           "@type": "sc:Manifest",
           "label": "Roman Coins"
