@@ -649,7 +649,13 @@
           "@type": "sc:Manifest",
           "label": "Bust of Queen Nefertiti",
           "visible": true
-        }       
+        },
+        {
+          "@id": "https://iiif-3d-manifests.netlify.com/collection/gltf/index.json",
+          "@type": "sc:Manifest",
+          "label": "Fisherman (gltf)",
+          "visible": true
+        }        
       ]
     },
     {
