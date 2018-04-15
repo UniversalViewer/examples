@@ -651,7 +651,7 @@
           "visible": true
         },
         {
-          "@id": "https://iiif-3d-manifests.netlify.com/collection/gltf/index.json",
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/woody/index.json",
           "@type": "sc:Manifest",
           "label": "Fisherman (gltf)",
           "visible": true
