@@ -655,7 +655,13 @@
           "@type": "sc:Manifest",
           "label": "Fisherman (gltf)",
           "visible": true
-        }        
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/bowl/index.json",
+          "@type": "sc:Manifest",
+          "label": "Somali Woven Basket (gltf)",
+          "visible": true
+        }
       ]
     },
     {
