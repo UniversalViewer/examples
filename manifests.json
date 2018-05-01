@@ -649,7 +649,19 @@
           "@type": "sc:Manifest",
           "label": "Bust of Queen Nefertiti",
           "visible": true
-        }       
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/woody/index.json",
+          "@type": "sc:Manifest",
+          "label": "Fisherman (gltf)",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/bowl/index.json",
+          "@type": "sc:Manifest",
+          "label": "Somali Woven Basket (gltf)",
+          "visible": true
+        }
       ]
     },
     {
@@ -674,6 +686,12 @@
       "label": "Tests",
       "visible": true,
       "manifests": [
+        {
+          "@id": "https://edsilv.github.io/biiif-workshop/collection/index.json",
+          "@type": "sc:Manifest",
+          "label": "Cats",
+          "visible": true
+        },
         {
           "@id": "http://tomcrane.github.io/scratch/manifests/top-to-bottom.json",
           "@type": "sc:Manifest",
