@@ -28074,11 +28074,12 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         };
         UVComponent.prototype._extendConfig = function (data, extension, config, configExtension, cb) {
             config.name = extension.name;
-            // if data-config has been set, extend the existing config object.
+            // if configUri has been set, extend the existing config object.
             if (configExtension) {
                 // save a reference to the config extension uri.
                 config.uri = data.configUri;
-                $.extend(true, config, configExtension, data.config);
+                $.extend(true, config, configExtension);
+                //$.extend(true, config, configExtension, data.config);
             }
             cb(config);
         };
