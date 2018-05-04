@@ -19388,7 +19388,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                         $wrap.removeClass('loadingFailed');
                         $wrap.addClass('loading');
                         var src = $thumb.attr('data-src');
-                        if (that.config.options.thumbsCacheInvalidation.enabled) {
+                        if (that.config.options.thumbsCacheInvalidation && that.config.options.thumbsCacheInvalidation.enabled) {
                             src += that.config.options.thumbsCacheInvalidation.paramType + "t=" + Utils.Dates.getTimeStamp();
                         }
                         var $img = $('<img src="' + src + '" alt=""/>');
