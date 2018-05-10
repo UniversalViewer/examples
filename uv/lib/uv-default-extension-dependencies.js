@@ -1,7 +1,5 @@
-define(function () {
-    return function (formats) {
-        return {
-            async: ['iiif-metadata-component']
-        };
+define(function() {
+    return {
+        async: ['iiif-metadata-component']
     };
 });

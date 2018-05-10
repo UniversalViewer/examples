@@ -1,7 +1,5 @@
-define(function () {
-    return function (formats) {
-        return {
-            async: ['mediaelement-and-player', 'iiif-metadata-component']
-        };
+define(function() {
+    return {
+        async: ['mediaelement-and-player', 'iiif-metadata-component']
     };
 });
