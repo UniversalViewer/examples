@@ -561,6 +561,7 @@
 }
 .uv .centerPanel .content {
   position: relative;
+  overflow: auto;
 }
 .uv .centerPanel .content .spinner {
   position: absolute;
