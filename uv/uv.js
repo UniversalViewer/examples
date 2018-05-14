@@ -2858,137 +2858,6 @@ var KeyCodes;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])(1)
 });
-// extensions v0.2.1 https://github.com/edsilv/extensions
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/extensions.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.extensions = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-Array.prototype.clone = function () {
-    return this.slice(0);
-};
-if (!Array.prototype.includes) {
-    Array.prototype.includes = function (val) {
-        return this.indexOf(val) !== -1;
-    };
-}
-Array.prototype.insert = function (item, index) {
-    this.splice(index, 0, item);
-};
-Array.prototype.move = function (fromIndex, toIndex) {
-    this.splice(toIndex, 0, this.splice(fromIndex, 1)[0]);
-};
-Array.prototype.remove = function (item) {
-    var index = this.indexOf(item);
-    if (index > -1) {
-        this.splice(index, 1);
-    }
-};
-Array.prototype.removeAt = function (index) {
-    this.splice(index, 1);
-};
-
-if (!Math.clamp) {
-    Math.clamp = function (value, min, max) {
-        return Math.min(Math.max(value, min), max);
-    };
-}
-if (!Math.radians) {
-    Math.radians = function (degrees) {
-        return Math.TAU * (degrees / 360);
-    };
-}
-Math.distanceBetween = function (x1, y1, x2, y2) {
-    return Math.sqrt(((x2 - x1) * 2) + ((y2 - y1) * 2));
-};
-Math.lerp = function (start, stop, amount) {
-    return start + (stop - start) * amount;
-};
-Math.mag = function (a, b, c) {
-    return Math.sqrt(a * a + b * b + c * c);
-};
-Math.map = function (value, start1, stop1, start2, stop2) {
-    return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
-};
-Math.median = function (values) {
-    values.sort(function (a, b) { return a - b; });
-    var half = Math.floor(values.length / 2);
-    if (values.length % 2) {
-        return values[half];
-    }
-    else {
-        return (values[half - 1] + values[half]) / 2.0;
-    }
-};
-Math.normalise = function (num, min, max) {
-    return (num - min) / (max - min);
-};
-if (!Math.degrees) {
-    Math.degrees = function (radians) {
-        return (radians * 360) / Math.TAU;
-    };
-}
-/**
- * Get a random number between two numbers.
- * If 'high' isn't passed, get a number from 0 to 'low'.
- * @param {Number} low The low number.
- * @param {Number} [high] The high number.
- */
-Math.randomBetween = function (low, high) {
-    if (!high) {
-        high = low;
-        low = 0;
-    }
-    if (low >= high)
-        return low;
-    return low + (high - low) * Math.random();
-};
-Math.roundToDecimalPlace = function (num, dec) {
-    return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-};
-Math.TAU = Math.PI * 2;
-
-String.prototype.b64_to_utf8 = function () {
-    return decodeURIComponent(escape(window.atob(this)));
-};
-String.format = function () {
-    var s = arguments[0];
-    for (var i = 0; i < arguments.length - 1; i++) {
-        var reg = new RegExp("\\{" + i + "\\}", "gm");
-        s = s.replace(reg, arguments[i + 1]);
-    }
-    return s;
-};
-if (!String.prototype.includes) {
-    String.prototype.includes = function (str) {
-        return this.indexOf(str) !== -1;
-    };
-}
-String.prototype.isAlphanumeric = function () {
-    return /^[a-zA-Z0-9]*$/.test(this);
-};
-String.prototype.ltrim = function () {
-    return this.replace(/^\s+/, '');
-};
-String.prototype.rtrim = function () {
-    return this.replace(/\s+$/, '');
-};
-String.prototype.toCssClass = function () {
-    return this.replace(/[^a-z0-9]/g, function (s) {
-        var c = s.charCodeAt(0);
-        if (c == 32)
-            return '-';
-        if (c >= 65 && c <= 90)
-            return '_' + s.toLowerCase();
-        return '__' + ('000' + c.toString(16)).slice(-4);
-    });
-};
-String.prototype.toFileName = function () {
-    return this.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-};
-String.prototype.utf8_to_b64 = function () {
-    return window.btoa(unescape(encodeURIComponent(this)));
-};
-
-},{}]},{},[1])(1)
-});
 // http-status-codes v0.0.7 https://github.com/edsilv/http-status-codes
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/http-status-codes.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.httpStatusCodes = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
@@ -3516,7 +3385,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.2.11 https://github.com/iiif-commons/manifesto
+// manifesto v2.2.21 https://github.com/iiif-commons/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 (function (global){
 
@@ -3614,6 +3483,37 @@ var Manifesto;
         return AnnotationMotivation;
     }(Manifesto.StringValue));
     Manifesto.AnnotationMotivation = AnnotationMotivation;
+})(Manifesto || (Manifesto = {}));
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Manifesto;
+(function (Manifesto) {
+    var Behavior = /** @class */ (function (_super) {
+        __extends(Behavior, _super);
+        function Behavior() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        // todo: use getters when ES3 target is no longer required.
+        Behavior.prototype.autoadvance = function () {
+            return new Behavior(Behavior.AUTOADVANCE.toString());
+        };
+        Behavior.prototype.nonav = function () {
+            return new Behavior(Behavior.NONAV.toString());
+        };
+        Behavior.AUTOADVANCE = new Behavior("auto-advance");
+        Behavior.NONAV = new Behavior("no-nav");
+        return Behavior;
+    }(Manifesto.StringValue));
+    Manifesto.Behavior = Behavior;
 })(Manifesto || (Manifesto = {}));
 
 var __extends = (this && this.__extends) || (function () {
@@ -4354,7 +4254,12 @@ var Manifesto;
                             return thumbnail;
                         }
                         else {
-                            return thumbnail['@id'];
+                            if (thumbnail['@id']) {
+                                return thumbnail['@id'];
+                            }
+                            else if (thumbnail.length) {
+                                return thumbnail[0].id;
+                            }
                         }
                     }
                 }
@@ -4628,6 +4533,12 @@ var Manifesto;
             }
             return _this;
         }
+        Manifest.prototype.getBehavior = function () {
+            if (this.getProperty('behavior')) {
+                return new Manifesto.Behavior(this.getProperty('behavior'));
+            }
+            return null;
+        };
         Manifest.prototype.getDefaultTree = function () {
             _super.prototype.getDefaultTree.call(this);
             this.defaultTree.data.type = Manifesto.Utils.normaliseType(Manifesto.TreeNodeType.MANIFEST.toString());
@@ -4764,13 +4675,17 @@ var Manifesto;
             }
             // IxIF mediaSequences overrode sequences, so need to be checked first.
             // deprecate this when presentation 3 ships
-            var items = this.__jsonld.items || this.__jsonld.mediaSequences || this.__jsonld.sequences;
+            var items = this.__jsonld.mediaSequences || this.__jsonld.sequences;
             if (items) {
                 for (var i = 0; i < items.length; i++) {
                     var s = items[i];
                     var sequence = new Manifesto.Sequence(s, this.options);
                     this.items.push(sequence);
                 }
+            }
+            else if (this.__jsonld.items) {
+                var sequence = new Manifesto.Sequence(this.__jsonld.items, this.options);
+                this.items.push(sequence);
             }
             return this.items;
         };
@@ -4970,6 +4885,12 @@ var Manifesto;
             }
             return this._ranges = this.items.en().where(function (m) { return m.isRange(); }).toArray();
         };
+        Range.prototype.getBehavior = function () {
+            if (this.getProperty('behavior')) {
+                return new Manifesto.Behavior(this.getProperty('behavior'));
+            }
+            return null;
+        };
         Range.prototype.getViewingDirection = function () {
             if (this.getProperty('viewingDirection')) {
                 return new Manifesto.ViewingDirection(this.getProperty('viewingDirection'));
@@ -5006,9 +4927,15 @@ var Manifesto;
             if (ranges && ranges.length) {
                 for (var i = 0; i < ranges.length; i++) {
                     var childRange = ranges[i];
-                    var childNode = new Manifesto.TreeNode();
-                    node.addNode(childNode);
-                    this._parseTreeNode(childNode, childRange);
+                    var behavior = childRange.getBehavior();
+                    if (behavior && behavior.toString() === Manifesto.Behavior.NONAV.toString()) {
+                        continue;
+                    }
+                    else {
+                        var childNode = new Manifesto.TreeNode();
+                        node.addNode(childNode);
+                        this._parseTreeNode(childNode, childRange);
+                    }
                 }
             }
         };
@@ -5066,10 +4993,18 @@ var Manifesto;
             if (this.items.length) {
                 return this.items;
             }
-            var items = this.__jsonld.items || this.__jsonld.canvases || this.__jsonld.elements;
+            var items = this.__jsonld.canvases || this.__jsonld.elements;
             if (items) {
                 for (var i = 0; i < items.length; i++) {
                     var c = items[i];
+                    var canvas = new Manifesto.Canvas(c, this.options);
+                    canvas.index = i;
+                    this.items.push(canvas);
+                }
+            }
+            else if (this.__jsonld) {
+                for (var i = 0; i < this.__jsonld.length; i++) {
+                    var c = this.__jsonld[i];
                     var canvas = new Manifesto.Canvas(c, this.options);
                     canvas.index = i;
                     this.items.push(canvas);
@@ -6010,7 +5945,7 @@ var Manifesto;
                             // nothing worked! Use the most recently tried service as the source of
                             // messages to show to the user.
                             if (lastAttempted) {
-                                showOutOfOptionsMessages(lastAttempted);
+                                showOutOfOptionsMessages(resource, lastAttempted);
                             }
                             return [2 /*return*/];
                     }
@@ -6482,6 +6417,7 @@ var Manifesto;
 /// <reference types="http-status-codes" />
 global.manifesto = global.Manifesto = module.exports = {
     AnnotationMotivation: new Manifesto.AnnotationMotivation(),
+    Behavior: new Manifesto.Behavior(),
     IIIFResourceType: new Manifesto.IIIFResourceType(),
     ManifestType: new Manifesto.ManifestType(),
     MediaType: new Manifesto.MediaType(),
@@ -14421,7 +14357,7 @@ function extend() {
 
 },{}]},{},[1])(1)
 });
-// @iiif/manifold v1.2.19 https://github.com/iiif-commons/manifold#readme
+// @iiif/manifold v1.2.24 https://github.com/iiif-commons/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifmanifold = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -14846,14 +14782,6 @@ var Manifold;
     Manifold.ExternalResource = ExternalResource;
 })(Manifold || (Manifold = {}));
 
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var Manifold;
 (function (Manifold) {
     var Helper = /** @class */ (function () {
@@ -14878,7 +14806,7 @@ var Manifold;
         Helper.prototype.getAttribution = function () {
             var attribution = this.manifest.getAttribution();
             if (attribution) {
-                return Manifesto.TranslationCollection.getValue(attribution);
+                return Manifesto.TranslationCollection.getValue(attribution, this.options.locale);
             }
             return null;
         };
@@ -14929,7 +14857,7 @@ var Manifold;
                 return canvas.ranges; // cache
             }
             else {
-                canvas.ranges = this.manifest.getAllRanges().en().where(function (range) { return (range.getCanvasIds().en().any(function (c) { return c === canvas.id; })); }).toArray();
+                canvas.ranges = this.manifest.getAllRanges().en().where(function (range) { return (range.getCanvasIds().en().any(function (c) { return manifesto.Utils.normaliseUrl(c) === manifesto.Utils.normaliseUrl(canvas.id); })); }).toArray();
             }
             return canvas.ranges;
         };
@@ -14950,7 +14878,7 @@ var Manifold;
         Helper.prototype.getDescription = function () {
             var description = this.manifest.getDescription();
             if (description) {
-                return Manifesto.TranslationCollection.getValue(description);
+                return Manifesto.TranslationCollection.getValue(description, this.options.locale);
             }
             return null;
         };
@@ -14960,7 +14888,7 @@ var Manifold;
         Helper.prototype.getLabel = function () {
             var label = this.manifest.getLabel();
             if (label) {
-                return Manifesto.TranslationCollection.getValue(label);
+                return Manifesto.TranslationCollection.getValue(label, this.options.locale);
             }
             return null;
         };
@@ -15111,7 +15039,7 @@ var Manifold;
                 currentRange = this.getCurrentRange();
             }
             if (currentRange) {
-                var flatTree = this._getFlattenedTree(this._extractChildren(this.getTree()), this._extractChildren).map(function (x) { return delete x.children && x; });
+                var flatTree = this.getFlattenedTree();
                 for (var i = 0; i < flatTree.length; i++) {
                     var node = flatTree[i];
                     // find current range in flattened tree
@@ -15160,14 +15088,18 @@ var Manifold;
             return null;
         };
         Helper.prototype.getFlattenedTree = function () {
-            return this._getFlattenedTree(this._extractChildren(this.getTree()), this._extractChildren).map(function (x) { return delete x.children && x; });
+            return this._flattenTree(this.getTree(), 'nodes');
         };
-        Helper.prototype._getFlattenedTree = function (children, extractChildren, level, parent) {
+        Helper.prototype._flattenTree = function (root, key) {
             var _this = this;
-            return Array.prototype.concat.apply(children.map(function (x) { return (__assign({}, x, { level: level || 1, parent: parent || null })); }), children.map(function (x) { return _this._getFlattenedTree(extractChildren(x) || [], extractChildren, (level || 1) + 1, x.id); }));
-        };
-        Helper.prototype._extractChildren = function (treeNode) {
-            return treeNode.nodes;
+            var flatten = [Object.assign({}, root)];
+            delete flatten[0][key];
+            if (root[key] && root[key].length > 0) {
+                return flatten.concat(root[key]
+                    .map(function (child) { return _this._flattenTree(child, key); })
+                    .reduce(function (a, b) { return a.concat(b); }, []));
+            }
+            return flatten;
         };
         Helper.prototype.getRanges = function () {
             return this.manifest.getAllRanges();
@@ -15726,7 +15658,7 @@ var Manifold;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])(1)
 });
-// utils v0.1.2 https://github.com/edsilv/utils
+// utils v0.2.1 https://github.com/edsilv/utils
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/utils.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.utils = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
@@ -15992,106 +15924,30 @@ var Utils;
 
 var Utils;
 (function (Utils) {
-    var Maths;
-    (function (Maths) {
-        var Vector = /** @class */ (function () {
-            function Vector(x, y) {
-                this.X = x;
-                this.Y = y;
+    var Maths = /** @class */ (function () {
+        function Maths() {
+        }
+        Maths.normalise = function (num, min, max) {
+            return (num - min) / (max - min);
+        };
+        Maths.median = function (values) {
+            values.sort(function (a, b) {
+                return a - b;
+            });
+            var half = Math.floor(values.length / 2);
+            if (values.length % 2) {
+                return values[half];
             }
-            Vector.prototype.get = function () {
-                return new Vector(this.X, this.Y);
-            };
-            Vector.prototype.set = function (x, y) {
-                this.X = x;
-                this.Y = y;
-            };
-            //get X(): number {
-            //    return this._X;
-            //}
-            //
-            //set X(value: number) {
-            //    this._X = value;
-            //    //this.OnPropertyChanged("X");
-            //}
-            //
-            //get Y(): number {
-            //    return this._Y;
-            //}
-            //
-            //set Y(value: number) {
-            //    this._Y = value;
-            //    //this.OnPropertyChanged("Y");
-            //}
-            Vector.prototype.add = function (v) {
-                this.X += v.X;
-                this.Y += v.Y;
-            };
-            Vector.add = function (v1, v2) {
-                return new Vector(v1.X + v2.X, v1.Y + v2.Y);
-            };
-            Vector.prototype.sub = function (v) {
-                this.X -= v.X;
-                this.Y -= v.Y;
-            };
-            Vector.sub = function (v1, v2) {
-                return new Vector(v1.X - v2.X, v1.Y - v2.Y);
-            };
-            Vector.prototype.mult = function (n) {
-                this.X = this.X * n;
-                this.Y = this.Y * n;
-            };
-            Vector.mult = function (v1, v2) {
-                return new Vector(v1.X * v2.X, v1.Y * v2.Y);
-            };
-            Vector.multN = function (v1, n) {
-                return new Vector(v1.X * n, v1.Y * n);
-            };
-            Vector.prototype.Div = function (n) {
-                this.X = this.X / n;
-                this.Y = this.Y / n;
-            };
-            Vector.div = function (v1, v2) {
-                return new Vector(v1.X / v2.X, v1.Y / v2.Y);
-            };
-            Vector.divN = function (v1, n) {
-                return new Vector(v1.X / n, v1.Y / n);
-            };
-            Vector.prototype.mag = function () {
-                return Math.sqrt(this.X * this.X + this.Y * this.Y);
-            };
-            Vector.prototype.magSq = function () {
-                return (this.X * this.X + this.Y * this.Y);
-            };
-            Vector.prototype.normalise = function () {
-                var m = this.mag();
-                if (m != 0 && m != 1) {
-                    this.Div(m);
-                }
-            };
-            Vector.prototype.limit = function (max) {
-                if (this.magSq() > max * max) {
-                    this.normalise();
-                    this.mult(max);
-                }
-            };
-            Vector.prototype.equals = function (v) {
-                return (this.X == v.X && this.Y == v.Y);
-            };
-            Vector.prototype.heading = function () {
-                var angle = Math.atan2(-this.Y, this.X);
-                return -1 * angle;
-            };
-            Vector.random2D = function () {
-                return Vector.fromAngle((Math.random() * (Math.PI * 2)));
-            };
-            Vector.fromAngle = function (angle) {
-                return new Vector(Math.cos(angle), Math.sin(angle));
-            };
-            return Vector;
-        }());
-        Maths.Vector = Vector;
-    })(Maths = Utils.Maths || (Utils.Maths = {}));
+            else {
+                return (values[half - 1] + values[half]) / 2.0;
+            }
+        };
+        Maths.clamp = function (value, min, max) {
+            return Math.min(Math.max(value, min), max);
+        };
+        return Maths;
+    }());
+    Utils.Maths = Maths;
 })(Utils || (Utils = {}));
 
 var Utils;
@@ -16376,6 +16232,36 @@ var Utils;
             div.innerHTML = encoded;
             return div.firstChild.nodeValue;
         };
+        Strings.format = function (str) {
+            var values = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                values[_i - 1] = arguments[_i];
+            }
+            for (var i = 0; i < values.length; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                str = str.replace(reg, values[i]);
+            }
+            return str;
+        };
+        Strings.isAlphanumeric = function (str) {
+            return /^[a-zA-Z0-9]*$/.test(str);
+        };
+        Strings.toCssClass = function (str) {
+            return str.replace(/[^a-z0-9]/g, function (s) {
+                var c = s.charCodeAt(0);
+                if (c == 32)
+                    return '-';
+                if (c >= 65 && c <= 90)
+                    return '_' + s.toLowerCase();
+                return '__' + ('000' + c.toString(16)).slice(-4);
+            });
+        };
+        Strings.toFileName = function (str) {
+            return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        };
+        Strings.utf8_to_b64 = function (str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        };
         return Strings;
     }());
     Utils.Strings = Strings;
@@ -16513,7 +16399,12 @@ define('URLDataProvider',["require", "exports", "./UVDataProvider"], function (r
         };
         URLDataProvider.prototype.set = function (key, value) {
             if (!this.readonly) {
-                Utils.Urls.setHashParameter(key, value.toString(), document);
+                if (value) {
+                    Utils.Urls.setHashParameter(key, value.toString(), document);
+                }
+                else {
+                    Utils.Urls.setHashParameter(key, '', document);
+                }
             }
         };
         return URLDataProvider;
@@ -16590,7 +16481,6 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
         BaseEvents.MULTISELECT_CHANGE = 'multiSelectChange';
         BaseEvents.MULTISELECTION_MADE = 'multiSelectionMade';
         BaseEvents.NEXT = 'next';
-        BaseEvents.NO_RANGE = 'norange';
         BaseEvents.NOT_FOUND = 'notFound';
         BaseEvents.OPEN_EXTERNAL_RESOURCE = 'openExternalResource';
         BaseEvents.OPEN_LEFT_PANEL = 'openLeftPanel';
@@ -17120,7 +17010,11 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                 }
             }
         };
-        Auth1.showOutOfOptionsMessages = function (service) {
+        Auth1.showOutOfOptionsMessages = function (resource, service) {
+            // if the UV is already showing the info bar, no need to show an error message.
+            if (resource.status == HTTPStatusCode.MOVED_TEMPORARILY) {
+                return;
+            }
             var errorMessage = "";
             if (service.getFailureHeader()) {
                 errorMessage += '<p>' + service.getFailureHeader() + '</p>';
@@ -17197,7 +17091,7 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
             // build config inheritance chain
             if (that.modules && that.modules.length) {
                 that.modules = that.modules.reverse();
-                $.each(that.modules, function (index, moduleName) {
+                that.modules.forEach(function (moduleName) {
                     that.config = $.extend(true, that.config, that.extension.data.config.modules[moduleName]);
                 });
             }
@@ -17300,14 +17194,14 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             if (this.$triggerButton) {
                 // get the normalised position of the button
                 if (!this.extension.isDesktopMetric()) {
-                    normalisedPos = Math.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
+                    normalisedPos = Utils.Maths.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
                 }
                 else {
-                    normalisedPos = Math.normalise(this.$triggerButton.position().left, 0, this.extension.width());
+                    normalisedPos = Utils.Maths.normalise(this.$triggerButton.position().left, 0, this.extension.width());
                 }
-                left = Math.floor((this.extension.width() * normalisedPos) - (this.$element.width() * normalisedPos));
+                left = Math.floor((this.extension.width() * normalisedPos) - ((this.$element.width()) * normalisedPos));
                 //left = Math.floor((this.extension.width() * normalisedPos));
-                arrowLeft = (this.$element.width() * normalisedPos);
+                arrowLeft = Math.floor(this.$element.width() * normalisedPos);
             }
             this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
             this.$element.css({
@@ -18248,7 +18142,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN);
-                var openUri = String.format(_this.data.config.options.openTemplate, _this.helper.iiifResourceUri);
+                var openUri = Utils.Strings.format(_this.data.config.options.openTemplate, _this.helper.iiifResourceUri);
                 window.open(openUri);
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL, function () {
@@ -18269,9 +18163,16 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 _this.fire(BaseEvents_1.BaseEvents.PAGE_UP);
             });
             $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
-                _this.data.rangeId = range.id;
-                _this.helper.rangeId = range.id;
-                _this.fire(BaseEvents_1.BaseEvents.RANGE_CHANGED, _this.data.rangeId);
+                if (range) {
+                    _this.data.rangeId = range.id;
+                    _this.helper.rangeId = range.id;
+                    _this.fire(BaseEvents_1.BaseEvents.RANGE_CHANGED, _this.data.rangeId);
+                }
+                else {
+                    _this.data.rangeId = null;
+                    _this.helper.rangeId = null;
+                    _this.fire(BaseEvents_1.BaseEvents.RANGE_CHANGED, null);
+                }
             });
             $.subscribe(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, function (e, resource) {
                 _this.fire(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED);
@@ -18542,7 +18443,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             // mark locale as added.
             // if limitLocales is disabled,
             // loop through remaining availableLocales and add to finalLocales.
-            $.each(configuredLocales, function (index, configuredLocale) {
+            configuredLocales.forEach(function (configuredLocale) {
                 var match = availableLocales.filter(function (item) { return item.name === configuredLocale.name; });
                 if (match.length) {
                     var m = match[0];
@@ -18554,7 +18455,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             });
             var limitLocales = Utils.Bools.getBool(this.data.config.options.limitLocales, false);
             if (!limitLocales) {
-                $.each(availableLocales, function (index, availableLocale) {
+                availableLocales.forEach(function (availableLocale) {
                     if (!availableLocale.added) {
                         finalLocales.push(availableLocale);
                     }
@@ -18568,7 +18469,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             if (metrics) {
                 for (var i = 0; i < metrics.length; i++) {
                     var m = metrics[i];
-                    m.type = new MetricType_1.MetricType(m.type);
+                    if (typeof (m.type) === "string") {
+                        m.type = new MetricType_1.MetricType(m.type);
+                    }
                     this.metrics.push(m);
                 }
             }
@@ -18747,7 +18650,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
             var _this = this;
             var indices = this.getPagedIndices();
             var resourcesToLoad = [];
-            $.each(indices, function (i, index) {
+            indices.forEach(function (index) {
                 var canvas = _this.helper.getCanvasByIndex(index);
                 var r;
                 if (!canvas.externalResource) {
@@ -18939,11 +18842,12 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
         BaseExtension.prototype.changeLocale = function (locale) {
             // re-order locales so the passed locale is first
             var data = {};
-            data.locales = this.data.locales.clone();
-            var index = data.locales.findIndex(function (l) {
+            data.locales = this.data.locales.slice(0);
+            var fromIndex = data.locales.findIndex(function (l) {
                 return l.name === locale;
             });
-            data.locales.move(index, 0);
+            var toIndex = 0;
+            data.locales.splice(toIndex, 0, data.locales.splice(fromIndex, 1)[0]);
             this.reload(data);
         };
         return BaseExtension;
@@ -19407,9 +19311,9 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                     var searchResults = Number(this.data.data.searchResults);
                     if (searchResults) {
                         if (searchResults > 1) {
-                            return String.format(that.content.searchResults, searchResults);
+                            return Utils.Strings.format(that.content.searchResults, searchResults.toString());
                         }
-                        return String.format(that.content.searchResult, searchResults);
+                        return Utils.Strings.format(that.content.searchResult, searchResults.toString());
                     }
                     return '';
                 }
@@ -19439,7 +19343,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                 var thumb = this.thumbs[i];
                 heights.push(thumb.height);
             }
-            var medianHeight = Math.median(heights);
+            var medianHeight = Utils.Maths.median(heights);
             for (var i = 0; i < this.thumbs.length; i++) {
                 var thumb = this.thumbs[i];
                 thumb.height = medianHeight;
@@ -19472,8 +19376,8 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                 start: (thumbRangeMid > thumbLoadRange) ? thumbRangeMid - thumbLoadRange : 0,
                 end: (thumbRangeMid < (this.thumbs.length - 1) - thumbLoadRange) ? thumbRangeMid + thumbLoadRange : this.thumbs.length - 1
             };
-            //console.log('start: ' + thumbRange.start + ' end: ' + thumbRange.end);
             var fadeDuration = this.options.thumbsImageFadeInDuration;
+            var that = this;
             for (var i = thumbRange.start; i <= thumbRange.end; i++) {
                 var $thumb = this.getThumbByIndex(i);
                 var $wrap = $thumb.find('.wrap');
@@ -19484,8 +19388,9 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                         $wrap.removeClass('loadingFailed');
                         $wrap.addClass('loading');
                         var src = $thumb.attr('data-src');
-                        src += '?t=' + Utils.Dates.getTimeStamp();
-                        //console.log(i, src);
+                        if (that.config.options.thumbsCacheInvalidation && that.config.options.thumbsCacheInvalidation.enabled) {
+                            src += that.config.options.thumbsCacheInvalidation.paramType + "t=" + Utils.Dates.getTimeStamp();
+                        }
                         var $img = $('<img src="' + src + '" alt=""/>');
                         // fade in on load.
                         $img.hide().load(function () {
@@ -19834,10 +19739,6 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
-                _this.selectCurrentTreeNode();
-                _this.updateTreeTabBySelection();
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.NO_RANGE, function () {
                 _this.selectCurrentTreeNode();
                 _this.updateTreeTabBySelection();
             });
@@ -20263,9 +20164,32 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             }
             return topRangeIndex;
         };
-        // todo: a lot of this was written prior to manifold storing the current range id
-        // use that instead - probably after porting manifold to redux.
         ContentLeftPanel.prototype.selectCurrentTreeNode = function () {
+            // todo: merge selectCurrentTreeNodeByCanvas and selectCurrentTreeNodeByRange
+            // the openseadragon extension should keep track of the current range instead of using canvas index
+            if (this.extension.name === 'uv-seadragon-extension') {
+                this.selectCurrentTreeNodeByCanvas();
+            }
+            else {
+                this.selectCurrentTreeNodeByRange();
+            }
+        };
+        ContentLeftPanel.prototype.selectCurrentTreeNodeByRange = function () {
+            if (this.treeView) {
+                var range = this.extension.helper.getCurrentRange();
+                var node = null;
+                if (range && range.treeNode) {
+                    node = this.treeView.getNodeById(range.treeNode.id);
+                }
+                if (node) {
+                    this.treeView.selectNode(node);
+                }
+                else {
+                    this.treeView.deselectCurrentNode();
+                }
+            }
+        };
+        ContentLeftPanel.prototype.selectCurrentTreeNodeByCanvas = function () {
             if (this.treeView) {
                 var node = null;
                 var currentCanvasTopRangeIndex = this.getCurrentCanvasTopRangeIndex();
@@ -20274,6 +20198,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 var range = null;
                 if (currentCanvasTopRangeIndex !== -1) {
                     range = this.extension.getCurrentCanvasRange();
+                    //range = this.extension.helper.getCurrentRange();
                     if (range && range.treeNode) {
                         node = this.treeView.getNodeById(range.treeNode.id);
                     }
@@ -21020,6 +20945,9 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 _this.databind();
             });
+            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
+                _this.databind();
+            });
             this.setTitle(this.config.content.title);
             this.$metadata = $('<div class="iiif-metadata-component"></div>');
             this.$main.append(this.$metadata);
@@ -21033,8 +20961,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             this.databind();
         };
         MoreInfoRightPanel.prototype.databind = function () {
-            this.metadataComponent.options.data = this._getData();
-            this.metadataComponent.set(new Object()); // todo: should be passing data
+            this.metadataComponent.set(this._getData());
         };
         MoreInfoRightPanel.prototype._getData = function () {
             return {
@@ -21214,8 +21141,8 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.avcomponent.set({
-                    limitToRange: !_this.extension.isDesktopMetric(),
-                    constrainNavigationToRange: true
+                    limitToRange: _this._limitToRange(),
+                    constrainNavigationToRange: _this._limitToRange()
                 });
             });
             $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
@@ -21229,17 +21156,23 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             this.avcomponent.on('canvasready', function () {
                 _this._canvasReady = true;
             }, false);
-            this.avcomponent.on('previousrange', function () {
-                _this._setTitle();
-                $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [_this.extension.helper.getCurrentRange()]);
-            }, false);
-            this.avcomponent.on('nextrange', function () {
-                _this._setTitle();
-                $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [_this.extension.helper.getCurrentRange()]);
-            }, false);
-            this.avcomponent.on('norange', function () {
-                _this._setTitle();
-                $.publish(BaseEvents_1.BaseEvents.NO_RANGE);
+            this.avcomponent.on('rangechanged', function (rangeId) {
+                if (rangeId) {
+                    _this._setTitle();
+                    var range = _this.extension.helper.getRangeById(rangeId);
+                    if (range) {
+                        var currentRange = _this.extension.helper.getCurrentRange();
+                        if (range !== currentRange) {
+                            $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                        }
+                    }
+                    else {
+                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
+                    }
+                }
+                else {
+                    $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
+                }
             }, false);
         };
         AVCenterPanel.prototype._setTitle = function () {
@@ -21280,28 +21213,29 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 _this.avcomponent.set({
                     helper: _this.extension.helper,
                     autoPlay: _this.config.options.autoPlay,
+                    autoSelectRange: true,
                     defaultAspectRatio: 0.56,
-                    limitToRange: false,
+                    limitToRange: _this._limitToRange(),
+                    constrainNavigationToRange: _this._limitToRange(),
                     doubleClickMS: 350,
                     content: _this.content
                 });
                 _this.resize();
             });
         };
+        AVCenterPanel.prototype._limitToRange = function () {
+            return !this.extension.isDesktopMetric();
+        };
         AVCenterPanel.prototype._viewRange = function (range) {
             var _this = this;
-            if (!range.canvases || !range.canvases.length)
-                return;
-            var canvasId = range.canvases[0];
-            var canvas = this.extension.helper.getCanvasById(canvasId);
-            if (canvas) {
-                Utils.Async.waitFor(function () {
-                    return _this._canvasReady;
-                }, function () {
-                    _this.avcomponent.playCanvas(canvasId);
-                    _this.resize();
-                });
-            }
+            Utils.Async.waitFor(function () {
+                return _this._canvasReady;
+            }, function () {
+                if (range) {
+                    _this.avcomponent.playRange(range.id);
+                }
+                _this.resize();
+            });
         };
         AVCenterPanel.prototype.viewCanvas = function (canvasIndex) {
             var canvas = this.extension.helper.getCanvasByIndex(canvasIndex);
@@ -21793,6 +21727,7 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
+            //requirejs.config({shim: {'uv/lib/hls.min': { deps: ['require'], exports: "Hls"}}});
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
@@ -21803,6 +21738,11 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
                 $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
             });
+        };
+        Extension.prototype.dependencyLoaded = function (index, dep) {
+            if (index === 0) {
+                window.Hls = dep; //https://github.com/mrdoob/three.js/issues/9602
+            }
         };
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
@@ -21867,7 +21807,7 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
         Extension.prototype.getEmbedScript = function (template, width, height) {
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&rid=" + this.helper.rangeId;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         Extension.prototype.treeNodeSelected = function (node) {
@@ -22339,7 +22279,7 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         return Extension;
@@ -22464,7 +22404,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                 var sources = [];
                 var renderings = canvas.getRenderings();
                 if (renderings && renderings.length) {
-                    $.each(canvas.getRenderings(), function (index, rendering) {
+                    canvas.getRenderings().forEach(function (rendering) {
                         sources.push({
                             type: rendering.getFormat().toString(),
                             src: rendering.id
@@ -22474,7 +22414,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                 else {
                     var formats = _this.extension.getMediaFormats(_this.extension.helper.getCurrentCanvas());
                     if (formats && formats.length) {
-                        $.each(formats, function (index, format) {
+                        formats.forEach(function (format) {
                             var type = format.getFormat();
                             if (type) {
                                 sources.push({
@@ -22517,8 +22457,8 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                     _this.$container.append(_this.$media);
                     _this.player = new MediaElementPlayer($('audio')[0], {
                         poster: poster,
-                        defaultAudioWidth: that.mediaWidth,
-                        defaultAudioHeight: that.mediaHeight,
+                        defaultAudioWidth: 'auto',
+                        defaultAudioHeight: 'auto',
                         showPosterWhenPaused: true,
                         showPosterWhenEnded: true,
                         success: function (mediaElement, originalNode) {
@@ -22773,7 +22713,7 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         // todo: use canvas.getThumbnail()
@@ -23021,8 +22961,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 // dimensions
                 if (dimensions) {
                     label = hasNormalDimensions ?
-                        String.format(label, dimensions.size.width, dimensions.size.height) :
-                        String.format(label, dimensions.size.height, dimensions.size.width);
+                        Utils.Strings.format(label, dimensions.size.width.toString(), dimensions.size.height.toString()) :
+                        Utils.Strings.format(label, dimensions.size.height.toString(), dimensions.size.width.toString());
                     $label.text(label);
                     $input.prop('title', label);
                     this.$currentViewAsJpgButton.data('width', dimensions.size.width);
@@ -23060,7 +23000,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 if (!size) {
                     // if there is no image service, allow the image to be downloaded directly.
                     if (canvas.externalResource && !canvas.externalResource.hasServiceDescriptor()) {
-                        var label = String.format(this.content.wholeImageHighRes, '?', '?', mime);
+                        var label = Utils.Strings.format(this.content.wholeImageHighRes, '?', '?', mime);
                         $label.text(label);
                         $input.prop('title', label);
                         this.$wholeImageHighResButton.show();
@@ -23071,8 +23011,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 }
                 else {
                     var label = hasNormalDimensions ?
-                        String.format(this.content.wholeImageHighRes, size.width, size.height, mime) :
-                        String.format(this.content.wholeImageHighRes, size.height, size.width, mime);
+                        Utils.Strings.format(this.content.wholeImageHighRes, size.width.toString(), size.height.toString(), mime) :
+                        Utils.Strings.format(this.content.wholeImageHighRes, size.height.toString(), size.width.toString(), mime);
                     $label.text(label);
                     $input.prop('title', label);
                     this.$wholeImageHighResButton.data('width', size.width);
@@ -23102,7 +23042,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 else {
                     mime = '?';
                 }
-                var label = String.format(this.content.wholeImagesHighRes, mime);
+                var label = Utils.Strings.format(this.content.wholeImagesHighRes, mime);
                 $label.text(label);
                 $input.prop('title', label);
                 this.$wholeImagesHighResButton.show();
@@ -23124,8 +23064,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 var $label = this.$wholeImageLowResAsJpgButton.find('label');
                 var size = this.extension.getConfinedImageDimensions(canvas, this.options.confinedImageSize);
                 var label = hasNormalDimensions ?
-                    String.format(this.content.wholeImageLowResAsJpg, size.width, size.height) :
-                    String.format(this.content.wholeImageLowResAsJpg, size.height, size.width);
+                    Utils.Strings.format(this.content.wholeImageLowResAsJpg, size.width.toString(), size.height.toString()) :
+                    Utils.Strings.format(this.content.wholeImageLowResAsJpg, size.height.toString(), size.width.toString());
                 $label.text(label);
                 $input.prop('title', label);
                 this.$wholeImageLowResAsJpgButton.data('width', size.width);
@@ -23271,7 +23211,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                         label = defaultLabel;
                     }
                     var mime = Utils.Files.simplifyMimeType(rendering.getFormat().toString());
-                    label = String.format(label, mime);
+                    label = Utils.Strings.format(label, mime);
                     this.renderingUrls[currentId] = rendering.id;
                     var $button = $('<li class="option dynamic"><input id="' + currentId + '" data-mime="' + mime + '" title="' + label + '" type="radio" name="downloadOptions" tabindex="0" /><label for="' + currentId + '">' + label + '</label></li>');
                     switch (type) {
@@ -23518,13 +23458,11 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AutoComplete = /** @class */ (function () {
-        //private _navigationKeyDownCodes: number[] = [KeyCodes.KeyDown.Backspace, KeyCodes.KeyDown.Spacebar, KeyCodes.KeyDown.Tab, KeyCodes.KeyDown.LeftArrow, KeyCodes.KeyDown.RightArrow, KeyCodes.KeyDown.Delete];
-        //private _validKeyPressCodes: number[] = [KeyCodes.KeyPress.GraveAccent, KeyCodes.KeyPress.DoubleQuote];
-        //private _lastKeyDownWasNavigation: boolean = false;
-        function AutoComplete(element, autoCompleteFunc, parseResultsFunc, onSelect, delay, minChars, positionAbove) {
+        function AutoComplete(element, autoCompleteFunc, parseResultsFunc, onSelect, delay, minChars, positionAbove, allowWords) {
             if (delay === void 0) { delay = 300; }
             if (minChars === void 0) { minChars = 2; }
             if (positionAbove === void 0) { positionAbove = false; }
+            if (allowWords === void 0) { allowWords = false; }
             var _this = this;
             this._$element = element;
             this._autoCompleteFunc = autoCompleteFunc;
@@ -23533,6 +23471,7 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
             this._onSelect = onSelect;
             this._parseResultsFunc = parseResultsFunc;
             this._positionAbove = positionAbove;
+            this._allowWords = allowWords;
             // create ui.
             this._$searchResultsList = $('<ul class="autocomplete"></ul>');
             if (this._positionAbove) {
@@ -23569,15 +23508,6 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
                         originalEvent.stopPropagation();
                 }
             });
-            // prevent invalid characters being entered
-            // this._$element.on("keypress", function(e: JQueryEventObject) {
-            //     const isValidKeyPress: boolean = that._isValidKeyPress(<KeyboardEvent>e.originalEvent);
-            //     if (!(that._lastKeyDownWasNavigation || isValidKeyPress)) {
-            //         e.preventDefault();
-            //         return false;
-            //     }
-            //     return true;
-            // });
             // auto complete
             this._$element.on("keyup", function (e) {
                 // if pressing enter without a list item selected
@@ -23603,9 +23533,9 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
                     // after a delay, show autocomplete list.
                     typewatch(function () {
                         var val = that._getTerms();
-                        // if there are more than x chars and no spaces
+                        // if there are more than x chars
                         // update the autocomplete list.
-                        if (val && val.length > that._minChars && !val.includes(' ')) {
+                        if (val && val.length > that._minChars && that._searchForWords(val)) {
                             that._search(val);
                         }
                         else {
@@ -23625,16 +23555,14 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
             });
             this._hideResults();
         }
-        // private _isNavigationKeyDown(e: KeyboardEvent): boolean {
-        //     const isNavigationKeyDown: boolean = this._navigationKeyDownCodes.includes(Utils.Keyboard.getCharCode(e));
-        //     return isNavigationKeyDown;
-        // }
-        // private _isValidKeyPress(e: KeyboardEvent): boolean {
-        //     const charCode: number = Utils.Keyboard.getCharCode(e);
-        //     const key: string = String.fromCharCode(charCode);
-        //     const isValid: boolean = key.isAlphanumeric() || this._validKeyPressCodes.includes(charCode);
-        //     return isValid;
-        // }
+        AutoComplete.prototype._searchForWords = function (search) {
+            if (this._allowWords || !search.includes(' ')) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
         AutoComplete.prototype._getTerms = function () {
             return this._$element.val().trim();
         };
@@ -23657,7 +23585,6 @@ define('modules/uv-shared-module/AutoComplete',["require", "exports"], function 
             $items.removeClass('selected');
             var $selectedItem = $items.eq(this._selectedResultIndex);
             $selectedItem.addClass('selected');
-            //var top = selectedItem.offset().top;
             var top = $selectedItem.outerHeight(true) * this._selectedResultIndex;
             this._$searchResultsList.scrollTop(top);
         };
@@ -23778,6 +23705,8 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (e, annotationResults) {
                 _this.displaySearchResults(annotationResults.annotations, annotationResults.terms);
                 _this.setCurrentSearchResultPlacemarker();
+                _this.updatePrevButton();
+                _this.updateNextButton();
             });
             $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
                 _this.hideSearchSpinner();
@@ -23858,11 +23787,15 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             });
             this.$previousResultButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Events_1.Events.PREV_SEARCH_RESULT);
+                if (_this.isPreviousButtonEnabled()) {
+                    $.publish(Events_1.Events.PREV_SEARCH_RESULT);
+                }
             });
             this.$nextResultButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(Events_1.Events.NEXT_SEARCH_RESULT);
+                if (_this.isNextButtonEnabled()) {
+                    $.publish(Events_1.Events.NEXT_SEARCH_RESULT);
+                }
             });
             this.$clearSearchResultsButton.on('click', function (e) {
                 e.preventDefault();
@@ -23881,7 +23814,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var autocompleteService = this.extension.getAutoCompleteUri();
             if (autocompleteService) {
                 new AutoComplete_1.AutoComplete(this.$searchText, function (terms, cb) {
-                    $.getJSON(String.format(autocompleteService, terms), function (results) {
+                    $.getJSON(Utils.Strings.format(autocompleteService, terms), function (results) {
                         cb(results);
                     });
                 }, function (results) {
@@ -23890,7 +23823,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                     });
                 }, function (terms) {
                     _this.search(terms);
-                }, 300, 2, true);
+                }, 300, 2, true, Utils.Bools.getBool(this.options.autocompleteAllowWords, false));
             }
             else {
                 this.$searchText.on("keyup", function (e) {
@@ -24090,10 +24023,10 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 if (!label) {
                     label = this.extension.helper.manifest.options.defaultLabel;
                 }
-                title = String.format(title, that.content.pageCaps, label);
+                title = Utils.Strings.format(title, that.content.pageCaps, label);
             }
             else {
-                title = String.format(title, that.content.imageCaps, canvasIndex + 1);
+                title = Utils.Strings.format(title, that.content.imageCaps, String(canvasIndex + 1));
             }
             that.$placemarkerDetailsTop.html(title);
             var searchResults = that.getSearchResults();
@@ -24107,11 +24040,11 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 var instancesFoundText = that.content.instancesFound;
                 var text = '';
                 if (result.rects.length === 1) {
-                    text = String.format(instanceFoundText, terms);
+                    text = Utils.Strings.format(instanceFoundText, terms);
                     that.$placemarkerDetailsBottom.html(text);
                 }
                 else {
-                    text = String.format(instancesFoundText, result.rects.length, terms);
+                    text = Utils.Strings.format(instancesFoundText, String(result.rects.length), terms);
                     that.$placemarkerDetailsBottom.html(text);
                 }
             }
@@ -24213,11 +24146,11 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 }
                 var lastCanvasOrderLabel = this.extension.helper.getLastCanvasLabel(true);
                 if (lastCanvasOrderLabel) {
-                    this.$pagePositionLabel.html(String.format(displaying, this.content.page, Utils_1.UVUtils.sanitize(label), Utils_1.UVUtils.sanitize(lastCanvasOrderLabel)));
+                    this.$pagePositionLabel.html(Utils.Strings.format(displaying, this.content.page, Utils_1.UVUtils.sanitize(label), Utils_1.UVUtils.sanitize(lastCanvasOrderLabel)));
                 }
             }
             else {
-                this.$pagePositionLabel.html(String.format(displaying, this.content.image, index + 1, this.extension.helper.getTotalCanvases()));
+                this.$pagePositionLabel.html(Utils.Strings.format(displaying, this.content.image, String(index + 1), this.extension.helper.getTotalCanvases().toString()));
             }
         };
         FooterPanel.prototype.isPageModeEnabled = function () {
@@ -24513,9 +24446,9 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             });
             this.$prevOptions = $('<div class="prevOptions"></div>');
             this.$centerOptions.append(this.$prevOptions);
-            this.$firstButton = $("\n          <button class=\"btn imageBtn first\" tabindex=\"0\" title=\"" + this.content.first + "\">\n            <i class=\"uv-icon-first\" aria-hidden=\"true\"></i>" + this.content.first + "\n          </button>\n        ");
+            this.$firstButton = $("\n          <button class=\"btn imageBtn first\" tabindex=\"0\" title=\"" + this.content.first + "\">\n            <i class=\"uv-icon-first\" aria-hidden=\"true\"></i><span>" + this.content.first + "</span>\n          </button>\n        ");
             this.$prevOptions.append(this.$firstButton);
-            this.$prevButton = $("\n          <button class=\"btn imageBtn prev\" tabindex=\"0\" title=\"" + this.content.previous + "\">\n            <i class=\"uv-icon-prev\" aria-hidden=\"true\"></i>" + this.content.previous + "\n          </button>\n        ");
+            this.$prevButton = $("\n          <button class=\"btn imageBtn prev\" tabindex=\"0\" title=\"" + this.content.previous + "\">\n            <i class=\"uv-icon-prev\" aria-hidden=\"true\"></i><span>" + this.content.previous + "</span>\n          </button>\n        ");
             this.$prevOptions.append(this.$prevButton);
             this.$modeOptions = $('<div class="mode"></div>');
             this.$centerOptions.append(this.$modeOptions);
@@ -24562,7 +24495,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     return results;
                 }, function (terms) {
                     _this.search(terms);
-                }, 300, 0);
+                }, 300, 0, Utils.Bools.getBool(this.options.autocompleteAllowWords, false));
             }
             else if (Utils.Bools.getBool(this.options.imageSelectionBoxEnabled, true)) {
                 this.$selectionBoxOptions = $('<div class="image-selectionbox-options"></div>');
@@ -24581,13 +24514,13 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             }
             this.$total = $('<span class="total"></span>');
             this.$search.append(this.$total);
-            this.$searchButton = $('<a class="go btn btn-primary" tabindex="0">' + this.content.go + '</a>');
+            this.$searchButton = $("<a class=\"go btn btn-primary\" title=\"" + this.content.go + "\" tabindex=\"0\">" + this.content.go + "</a>");
             this.$search.append(this.$searchButton);
             this.$nextOptions = $('<div class="nextOptions"></div>');
             this.$centerOptions.append(this.$nextOptions);
-            this.$nextButton = $("\n          <button class=\"btn imageBtn next\" tabindex=\"0\" title=\"" + this.content.next + "\">\n            <i class=\"uv-icon-next\" aria-hidden=\"true\"></i>" + this.content.next + "\n          </button>\n        ");
+            this.$nextButton = $("\n          <button class=\"btn imageBtn next\" tabindex=\"0\" title=\"" + this.content.next + "\">\n            <i class=\"uv-icon-next\" aria-hidden=\"true\"></i><span>" + this.content.next + "</span>\n          </button>\n        ");
             this.$nextOptions.append(this.$nextButton);
-            this.$lastButton = $("\n          <button class=\"btn imageBtn last\" tabindex=\"0\" title=\"" + this.content.last + "\">\n            <i class=\"uv-icon-last\" aria-hidden=\"true\"></i>" + this.content.last + "\n          </button>\n        ");
+            this.$lastButton = $("\n          <button class=\"btn imageBtn last\" tabindex=\"0\" title=\"" + this.content.last + "\">\n            <i class=\"uv-icon-last\" aria-hidden=\"true\"></i><span>" + this.content.last + "</span>\n          </button>\n        ");
             this.$nextOptions.append(this.$lastButton);
             if (this.isPageModeEnabled()) {
                 this.$pageModeOption.attr('checked', 'checked');
@@ -24629,7 +24562,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$galleryButton.onPressed(function () {
                 $.publish(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL);
             });
-            this.setTitles();
+            this.setNavigationTitles();
             this.setTotal();
             var viewingDirection = this.extension.helper.getViewingDirection();
             // check if the book has more than one page, otherwise hide prev/next options.
@@ -24763,20 +24696,51 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.isPageModeEnabled = function () {
             return this.config.options.pageModeEnabled && this.extension.getMode().toString() === Mode_1.Mode.page.toString();
         };
-        PagingHeaderPanel.prototype.setTitles = function () {
+        PagingHeaderPanel.prototype.setNavigationTitles = function () {
             if (this.isPageModeEnabled()) {
-                this.$firstButton.prop('title', this.content.firstPage);
-                this.$prevButton.prop('title', this.content.previousPage);
-                this.$nextButton.prop('title', this.content.nextPage);
-                this.$lastButton.prop('title', this.content.lastPage);
+                if (this.extension.helper.isRightToLeft()) {
+                    this.$firstButton.prop('title', this.content.lastPage);
+                    this.$firstButton.find('span').text(this.content.lastPage);
+                    this.$prevButton.prop('title', this.content.nextPage);
+                    this.$prevButton.find('span').text(this.content.nextPage);
+                    this.$nextButton.prop('title', this.content.previousPage);
+                    this.$nextButton.find('span').text(this.content.previousPage);
+                    this.$lastButton.prop('title', this.content.firstPage);
+                    this.$lastButton.find('span').text(this.content.firstPage);
+                }
+                else {
+                    this.$firstButton.prop('title', this.content.firstPage);
+                    this.$firstButton.find('span').text(this.content.firstPage);
+                    this.$prevButton.prop('title', this.content.previousPage);
+                    this.$prevButton.find('span').text(this.content.previousPage);
+                    this.$nextButton.prop('title', this.content.nextPage);
+                    this.$nextButton.find('span').text(this.content.nextPage);
+                    this.$lastButton.prop('title', this.content.lastPage);
+                    this.$lastButton.find('span').text(this.content.lastPage);
+                }
             }
             else {
-                this.$firstButton.prop('title', this.content.firstImage);
-                this.$prevButton.prop('title', this.content.previousImage);
-                this.$nextButton.prop('title', this.content.nextImage);
-                this.$lastButton.prop('title', this.content.lastImage);
+                if (this.extension.helper.isRightToLeft()) {
+                    this.$firstButton.prop('title', this.content.lastImage);
+                    this.$firstButton.find('span').text(this.content.lastPage);
+                    this.$prevButton.prop('title', this.content.nextImage);
+                    this.$prevButton.find('span').text(this.content.nextImage);
+                    this.$nextButton.prop('title', this.content.previousImage);
+                    this.$nextButton.find('span').text(this.content.previousImage);
+                    this.$lastButton.prop('title', this.content.firstImage);
+                    this.$lastButton.find('span').text(this.content.firstImage);
+                }
+                else {
+                    this.$firstButton.prop('title', this.content.firstImage);
+                    this.$firstButton.find('span').text(this.content.firstImage);
+                    this.$prevButton.prop('title', this.content.previousImage);
+                    this.$prevButton.find('span').text(this.content.previousImage);
+                    this.$nextButton.prop('title', this.content.nextImage);
+                    this.$nextButton.find('span').text(this.content.nextImage);
+                    this.$lastButton.prop('title', this.content.lastImage);
+                    this.$lastButton.find('span').text(this.content.lastImage);
+                }
             }
-            this.$searchButton.prop('title', this.content.go);
         };
         PagingHeaderPanel.prototype.updatePagingToggle = function () {
             if (!this.pagingToggleIsVisible()) {
@@ -24806,10 +24770,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.setTotal = function () {
             var of = this.content.of;
             if (this.isPageModeEnabled()) {
-                this.$total.html(String.format(of, this.extension.helper.getLastCanvasLabel(true)));
+                this.$total.html(Utils.Strings.format(of, this.extension.helper.getLastCanvasLabel(true)));
             }
             else {
-                this.$total.html(String.format(of, this.extension.helper.getTotalCanvases()));
+                this.$total.html(Utils.Strings.format(of, this.extension.helper.getTotalCanvases().toString()));
             }
         };
         PagingHeaderPanel.prototype.setSearchFieldValue = function (index) {
@@ -24944,7 +24908,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         };
         PagingHeaderPanel.prototype.modeChanged = function () {
             this.setSearchFieldValue(this.extension.helper.canvasIndex);
-            this.setTitles();
+            this.setNavigationTitles();
             this.setTotal();
         };
         PagingHeaderPanel.prototype.resize = function () {
@@ -25010,6 +24974,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             _this.controlsVisible = false;
             _this.isCreated = false;
             _this.isFirstLoad = true;
+            _this.navigatedFromSearch = false;
             _this.nextButtonEnabled = false;
             _this.prevButtonEnabled = false;
             return _this;
@@ -25196,6 +25161,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$viewportNavButtonsContainer = this.$viewer.find('.openseadragon-container > div:not(.openseadragon-canvas):first');
             this.$viewportNavButtons = this.$viewportNavButtonsContainer.find('.viewportNavButton');
             this.$canvas = $(this.viewer.canvas);
+            // disable right click on canvas
             this.$canvas.on('contextmenu', function () { return false; });
             this.$navigator = this.$viewer.find(".navigator");
             this.setNavigatorVisible();
@@ -25263,9 +25229,19 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var _this = this;
             var viewingDirection = this.extension.helper.getViewingDirection();
             this.$prevButton = $('<div class="paging btn prev" tabindex="0"></div>');
-            this.$prevButton.prop('title', this.content.previous);
+            if (this.extension.helper.isRightToLeft()) {
+                this.$prevButton.prop('title', this.content.next);
+            }
+            else {
+                this.$prevButton.prop('title', this.content.previous);
+            }
             this.$nextButton = $('<div class="paging btn next" tabindex="0"></div>');
-            this.$nextButton.prop('title', this.content.next);
+            if (this.extension.helper.isRightToLeft()) {
+                this.$nextButton.prop('title', this.content.previous);
+            }
+            else {
+                this.$nextButton.prop('title', this.content.next);
+            }
             this.viewer.addControl(this.$prevButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
             this.viewer.addControl(this.$nextButton[0], { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
             switch (viewingDirection.toString()) {
@@ -25469,7 +25445,11 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.setNavigatorVisible();
             this.overlayAnnotations();
             this.updateBounds();
-            this.zoomToInitialAnnotation();
+            // this only happens if prev/next search result were clicked and caused a reload
+            if (this.navigatedFromSearch) {
+                this.navigatedFromSearch = false;
+                this.zoomToInitialAnnotation();
+            }
             this.isFirstLoad = false;
         };
         SeadragonCenterPanel.prototype.zoomToInitialAnnotation = function () {
@@ -25630,44 +25610,14 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
         SeadragonCenterPanel.prototype.isZoomToSearchResultEnabled = function () {
             return Utils.Bools.getBool(this.extension.data.config.options.zoomToSearchResultEnabled, true);
         };
-        SeadragonCenterPanel.prototype.nextAnnotation = function () {
-            var annotationRects = this.getAnnotationRectsForCurrentImages();
-            var annotationRect = this.extension.currentAnnotationRect;
-            var currentAnnotationRectIndex = annotationRect ? this.getAnnotationRectIndex(annotationRect) : -1;
-            var foundRect = null;
-            for (var i = currentAnnotationRectIndex + 1; i < annotationRects.length; i++) {
-                var rect = annotationRects[i];
-                // this was removed as users found it confusing.
-                // find the next visible or non-visible rect.
-                //if (rect.isVisible) {
-                //    continue;
-                //} else {
-                foundRect = rect;
-                break;
-                //}
-            }
-            if (foundRect && this.isZoomToSearchResultEnabled()) {
-                // if the rect's canvasIndex is greater than the current canvasIndex
-                if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
-                    this.extension.currentAnnotationRect = foundRect;
-                    $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
-                }
-                else {
-                    this.zoomToAnnotation(foundRect);
-                }
-            }
-            else {
-                $.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
-            }
-        };
         SeadragonCenterPanel.prototype.prevAnnotation = function () {
             var annotationRects = this.getAnnotationRectsForCurrentImages();
             var currentAnnotationRect = this.extension.currentAnnotationRect;
-            if (this.isZoomToSearchResultEnabled() && !currentAnnotationRect) {
-                return;
-            }
-            var currentAnnotationRectIndex = this.getAnnotationRectIndex(currentAnnotationRect);
+            var currentAnnotationRectIndex = currentAnnotationRect ? this.getAnnotationRectIndex(currentAnnotationRect) : annotationRects.length;
+            //const currentAnnotationRectIndex: number = this.getAnnotationRectIndex(<AnnotationRect>currentAnnotationRect);
             var foundRect = null;
+            // if there's no currentAnnotationRect selected, index is the total available annotation rects for the current images.
+            // minusing 1 makes the index the last of the available rects for the current images.
             for (var i = currentAnnotationRectIndex - 1; i >= 0; i--) {
                 var rect = annotationRects[i];
                 // this was removed as users found it confusing.
@@ -25683,6 +25633,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 // if the rect's canvasIndex is less than the current canvasIndex
                 if (foundRect.canvasIndex < this.extension.helper.canvasIndex) {
                     this.extension.currentAnnotationRect = foundRect;
+                    this.navigatedFromSearch = true;
                     $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
@@ -25690,7 +25641,42 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 }
             }
             else {
+                this.navigatedFromSearch = true;
                 $.publish(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+            }
+        };
+        SeadragonCenterPanel.prototype.nextAnnotation = function () {
+            var annotationRects = this.getAnnotationRectsForCurrentImages();
+            var currentAnnotationRect = this.extension.currentAnnotationRect;
+            var currentAnnotationRectIndex = currentAnnotationRect ? this.getAnnotationRectIndex(currentAnnotationRect) : -1;
+            var foundRect = null;
+            // if there's no currentAnnotationRect selected, index is -1.
+            // adding 1 makes the index 0 of available rects for the current images.
+            for (var i = currentAnnotationRectIndex + 1; i < annotationRects.length; i++) {
+                var rect = annotationRects[i];
+                // this was removed as users found it confusing.
+                // find the next visible or non-visible rect.
+                //if (rect.isVisible) {
+                //    continue;
+                //} else {
+                foundRect = rect;
+                break;
+                //}
+            }
+            if (foundRect && this.isZoomToSearchResultEnabled()) {
+                // if the rect's canvasIndex is greater than the current canvasIndex
+                if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
+                    this.extension.currentAnnotationRect = foundRect;
+                    this.navigatedFromSearch = true;
+                    $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
+                }
+                else {
+                    this.zoomToAnnotation(foundRect);
+                }
+            }
+            else {
+                this.navigatedFromSearch = true;
+                $.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
             }
         };
         SeadragonCenterPanel.prototype.getAnnotationRectByIndex = function (index) {
@@ -25704,18 +25690,35 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var annotationRects = this.getAnnotationRectsForCurrentImages();
             if (!annotationRects.length)
                 return null;
-            // if the previous AnnotationRect had a canvasIndex higher than the current canvasIndex
+            // if we've got this far it means that a reload has happened
+            // check if the lastCanvasIndex is greater or less than the current canvasIndex
+            // if greater than, select the last annotation on the current page
+            // if less than, select the first annotation on the current page
+            // otherwise default to the first annotation
             var previousAnnotationRect = this.extension.previousAnnotationRect;
-            if (previousAnnotationRect && previousAnnotationRect.canvasIndex > this.extension.helper.canvasIndex) {
-                return annotationRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).last();
+            if (!previousAnnotationRect) {
+                if (this.extension.lastCanvasIndex > this.extension.helper.canvasIndex) {
+                    return annotationRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).last();
+                }
             }
-            // get the first rect with the current canvasindex.
             return annotationRects.en().where(function (x) { return x.canvasIndex === _this.extension.helper.canvasIndex; }).first();
         };
         SeadragonCenterPanel.prototype.zoomToAnnotation = function (annotationRect) {
             this.extension.previousAnnotationRect = this.extension.currentAnnotationRect || annotationRect;
             this.extension.currentAnnotationRect = annotationRect;
-            this.fitToBounds(new Bounds_1.Bounds(annotationRect.viewportX, annotationRect.viewportY, annotationRect.width, annotationRect.height), false);
+            // if zoomToBoundsEnabled, zoom to the annotation's bounds.
+            // otherwise, pan into view preserving the current zoom level.
+            if (Utils.Bools.getBool(this.config.options.zoomToBoundsEnabled, false)) {
+                this.fitToBounds(new Bounds_1.Bounds(annotationRect.viewportX, annotationRect.viewportY, annotationRect.width, annotationRect.height), false);
+            }
+            else {
+                var x = annotationRect.viewportX - ((this.currentBounds.w * 0.5) - annotationRect.width * 0.5);
+                var y = annotationRect.viewportY - ((this.currentBounds.h * 0.5) - annotationRect.height * 0.5);
+                var w = this.currentBounds.w;
+                var h = this.currentBounds.h;
+                var bounds = new Bounds_1.Bounds(x, y, w, h);
+                this.fitToBounds(bounds);
+            }
             this.highlightAnnotationRect(annotationRect);
             $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CHANGED);
         };
@@ -26620,7 +26623,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.getConfinedImageDimensions = function (canvas, width) {
             var dimensions = new manifesto.Size(0, 0);
             dimensions.width = width;
-            var normWidth = Math.normalise(width, 0, canvas.getWidth());
+            var normWidth = Utils.Maths.normalise(width, 0, canvas.getWidth());
             dimensions.height = Math.floor(canvas.getHeight() * normWidth);
             return dimensions;
         };
@@ -26682,7 +26685,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var locales = this.getSerializedLocales();
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&config=" + config + "&locales=" + locales + "&xywh=" + zoom + "&r=" + rotation;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         Extension.prototype.getPrevPageIndex = function (canvasIndex) {
@@ -26768,7 +26771,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var searchUri = this.getSearchServiceUri();
             if (!searchUri)
                 return;
-            searchUri = String.format(searchUri, terms);
+            searchUri = Utils.Strings.format(searchUri, terms);
             this.getSearchResults(searchUri, terms, this.annotations, function (annotations) {
                 that.isAnnotating = false;
                 if (annotations.length) {
@@ -26952,22 +26955,30 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
-            _this._pdfDoc = null;
+            _this._nextButtonEnabled = false;
             _this._pageIndex = 1;
-            _this._pageRendering = false;
             _this._pageIndexPending = null;
+            _this._pageRendering = false;
+            _this._pdfDoc = null;
+            _this._prevButtonEnabled = false;
             return _this;
         }
         PDFCenterPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('pdfCenterPanel');
             _super.prototype.create.call(this);
-            this._$spinner = $('<div class="spinner"></div>');
-            this.$content.append(this._$spinner);
+            this._$pdfContainer = $('<div class="pdfContainer"></div>');
             this._$canvas = $('<canvas></canvas>');
+            this._$spinner = $('<div class="spinner"></div>');
             this._canvas = this._$canvas[0];
             this._ctx = this._canvas.getContext('2d');
-            this.$content.prepend(this._$canvas);
+            this.$content.append(this._$spinner);
+            this._$prevButton = $('<div class="btn prev" tabindex="0"></div>');
+            this.$content.append(this._$prevButton);
+            this._$nextButton = $('<div class="btn next" tabindex="0"></div>');
+            this.$content.append(this._$nextButton);
+            this._$pdfContainer.append(this._$canvas);
+            this.$content.prepend(this._$pdfContainer);
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
             });
@@ -27015,6 +27026,52 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 _this._pageIndex = pageIndex;
                 _this._queueRenderPage(_this._pageIndex);
             });
+            this._$prevButton.onPressed(function (e) {
+                e.preventDefault();
+                if (!_this._prevButtonEnabled)
+                    return;
+                $.publish(BaseEvents_1.BaseEvents.PREV);
+            });
+            this.disablePrevButton();
+            this._$nextButton.onPressed(function (e) {
+                e.preventDefault();
+                if (!_this._nextButtonEnabled)
+                    return;
+                $.publish(BaseEvents_1.BaseEvents.NEXT);
+            });
+            this.disableNextButton();
+        };
+        PDFCenterPanel.prototype.disablePrevButton = function () {
+            this._prevButtonEnabled = false;
+            this._$prevButton.addClass('disabled');
+        };
+        PDFCenterPanel.prototype.enablePrevButton = function () {
+            this._prevButtonEnabled = true;
+            this._$prevButton.removeClass('disabled');
+        };
+        PDFCenterPanel.prototype.hidePrevButton = function () {
+            this.disablePrevButton();
+            this._$prevButton.hide();
+        };
+        PDFCenterPanel.prototype.showPrevButton = function () {
+            this.enablePrevButton();
+            this._$prevButton.show();
+        };
+        PDFCenterPanel.prototype.disableNextButton = function () {
+            this._nextButtonEnabled = false;
+            this._$nextButton.addClass('disabled');
+        };
+        PDFCenterPanel.prototype.enableNextButton = function () {
+            this._nextButtonEnabled = true;
+            this._$nextButton.removeClass('disabled');
+        };
+        PDFCenterPanel.prototype.hideNextButton = function () {
+            this.disableNextButton();
+            this._$nextButton.hide();
+        };
+        PDFCenterPanel.prototype.showNextButton = function () {
+            this.enableNextButton();
+            this._$nextButton.show();
         };
         PDFCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
@@ -27036,7 +27093,6 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     $.publish(Events_1.Events.PDF_LOADED, [pdfDoc]);
                     _this._$spinner.hide();
                 });
-                //window.PDFObject.embed(mediaUri, '#content', { id: "PDF" });
             });
         };
         PDFCenterPanel.prototype._render = function (num) {
@@ -27069,6 +27125,18 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                         _this._render(_this._pageIndexPending);
                         _this._pageIndexPending = null;
                     }
+                    if (_this._pageIndex === 1) {
+                        _this.disablePrevButton();
+                    }
+                    else {
+                        _this.enablePrevButton();
+                    }
+                    if (_this._pageIndex === _this._pdfDoc.numPages) {
+                        _this.disableNextButton();
+                    }
+                    else {
+                        _this.enableNextButton();
+                    }
                 }).catch(function (err) {
                     //console.log(err);
                 });
@@ -27084,8 +27152,18 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+            this._$pdfContainer.width(this.$content.width());
+            this._$pdfContainer.height(this.$content.height());
             this._$spinner.css('top', (this.$content.height() / 2) - (this._$spinner.height() / 2));
             this._$spinner.css('left', (this.$content.width() / 2) - (this._$spinner.width() / 2));
+            this._$prevButton.css({
+                top: (this.$content.height() - this._$prevButton.height()) / 2,
+                left: 0
+            });
+            this._$nextButton.css({
+                top: (this.$content.height() - this._$nextButton.height()) / 2,
+                left: this.$content.width() - this._$nextButton.width()
+            });
             if (!this._viewport) {
                 return;
             }
@@ -27136,8 +27214,10 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
             this.$centerOptions.append(this.$prevOptions);
             this.$firstButton = $("\n          <button class=\"btn imageBtn first\" tabindex=\"0\" title=\"" + this.content.first + "\">\n            <i class=\"uv-icon-first\" aria-hidden=\"true\"></i>" + this.content.first + "\n          </button>\n        ");
             this.$prevOptions.append(this.$firstButton);
+            this.$firstButton.disable();
             this.$prevButton = $("\n          <button class=\"btn imageBtn prev\" tabindex=\"0\" title=\"" + this.content.previous + "\">\n            <i class=\"uv-icon-prev\" aria-hidden=\"true\"></i>" + this.content.previous + "\n          </button>\n        ");
             this.$prevOptions.append(this.$prevButton);
+            this.$prevButton.disable();
             this.$search = $('<div class="search"></div>');
             this.$centerOptions.append(this.$search);
             this.$searchText = $('<input class="searchText" maxlength="50" type="text" tabindex="0" aria-label="' + this.content.pageSearchLabel + '"/>');
@@ -27146,12 +27226,15 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
             this.$search.append(this.$total);
             this.$searchButton = $('<a class="go btn btn-primary" tabindex="0">' + this.content.go + '</a>');
             this.$search.append(this.$searchButton);
+            this.$searchButton.disable();
             this.$nextOptions = $('<div class="nextOptions"></div>');
             this.$centerOptions.append(this.$nextOptions);
             this.$nextButton = $("\n          <button class=\"btn imageBtn next\" tabindex=\"0\" title=\"" + this.content.next + "\">\n            <i class=\"uv-icon-next\" aria-hidden=\"true\"></i>" + this.content.next + "\n          </button>\n        ");
             this.$nextOptions.append(this.$nextButton);
+            this.$nextButton.disable();
             this.$lastButton = $("\n          <button class=\"btn imageBtn last\" tabindex=\"0\" title=\"" + this.content.last + "\">\n            <i class=\"uv-icon-last\" aria-hidden=\"true\"></i>" + this.content.last + "\n          </button>\n        ");
             this.$nextOptions.append(this.$lastButton);
+            this.$lastButton.disable();
             // ui event handlers.
             this.$firstButton.onPressed(function () {
                 $.publish(BaseEvents_1.BaseEvents.FIRST);
@@ -27183,7 +27266,8 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
             }
             this.$searchText.val(this._pageIndex);
             var of = this.content.of;
-            this.$total.html(String.format(of, this._pdfDoc.numPages));
+            this.$total.html(Utils.Strings.format(of, this._pdfDoc.numPages.toString()));
+            this.$searchButton.enable();
             if (this._pageIndex === 1) {
                 this.$firstButton.disable();
                 this.$prevButton.disable();
@@ -27330,6 +27414,11 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
                     _this.centerPanel.$element.show();
                 }
             });
+            $.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
+                setTimeout(function () {
+                    _this.resize();
+                }, 10); // allow time to exit full screen, then resize
+            });
         };
         Extension.prototype.update = function () {
             _super.prototype.update.call(this);
@@ -27391,16 +27480,13 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
-            // if (index === 0) {
-            //     window.PDFObject = dep;
-            // }
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
             //const configUri = this.data.config.uri || '';
             //const script = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         return Extension;
@@ -27725,7 +27811,7 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
             var appUri = this.getAppUri();
             var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = String.format(template, iframeSrc, width, height);
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
             return script;
         };
         return Extension;
@@ -27992,11 +28078,12 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         };
         UVComponent.prototype._extendConfig = function (data, extension, config, configExtension, cb) {
             config.name = extension.name;
-            // if data-config has been set, extend the existing config object.
+            // if configUri has been set, extend the existing config object.
             if (configExtension) {
                 // save a reference to the config extension uri.
                 config.uri = data.configUri;
                 $.extend(true, config, configExtension);
+                //$.extend(true, config, configExtension, data.config);
             }
             cb(config);
         };
@@ -28103,7 +28190,6 @@ requirejs([
     './lib/ex.es3.min.js',
     './lib/base-component.js',
     './lib/key-codes.js',
-    './lib/extensions.js',
     './lib/http-status-codes.js',
     './lib/jquery-plugins.js',
     './lib/ba-tiny-pubsub.js',
@@ -28112,7 +28198,7 @@ requirejs([
     './lib/utils.js',
     'URLDataProvider',
     'UVComponent'
-], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, exjs, basecomponent, keycodes, extensions, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UVComponent) {
+], function (base64, browserdetect, detectmobilebrowser, xdomainrequest, modernizr, sanitize, exjs, basecomponent, keycodes, httpstatuscodes, jqueryplugins, pubsub, manifesto, manifold, utils, URLDataProvider, UVComponent) {
     window.UV = UVComponent.default;
     window.UV.URLDataProvider = URLDataProvider.default;
     window.dispatchEvent(new CustomEvent('uvLoaded'));
