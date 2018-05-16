@@ -16540,6 +16540,39 @@ define('modules/uv-shared-module/BaseEvents',["require", "exports"], function (r
     exports.BaseEvents = BaseEvents;
 });
 //# sourceMappingURL=BaseEvents.js.map
+define('modules/uv-shared-module/Utils',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var UVUtils = /** @class */ (function () {
+        function UVUtils() {
+        }
+        UVUtils.sanitize = function (html) {
+            var elem = document.createElement('div');
+            var $elem = $(elem);
+            $elem.html(html);
+            var s = new Sanitize({
+                elements: ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
+                attributes: {
+                    a: ['href'],
+                    img: ['src', 'alt']
+                },
+                protocols: {
+                    a: { href: ['http', 'https'] }
+                }
+            });
+            $elem.html(s.clean_node(elem));
+            return $elem.html();
+        };
+        UVUtils.isValidUrl = function (value) {
+            var a = document.createElement('a');
+            a.href = value;
+            return (!!a.host && a.host !== window.location.host);
+        };
+        return UVUtils;
+    }());
+    exports.UVUtils = UVUtils;
+});
+//# sourceMappingURL=Utils.js.map
 define('modules/uv-shared-module/InformationArgs',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -16787,39 +16820,6 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
     exports.Auth09 = Auth09;
 });
 //# sourceMappingURL=Auth09.js.map
-define('modules/uv-shared-module/Utils',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var UVUtils = /** @class */ (function () {
-        function UVUtils() {
-        }
-        UVUtils.sanitize = function (html) {
-            var elem = document.createElement('div');
-            var $elem = $(elem);
-            $elem.html(html);
-            var s = new Sanitize({
-                elements: ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
-                attributes: {
-                    a: ['href'],
-                    img: ['src', 'alt']
-                },
-                protocols: {
-                    a: { href: ['http', 'https'] }
-                }
-            });
-            $elem.html(s.clean_node(elem));
-            return $elem.html();
-        };
-        UVUtils.isValidUrl = function (value) {
-            var a = document.createElement('a');
-            a.href = value;
-            return (!!a.host && a.host !== window.location.host);
-        };
-        return UVUtils;
-    }());
-    exports.UVUtils = UVUtils;
-});
-//# sourceMappingURL=Utils.js.map
 define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "./Utils", "./InformationArgs", "./InformationType"], function (require, exports, BaseEvents_1, Utils_1, InformationArgs_1, InformationType_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -17873,7 +17873,7 @@ define('SynchronousRequire',["require", "exports"], function (require, exports) 
     }());
 });
 //# sourceMappingURL=SynchronousRequire.js.map
-define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09", "./Auth1", "../../modules/uv-dialogues-module/AuthDialogue", "./BaseEvents", "../../modules/uv-dialogues-module/ClickThroughDialogue", "../../modules/uv-dialogues-module/LoginDialogue", "../../modules/uv-shared-module/MetricType", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell", "../../SynchronousRequire", "./Utils"], function (require, exports, Auth09_1, Auth1_1, AuthDialogue_1, BaseEvents_1, ClickThroughDialogue_1, LoginDialogue_1, MetricType_1, RestrictedDialogue_1, Shell_1, SynchronousRequire_1, Utils_1) {
+define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Utils", "./Auth09", "./Auth1", "../../modules/uv-dialogues-module/AuthDialogue", "./BaseEvents", "../../modules/uv-dialogues-module/ClickThroughDialogue", "../../modules/uv-dialogues-module/LoginDialogue", "../../modules/uv-shared-module/MetricType", "../../modules/uv-dialogues-module/RestrictedDialogue", "./Shell", "../../SynchronousRequire"], function (require, exports, Utils_1, Auth09_1, Auth1_1, AuthDialogue_1, BaseEvents_1, ClickThroughDialogue_1, LoginDialogue_1, MetricType_1, RestrictedDialogue_1, Shell_1, SynchronousRequire_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BaseExtension = /** @class */ (function () {
@@ -18305,7 +18305,20 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Auth09
                 return (attr.indexOf(that.name) !== -1 && attr.indexOf('dependencies') !== -1);
             });
             if (!scripts.length) {
-                requirejs([depsUri], function (deps) {
+                requirejs([depsUri], function (getDeps) {
+                    // getDeps is a function that accepts a file format.
+                    // it uses this to determine which dependencies are appropriate
+                    // for example, 'application/vnd.apple.mpegurl' for the AV extension
+                    // would return hls.min.js, and not dash.all.min.js.
+                    var canvas = that.helper.getCurrentCanvas();
+                    var mediaFormats = that.getMediaFormats(canvas);
+                    var formats = [];
+                    if (mediaFormats && mediaFormats.length) {
+                        formats = mediaFormats.map(function (f) {
+                            return f.getFormat().toString();
+                        });
+                    }
+                    var deps = getDeps(formats);
                     var baseUri = that.data.root + '/lib/';
                     // for each dependency, prepend baseUri unless it starts with a ! which indicates to ignore it.
                     // check for a requirejs.config that sets a specific path, such as the PDF extension
@@ -27847,6 +27860,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 type: Extension_4.Extension,
                 name: 'uv-seadragon-extension'
             };
+            this._extensions[manifesto.ResourceType.image().toString()] = {
+                type: Extension_4.Extension,
+                name: 'uv-seadragon-extension'
+            };
             this._extensions[manifesto.ResourceType.movingimage().toString()] = {
                 type: Extension_3.Extension,
                 name: 'uv-mediaelement-extension'
@@ -27885,6 +27902,18 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 name: 'uv-virtex-extension'
             };
             this._extensions['av'] = {
+                type: Extension_1.Extension,
+                name: 'uv-av-extension'
+            };
+            this._extensions['audio/mp4'] = {
+                type: Extension_1.Extension,
+                name: 'uv-av-extension'
+            };
+            this._extensions['application/vnd.apple.mpegurl'] = {
+                type: Extension_1.Extension,
+                name: 'uv-av-extension'
+            };
+            this._extensions['application/dash+xml'] = {
                 type: Extension_1.Extension,
                 name: 'uv-av-extension'
             };
@@ -28004,45 +28033,50 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 }
                 var extension = null;
                 // if the canvas has a duration, use the uv-av-extension
-                var duration = canvas.getDuration();
-                if (typeof (duration) !== 'undefined') {
-                    extension = that._extensions["av"];
-                }
-                else {
-                    // canvasType will always be "canvas" in IIIF presentation 3.0
-                    // to determine the correct extension to use, we need to inspect canvas.content.items[0].format
-                    // which is an iana media type: http://www.iana.org/assignments/media-types/media-types.xhtml
-                    var content = canvas.getContent();
-                    if (content.length) {
-                        var annotation = content[0];
-                        var body = annotation.getBody();
-                        if (body) {
-                            var format = body[0].getFormat();
-                            if (format) {
-                                extension = that._extensions[format.toString()];
-                                if (!extension) {
-                                    // try type
-                                    var type = body[0].getType();
-                                    if (type) {
-                                        extension = that._extensions[type.toString()];
-                                    }
+                // const duration: number | null = canvas.getDuration();
+                // if (typeof(duration) !== 'undefined') {
+                //     extension = that._extensions["av"];
+                // } else {
+                // canvasType will always be "canvas" in IIIF presentation 3.0
+                // to determine the correct extension to use, we need to inspect canvas.content.items[0].format
+                // which is an iana media type: http://www.iana.org/assignments/media-types/media-types.xhtml
+                var content = canvas.getContent();
+                if (content.length) {
+                    var annotation = content[0];
+                    var body = annotation.getBody();
+                    if (body && body.length) {
+                        var format = body[0].getFormat();
+                        if (format) {
+                            extension = that._extensions[format.toString()];
+                            if (!extension) {
+                                // try type
+                                var type = body[0].getType();
+                                if (type) {
+                                    extension = that._extensions[type.toString()];
                                 }
                             }
                         }
-                    }
-                    else {
-                        var canvasType = canvas.getType();
-                        if (canvasType) {
-                            // try using canvasType
-                            extension = that._extensions[canvasType.toString()];
-                        }
-                        // if there isn't an extension for the canvasType, try the format
-                        if (!extension) {
-                            var format = canvas.getProperty('format');
-                            extension = that._extensions[format];
+                        else {
+                            var type = body[0].getType();
+                            if (type) {
+                                extension = that._extensions[type.toString()];
+                            }
                         }
                     }
                 }
+                else {
+                    var canvasType = canvas.getType();
+                    if (canvasType) {
+                        // try using canvasType
+                        extension = that._extensions[canvasType.toString()];
+                    }
+                    // if there isn't an extension for the canvasType, try the format
+                    if (!extension) {
+                        var format = canvas.getProperty('format');
+                        extension = that._extensions[format];
+                    }
+                }
+                //}
                 // if there still isn't a matching extension, use the default extension.
                 if (!extension) {
                     extension = that._extensions['default'];

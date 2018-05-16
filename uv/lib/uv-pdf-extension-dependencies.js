@@ -1,5 +1,8 @@
-define(function() {
-    return {
-        async: ['!pdfjs-dist/build/pdf.combined', 'iiif-metadata-component']
+define(function () {
+    return function (formats) {
+        return {
+            async: ['!pdfjs-dist/build/pdf.combined', 'iiif-metadata-component']
+        };
     };
 });
+//# sourceMappingURL=dependencies.js.map
