@@ -3557,12 +3557,12 @@ input[type=range]:focus::-ms-fill-upper {
 .iiif-av-component .timeline-item-container .timeline-item.active {
   background: #333;
 }
-.iiif-av-component .ui-slider-range {
+.iiif-av-component .canvas-timeline-container .ui-slider-range {
   background: rgba(66, 66, 66, 0.5);
   box-sizing: border-box;
   border-radius: 0;
 }
-.iiif-av-component .ui-slider-handle {
+.iiif-av-component .canvas-timeline-container .ui-slider-handle {
   top: 0px;
   height: 100%;
   width: 16px;
@@ -3571,7 +3571,24 @@ input[type=range]:focus::-ms-fill-upper {
   border: none;
   z-index: 1;
 }
-.iiif-av-component .ui-slider-handle:focus {
+.iiif-av-component .canvas-timeline-container .ui-slider-handle:focus {
+  outline: none;
+}
+.iiif-av-component .range-timeline-container .ui-slider-range {
+  background: rgba(66, 66, 66, 0.5);
+  box-sizing: border-box;
+  border-radius: 0;
+}
+.iiif-av-component .range-timeline-container .ui-slider-handle {
+  top: 0px;
+  height: 100%;
+  width: 16px;
+  margin-left: -8px;
+  background: transparent;
+  border: none;
+  z-index: 1;
+}
+.iiif-av-component .range-timeline-container .ui-slider-handle:focus {
   outline: none;
 }
 .iiif-av-component .controls-container {
@@ -3584,9 +3601,16 @@ input[type=range]:focus::-ms-fill-upper {
   display: inline-block;
 }
 .iiif-av-component .controls-container .volume {
-  display: inline-block;
+  float: right;
+  overflow: hidden;
+  width: 160px;
+}
+.iiif-av-component .controls-container .volume .volume-mute {
+  float: left;
 }
 .iiif-av-component .controls-container .volume .volume-slider {
+  float: left;
+  margin-top: 10px;
   width: 100px;
 }
 .iiif-av-component .btn {
