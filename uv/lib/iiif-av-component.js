@@ -1,4 +1,4 @@
-// iiif-av-component v0.0.41 https://github.com/iiif-commons/iiif-av-component#readme
+// iiif-av-component v0.0.42 https://github.com/iiif-commons/iiif-av-component#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifAvComponent = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -690,18 +690,18 @@ var IIIFComponents;
                 var offsetStart = (ot[0]) ? parseInt(ot[0]) : ot[0], offsetEnd = (ot[1]) ? parseInt(ot[1]) : ot[1];
                 // todo: type this
                 var itemData = {
-                    'type': type,
+                    'active': false,
+                    'end': endTime,
+                    'endOffset': offsetEnd,
+                    'format': format,
+                    'height': percentageHeight,
+                    'left': percentageLeft,
                     'source': mediaSource,
                     'start': startTime,
-                    'end': endTime,
-                    'top': percentageTop,
-                    'left': percentageLeft,
-                    'width': percentageWidth,
-                    'height': percentageHeight,
                     'startOffset': offsetStart,
-                    'endOffset': offsetEnd,
-                    'active': false,
-                    'format': format
+                    'top': percentageTop,
+                    'type': type,
+                    'width': percentageWidth
                 };
                 this._renderMediaElement(itemData);
             }
@@ -941,15 +941,15 @@ var IIIFComponents;
                     var hls = new Hls();
                     hls.loadSource(data.source);
                     hls.attachMedia(video);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                        //video.play();
-                    });
+                    //hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    //video.play();
+                    //});
                 }
                 else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     video.src = data.source;
-                    video.addEventListener('canplay', function () {
-                        //video.play();
-                    });
+                    //video.addEventListener('canplay', function () {
+                    //video.play();
+                    //});
                 }
             }
             else {
@@ -1230,16 +1230,16 @@ var IIIFComponents;
             //this.logMessage('UPDATE MEDIA ACTIVE STATES at: '+ this._canvasClockTime + ' seconds.');
         };
         CanvasInstance.prototype._pauseMedia = function (media) {
-            var playPromise = media.play();
-            if (playPromise !== undefined) {
-                playPromise.then(function (_) {
-                    // https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
-                    media.pause();
-                });
-            }
-            else {
-                media.pause();
-            }
+            media.pause();
+            // const playPromise = media.play();
+            // if (playPromise !== undefined) {
+            //     playPromise.then(_ => {
+            //         // https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+            //         media.pause();
+            //     });
+            // } else {
+            //     media.pause();
+            // }
         };
         CanvasInstance.prototype._setMediaCurrentTime = function (media, time) {
             if (!isNaN(media.duration)) {
