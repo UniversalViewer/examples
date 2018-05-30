@@ -624,6 +624,24 @@
       "label": "3D",
       "manifests": [
         {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/vertebra/index.json",
+          "@type": "sc:Manifest",
+          "label": "Vertebra (obj)",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/harbour/index.json",
+          "@type": "sc:Manifest",
+          "label": "The Harbour (obj)",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/ply/pub/index.json",
+          "@type": "sc:Manifest",
+          "label": "The Abbot Pub (ply)",
+          "visible": true
+        },
+        {
           "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
           "@type": "sc:Manifest",
           "label": "Animal Skull"
@@ -762,24 +780,6 @@
           "@id": "https://edsilv.github.io/test-manifests/defaultextension.json",
           "@type": "sc:Manifest",
           "label": "Default Extension",
-          "visible": true
-        },
-        {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/vertebra/index.json",
-          "@type": "sc:Manifest",
-          "label": "Vertebra (obj)",
-          "visible": true
-        },
-        {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/harbour/index.json",
-          "@type": "sc:Manifest",
-          "label": "The Harbour (obj)",
-          "visible": true
-        },
-        {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/ply/pub/index.json",
-          "@type": "sc:Manifest",
-          "label": "The Abbot Pub (ply)",
           "visible": true
         },
         {
