@@ -3385,7 +3385,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.2.21 https://github.com/iiif-commons/manifesto
+// manifesto v2.2.22 https://github.com/iiif-commons/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 (function (global){
 
@@ -4534,8 +4534,12 @@ var Manifesto;
             return _this;
         }
         Manifest.prototype.getBehavior = function () {
-            if (this.getProperty('behavior')) {
-                return new Manifesto.Behavior(this.getProperty('behavior'));
+            var behavior = this.getProperty('behavior');
+            if (Array.isArray(behavior)) {
+                behavior = behavior[0];
+            }
+            if (behavior) {
+                return new Manifesto.Behavior(behavior);
             }
             return null;
         };
@@ -4886,8 +4890,12 @@ var Manifesto;
             return this._ranges = this.items.en().where(function (m) { return m.isRange(); }).toArray();
         };
         Range.prototype.getBehavior = function () {
-            if (this.getProperty('behavior')) {
-                return new Manifesto.Behavior(this.getProperty('behavior'));
+            var behavior = this.getProperty('behavior');
+            if (Array.isArray(behavior)) {
+                behavior = behavior[0];
+            }
+            if (behavior) {
+                return new Manifesto.Behavior(behavior);
             }
             return null;
         };
@@ -26955,12 +26963,15 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
+            _this._maxScale = 5;
+            _this._minScale = 0.7;
             _this._nextButtonEnabled = false;
             _this._pageIndex = 1;
             _this._pageIndexPending = null;
             _this._pageRendering = false;
             _this._pdfDoc = null;
             _this._prevButtonEnabled = false;
+            _this._scale = 0.7;
             return _this;
         }
         PDFCenterPanel.prototype.create = function () {
@@ -26977,6 +26988,10 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             this.$content.append(this._$prevButton);
             this._$nextButton = $('<div class="btn next" tabindex="0"></div>');
             this.$content.append(this._$nextButton);
+            this._$zoomInButton = $('<div class="btn zoomIn" tabindex="0"></div>');
+            this.$content.append(this._$zoomInButton);
+            this._$zoomOutButton = $('<div class="btn zoomOut" tabindex="0"></div>');
+            this.$content.append(this._$zoomOutButton);
             this._$pdfContainer.append(this._$canvas);
             this.$content.prepend(this._$pdfContainer);
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
@@ -27040,6 +27055,22 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 $.publish(BaseEvents_1.BaseEvents.NEXT);
             });
             this.disableNextButton();
+            this._$zoomInButton.onPressed(function (e) {
+                e.preventDefault();
+                var newScale = _this._scale + 0.5;
+                if (newScale < _this._maxScale) {
+                    _this._scale = newScale;
+                }
+                _this._render(_this._pageIndex);
+            });
+            this._$zoomOutButton.onPressed(function (e) {
+                e.preventDefault();
+                var newScale = _this._scale - 0.5;
+                if (newScale > _this._minScale) {
+                    _this._scale = newScale;
+                }
+                _this._render(_this._pageIndex);
+            });
         };
         PDFCenterPanel.prototype.disablePrevButton = function () {
             this._prevButtonEnabled = false;
@@ -27102,14 +27133,19 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 if (_this._renderTask) {
                     _this._renderTask.cancel();
                 }
-                var height = _this.$content.height();
-                _this._canvas.height = height;
-                _this._viewport = page.getViewport(_this._canvas.height / page.getViewport(1.0).height);
-                var width = _this._viewport.width;
-                _this._canvas.width = width;
-                _this._$canvas.css({
-                    left: (_this.$content.width() / 2) - (width / 2)
-                });
+                // how to fit to the available space
+                // const height: number = this.$content.height();
+                // this._canvas.height = height;
+                // this._viewport = page.getViewport(this._canvas.height / page.getViewport(1.0).height);
+                // const width: number = this._viewport.width;
+                // this._canvas.width = width;
+                // this._$canvas.css({
+                //     left: (this.$content.width() / 2) - (width / 2)
+                // });
+                // scale viewport
+                _this._viewport = page.getViewport(_this._scale);
+                _this._canvas.height = _this._viewport.height;
+                _this._canvas.width = _this._viewport.width;
                 // Render PDF page into canvas context
                 var renderContext = {
                     canvasContext: _this._ctx,
@@ -27158,11 +27194,11 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             this._$spinner.css('left', (this.$content.width() / 2) - (this._$spinner.width() / 2));
             this._$prevButton.css({
                 top: (this.$content.height() - this._$prevButton.height()) / 2,
-                left: 0
+                left: this._$prevButton.horizontalMargins()
             });
             this._$nextButton.css({
                 top: (this.$content.height() - this._$nextButton.height()) / 2,
-                left: this.$content.width() - this._$nextButton.width()
+                left: this.$content.width() - (this._$nextButton.width() + this._$nextButton.horizontalMargins())
             });
             if (!this._viewport) {
                 return;
@@ -27851,6 +27887,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 type: Extension_4.Extension,
                 name: 'uv-seadragon-extension'
             };
+            this._extensions[manifesto.ResourceType.image().toString()] = {
+                type: Extension_4.Extension,
+                name: 'uv-seadragon-extension'
+            };
             this._extensions[manifesto.ResourceType.movingimage().toString()] = {
                 type: Extension_3.Extension,
                 name: 'uv-mediaelement-extension'
@@ -28020,7 +28060,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                     if (content.length) {
                         var annotation = content[0];
                         var body = annotation.getBody();
-                        if (body) {
+                        if (body && body.length) {
                             var format = body[0].getFormat();
                             if (format) {
                                 extension = that._extensions[format.toString()];
@@ -28030,6 +28070,12 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                                     if (type) {
                                         extension = that._extensions[type.toString()];
                                     }
+                                }
+                            }
+                            else {
+                                var type = body[0].getType();
+                                if (type) {
+                                    extension = that._extensions[type.toString()];
                                 }
                             }
                         }
