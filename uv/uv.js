@@ -18217,6 +18217,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Utils"
                         var dropUrl = e.originalEvent.dataTransfer.getData('URL');
                         var a = Utils.Urls.getUrlParts(dropUrl);
                         var iiifResourceUri = Utils.Urls.getQuerystringParameterFromString('manifest', a.search);
+                        if (!iiifResourceUri) {
+                            // look for collection param
+                            iiifResourceUri = Utils.Urls.getQuerystringParameterFromString('collection', a.search);
+                        }
                         //var canvasUri = Utils.Urls.getQuerystringParameterFromString('canvas', url.search);
                         if (iiifResourceUri) {
                             _this.fire(BaseEvents_1.BaseEvents.DROP, iiifResourceUri);
@@ -24835,7 +24839,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 this.$selectionBoxOptions.append(this.$imageSelectionBox);
                 for (var imageIndex = 0; imageIndex < this.extension.helper.getTotalCanvases(); imageIndex++) {
                     var canvas = this.extension.helper.getCanvasByIndex(imageIndex);
-                    var label = Utils_1.UVUtils.sanitize(Manifesto.TranslationCollection.getValue(canvas.getLabel()));
+                    var label = Utils_1.UVUtils.sanitize(Manifesto.TranslationCollection.getValue(canvas.getLabel(), this.extension.helper.options.locale));
                     this.$imageSelectionBox.append('<option value=' + (imageIndex) + '>' + label + '</option>');
                 }
                 this.$imageSelectionBox.change(function () {
@@ -27287,18 +27291,22 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         __extends(PDFCenterPanel, _super);
         function PDFCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
+            _this._maxScale = 5;
+            _this._minScale = 0.7;
             _this._nextButtonEnabled = false;
             _this._pageIndex = 1;
             _this._pageIndexPending = null;
             _this._pageRendering = false;
             _this._pdfDoc = null;
             _this._prevButtonEnabled = false;
+            _this._scale = 0.7;
             return _this;
         }
         PDFCenterPanel.prototype.create = function () {
             var _this = this;
             this.setConfig('pdfCenterPanel');
             _super.prototype.create.call(this);
+            this._$pdfContainer = $('<div class="pdfContainer"></div>');
             this._$canvas = $('<canvas></canvas>');
             this._$spinner = $('<div class="spinner"></div>');
             this._canvas = this._$canvas[0];
@@ -27308,7 +27316,12 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             this.$content.append(this._$prevButton);
             this._$nextButton = $('<div class="btn next" tabindex="0"></div>');
             this.$content.append(this._$nextButton);
-            this.$content.prepend(this._$canvas);
+            this._$zoomInButton = $('<div class="btn zoomIn" tabindex="0"></div>');
+            this.$content.append(this._$zoomInButton);
+            this._$zoomOutButton = $('<div class="btn zoomOut" tabindex="0"></div>');
+            this.$content.append(this._$zoomOutButton);
+            this._$pdfContainer.append(this._$canvas);
+            this.$content.prepend(this._$pdfContainer);
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 _this.openMedia(resources);
             });
@@ -27370,6 +27383,22 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 $.publish(BaseEvents_1.BaseEvents.NEXT);
             });
             this.disableNextButton();
+            this._$zoomInButton.onPressed(function (e) {
+                e.preventDefault();
+                var newScale = _this._scale + 0.5;
+                if (newScale < _this._maxScale) {
+                    _this._scale = newScale;
+                }
+                _this._render(_this._pageIndex);
+            });
+            this._$zoomOutButton.onPressed(function (e) {
+                e.preventDefault();
+                var newScale = _this._scale - 0.5;
+                if (newScale > _this._minScale) {
+                    _this._scale = newScale;
+                }
+                _this._render(_this._pageIndex);
+            });
         };
         PDFCenterPanel.prototype.disablePrevButton = function () {
             this._prevButtonEnabled = false;
@@ -27432,14 +27461,19 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 if (_this._renderTask) {
                     _this._renderTask.cancel();
                 }
-                var height = _this.$content.height();
-                _this._canvas.height = height;
-                _this._viewport = page.getViewport(_this._canvas.height / page.getViewport(1.0).height);
-                var width = _this._viewport.width;
-                _this._canvas.width = width;
-                _this._$canvas.css({
-                    left: (_this.$content.width() / 2) - (width / 2)
-                });
+                // how to fit to the available space
+                // const height: number = this.$content.height();
+                // this._canvas.height = height;
+                // this._viewport = page.getViewport(this._canvas.height / page.getViewport(1.0).height);
+                // const width: number = this._viewport.width;
+                // this._canvas.width = width;
+                // this._$canvas.css({
+                //     left: (this.$content.width() / 2) - (width / 2)
+                // });
+                // scale viewport
+                _this._viewport = page.getViewport(_this._scale);
+                _this._canvas.height = _this._viewport.height;
+                _this._canvas.width = _this._viewport.width;
                 // Render PDF page into canvas context
                 var renderContext = {
                     canvasContext: _this._ctx,
@@ -27482,15 +27516,17 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
         };
         PDFCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
+            this._$pdfContainer.width(this.$content.width());
+            this._$pdfContainer.height(this.$content.height());
             this._$spinner.css('top', (this.$content.height() / 2) - (this._$spinner.height() / 2));
             this._$spinner.css('left', (this.$content.width() / 2) - (this._$spinner.width() / 2));
             this._$prevButton.css({
                 top: (this.$content.height() - this._$prevButton.height()) / 2,
-                left: 0
+                left: this._$prevButton.horizontalMargins()
             });
             this._$nextButton.css({
                 top: (this.$content.height() - this._$nextButton.height()) / 2,
-                left: this.$content.width() - this._$nextButton.width()
+                left: this.$content.width() - (this._$nextButton.width() + this._$nextButton.horizontalMargins())
             });
             if (!this._viewport) {
                 return;

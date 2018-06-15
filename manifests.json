@@ -624,6 +624,24 @@
       "label": "3D",
       "manifests": [
         {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/vertebra/index.json",
+          "@type": "sc:Manifest",
+          "label": "Vertebra (obj)",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/harbour/index.json",
+          "@type": "sc:Manifest",
+          "label": "The Harbour (obj)",
+          "visible": true
+        },
+        {
+          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/ply/pub/index.json",
+          "@type": "sc:Manifest",
+          "label": "The Abbot Pub (ply)",
+          "visible": true
+        },
+        {
           "@id": "http://files.universalviewer.io/manifests/nelis/animal-skull.json",
           "@type": "sc:Manifest",
           "label": "Animal Skull"
@@ -765,24 +783,6 @@
           "visible": true
         },
         {
-          "@id": "http://files.blokdust.io/manifests/stanford/vertebra.json",
-          "@type": "sc:Manifest",
-          "label": "Vertebra (obj)",
-          "visible": true
-        },
-        {
-          "@id": "https://files.blokdust.io/manifests/xavieraure/harbour.json",
-          "@type": "sc:Manifest",
-          "label": "The Harbour (obj)",
-          "visible": true
-        },
-        {
-          "@id": "https://files.blokdust.io/manifests/demo/lidar/pub/index.json",
-          "@type": "sc:Manifest",
-          "label": "The Abbot Pub (ply)",
-          "visible": true
-        },
-        {
           "@id": "https://edsilv.github.io/test-manifests/pres3-pdf.json",
           "@type": "sc:Manifest",
           "label": "Presentation 3 PDF",
@@ -846,12 +846,6 @@
           "@id": "https://loc.gov/item/03032405/manifest.json",
           "@type": "sc:Manifest",
           "label": "No image service 2",
-          "visible": true
-        },
-        {
-          "@id": "http://files.blokdust.io/manifests/oz/index.json",
-          "@type": "sc:Manifest",
-          "label": "No image service pres 3",
           "visible": true
         },
         {
