@@ -28264,6 +28264,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 type: Extension_1.Extension,
                 name: 'uv-av-extension'
             };
+            this._extensions['audio/mp3'] = {
+                type: Extension_1.Extension,
+                name: 'uv-av-extension'
+            };
             this._extensions['audio/mp4'] = {
                 type: Extension_1.Extension,
                 name: 'uv-av-extension'
