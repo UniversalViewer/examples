@@ -197,11 +197,6 @@
           "label": "Anzac bulletin"
         },
         {
-          "@id": "http://sanddragon.bl.uk/IIIFMetadataService/or_1459.json",
-          "@type": "sc:Manifest",
-          "label": "Scroll (continuous rtl)"
-        },
-        {
           "@id": "https://dlcs.io/iiif-resource/british-library-3/manifest/G_809",
           "@type": "sc:Manifest",
           "label": "Blest With Thee My Soul's Dear Treasure"
