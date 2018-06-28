@@ -2485,6 +2485,7 @@ input[type=range]:focus::-ms-fill-upper {
   border-radius: 0;
 }
 .iiif-av-component .canvas-timeline-container .ui-slider-handle {
+  width: 1px;
   top: 0px;
   height: 100%;
   width: 16px;

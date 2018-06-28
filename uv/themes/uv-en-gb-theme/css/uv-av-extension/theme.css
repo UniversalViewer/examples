@@ -1929,6 +1929,14 @@ a.ui-button:active,
 .uv .centerPanel .hover-preview .label {
   height: 25px;
 }
+.uv .centerPanel .iiif-av-component .volume {
+  display: none;
+}
+@media only screen and (min-width: 800px) and (max-width: 100000px) and (min-height: 415px) and (max-height: 100000px) {
+  .uv .centerPanel .iiif-av-component .volume {
+    display: block;
+  }
+}
 .uv .leftPanel .views .thumbsView {
   overflow: auto;
 }
@@ -3583,6 +3591,7 @@ input[type=range]:focus::-ms-fill-upper {
   border-radius: 0;
 }
 .iiif-av-component .canvas-timeline-container .ui-slider-handle {
+  width: 1px;
   top: 0px;
   height: 100%;
   width: 16px;
