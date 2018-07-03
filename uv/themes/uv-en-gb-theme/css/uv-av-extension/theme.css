@@ -4171,6 +4171,22 @@ input[type=range]:focus::-ms-fill-upper {
     display: none;
   }
 }
+.uv .mobileFooterPanel .options {
+  width: 100% !important;
+}
+.uv .mobileFooterPanel .options .btn.moreInfo {
+  display: none !important;
+}
+.uv .mobileFooterPanel .options .btn.download {
+  display: none !important;
+}
+.uv .mobileFooterPanel .options .btn.share {
+  display: none !important;
+}
+.uv .mobileFooterPanel .options .btn.fullScreen {
+  display: block !important;
+  float: right !important;
+}
 .uv.en-gb .headerPanel .options .centerOptions {
   width: 390px;
 }
