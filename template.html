@@ -30,7 +30,7 @@
 	<section id="pageContent">
         
 		<div id="viewer" class="viewer expandable">
-            <iframe id="uv" class="expandable" allowfullscreen frameborder="0"></iframe>
+            <iframe id="uv" class="expandable" allowfullscreen frameborder="0" allowtransparency="true"></iframe>
             <!-- <br><button id="expando" class="expand">expand</button> -->
         </div>
 		
@@ -79,7 +79,12 @@
 				
 				uvurl += '&config=' + ((isLocalhost) ? '/examples/template-config.json' : '/template-config.json');
 
-                $uv.prop('src', uvurl);
+				// $uv.on('load', function() {
+				// 	$uv.contents().find('head')
+				// 	.append($('<style>  .uv{ background-color: transparent !important; } .canvas-container{ background-color: transparent !important; }  </style>'));
+				// });
+
+				$uv.prop('src', uvurl);
             }
 
             $('#expando').on('click', function() {
@@ -101,7 +106,6 @@
 				}
 			});
 
-			
 			function resize() {
 				var width = $viewer.width();
 				var height = $viewer.height();
