@@ -17018,17 +17018,19 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             var arrowLeft = 0;
             var normalisedPos = 0;
             if (this.$triggerButton) {
-                // get the normalised position of the button
-                if (!this.extension.isDesktopMetric()) {
-                    normalisedPos = Utils.Maths.normalise(this.$triggerButton.offset().left, 0, this.extension.width());
-                }
-                else {
-                    normalisedPos = Utils.Maths.normalise(this.$triggerButton.position().left + 8, 0, this.extension.width());
-                }
-                left = Math.floor((this.extension.width() * normalisedPos) - ((this.$element.width()) * normalisedPos));
+                var verticalPadding = 4;
+                var horizontalPadding = 2;
+                var a = this.$triggerButton.offset().top;
+                var b = this.extension.$element.offset().top;
+                var d = this.$element.outerHeight(true);
+                var e = (a - b) - d;
+                top = e + verticalPadding;
+                var f = this.$triggerButton.offset().left;
+                var g = this.extension.$element.offset().left;
+                var h = f - g;
+                normalisedPos = Utils.Maths.normalise(h, 0, this.extension.width());
+                left = Math.floor((this.extension.width() * normalisedPos) - ((this.$element.width()) * normalisedPos)) + horizontalPadding;
                 arrowLeft = Math.floor(this.$element.width() * normalisedPos);
-                var offset = this.$triggerButton.offset().top;
-                top = (Math.floor(this.extension.height() - this.$element.outerHeight(true))) - (this.extension.height() - offset);
             }
             this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
             this.$element.css({

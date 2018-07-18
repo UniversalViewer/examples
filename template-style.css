@@ -117,10 +117,6 @@ body > section {
     height: 250px;
 }
 
-.viewer .uv {
-    height: 220px;
-}
-
 .viewer .uv .canvas-container {
     background: transparent;
 }
