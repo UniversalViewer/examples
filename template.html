@@ -31,7 +31,11 @@
 		<strong>An example of where the Universal player could sit in the page.</strong>
 	</section>
 	<section id="pageContent">
-        
+		
+		<img id="poster" width="200" />
+		<button id="play">Play</button>
+		<button id="pause">Pause</button>
+
 		<div id="viewer" class="viewer expandable">
 			<div id="uv" class="uv"></div>
             <!-- <iframe id="uv" class="expandable" allowfullscreen frameborder="0" allowtransparency="true"></iframe> -->
@@ -93,6 +97,10 @@
 
 			uv.on('created', function() {
 				Utils.Urls.setHashParameter('manifest', manifest);
+
+				// poster image
+				var posterimage = uv.extension.helper.getPosterImage();
+				$('#poster').prop('src', posterimage);
 			});
 
 			// are there uv hash parameters?
@@ -105,6 +113,14 @@
 			}
 
 		}, false);
+
+		$('#play').on('click', function() {
+			uv.extension.centerPanel.avcomponent.play();
+		});
+
+		$('#pause').on('click', function() {
+			uv.extension.centerPanel.avcomponent.pause();
+		});
 
 		/*
         $(function() {
