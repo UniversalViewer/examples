@@ -19409,6 +19409,9 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "./Utils"
         BaseExtension.prototype.isDesktopMetric = function () {
             return this.metric.toString() === MetricType_1.MetricType.DESKTOP.toString();
         };
+        BaseExtension.prototype.isCatchAllMetric = function () {
+            return this.metric.toString() === MetricType_1.MetricType.NONE.toString();
+        };
         // todo: use redux in manifold to get reset state
         BaseExtension.prototype.viewManifest = function (manifest) {
             var data = {};
@@ -21217,7 +21220,7 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
         };
         FooterPanel.prototype.updateMoreInfoButton = function () {
             var configEnabled = Utils.Bools.getBool(this.options.moreInfoEnabled, false);
-            if (configEnabled && !this.extension.isDesktopMetric()) {
+            if (configEnabled && !this.extension.isDesktopMetric() && !this.extension.isCatchAllMetric()) {
                 this.$moreInfoButton.show();
             }
             else {

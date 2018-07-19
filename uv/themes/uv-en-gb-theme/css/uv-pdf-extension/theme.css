@@ -1818,6 +1818,9 @@ input[type=range]:focus::-ms-fill-upper {
   color: white;
   font-size: 0;
 }
+.uv .footerPanel .options .btn.moreInfo {
+  display: none;
+}
 .uv .footerPanel .options .btn.fullScreen,
 .uv .footerPanel .options .btn.exitFullscreen {
   float: right;
@@ -2532,6 +2535,9 @@ input[type=range]:focus::-ms-fill-upper {
   margin-right: 5px;
   color: white;
   font-size: 0;
+}
+.uv .mobileFooterPanel .options .btn.moreInfo {
+  display: none;
 }
 .uv .mobileFooterPanel .options .btn.bookmark {
   display: none;
