@@ -3385,7 +3385,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.2.30 https://github.com/iiif-commons/manifesto
+// manifesto v2.2.31 https://github.com/iiif-commons/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -4450,7 +4450,10 @@ var Manifesto;
                 return null;
             if (typeof (logo) === 'string')
                 return logo;
-            return logo['@id'];
+            if (Array.isArray(logo) && logo.length) {
+                logo = logo[0];
+            }
+            return logo['@id'] || logo.id;
         };
         IIIFResource.prototype.getLicense = function () {
             return Manifesto.Utils.getLocalisedValue(this.getProperty('license'), this.options.locale);
@@ -14638,7 +14641,7 @@ function extend() {
 },{}]},{},[1])(1)
 });
 
-// @iiif/manifold v1.2.27 https://github.com/iiif-commons/manifold#readme
+// @iiif/manifold v1.2.29 https://github.com/iiif-commons/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifmanifold = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -15290,12 +15293,10 @@ var Manifold;
                 rangeGroup.addMetadata(rangeMetadata);
                 metadataGroups.push(rangeGroup);
             }
-            if (range.parentRange) {
+            else if (range.parentRange) {
                 return this._getRangeMetadata(metadataGroups, range.parentRange);
             }
-            else {
-                return metadataGroups;
-            }
+            return metadataGroups;
         };
         Helper.prototype.getMultiSelectState = function () {
             if (!this._multiSelectState) {
@@ -15311,8 +15312,11 @@ var Manifold;
             }
             return null;
         };
+        Helper.prototype.getPosterCanvas = function () {
+            return this.manifest.getPosterCanvas();
+        };
         Helper.prototype.getPosterImage = function () {
-            var posterCanvas = this.manifest.getPosterCanvas();
+            var posterCanvas = this.getPosterCanvas();
             if (posterCanvas) {
                 var content = posterCanvas.getContent();
                 if (content && content.length) {
@@ -17360,7 +17364,7 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
                 'width': width
             });
             var titleHeight;
-            if (this.options && this.options.titleEnabled === false) {
+            if (this.options && this.options.titleEnabled === false || !this.$title.is(':visible')) {
                 titleHeight = 0;
             }
             else {
@@ -21682,6 +21686,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
                 licenseFormatter: new Manifold.UriLabeller(this.config.license ? this.config.license : {}),
                 limit: this.config.options.textLimit || 4,
                 limitType: IIIFComponents.MetadataComponentOptions.LimitType.LINES,
+                limitToRange: Utils.Bools.getBool(this.config.options.limitToRange, false),
                 manifestDisplayOrder: this.config.options.manifestDisplayOrder,
                 manifestExclude: this.config.options.manifestExclude,
                 range: this._getCurrentRange(),
@@ -22185,7 +22190,6 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             });
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
-            console.log(dep);
             if (index === 0) {
                 window.Hls = dep; //https://github.com/mrdoob/three.js/issues/9602
             }
