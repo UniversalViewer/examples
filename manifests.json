@@ -783,6 +783,12 @@
           "visible": true
         },
         {
+          "@id": "https://d.lib.ncsu.edu/collections/catalog/nubian-message-2003-04-01/manifest?v3=true",
+          "@type": "sc:Manifest",
+          "label": "Presentation 3 Image",
+          "visible": true
+        },
+        {
           "@id": "https://edsilv.github.io/test-manifests/pres3-pdf.json",
           "@type": "sc:Manifest",
           "label": "Presentation 3 PDF",
