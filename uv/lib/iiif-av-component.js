@@ -1,4 +1,4 @@
-// iiif-av-component v0.0.49 https://github.com/iiif-commons/iiif-av-component#readme
+// iiif-av-component v0.0.63 https://github.com/iiif-commons/iiif-av-component#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifAvComponent = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -20,6 +20,8 @@ var IIIFComponents;
             var _this = _super.call(this, options) || this;
             _this._data = _this.data();
             _this.canvasInstances = [];
+            _this._readyCanvases = 0;
+            _this._posterImageExpanded = false;
             _this._init();
             _this._resize();
             return _this;
@@ -38,14 +40,18 @@ var IIIFComponents;
                 defaultAspectRatio: 0.56,
                 doubleClickMS: 350,
                 limitToRange: false,
+                virtualCanvasEnabled: true,
                 content: {
                     currentTime: "Current Time",
+                    collapse: "Collapse",
                     duration: "Duration",
+                    expand: "Expand",
                     mute: "Mute",
                     next: "Next",
                     pause: "Pause",
                     play: "Play",
-                    previous: "Previous"
+                    previous: "Previous",
+                    unmute: "Unmute"
                 }
             };
         };
@@ -85,17 +91,47 @@ var IIIFComponents;
                 });
             }
             if (diff.includes('canvasId') && this._data.canvasId) {
-                var currentCanvasInstance_1 = this._getCanvasInstanceById(this._data.canvasId);
-                this.canvasInstances.forEach(function (canvasInstance, index) {
-                    if (canvasInstance !== currentCanvasInstance_1) {
-                        canvasInstance.set({
-                            visible: false
-                        });
-                    }
-                    else {
-                        canvasInstance.set({ visible: true });
-                    }
+                var nextCanvasInstance_1 = this._getCanvasInstanceById(this._data.canvasId);
+                if (nextCanvasInstance_1) {
+                    this.canvasInstances.forEach(function (canvasInstance) {
+                        // hide canvases that don't have the same id        
+                        if (canvasInstance.getCanvasId() !== nextCanvasInstance_1.getCanvasId()) {
+                            canvasInstance.set({
+                                visible: false
+                            });
+                        }
+                        else {
+                            if (diff.includes('range')) {
+                                canvasInstance.set({
+                                    visible: true,
+                                    range: _this._data.range ? jQuery.extend(true, {}, _this._data.range) : undefined
+                                });
+                            }
+                            else {
+                                canvasInstance.set({
+                                    visible: true
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+            if (diff.includes('virtualCanvasEnabled')) {
+                this.set({
+                    range: undefined
                 });
+                // as you don't know the id of virtual canvases, you can toggle them on
+                // but when toggling off, you must call showCanvas to show the next canvas
+                if (this._data.virtualCanvasEnabled) {
+                    this.canvasInstances.forEach(function (canvasInstance) {
+                        if (canvasInstance.isVirtual()) {
+                            _this.set({
+                                canvasId: canvasInstance.getCanvasId(),
+                                range: undefined
+                            });
+                        }
+                    });
+                }
             }
             if (diff.includes('range') && this._data.range) {
                 var range = this._data.helper.getRangeById(this._data.range.id);
@@ -108,16 +144,30 @@ var IIIFComponents;
                         // get canvas by normalised id (without temporal part)
                         var canvasInstance = this._getCanvasInstanceById(canvasId);
                         if (canvasInstance) {
-                            // if not using the correct canvasinstance, switch to it
-                            if (this._data.canvasId && Manifesto.Utils.normaliseUrl(this._data.canvasId) !== canvasId) {
+                            if (canvasInstance.isVirtual() && this._data.virtualCanvasEnabled) {
+                                if (canvasInstance.includesVirtualSubCanvas(canvasId)) {
+                                    canvasId = canvasInstance.getCanvasId();
+                                    // use the retargeted range
+                                    for (var i = 0; i < canvasInstance.ranges.length; i++) {
+                                        var r = canvasInstance.ranges[i];
+                                        if (r.id === range.id) {
+                                            range = r;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            // if not using the correct canvasinstance, switch to it                    
+                            if (this._data.canvasId &&
+                                ((this._data.canvasId.includes('://')) ? Manifesto.Utils.normaliseUrl(this._data.canvasId) : this._data.canvasId) !== canvasId) {
                                 this.set({
                                     canvasId: canvasId,
-                                    range: Object.assign({}, range) // force diff
+                                    range: jQuery.extend(true, {}, range) // force diff
                                 });
                             }
                             else {
                                 canvasInstance.set({
-                                    range: range
+                                    range: jQuery.extend(true, {}, range)
                                 });
                             }
                         }
@@ -136,8 +186,8 @@ var IIIFComponents;
             });
             this.canvasInstances = [];
             this._$element.empty();
-            // if the manifest has an auto-advance behavior, join the canvases into a single "virtual" canvas
             if (this._data && this._data.helper) {
+                // if the manifest has an auto-advance behavior, join the canvases into a single "virtual" canvas
                 var behavior = this._data.helper.manifest.getBehavior();
                 var canvases = this._getCanvases();
                 if (behavior && behavior.toString() === manifesto.Behavior.autoadvance().toString()) {
@@ -147,14 +197,55 @@ var IIIFComponents;
                     });
                     this._initCanvas(virtualCanvas_1);
                 }
-                else {
-                    canvases.forEach(function (canvas) {
-                        _this._initCanvas(canvas);
-                    });
-                }
+                // all canvases need to be individually navigable
+                canvases.forEach(function (canvas) {
+                    _this._initCanvas(canvas);
+                });
                 if (this.canvasInstances.length > 0) {
                     this._data.canvasId = this.canvasInstances[0].getCanvasId();
                 }
+                this._checkAllCanvasesReadyInterval = setInterval(this._checkAllCanvasesReady.bind(this), 100);
+                this._$posterContainer = $('<div class="poster-container"></div>');
+                this._$element.append(this._$posterContainer);
+                this._$posterImage = $('<div class="poster-image"></div>');
+                this._$posterExpandButton = $("\n                    <button class=\"btn\" title=\"" + (this._data && this._data.content ? this._data.content.expand : '') + "\">\n                        <i class=\"av-icon  av-icon-expand expand\" aria-hidden=\"true\"></i><span>" + (this._data && this._data.content ? this._data.content.expand : '') + "</span>\n                    </button>\n                ");
+                this._$posterImage.append(this._$posterExpandButton);
+                this._$posterImage.on('click', function () {
+                    var target = _this._getPosterImageCss(!_this._posterImageExpanded);
+                    //this._$posterImage.animate(target,"fast", "easein");
+                    _this._$posterImage.animate(target);
+                    _this._posterImageExpanded = !_this._posterImageExpanded;
+                    if (_this._posterImageExpanded) {
+                        var label = _this.options.data.content.collapse;
+                        _this._$posterExpandButton.prop('title', label);
+                        _this._$posterExpandButton.find('i').switchClass('expand', 'collapse');
+                    }
+                    else {
+                        var label = _this.options.data.content.expand;
+                        _this._$posterExpandButton.prop('title', label);
+                        _this._$posterExpandButton.find('i').switchClass('collapse', 'expand');
+                    }
+                });
+                // poster canvas
+                var posterImage = this._data.helper.getPosterImage();
+                if (posterImage) {
+                    this._$posterContainer.append(this._$posterImage);
+                    var css = this._getPosterImageCss(this._posterImageExpanded);
+                    css = Object.assign({}, css, {
+                        'background-image': 'url(' + posterImage + ')'
+                    });
+                    this._$posterImage.css(css);
+                }
+            }
+        };
+        AVComponent.prototype._checkAllCanvasesReady = function () {
+            console.log('loading media');
+            if (this._readyCanvases === this.canvasInstances.length) {
+                console.log('media ready');
+                clearInterval(this._checkAllCanvasesReadyInterval);
+                //that._logMessage('CREATED CANVAS: ' + canvasInstance.canvasClockDuration + ' seconds, ' + canvasInstance.canvasWidth + ' x ' + canvasInstance.canvasHeight + ' px.');
+                this.fire(AVComponent.Events.CANVASREADY);
+                this.resize();
             }
         };
         AVComponent.prototype._getCanvases = function () {
@@ -174,8 +265,7 @@ var IIIFComponents;
             canvasInstance.init();
             this.canvasInstances.push(canvasInstance);
             canvasInstance.on(AVComponent.Events.CANVASREADY, function () {
-                //that._logMessage('CREATED CANVAS: ' + canvasInstance.canvasClockDuration + ' seconds, ' + canvasInstance.canvasWidth + ' x ' + canvasInstance.canvasHeight + ' px.');
-                _this.fire(AVComponent.Events.CANVASREADY);
+                _this._readyCanvases++;
             }, false);
             // canvasInstance.on(AVComponent.Events.RESETCANVAS, () => {
             //     this.playCanvas(canvasInstance.canvas.id);
@@ -224,16 +314,19 @@ var IIIFComponents;
             });
         };
         AVComponent.prototype._getCanvasInstanceById = function (canvasId) {
-            canvasId = Manifesto.Utils.normaliseUrl(canvasId);
-            for (var i = 0; i < this.canvasInstances.length; i++) {
-                var canvasInstance = this.canvasInstances[i];
-                // if the canvasinstance has a virtual canvas
-                if (canvasInstance.isVirtual()) {
-                    if (canvasInstance.includesVirtualSubCanvas(canvasId)) {
+            canvasId = (canvasId.includes('://')) ? Manifesto.Utils.normaliseUrl(canvasId) : canvasId;
+            // if virtual canvas is enabled, check for that first
+            if (this._data.virtualCanvasEnabled) {
+                for (var i = 0; i < this.canvasInstances.length; i++) {
+                    var canvasInstance = this.canvasInstances[i];
+                    if (canvasInstance.isVirtual() && canvasInstance.getCanvasId() === canvasId || canvasInstance.includesVirtualSubCanvas(canvasId)) {
                         return canvasInstance;
                     }
                 }
-                else {
+            }
+            else {
+                for (var i = 0; i < this.canvasInstances.length; i++) {
+                    var canvasInstance = this.canvasInstances[i];
                     var id = canvasInstance.getCanvasId();
                     if (id) {
                         var canvasInstanceId = Manifesto.Utils.normaliseUrl(id);
@@ -262,6 +355,18 @@ var IIIFComponents;
                 });
             }
         };
+        AVComponent.prototype.play = function () {
+            var currentCanvas = this._getCurrentCanvas();
+            if (currentCanvas) {
+                currentCanvas.play();
+            }
+        };
+        AVComponent.prototype.pause = function () {
+            var currentCanvas = this._getCurrentCanvas();
+            if (currentCanvas) {
+                currentCanvas.pause();
+            }
+        };
         AVComponent.prototype.playRange = function (rangeId) {
             if (!this._data.helper) {
                 return;
@@ -269,22 +374,72 @@ var IIIFComponents;
             var range = this._data.helper.getRangeById(rangeId);
             if (range) {
                 this.set({
-                    range: range
+                    range: jQuery.extend(true, {}, range)
                 });
             }
         };
         AVComponent.prototype.showCanvas = function (canvasId) {
-            this.set({
-                canvasId: canvasId
-            });
+            // if the passed canvas id is already the current canvas id, but the canvas isn't visible
+            // (switching from virtual canvas)
+            var currentCanvas = this._getCurrentCanvas();
+            if (currentCanvas && currentCanvas.getCanvasId() === canvasId && !currentCanvas.isVisible()) {
+                currentCanvas.set({
+                    visible: true
+                });
+            }
+            else {
+                this.set({
+                    canvasId: canvasId
+                });
+            }
         };
         AVComponent.prototype._logMessage = function (message) {
             this.fire(AVComponent.Events.LOG, message);
+        };
+        AVComponent.prototype._getPosterImageCss = function (expanded) {
+            var currentCanvas = this._getCurrentCanvas();
+            if (currentCanvas) {
+                var $options = currentCanvas.$playerElement.find('.options-container');
+                var width = currentCanvas.$playerElement.parent().width();
+                var height = currentCanvas.$playerElement.parent().height() - $options.height();
+                if (expanded) {
+                    return {
+                        'top': 0,
+                        'left': 0,
+                        'width': width,
+                        'height': height
+                    };
+                }
+                else {
+                    return {
+                        'top': 0,
+                        'left': (width / 3) * 2,
+                        'width': width / 3,
+                        'height': height / 3
+                    };
+                }
+            }
+            return null;
         };
         AVComponent.prototype.resize = function () {
             this.canvasInstances.forEach(function (canvasInstance) {
                 canvasInstance.resize();
             });
+            // get the visible player and align the poster to it
+            var currentCanvas = this._getCurrentCanvas();
+            if (currentCanvas) {
+                if (this._$posterImage && this._$posterImage.is(':visible')) {
+                    if (this._posterImageExpanded) {
+                        this._$posterImage.css(this._getPosterImageCss(true));
+                    }
+                    else {
+                        this._$posterImage.css(this._getPosterImageCss(false));
+                    }
+                    // this._$posterExpandButton.css({
+                    //     top: <number>this._$posterImage.height() - <number>this._$posterExpandButton.outerHeight()
+                    // });
+                }
+            }
         };
         return AVComponent;
     }(_Components.BaseComponent));
@@ -343,7 +498,7 @@ var IIIFComponents;
             if (!success) {
                 console.error("Component failed to initialise");
             }
-            this._$volumeMute = $("\n                                <button class=\"btn volume-mute\" title=\"" + this.options.data.content.mute + "\">\n                                    <i class=\"av-icon-mute on\" aria-hidden=\"true\"></i>" + this.options.data.content.mute + "\n                                </button>");
+            this._$volumeMute = $("\n                                <button class=\"btn volume-mute\" title=\"" + this.options.data.content.mute + "\">\n                                    <i class=\"av-icon av-icon-mute on\" aria-hidden=\"true\"></i>" + this.options.data.content.mute + "\n                                </button>");
             this._$volumeSlider = $('<div class="volume-slider"></div>');
             this._$element.append(this._$volumeMute, this._$volumeSlider);
             var that = this;
@@ -365,6 +520,7 @@ var IIIFComponents;
                 value: that._data.volume,
                 step: 0.1,
                 orientation: "horizontal",
+                range: "min",
                 min: 0,
                 max: 1,
                 animate: false,
@@ -394,9 +550,13 @@ var IIIFComponents;
                     value: this._data.volume
                 });
                 if (this._data.volume === 0) {
+                    var label = this.options.data.content.unmute;
+                    this._$volumeMute.prop('title', label);
                     this._$volumeMute.find('i').switchClass('on', 'off');
                 }
                 else {
+                    var label = this.options.data.content.mute;
+                    this._$volumeMute.prop('title', label);
                     this._$volumeMute.find('i').switchClass('off', 'on');
                 }
             }
@@ -448,11 +608,16 @@ var IIIFComponents;
             _this._isStalled = false;
             _this._lowPriorityFrequency = 250;
             _this._mediaSyncMarginSecs = 1;
-            _this._ranges = [];
             _this._rangeSpanPadding = 0.25;
-            _this._readyCanvasesCount = 0;
+            _this._readyMediaCount = 0;
             _this._stallRequestedBy = []; //todo: type
             _this._wasPlaying = false;
+            _this._waveforms = [];
+            _this.ranges = [];
+            _this._scaleY = function (amplitude, height) {
+                var range = 256;
+                return Math.max(_this.options.data.waveformBarWidth, (amplitude * height / range));
+            };
             _this._data = _this.options.data;
             _this.$playerElement = $('<div class="player"></div>');
             return _this;
@@ -475,12 +640,15 @@ var IIIFComponents;
             this._$durationHighlight = $('<div class="duration-highlight"></div>');
             this._$timelineItemContainer = $('<div class="timeline-item-container"></div>');
             this._$controlsContainer = $('<div class="controls-container"></div>');
-            this._$prevButton = $("\n                                <button class=\"btn\" title=\"" + this._data.content.previous + "\">\n                                    <i class=\"av-icon-previous\" aria-hidden=\"true\"></i>" + this._data.content.previous + "\n                                </button>");
-            this._$playButton = $("\n                                <button class=\"btn\" title=\"" + this._data.content.play + "\">\n                                    <i class=\"av-icon-play play\" aria-hidden=\"true\"></i>" + this._data.content.play + "\n                                </button>");
-            this._$nextButton = $("\n                                <button class=\"btn\" title=\"" + this._data.content.next + "\">\n                                    <i class=\"av-icon-next\" aria-hidden=\"true\"></i>" + this._data.content.next + "\n                                </button>");
+            this._$prevButton = $("\n                                <button class=\"btn\" title=\"" + this._data.content.previous + "\">\n                                    <i class=\"av-icon av-icon-previous\" aria-hidden=\"true\"></i>" + this._data.content.previous + "\n                                </button>");
+            this._$playButton = $("\n                                <button class=\"btn\" title=\"" + this._data.content.play + "\">\n                                    <i class=\"av-icon av-icon-play play\" aria-hidden=\"true\"></i>" + this._data.content.play + "\n                                </button>");
+            this._$nextButton = $("\n                                <button class=\"btn\" title=\"" + this._data.content.next + "\">\n                                    <i class=\"av-icon av-icon-next\" aria-hidden=\"true\"></i>" + this._data.content.next + "\n                                </button>");
             this._$timeDisplay = $('<div class="time-display"><span class="canvas-time"></span> / <span class="canvas-duration"></span></div>');
             this._$canvasTime = this._$timeDisplay.find('.canvas-time');
             this._$canvasDuration = this._$timeDisplay.find('.canvas-duration');
+            if (this.isVirtual()) {
+                this.$playerElement.addClass('virtual');
+            }
             var $volume = $('<div class="volume"></div>');
             this._volume = new IIIFComponents.AVVolumeControl({
                 target: $volume[0],
@@ -503,15 +671,18 @@ var IIIFComponents;
                     this._data.canvas.canvases.forEach(function (canvas) {
                         if (_this._data && _this._data.helper) {
                             var r = _this._data.helper.getCanvasRanges(canvas);
+                            var clonedRanges_1 = [];
                             // shift the range targets forward by the duration of their previous canvases
                             r.forEach(function (range) {
-                                if (range.canvases && range.canvases.length) {
-                                    for (var i = 0; i < range.canvases.length; i++) {
-                                        range.canvases[i] = IIIFComponents.AVComponentUtils.Utils.retargetTemporalComponent(_this._data.canvas.canvases, range.__jsonld.items[i].id);
+                                var clonedRange = jQuery.extend(true, {}, range);
+                                clonedRanges_1.push(clonedRange);
+                                if (clonedRange.canvases && clonedRange.canvases.length) {
+                                    for (var i = 0; i < clonedRange.canvases.length; i++) {
+                                        clonedRange.canvases[i] = IIIFComponents.AVComponentUtils.Utils.retargetTemporalComponent(_this._data.canvas.canvases, clonedRange.__jsonld.items[i].id);
                                     }
                                 }
                             });
-                            ranges_1.push.apply(ranges_1, r);
+                            ranges_1.push.apply(ranges_1, clonedRanges_1);
                         }
                     });
                 }
@@ -519,7 +690,7 @@ var IIIFComponents;
                     ranges_1 = ranges_1.concat(this._data.helper.getCanvasRanges(this._data.canvas));
                 }
                 ranges_1.forEach(function (range) {
-                    _this._ranges.push(range);
+                    _this.ranges.push(range);
                 });
             }
             this._canvasClockDuration = this._data.canvas.getDuration();
@@ -562,10 +733,10 @@ var IIIFComponents;
             });
             this._$playButton.on('click', function () {
                 if (_this._isPlaying) {
-                    _this._pause();
+                    _this.pause();
                 }
                 else {
-                    _this._play();
+                    _this.play();
                 }
             });
             this._$nextButton.on('click', function () {
@@ -693,10 +864,29 @@ var IIIFComponents;
                     'width': percentageWidth
                 };
                 this._renderMediaElement(itemData);
+                // waveform
+                // todo: create annotation.getSeeAlso
+                var seeAlso = item.getProperty('seeAlso');
+                if (seeAlso && seeAlso.length) {
+                    var dat = seeAlso[0].id;
+                    this._waveforms.push(dat);
+                }
             }
+            this._renderWaveform();
+        };
+        CanvasInstance.prototype.data = function () {
+            return {
+                waveformColor: "#fff",
+                waveformBarSpacing: 4,
+                waveformBarWidth: 2,
+                volume: 1
+            };
         };
         CanvasInstance.prototype.isVirtual = function () {
             return this._data.canvas instanceof IIIFComponents.AVComponentObjects.VirtualCanvas;
+        };
+        CanvasInstance.prototype.isVisible = function () {
+            return !!this._data.visible;
         };
         CanvasInstance.prototype.includesVirtualSubCanvas = function (canvasId) {
             if (this.isVirtual() && this._data.canvas && this._data.canvas.canvases) {
@@ -710,18 +900,20 @@ var IIIFComponents;
             return false;
         };
         CanvasInstance.prototype.set = function (data) {
+            var _this = this;
             var oldData = Object.assign({}, this._data);
             this._data = Object.assign(this._data, data);
             var diff = IIIFComponents.AVComponentUtils.Utils.diff(oldData, this._data);
             if (diff.includes('visible')) {
                 if (this._data.canvas) {
                     if (this._data.visible) {
+                        this._rewind();
                         this.$playerElement.show();
                         //console.log('show ' + this._data.canvas.id);
                     }
                     else {
                         this.$playerElement.hide();
-                        this._pause();
+                        this.pause();
                         //console.log('hide ' + this._data.canvas.id);
                     }
                     this.resize();
@@ -735,27 +927,42 @@ var IIIFComponents;
                     else {
                         var duration = this._data.range.getDuration();
                         if (duration) {
-                            this._setCurrentTime(duration.start);
+                            if (!this._data.range.autoChanged) {
+                                this._setCurrentTime(duration.start);
+                            }
+                            this.play();
                             this.fire(IIIFComponents.AVComponent.Events.RANGE_CHANGED, this._data.range.id);
-                            this._play();
                         }
                     }
                 }
             }
-            this._render();
+            if (diff.includes('volume')) {
+                this._contentAnnotations.forEach(function ($mediaElement) {
+                    $($mediaElement.element).prop('volume', _this._data.volume);
+                    _this._volume.set({
+                        volume: _this._data.volume
+                    });
+                });
+            }
+            else {
+                this._render();
+            }
+            if (diff.includes('limitToRange')) {
+                this._render();
+            }
         };
         CanvasInstance.prototype._hasRangeChanged = function () {
             var range = this._getRangeForCurrentTime();
             if (range && !this._data.limitToRange && (!this._data.range || (this._data.range && range.id !== this._data.range.id))) {
                 this.set({
-                    range: range
+                    range: jQuery.extend(true, { autoChanged: true }, range)
                 });
             }
         };
         CanvasInstance.prototype._getRangeForCurrentTime = function (parentRange) {
             var ranges;
             if (!parentRange) {
-                ranges = this._ranges;
+                ranges = this.ranges;
             }
             else {
                 ranges = parentRange.getRanges();
@@ -797,7 +1004,6 @@ var IIIFComponents;
             return true;
         };
         CanvasInstance.prototype._render = function () {
-            var _this = this;
             if (this._data.range) {
                 var duration = this._data.range.getDuration();
                 if (duration) {
@@ -809,7 +1015,12 @@ var IIIFComponents;
                     var ratio = timelineLength / totalLength;
                     var start = duration.start * ratio;
                     var end = duration.end * ratio;
+                    // if the end is on the next canvas
+                    if (end > totalLength || end < start) {
+                        end = totalLength;
+                    }
                     var width = end - start;
+                    //console.log(width);
                     this._$durationHighlight.show();
                     // set the start position and width
                     this._$durationHighlight.css({
@@ -841,12 +1052,6 @@ var IIIFComponents;
             else {
                 this._$durationHighlight.hide();
             }
-            this._contentAnnotations.forEach(function ($mediaElement) {
-                $($mediaElement.element).prop("volume", _this._data.volume);
-                _this._volume.set({
-                    volume: _this._data.volume
-                });
-            });
             if (this._data.limitToRange && this._data.range) {
                 this._$canvasTimelineContainer.hide();
                 this._$rangeTimelineContainer.show();
@@ -857,6 +1062,7 @@ var IIIFComponents;
             }
             this._updateCurrentTimeDisplay();
             this._updateDurationDisplay();
+            this._drawWaveform();
         };
         CanvasInstance.prototype.getCanvasId = function () {
             if (this._data && this._data.canvas) {
@@ -972,27 +1178,27 @@ var IIIFComponents;
                 default:
                     return;
             }
-            var video = $mediaElement[0];
+            var media = $mediaElement[0];
             if (data.format && data.format.toString() === 'application/dash+xml') {
                 // dash
                 $mediaElement.attr('data-dashjs-player', '');
                 var player = dashjs.MediaPlayer().create();
-                player.initialize(video, data.source);
+                player.initialize(media, data.source);
             }
             else if (data.format && data.format.toString() === 'application/vnd.apple.mpegurl') {
                 // hls
                 if (Hls.isSupported()) {
                     var hls = new Hls();
                     hls.loadSource(data.source);
-                    hls.attachMedia(video);
+                    hls.attachMedia(media);
                     //hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    //video.play();
+                    //media.play();
                     //});
                 }
-                else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.src = data.source;
-                    //video.addEventListener('canplay', function () {
-                    //video.play();
+                else if (media.canPlayType('application/vnd.apple.mpegurl')) {
+                    media.src = data.source;
+                    //media.addEventListener('canplay', function () {
+                    //media.play();
                     //});
                 }
             }
@@ -1038,33 +1244,115 @@ var IIIFComponents;
             if (type === 'video' || type === 'audio') {
                 $mediaElement.on('loadstart', function () {
                     //console.log('loadstart');
-                    data.checkForStall();
+                    //data.checkForStall();
                 });
                 $mediaElement.on('waiting', function () {
                     //console.log('waiting');
-                    data.checkForStall();
+                    //data.checkForStall();
                 });
                 $mediaElement.on('seeking', function () {
                     //console.log('seeking');
                     //data.checkForStall();
                 });
                 $mediaElement.on('loadedmetadata', function () {
-                    _this._readyCanvasesCount++;
-                    if (_this._readyCanvasesCount === _this._contentAnnotations.length) {
+                    _this._readyMediaCount++;
+                    if (_this._readyMediaCount === _this._contentAnnotations.length) {
                         //if (!this._data.range) {
                         _this._setCurrentTime(0);
                         //}                        
                         if (_this.options.data.autoPlay) {
-                            _this._play();
+                            _this.play();
                         }
                         _this._updateDurationDisplay();
                         _this.fire(IIIFComponents.AVComponent.Events.CANVASREADY);
                     }
                 });
                 $mediaElement.attr('preload', 'auto');
-                $mediaElement.get(0).load(); // todo: type
+                $mediaElement.get(0).load();
             }
             this._renderSyncIndicator(data);
+        };
+        CanvasInstance.prototype._getWaveformData = function (url) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.responseType = 'arraybuffer';
+                xhr.open('GET', url);
+                xhr.addEventListener('load', function (progressEvent) {
+                    if (xhr.status == 200) {
+                        resolve(WaveformData.create(progressEvent.target.response));
+                    }
+                    else {
+                        reject(new Error(xhr.statusText));
+                    }
+                });
+                xhr.onerror = function () {
+                    reject(new Error("Network Error"));
+                };
+                xhr.send();
+            });
+        };
+        CanvasInstance.prototype._renderWaveform = function () {
+            var _this = this;
+            if (!this._waveforms.length)
+                return;
+            var promises = this._waveforms.map(function (url) {
+                return _this._getWaveformData(url);
+            });
+            Promise.all(promises).then(function (waveforms) {
+                _this._waveformCanvas = document.createElement('canvas');
+                _this._waveformCanvas.classList.add('waveform');
+                _this._$canvasContainer.append(_this._waveformCanvas);
+                _this._waveformCtx = _this._waveformCanvas.getContext('2d');
+                if (_this._waveformCtx) {
+                    _this._waveformCtx.fillStyle = _this.options.data.waveformColor;
+                    _this._compositeWaveform = new IIIFComponents.AVComponentObjects.CompositeWaveform(waveforms);
+                    _this._resize();
+                }
+            });
+        };
+        CanvasInstance.prototype._drawWaveform = function () {
+            if (!this._waveformCtx)
+                return;
+            var duration;
+            var start = 0;
+            var end = this._compositeWaveform.duration;
+            if (this._data.range) {
+                duration = this._data.range.getDuration();
+            }
+            if (this._data.limitToRange && duration) {
+                start = duration.start;
+                end = duration.end;
+            }
+            var startpx = start * this._compositeWaveform.pixelsPerSecond;
+            var endpx = end * this._compositeWaveform.pixelsPerSecond;
+            var canvasWidth = this._waveformCtx.canvas.width;
+            var canvasHeight = this._waveformCtx.canvas.height;
+            var barSpacing = this.options.data.waveformBarSpacing;
+            var barWidth = this.options.data.waveformBarWidth;
+            var increment = Math.floor(((endpx - startpx) / canvasWidth) * barSpacing);
+            var sampleSpacing = (canvasWidth / barSpacing);
+            this._waveformCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+            this._waveformCtx.fillStyle = this.options.data.waveformColor;
+            for (var x = startpx; x < endpx; x += increment) {
+                var maxMin = this._getWaveformMaxAndMin(this._compositeWaveform, x, sampleSpacing);
+                var height = this._scaleY(maxMin.max - maxMin.min, canvasHeight);
+                var ypos = (canvasHeight - height) / 2;
+                var xpos = canvasWidth * IIIFComponents.AVComponentUtils.Utils.normalise(x, startpx, endpx);
+                this._waveformCtx.fillRect(xpos, ypos, barWidth, height);
+            }
+        };
+        CanvasInstance.prototype._getWaveformMaxAndMin = function (waveform, index, sampleSpacing) {
+            var max = -127;
+            var min = 128;
+            for (var x = index; x < index + sampleSpacing; x++) {
+                if (waveform.max(x) > max) {
+                    max = waveform.max(x);
+                }
+                if (waveform.min(x) < min) {
+                    min = waveform.min(x);
+                }
+            }
+            return { max: max, min: min };
         };
         CanvasInstance.prototype._updateCurrentTimeDisplay = function () {
             var duration;
@@ -1130,7 +1418,7 @@ var IIIFComponents;
         // todo: can this be part of the _data state?
         // this._data.rewind = true?
         CanvasInstance.prototype._rewind = function (withoutUpdate) {
-            this._pause();
+            this.pause();
             var duration;
             if (this._data.range) {
                 duration = this._data.range.getDuration();
@@ -1148,7 +1436,7 @@ var IIIFComponents;
                     });
                 }
             }
-            this._play();
+            this.play();
         };
         // todo: can this be part of the _data state?
         // this._data.fastforward = true?
@@ -1163,11 +1451,12 @@ var IIIFComponents;
             else {
                 this._canvasClockTime = this._canvasClockDuration;
             }
-            this._pause();
+            this.pause();
         };
         // todo: can this be part of the _data state?
         // this._data.play = true?
-        CanvasInstance.prototype._play = function (withoutUpdate) {
+        CanvasInstance.prototype.play = function (withoutUpdate) {
+            //console.log('playing ', this.getCanvasId());
             var _this = this;
             if (this._isPlaying)
                 return;
@@ -1195,13 +1484,15 @@ var IIIFComponents;
             if (!withoutUpdate) {
                 this._synchronizeMedia();
             }
+            var label = (this._data && this._data.content) ? this._data.content.pause : '';
+            this._$playButton.prop('title', label);
             this._$playButton.find('i').switchClass('play', 'pause');
             this.fire(IIIFComponents.AVComponentCanvasInstance.Events.PLAYCANVAS);
             this.logMessage('PLAY canvas');
         };
         // todo: can this be part of the _data state?
         // this._data.play = false?
-        CanvasInstance.prototype._pause = function (withoutUpdate) {
+        CanvasInstance.prototype.pause = function (withoutUpdate) {
             window.clearInterval(this._highPriorityInterval);
             window.clearInterval(this._lowPriorityInterval);
             window.clearInterval(this._canvasClockInterval);
@@ -1211,6 +1502,8 @@ var IIIFComponents;
                 this._lowPriorityUpdater();
                 this._synchronizeMedia();
             }
+            var label = (this._data && this._data.content) ? this._data.content.play : '';
+            this._$playButton.prop('title', label);
             this._$playButton.find('i').switchClass('pause', 'play');
             this.fire(IIIFComponents.AVComponentCanvasInstance.Events.PAUSECANVAS);
             this.logMessage('PAUSE canvas');
@@ -1225,11 +1518,11 @@ var IIIFComponents;
                 duration = this._data.range.getDuration();
             }
             if (this._data.limitToRange && duration && this._canvasClockTime >= duration.end) {
-                this._pause();
+                this.pause();
             }
             if (this._canvasClockTime >= this._canvasClockDuration) {
                 this._canvasClockTime = this._canvasClockDuration;
-                this._pause();
+                this.pause();
             }
         };
         CanvasInstance.prototype._highPriorityUpdater = function () {
@@ -1362,7 +1655,7 @@ var IIIFComponents;
                         //this._showWorkingIndicator(this._$canvasContainer);
                     }
                     this._wasPlaying = this._isPlaying;
-                    this._pause(true);
+                    this.pause(true);
                     this._isStalled = aBoolean;
                 }
             }
@@ -1374,7 +1667,7 @@ var IIIFComponents;
                 if (this._stallRequestedBy.length === 0) {
                     //this._hideWorkingIndicator();
                     if (this._isStalled && this._wasPlaying) {
-                        this._play(true);
+                        this.play(true);
                     }
                     this._isStalled = aBoolean;
                 }
@@ -1401,6 +1694,10 @@ var IIIFComponents;
                     var $options = this.$playerElement.find('.options-container');
                     this._$canvasContainer.height(this.$playerElement.parent().height() - $options.height());
                 }
+                if (this._waveformCanvas) {
+                    this._waveformCanvas.width = this._$canvasContainer.width();
+                    this._waveformCanvas.height = this._$canvasContainer.height();
+                }
                 this._render();
             }
         };
@@ -1422,6 +1719,51 @@ var IIIFComponents;
         }());
         AVComponentCanvasInstance.Events = Events;
     })(AVComponentCanvasInstance = IIIFComponents.AVComponentCanvasInstance || (IIIFComponents.AVComponentCanvasInstance = {}));
+})(IIIFComponents || (IIIFComponents = {}));
+
+var IIIFComponents;
+(function (IIIFComponents) {
+    var AVComponentObjects;
+    (function (AVComponentObjects) {
+        var CompositeWaveform = /** @class */ (function () {
+            function CompositeWaveform(waveforms) {
+                var _this = this;
+                this.length = 0;
+                this.duration = 0;
+                this.pixelsPerSecond = Number.MAX_VALUE;
+                this.secondsPerPixel = Number.MAX_VALUE;
+                this._waveforms = [];
+                waveforms.forEach(function (waveform) {
+                    _this._waveforms.push({
+                        start: _this.length,
+                        end: _this.length + waveform.adapter.length,
+                        waveform: waveform
+                    });
+                    _this.length += waveform.adapter.length;
+                    _this.duration += waveform.duration;
+                    _this.pixelsPerSecond = Math.min(_this.pixelsPerSecond, waveform.pixels_per_second);
+                    _this.secondsPerPixel = Math.min(_this.secondsPerPixel, waveform.seconds_per_pixel);
+                });
+            }
+            // Note: these could be optimised, assuming access is sequential
+            CompositeWaveform.prototype.min = function (index) {
+                var waveform = this._find(index);
+                return waveform ? waveform.waveform.min_sample(index - waveform.start) : 0;
+            };
+            CompositeWaveform.prototype.max = function (index) {
+                var waveform = this._find(index);
+                return waveform ? waveform.waveform.max_sample(index - waveform.start) : 0;
+            };
+            CompositeWaveform.prototype._find = function (index) {
+                var waveforms = this._waveforms.filter(function (waveform) {
+                    return index >= waveform.start && index < waveform.end;
+                });
+                return waveforms.length > 0 ? waveforms[0] : null;
+            };
+            return CompositeWaveform;
+        }());
+        AVComponentObjects.CompositeWaveform = CompositeWaveform;
+    })(AVComponentObjects = IIIFComponents.AVComponentObjects || (IIIFComponents.AVComponentObjects = {}));
 })(IIIFComponents || (IIIFComponents = {}));
 
 
@@ -1455,14 +1797,6 @@ var IIIFComponents;
                 }
                 return xywh;
             };
-            // public static getTemporalComponent(target: string): number[] | null {
-            //     const temporal: RegExpExecArray | null = /t=([^&]+)/g.exec(target);
-            //     let t: number[] | null = null;
-            //     if (temporal && temporal[1]) {
-            //         t = <any>temporal[1].split(',');
-            //     }
-            //     return t;
-            // }
             Utils.getFirstTargetedCanvasId = function (range) {
                 var canvasId;
                 if (range.canvases && range.canvases.length) {
@@ -1479,57 +1813,6 @@ var IIIFComponents;
                 }
                 return undefined;
             };
-            /*
-            public static getRangeDuration(range: Manifesto.IRange): AVComponentObjects.Duration | undefined {
-    
-                let start: number | undefined;
-                let end: number | undefined;
-    
-                if (range.canvases && range.canvases.length) {
-                    for (let i = 0; i < range.canvases.length; i++) {
-                        const canvas: string = range.canvases[i];
-                        let temporal: number[] | null = Utils.getTemporalComponent(canvas);
-                        if (temporal && temporal.length > 1) {
-                            if (i === 0) {
-                                start = Number(temporal[0]);
-                            }
-        
-                            if (i === range.canvases.length - 1) {
-                                end = Number(temporal[1]);
-                            }
-                        }
-                    }
-                } else {
-    
-                    // get child ranges and calculate the start and end based on them
-                    const childRanges: Manifesto.IRange[] = range.getRanges();
-    
-                    for (let i = 0; i < childRanges.length; i++) {
-                        const childRange: Manifesto.IRange = childRanges[i];
-    
-                        const duration: AVComponentObjects.Duration | undefined = Utils.getRangeDuration(childRange);
-    
-                        if (duration) {
-                            if (i === 0) {
-                                start = duration.start;
-                            }
-        
-                            if (i === childRanges.length - 1) {
-                                end = duration.end;
-                            }
-                        }
-                    }
-    
-                }
-    
-                if (start !== undefined && end !== undefined) {
-                    return new AVComponentObjects.Duration(start, end);
-                }
-    
-                return undefined;
-    
-            }
-            */
             Utils.getTimestamp = function () {
                 return String(new Date().valueOf());
             };
@@ -1628,6 +1911,9 @@ var IIIFComponents;
                     return fn.lastReturnVal;
                 };
             };
+            Utils.normalise = function (num, min, max) {
+                return (num - min) / (max - min);
+            };
             return Utils;
         }());
         AVComponentUtils.Utils = Utils;
@@ -1645,7 +1931,8 @@ var IIIFComponents;
                 this.id = IIIFComponents.AVComponentUtils.Utils.getTimestamp();
             }
             VirtualCanvas.prototype.addCanvas = function (canvas) {
-                this.canvases.push(canvas);
+                // canvases need to be deep copied including functions
+                this.canvases.push(jQuery.extend(true, {}, canvas));
             };
             VirtualCanvas.prototype.getContent = function () {
                 var _this = this;
@@ -1698,6 +1985,19 @@ var IIIFComponents;
             return VirtualCanvas;
         }());
         AVComponentObjects.VirtualCanvas = VirtualCanvas;
+    })(AVComponentObjects = IIIFComponents.AVComponentObjects || (IIIFComponents.AVComponentObjects = {}));
+})(IIIFComponents || (IIIFComponents = {}));
+
+var IIIFComponents;
+(function (IIIFComponents) {
+    var AVComponentObjects;
+    (function (AVComponentObjects) {
+        var Waveform = /** @class */ (function () {
+            function Waveform() {
+            }
+            return Waveform;
+        }());
+        AVComponentObjects.Waveform = Waveform;
     })(AVComponentObjects = IIIFComponents.AVComponentObjects || (IIIFComponents.AVComponentObjects = {}));
 })(IIIFComponents || (IIIFComponents = {}));
 

@@ -7,8 +7,11 @@
     <link rel="canonical" href="http://html5-templates.com/" />
     <title>Example page for Universal Player</title>
     <meta name="description" content="Simple HTML5 Page layout template with header, footer, sidebar etc.">
-    <link rel="stylesheet" href="template-style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="template-style.css">
+	<link rel="stylesheet" type="text/css" href="uv/uv.css">
+    <script src="uv/lib/offline.js"></script>
+    <script src="uv/helpers.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
     <script src="https://rawgit.com/edsilv/utils/master/dist/utils.min.js"></script>
 </head>
 
@@ -28,10 +31,15 @@
 		<strong>An example of where the Universal player could sit in the page.</strong>
 	</section>
 	<section id="pageContent">
-        
+		
+		<img id="poster" width="200" />
+		<button id="play">Play</button>
+		<button id="pause">Pause</button>
+
 		<div id="viewer" class="viewer expandable">
-            <iframe id="uv" class="expandable" allowfullscreen frameborder="0"></iframe>
-            <br><button id="expando" class="expand">expand</button>
+			<div id="uv" class="uv"></div>
+            <!-- <iframe id="uv" class="expandable" allowfullscreen frameborder="0" allowtransparency="true"></iframe> -->
+            <!-- <br><button id="expando" class="expand">expand</button> -->
         </div>
 		
 		<main role="main">
@@ -60,11 +68,68 @@
 
     <script type="text/javascript">
 
+		var uv, $uv, urlDataProvider, manifest;
+
+		window.addEventListener('uvLoaded', function (e) {
+
+			$uv = $('#uv');
+
+			urlDataProvider = new UV.URLDataProvider();
+
+			var data = {
+				root: './uv',
+				configUri: 'template-config.json',
+				collectionIndex: Number(urlDataProvider.get('c', 0)),
+				manifestIndex: Number(urlDataProvider.get('m', 0)),
+				sequenceIndex: Number(urlDataProvider.get('s', 0)),
+				canvasIndex: Number(urlDataProvider.get('cv', 0)),
+				rotation: Number(urlDataProvider.get('r', 0)),
+				xywh: urlDataProvider.get('xywh', ''),
+				rangeId: urlDataProvider.get('rid', ''),
+				locales: [
+					{
+						name: 'en-GB'
+					}
+				]
+			};
+
+			uv = createUV('#uv', data, urlDataProvider);
+
+			uv.on('created', function() {
+				Utils.Urls.setHashParameter('manifest', manifest);
+
+				// poster image
+				var posterimage = uv.extension.helper.getPosterImage();
+				$('#poster').prop('src', posterimage);
+			});
+
+			// are there uv hash parameters?
+			manifest = Utils.Urls.getHashParameter('manifest');
+
+			if (manifest) {
+				uv.set(Object.assign(data, {
+					iiifResourceUri: manifest
+				}));
+			}
+
+		}, false);
+
+		$('#play').on('click', function() {
+			uv.extension.centerPanel.avcomponent.play();
+		});
+
+		$('#pause').on('click', function() {
+			uv.extension.centerPanel.avcomponent.pause();
+		});
+
+		/*
         $(function() {
 
+			var isLocalhost = document.location.href.indexOf('localhost') !== -1;
 			var $uv = $('#uv');
 			var $viewer = $('#viewer');
-            var uvurl = '/examples/uv/uv.html#?';
+
+            var uvurl = (isLocalhost) ? '/examples/uv/uv.html#?' : '/uv/uv.html#?';
             // are there uv hash parameters?
             var manifest = Utils.Urls.getHashParameter('manifest');
             var rangeId = Utils.Urls.getHashParameter('rid');
@@ -76,9 +141,14 @@
                     uvurl += '&rid=' + rangeId;
 				}
 				
-				uvurl += '&config=' + '/examples/template-config.json';
+				uvurl += '&config=' + ((isLocalhost) ? '/examples/template-config.json' : '/template-config.json');
 
-                $uv.prop('src', uvurl);
+				// $uv.on('load', function() {
+				// 	$uv.contents().find('head')
+				// 	.append($('<style>  .uv{ background-color: transparent !important; } .canvas-container{ background-color: transparent !important; }  </style>'));
+				// });
+
+				$uv.prop('src', uvurl);
             }
 
             $('#expando').on('click', function() {
@@ -100,7 +170,6 @@
 				}
 			});
 
-			
 			function resize() {
 				var width = $viewer.width();
 				var height = $viewer.height();
@@ -113,9 +182,12 @@
 			});
 
 			resize();
-        });       
+		});
+		*/
 
-    </script>
+	</script>
+	
+	<script src="uv/uv.js"></script>
 
 </body>
 

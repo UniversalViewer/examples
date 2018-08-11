@@ -931,12 +931,6 @@
           "visible": true
         },
         {
-          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98.json",
-          "@type": "sc:Manifest",
-          "label": "C1685_98 Loose ends 17/7/99",
-          "visible": true
-        },
-        {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C308_8.json",
           "@type": "sc:Manifest",
           "label": "C308_8 Brian Hayes programme",
@@ -958,6 +952,24 @@
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/WS0003.json",
           "@type": "sc:Manifest",
           "label": "WS0003 Aburria aburri r1",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/loose-ends/C1685_98_P3.json",
+          "@type": "sc:Manifest",
+          "label": "Loose ends",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98_dash.json",
+          "@type": "sc:Manifest",
+          "label": "Dash",
+          "visible": true
+        },
+        {
+          "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98_hls.json",
+          "@type": "sc:Manifest",
+          "label": "HLS",
           "visible": true
         }
       ]

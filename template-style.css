@@ -112,12 +112,13 @@ body > section {
 .viewer {
     border:black solid 1px;
     margin-bottom:15px;
-    background: #4D9DE7;
-    height: 220px;
+    background-image: url(background-blur-wildlife.jpg);
+    background-repeat: no-repeat;
+    height: 250px;
 }
 
-.viewer .uv {
-    height: 220px;
+.viewer .uv .canvas-container {
+    background: transparent;
 }
 
 @media screen and (max-width: 1000px) {
