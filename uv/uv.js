@@ -3385,7 +3385,7 @@ var HTTPStatusCode;
 }(jQuery));
 define("lib/ba-tiny-pubsub.js", function(){});
 
-// manifesto v2.2.31 https://github.com/iiif-commons/manifesto
+// manifesto v2.2.32 https://github.com/iiif-commons/manifesto
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifesto.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.manifesto = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -5753,6 +5753,9 @@ var Manifesto;
             return Utils.normaliseUrl(url1) === Utils.normaliseUrl(url2);
         };
         Utils.isImageProfile = function (profile) {
+            if (typeof (profile) === 'string') {
+                profile = new Manifesto.ServiceProfile(profile);
+            }
             if (Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE0.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE1.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE2.toString()) ||
@@ -5782,6 +5785,9 @@ var Manifesto;
             return false;
         };
         Utils.isLevel0ImageProfile = function (profile) {
+            if (typeof (profile) === 'string') {
+                profile = new Manifesto.ServiceProfile(profile);
+            }
             if (Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE0.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIF1IMAGECOMPLIANCE0.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECONFORMANCE0.toString()) ||
@@ -5795,6 +5801,9 @@ var Manifesto;
             return false;
         };
         Utils.isLevel1ImageProfile = function (profile) {
+            if (typeof (profile) === 'string') {
+                profile = new Manifesto.ServiceProfile(profile);
+            }
             if (Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE1.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIF1IMAGECOMPLIANCE1.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECONFORMANCE1.toString()) ||
@@ -5808,6 +5817,9 @@ var Manifesto;
             return false;
         };
         Utils.isLevel2ImageProfile = function (profile) {
+            if (typeof (profile) === 'string') {
+                profile = new Manifesto.ServiceProfile(profile);
+            }
             if (Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECOMPLIANCE2.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIF1IMAGECOMPLIANCE2.toString()) ||
                 Utils.normalisedUrlsMatch(profile.toString(), Manifesto.ServiceProfile.STANFORDIIIFIMAGECONFORMANCE2.toString()) ||
@@ -14641,7 +14653,7 @@ function extend() {
 },{}]},{},[1])(1)
 });
 
-// @iiif/manifold v1.2.29 https://github.com/iiif-commons/manifold#readme
+// @iiif/manifold v1.2.30 https://github.com/iiif-commons/manifold#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('lib/manifold.js',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifmanifold = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -14885,34 +14897,51 @@ var Manifold;
             // get the height and width of the image resource if available
             this._parseDimensions(canvas);
         }
+        ExternalResource.prototype._getImageServiceDescriptor = function (services) {
+            var infoUri = null;
+            for (var i = 0; i < services.length; i++) {
+                var service = services[i];
+                var id = service.id;
+                if (!id.endsWith('/')) {
+                    id += '/';
+                }
+                if (manifesto.Utils.isImageProfile(service.getProfile())) {
+                    infoUri = id + 'info.json';
+                }
+            }
+            return infoUri;
+        };
         ExternalResource.prototype._getDataUri = function (canvas) {
             var content = canvas.getContent();
             var images = canvas.getImages();
+            var infoUri = null;
+            // presentation 3
             if (content && content.length) {
                 var annotation = content[0];
                 var annotationBody = annotation.getBody();
                 if (annotationBody.length) {
+                    var body = annotationBody[0];
+                    var services = body.getServices();
+                    if (services.length) {
+                        infoUri = this._getImageServiceDescriptor(services);
+                        if (infoUri) {
+                            return infoUri;
+                        }
+                    }
+                    // no image services. return the image id
                     return annotationBody[0].id;
                 }
                 return null;
             }
             else if (images && images.length) {
-                var infoUri = null;
                 var firstImage = images[0];
                 var resource = firstImage.getResource();
                 var services = resource.getServices();
                 if (services.length) {
-                    for (var i = 0; i < services.length; i++) {
-                        var service = services[i];
-                        var id = service.id;
-                        if (!id.endsWith('/')) {
-                            id += '/';
-                        }
-                        if (manifesto.Utils.isImageProfile(service.getProfile())) {
-                            infoUri = id + 'info.json';
-                        }
+                    infoUri = this._getImageServiceDescriptor(services);
+                    if (infoUri) {
+                        return infoUri;
                     }
-                    return infoUri;
                 }
                 // no image services. return the image id
                 return resource.id;
@@ -17398,7 +17427,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         __extends(AVCenterPanel, _super);
         function AVCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
-            _this._canvasReady = false;
+            _this._mediaReady = false;
             _this._resourceOpened = false;
             _this._isThumbsViewOpen = false;
             return _this;
@@ -17415,7 +17444,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 }
             });
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this._whenCanvasReady(function () {
+                _this._whenMediaReady(function () {
                     _this._viewCanvas(canvasIndex);
                 });
             });
@@ -17423,13 +17452,13 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 if (!_this._observeRangeChanges()) {
                     return;
                 }
-                _this._whenCanvasReady(function () {
+                _this._whenMediaReady(function () {
                     that._viewRange(range);
                     that._setTitle();
                 });
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                _this._whenCanvasReady(function () {
+                _this._whenMediaReady(function () {
                     _this.avcomponent.set({
                         limitToRange: _this._limitToRange(),
                         constrainNavigationToRange: _this._limitToRange()
@@ -17441,7 +17470,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
                 _this._isThumbsViewOpen = true;
-                _this._whenCanvasReady(function () {
+                _this._whenMediaReady(function () {
                     _this.avcomponent.set({
                         virtualCanvasEnabled: false
                     });
@@ -17453,7 +17482,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
                 _this._isThumbsViewOpen = false;
-                _this._whenCanvasReady(function () {
+                _this._whenMediaReady(function () {
                     _this.avcomponent.set({
                         virtualCanvasEnabled: true
                     });
@@ -17464,9 +17493,9 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             this.avcomponent = new IIIFComponents.AVComponent({
                 target: this.$avcomponent[0]
             });
-            this.avcomponent.on('canvasready', function () {
-                console.log('canvasready');
-                _this._canvasReady = true;
+            this.avcomponent.on('mediaready', function () {
+                console.log('mediaready');
+                _this._mediaReady = true;
             }, false);
             this.avcomponent.on('rangechanged', function (rangeId) {
                 if (rangeId) {
@@ -17523,7 +17552,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 title += this.content.delimiter + value;
             }
             this.title = title;
-            this.resize();
+            this.resize(false);
         };
         AVCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
@@ -17544,40 +17573,43 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         AVCenterPanel.prototype._limitToRange = function () {
             return !this.extension.isDesktopMetric();
         };
-        AVCenterPanel.prototype._whenCanvasReady = function (cb) {
+        AVCenterPanel.prototype._whenMediaReady = function (cb) {
             var _this = this;
             Utils.Async.waitFor(function () {
-                return _this._canvasReady;
+                return _this._mediaReady;
             }, cb);
         };
         AVCenterPanel.prototype._viewRange = function (range) {
             var _this = this;
-            this._whenCanvasReady(function () {
+            this._whenMediaReady(function () {
                 if (range) {
                     //setTimeout(() => {
                     //console.log('view ' + range.id);
                     _this.avcomponent.playRange(range.id);
                     //}, 500); // don't know why this is needed :-(
                 }
-                _this.resize();
+                _this.resize(false);
             });
         };
         AVCenterPanel.prototype._viewCanvas = function (canvasIndex) {
             var _this = this;
             Utils.Async.waitFor(function () {
-                return _this._canvasReady;
+                return _this._mediaReady;
             }, function () {
                 var canvas = _this.extension.helper.getCanvasByIndex(canvasIndex);
                 _this.avcomponent.showCanvas(canvas.id);
             });
         };
-        AVCenterPanel.prototype.resize = function () {
+        AVCenterPanel.prototype.resize = function (resizeAVComponent) {
+            if (resizeAVComponent === void 0) { resizeAVComponent = true; }
             _super.prototype.resize.call(this);
             if (this.title) {
                 this.$title.ellipsisFill(this.title);
             }
             this.$avcomponent.height(this.$content.height());
-            this.avcomponent.resize();
+            if (resizeAVComponent) {
+                this.avcomponent.resize();
+            }
         };
         return AVCenterPanel;
     }(CenterPanel_1.CenterPanel));
@@ -22190,11 +22222,11 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             });
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
-            if (index === 0) {
-                window.Hls = dep; //https://github.com/mrdoob/three.js/issues/9602
-            }
-            else if (index === 4) {
+            if (index === 5) {
                 window.WaveformData = dep;
+            }
+            else if (index === 6) {
+                window.Hls = dep; //https://github.com/mrdoob/three.js/issues/9602
             }
         };
         Extension.prototype.createModules = function () {
@@ -23750,14 +23782,19 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
             var scale = Math.min(scaleW, scaleH);
             return new Size(Math.floor(imageSize.width * scale), Math.floor(imageSize.height * scale));
         };
+        DownloadDialogue.prototype._isLevel0 = function (profile) {
+            if (!profile || !profile.length)
+                return false;
+            return manifesto.Utils.isLevel0ImageProfile(profile[0]);
+        };
         DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
             if (!this.extension.resources) {
                 return false;
             }
             var canvas = this.extension.helper.getCurrentCanvas();
-            // if the external resource doesn't have a service descriptor
+            // if the external resource doesn't have a service descriptor or is level 0
             // only allow wholeImageHighRes
-            if (!canvas.externalResource.hasServiceDescriptor()) {
+            if (!canvas.externalResource.hasServiceDescriptor() || this._isLevel0(canvas.externalResource.data.profile)) {
                 if (option === DownloadOption_1.DownloadOption.wholeImageHighRes) {
                     // if in one-up mode, or in two-up mode with a single page being shown
                     if (!this.extension.isPagingSettingEnabled() ||
@@ -23802,7 +23839,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 case DownloadOption_1.DownloadOption.selection:
                     return this.options.selectionEnabled;
                 case DownloadOption_1.DownloadOption.rangeRendering:
-                    if (canvas.ranges.length) {
+                    if (canvas.ranges && canvas.ranges.length) {
                         var range = canvas.ranges[0];
                         return range.getRenderings().length > 0;
                     }

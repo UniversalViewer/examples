@@ -1,4 +1,4 @@
-// iiif-av-component v0.0.63 https://github.com/iiif-commons/iiif-av-component#readme
+// iiif-av-component v0.0.70 https://github.com/iiif-commons/iiif-av-component#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iiifAvComponent = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 
@@ -20,7 +20,10 @@ var IIIFComponents;
             var _this = _super.call(this, options) || this;
             _this._data = _this.data();
             _this.canvasInstances = [];
-            _this._readyCanvases = 0;
+            _this._readyMedia = 0;
+            _this._readyWaveforms = 0;
+            _this._posterCanvasWidth = 0;
+            _this._posterCanvasHeight = 0;
             _this._posterImageExpanded = false;
             _this._init();
             _this._resize();
@@ -204,13 +207,15 @@ var IIIFComponents;
                 if (this.canvasInstances.length > 0) {
                     this._data.canvasId = this.canvasInstances[0].getCanvasId();
                 }
-                this._checkAllCanvasesReadyInterval = setInterval(this._checkAllCanvasesReady.bind(this), 100);
+                this._checkAllMediaReadyInterval = setInterval(this._checkAllMediaReady.bind(this), 100);
+                this._checkAllWaveformsReadyInterval = setInterval(this._checkAllWaveformsReady.bind(this), 100);
                 this._$posterContainer = $('<div class="poster-container"></div>');
                 this._$element.append(this._$posterContainer);
                 this._$posterImage = $('<div class="poster-image"></div>');
                 this._$posterExpandButton = $("\n                    <button class=\"btn\" title=\"" + (this._data && this._data.content ? this._data.content.expand : '') + "\">\n                        <i class=\"av-icon  av-icon-expand expand\" aria-hidden=\"true\"></i><span>" + (this._data && this._data.content ? this._data.content.expand : '') + "</span>\n                    </button>\n                ");
                 this._$posterImage.append(this._$posterExpandButton);
-                this._$posterImage.on('click', function () {
+                this._$posterImage.on('touchstart click', function (e) {
+                    e.preventDefault();
                     var target = _this._getPosterImageCss(!_this._posterImageExpanded);
                     //this._$posterImage.animate(target,"fast", "easein");
                     _this._$posterImage.animate(target);
@@ -227,26 +232,45 @@ var IIIFComponents;
                     }
                 });
                 // poster canvas
-                var posterImage = this._data.helper.getPosterImage();
-                if (posterImage) {
-                    this._$posterContainer.append(this._$posterImage);
-                    var css = this._getPosterImageCss(this._posterImageExpanded);
-                    css = Object.assign({}, css, {
-                        'background-image': 'url(' + posterImage + ')'
-                    });
-                    this._$posterImage.css(css);
+                var posterCanvas = this._data.helper.getPosterCanvas();
+                if (posterCanvas) {
+                    this._posterCanvasWidth = posterCanvas.getWidth();
+                    this._posterCanvasHeight = posterCanvas.getHeight();
+                    var posterImage = this._data.helper.getPosterImage();
+                    if (posterImage) {
+                        this._$posterContainer.append(this._$posterImage);
+                        var css = this._getPosterImageCss(this._posterImageExpanded);
+                        css = Object.assign({}, css, {
+                            'background-image': 'url(' + posterImage + ')'
+                        });
+                        this._$posterImage.css(css);
+                    }
                 }
             }
         };
-        AVComponent.prototype._checkAllCanvasesReady = function () {
+        AVComponent.prototype._checkAllMediaReady = function () {
             console.log('loading media');
-            if (this._readyCanvases === this.canvasInstances.length) {
-                console.log('media ready');
-                clearInterval(this._checkAllCanvasesReadyInterval);
+            if (this._readyMedia === this.canvasInstances.length) {
+                console.log('all media ready');
+                clearInterval(this._checkAllMediaReadyInterval);
                 //that._logMessage('CREATED CANVAS: ' + canvasInstance.canvasClockDuration + ' seconds, ' + canvasInstance.canvasWidth + ' x ' + canvasInstance.canvasHeight + ' px.');
-                this.fire(AVComponent.Events.CANVASREADY);
+                this.fire(AVComponent.Events.MEDIA_READY);
                 this.resize();
             }
+        };
+        AVComponent.prototype._checkAllWaveformsReady = function () {
+            console.log('loading waveforms');
+            if (this._readyWaveforms === this._getCanvasInstancesWithWaveforms().length) {
+                console.log('waveforms ready');
+                clearInterval(this._checkAllWaveformsReadyInterval);
+                this.fire(AVComponent.Events.WAVEFORMS_READY);
+                this.resize();
+            }
+        };
+        AVComponent.prototype._getCanvasInstancesWithWaveforms = function () {
+            return this.canvasInstances.filter(function (c) {
+                return c.waveforms.length > 0;
+            });
         };
         AVComponent.prototype._getCanvases = function () {
             if (this._data.helper) {
@@ -264,8 +288,11 @@ var IIIFComponents;
             this._$element.append(canvasInstance.$playerElement);
             canvasInstance.init();
             this.canvasInstances.push(canvasInstance);
-            canvasInstance.on(AVComponent.Events.CANVASREADY, function () {
-                _this._readyCanvases++;
+            canvasInstance.on(AVComponent.Events.MEDIA_READY, function () {
+                _this._readyMedia++;
+            }, false);
+            canvasInstance.on(AVComponent.Events.WAVEFORM_READY, function () {
+                _this._readyWaveforms++;
             }, false);
             // canvasInstance.on(AVComponent.Events.RESETCANVAS, () => {
             //     this.playCanvas(canvasInstance.canvas.id);
@@ -400,22 +427,37 @@ var IIIFComponents;
             var currentCanvas = this._getCurrentCanvas();
             if (currentCanvas) {
                 var $options = currentCanvas.$playerElement.find('.options-container');
-                var width = currentCanvas.$playerElement.parent().width();
-                var height = currentCanvas.$playerElement.parent().height() - $options.height();
+                var containerWidth = currentCanvas.$playerElement.parent().width();
+                var containerHeight = currentCanvas.$playerElement.parent().height() - $options.height();
                 if (expanded) {
                     return {
                         'top': 0,
                         'left': 0,
-                        'width': width,
-                        'height': height
+                        'width': containerWidth,
+                        'height': containerHeight
                     };
                 }
                 else {
+                    // get the longer edge of the poster canvas and make that a third of the container height/width.
+                    // scale the shorter edge proportionally.
+                    var ratio = void 0;
+                    var width = void 0;
+                    var height = void 0;
+                    if (this._posterCanvasWidth > this._posterCanvasHeight) {
+                        ratio = this._posterCanvasHeight / this._posterCanvasWidth;
+                        width = containerWidth / 3;
+                        height = width * ratio;
+                    }
+                    else {
+                        ratio = this._posterCanvasWidth / this._posterCanvasHeight;
+                        height = containerHeight / 3;
+                        width = height * ratio;
+                    }
                     return {
                         'top': 0,
-                        'left': (width / 3) * 2,
-                        'width': width / 3,
-                        'height': height / 3
+                        'left': containerWidth - width,
+                        'width': width,
+                        'height': height
                     };
                 }
             }
@@ -451,9 +493,11 @@ var IIIFComponents;
         var Events = /** @class */ (function () {
             function Events() {
             }
-            Events.CANVASREADY = 'canvasready';
+            Events.MEDIA_READY = 'mediaready';
             Events.LOG = 'log';
             Events.RANGE_CHANGED = 'rangechanged';
+            Events.WAVEFORM_READY = 'waveformready';
+            Events.WAVEFORMS_READY = 'waveformsready';
             return Events;
         }());
         AVComponent.Events = Events;
@@ -502,7 +546,8 @@ var IIIFComponents;
             this._$volumeSlider = $('<div class="volume-slider"></div>');
             this._$element.append(this._$volumeMute, this._$volumeSlider);
             var that = this;
-            this._$volumeMute.on('click', function () {
+            this._$volumeMute.on('touchstart click', function (e) {
+                e.preventDefault();
                 // start reducer
                 if (_this._data.volume !== 0) {
                     // mute
@@ -612,11 +657,12 @@ var IIIFComponents;
             _this._readyMediaCount = 0;
             _this._stallRequestedBy = []; //todo: type
             _this._wasPlaying = false;
-            _this._waveforms = [];
+            //private _waveformNeedsRedraw: boolean = true;
             _this.ranges = [];
+            _this.waveforms = [];
             _this._scaleY = function (amplitude, height) {
                 var range = 256;
-                return Math.max(_this.options.data.waveformBarWidth, (amplitude * height / range));
+                return Math.max(_this._data.waveformBarWidth, (amplitude * height / range));
             };
             _this._data = _this.options.data;
             _this.$playerElement = $('<div class="player"></div>');
@@ -711,7 +757,8 @@ var IIIFComponents;
             var that = this;
             var prevClicks = 0;
             var prevTimeout = 0;
-            this._$prevButton.on('click', function () {
+            this._$prevButton.on('touchstart click', function (e) {
+                e.preventDefault();
                 prevClicks++;
                 if (prevClicks === 1) {
                     // single click
@@ -731,7 +778,8 @@ var IIIFComponents;
                     prevTimeout = 0;
                 }
             });
-            this._$playButton.on('click', function () {
+            this._$playButton.on('touchstart click', function (e) {
+                e.preventDefault();
                 if (_this._isPlaying) {
                     _this.pause();
                 }
@@ -739,7 +787,8 @@ var IIIFComponents;
                     _this.play();
                 }
             });
-            this._$nextButton.on('click', function () {
+            this._$nextButton.on('touchstart click', function (e) {
+                e.preventDefault();
                 _this._next();
             });
             this._$canvasTimelineContainer.slider({
@@ -869,7 +918,7 @@ var IIIFComponents;
                 var seeAlso = item.getProperty('seeAlso');
                 if (seeAlso && seeAlso.length) {
                     var dat = seeAlso[0].id;
-                    this._waveforms.push(dat);
+                    this.waveforms.push(dat);
                 }
             }
             this._renderWaveform();
@@ -930,7 +979,9 @@ var IIIFComponents;
                             if (!this._data.range.autoChanged) {
                                 this._setCurrentTime(duration.start);
                             }
-                            this.play();
+                            if (this._data.autoPlay) {
+                                this.play();
+                            }
                             this.fire(IIIFComponents.AVComponent.Events.RANGE_CHANGED, this._data.range.id);
                         }
                     }
@@ -1260,11 +1311,11 @@ var IIIFComponents;
                         //if (!this._data.range) {
                         _this._setCurrentTime(0);
                         //}                        
-                        if (_this.options.data.autoPlay) {
+                        if (_this._data.autoPlay) {
                             _this.play();
                         }
                         _this._updateDurationDisplay();
-                        _this.fire(IIIFComponents.AVComponent.Events.CANVASREADY);
+                        _this.fire(IIIFComponents.AVComponent.Events.MEDIA_READY);
                     }
                 });
                 $mediaElement.attr('preload', 'auto');
@@ -1293,9 +1344,9 @@ var IIIFComponents;
         };
         CanvasInstance.prototype._renderWaveform = function () {
             var _this = this;
-            if (!this._waveforms.length)
+            if (!this.waveforms.length)
                 return;
-            var promises = this._waveforms.map(function (url) {
+            var promises = this.waveforms.map(function (url) {
                 return _this._getWaveformData(url);
             });
             Promise.all(promises).then(function (waveforms) {
@@ -1304,13 +1355,15 @@ var IIIFComponents;
                 _this._$canvasContainer.append(_this._waveformCanvas);
                 _this._waveformCtx = _this._waveformCanvas.getContext('2d');
                 if (_this._waveformCtx) {
-                    _this._waveformCtx.fillStyle = _this.options.data.waveformColor;
+                    _this._waveformCtx.fillStyle = _this._data.waveformColor;
                     _this._compositeWaveform = new IIIFComponents.AVComponentObjects.CompositeWaveform(waveforms);
-                    _this._resize();
+                    //this._resize();
+                    _this.fire(IIIFComponents.AVComponent.Events.WAVEFORM_READY);
                 }
             });
         };
         CanvasInstance.prototype._drawWaveform = function () {
+            //if (!this._waveformCtx || !this._waveformNeedsRedraw) return;
             if (!this._waveformCtx)
                 return;
             var duration;
@@ -1327,12 +1380,12 @@ var IIIFComponents;
             var endpx = end * this._compositeWaveform.pixelsPerSecond;
             var canvasWidth = this._waveformCtx.canvas.width;
             var canvasHeight = this._waveformCtx.canvas.height;
-            var barSpacing = this.options.data.waveformBarSpacing;
-            var barWidth = this.options.data.waveformBarWidth;
+            var barSpacing = this._data.waveformBarSpacing;
+            var barWidth = this._data.waveformBarWidth;
             var increment = Math.floor(((endpx - startpx) / canvasWidth) * barSpacing);
             var sampleSpacing = (canvasWidth / barSpacing);
             this._waveformCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-            this._waveformCtx.fillStyle = this.options.data.waveformColor;
+            this._waveformCtx.fillStyle = this._data.waveformColor;
             for (var x = startpx; x < endpx; x += increment) {
                 var maxMin = this._getWaveformMaxAndMin(this._compositeWaveform, x, sampleSpacing);
                 var height = this._scaleY(maxMin.max - maxMin.min, canvasHeight);
@@ -1415,8 +1468,6 @@ var IIIFComponents;
             this._lowPriorityUpdater();
             this._synchronizeMedia();
         };
-        // todo: can this be part of the _data state?
-        // this._data.rewind = true?
         CanvasInstance.prototype._rewind = function (withoutUpdate) {
             this.pause();
             var duration;
@@ -1436,10 +1487,7 @@ var IIIFComponents;
                     });
                 }
             }
-            this.play();
         };
-        // todo: can this be part of the _data state?
-        // this._data.fastforward = true?
         CanvasInstance.prototype._fastforward = function () {
             var duration;
             if (this._data.range) {
@@ -1695,8 +1743,15 @@ var IIIFComponents;
                     this._$canvasContainer.height(this.$playerElement.parent().height() - $options.height());
                 }
                 if (this._waveformCanvas) {
-                    this._waveformCanvas.width = this._$canvasContainer.width();
-                    this._waveformCanvas.height = this._$canvasContainer.height();
+                    var canvasWidth = this._$canvasContainer.width();
+                    var canvasHeight = this._$canvasContainer.height();
+                    //if (canvasWidth !== this._lastCanvasWidth || canvasHeight !== this._lastCanvasHeight) {
+                    this._waveformCanvas.width = this._lastCanvasWidth = canvasWidth;
+                    this._waveformCanvas.height = this._lastCanvasHeight = canvasHeight;
+                    //     this._waveformNeedsRedraw = true;
+                    // } else {
+                    //     this._waveformNeedsRedraw = false;
+                    // }
                 }
                 this._render();
             }
