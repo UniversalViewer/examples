@@ -22222,10 +22222,10 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             });
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
-            if (index === 5) {
+            if (index === 6) {
                 window.WaveformData = dep;
             }
-            else if (index === 6) {
+            else if (index === 7) {
                 window.Hls = dep; //https://github.com/mrdoob/three.js/issues/9602
             }
         };
