@@ -3564,6 +3564,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
 }
 .iiif-av-component .hover-preview {
+  z-index: 1;
   position: absolute;
   padding-bottom: 7px;
 }
