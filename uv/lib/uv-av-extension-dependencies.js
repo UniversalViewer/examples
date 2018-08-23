@@ -18,16 +18,16 @@ define(function () {
         return isFormatAvailable(formats, 'application/dash+xml');
     }
     return function (formats) {
-        var alwaysRequired = ['iiif-tree-component', 'iiif-av-component', 'iiif-metadata-component', 'jquery-ui.min', 'jquery.ui.touch-punch.min', 'waveform-data'];
+        var alwaysRequired = ['iiif-tree-component', 'iiif-av-component', 'iiif-metadata-component', 'jquery-ui.min', 'jquery.ui.touch-punch.min', 'jquery.binarytransport', 'waveform-data'];
         if (isAdaptiveStreamingAvailable()) {
             if (isMpegDashAvailable(formats) && !isSafari()) {
                 return {
-                    sync: alwaysRequired.push('dash.all.min')
+                    sync: alwaysRequired.concat(['dash.all.min'])
                 };
             }
             else if (isHLSAvailable(formats)) {
                 return {
-                    sync: alwaysRequired.push('hls.min')
+                    sync: alwaysRequired.concat(['hls.min'])
                 };
             }
             else {

@@ -3278,7 +3278,6 @@ input[type=range]:focus::-ms-fill-upper {
   writing-mode: tb-lr;
 }
 .uv .centerPanel .title {
-  height: 38px;
   font-size: 20px;
   color: #ffffff;
   padding: 0 20px 0 20px;
@@ -3291,13 +3290,15 @@ input[type=range]:focus::-ms-fill-upper {
   background: rgba(52, 52, 52, 0.7);
   position: absolute;
   width: 190px;
-  margin: 10px 0 20px 15px;
+  margin: 10px 5px 20px 15px;
   font-size: 11px;
 }
 .uv .centerPanel .content .attribution .header {
   overflow: hidden;
 }
 .uv .centerPanel .content .attribution .header .title {
+  width: 162px;
+  min-height: 38px;
   font-size: 11px;
   font-weight: bold;
   line-height: 18px;
@@ -3620,7 +3621,7 @@ input[type=range]:focus::-ms-fill-upper {
   background: #333;
 }
 .iiif-av-component .canvas-timeline-container .ui-slider-range {
-  background: rgba(66, 66, 66, 0.5);
+  background: rgba(248, 196, 196, 0.5);
   box-sizing: border-box;
   border-radius: 0;
   cursor: pointer;
@@ -3640,7 +3641,7 @@ input[type=range]:focus::-ms-fill-upper {
   outline-width: 0;
 }
 .iiif-av-component .range-timeline-container .ui-slider-range {
-  background: rgba(66, 66, 66, 0.5);
+  background: rgba(248, 196, 196, 0.5);
   box-sizing: border-box;
   border-radius: 0;
   cursor: pointer;
@@ -3713,7 +3714,7 @@ input[type=range]:focus::-ms-fill-upper {
   outline: none;
 }
 .iiif-av-component .controls-container .volume .volume-slider .ui-slider-range {
-  background: rgba(66, 66, 66, 0.5);
+  background: rgba(248, 196, 196, 0.5);
   box-sizing: border-box;
   border-radius: 0;
   cursor: pointer;
@@ -4259,7 +4260,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .mobileFooterPanel {
   float: right;
-  width: 140px;
+  width: 90px;
   margin-top: -38px;
   height: 5px;
 }
