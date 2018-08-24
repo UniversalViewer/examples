@@ -3515,7 +3515,10 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .iiif-av-component .poster-container .poster-image {
   position: absolute;
-  background-size: cover;
+  background-color: #000;
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
   cursor: pointer;
 }
 .iiif-av-component .poster-container .poster-image .btn {
@@ -3565,6 +3568,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .iiif-av-component .hover-preview {
   position: absolute;
+  z-index: 1;
   padding-bottom: 7px;
 }
 .iiif-av-component .hover-preview .label {
@@ -3621,7 +3625,7 @@ input[type=range]:focus::-ms-fill-upper {
   background: #333;
 }
 .iiif-av-component .canvas-timeline-container .ui-slider-range {
-  background: rgba(248, 196, 196, 0.5);
+  background: rgba(66, 66, 66, 0.5);
   box-sizing: border-box;
   border-radius: 0;
   cursor: pointer;
@@ -3641,7 +3645,7 @@ input[type=range]:focus::-ms-fill-upper {
   outline-width: 0;
 }
 .iiif-av-component .range-timeline-container .ui-slider-range {
-  background: rgba(248, 196, 196, 0.5);
+  background: rgba(66, 66, 66, 0.5);
   box-sizing: border-box;
   border-radius: 0;
   cursor: pointer;
@@ -3714,7 +3718,7 @@ input[type=range]:focus::-ms-fill-upper {
   outline: none;
 }
 .iiif-av-component .controls-container .volume .volume-slider .ui-slider-range {
-  background: rgba(248, 196, 196, 0.5);
+  background: rgba(66, 66, 66, 0.5);
   box-sizing: border-box;
   border-radius: 0;
   cursor: pointer;
