@@ -28338,7 +28338,6 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.$viewport = $('<div class="virtex"></div>');
             this.$content.prepend(this.$viewport);
             this.title = this.extension.helper.getLabel();
-            this.updateRequiredStatement();
             this.$zoomInButton.on('click', function (e) {
                 e.preventDefault();
                 if (_this.viewport) {
@@ -28360,6 +28359,9 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             if (!this._isVREnabled()) {
                 this.$vrButton.hide();
             }
+            this.whenResized(function () {
+                _this.updateRequiredStatement();
+            });
         };
         VirtexCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
