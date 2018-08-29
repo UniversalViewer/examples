@@ -2131,7 +2131,7 @@ input[type=range]:focus::-ms-fill-upper {
   float: left;
   padding: 8px 0px 0 10px;
   color: rgba(255, 255, 255, 0.5);
-  min-width: 140px;
+  min-width: 150px;
   font-size: 14px;
 }
 .iiif-av-component .controls-container .time-display .canvas-time {
