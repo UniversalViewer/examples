@@ -3803,6 +3803,9 @@ var Manifesto;
         ServiceProfile.prototype.auth1Logout = function () {
             return new ServiceProfile(ServiceProfile.AUTH1LOGOUT.toString());
         };
+        ServiceProfile.prototype.auth1Probe = function () {
+            return new ServiceProfile(ServiceProfile.AUTH1PROBE.toString());
+        };
         ServiceProfile.prototype.auth1Token = function () {
             return new ServiceProfile(ServiceProfile.AUTH1TOKEN.toString());
         };
@@ -3917,6 +3920,7 @@ var Manifesto;
         ServiceProfile.AUTH1KIOSK = new ServiceProfile("http://iiif.io/api/auth/1/kiosk");
         ServiceProfile.AUTH1LOGIN = new ServiceProfile("http://iiif.io/api/auth/1/login");
         ServiceProfile.AUTH1LOGOUT = new ServiceProfile("http://iiif.io/api/auth/1/logout");
+        ServiceProfile.AUTH1PROBE = new ServiceProfile("http://iiif.io/api/auth/1/probe");
         ServiceProfile.AUTH1TOKEN = new ServiceProfile("http://iiif.io/api/auth/1/token");
         // search api
         ServiceProfile.AUTOCOMPLETE = new ServiceProfile("http://iiif.io/api/search/0/autocomplete");
@@ -14982,10 +14986,12 @@ var Manifold;
             this.authHoldingPage = null;
             this.clickThroughService = null;
             this.externalService = null;
+            this.isProbed = false;
             this.isResponseHandled = false;
             this.kioskService = null;
             this.loginService = null;
             this.logoutService = null;
+            this.probeService = null;
             this.restrictedService = null;
             this.tokenService = null;
             canvas.externalResource = this;
@@ -15074,6 +15080,17 @@ var Manifold;
                 }
             }
             else {
+                // if the resource is a canvas, not an info.json, look for auth services on its content.
+                if (resource.isCanvas !== undefined && resource.isCanvas()) {
+                    var content = resource.getContent();
+                    if (content && content.length) {
+                        var body = content[0].getBody();
+                        if (body && body.length) {
+                            var annotation = body[0];
+                            resource = annotation;
+                        }
+                    }
+                }
                 this.clickThroughService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Clickthrough().toString());
                 this.loginService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1Login().toString());
                 this.externalService = manifesto.Utils.getService(resource, manifesto.ServiceProfile.auth1External().toString());
@@ -15081,18 +15098,22 @@ var Manifold;
                 if (this.clickThroughService) {
                     this.logoutService = this.clickThroughService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.clickThroughService.getService(manifesto.ServiceProfile.auth1Token().toString());
+                    this.probeService = this.clickThroughService.getService(manifesto.ServiceProfile.auth1Probe().toString());
                 }
                 else if (this.loginService) {
                     this.logoutService = this.loginService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.loginService.getService(manifesto.ServiceProfile.auth1Token().toString());
+                    this.probeService = this.loginService.getService(manifesto.ServiceProfile.auth1Probe().toString());
                 }
                 else if (this.externalService) {
                     this.logoutService = this.externalService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.externalService.getService(manifesto.ServiceProfile.auth1Token().toString());
+                    this.probeService = this.externalService.getService(manifesto.ServiceProfile.auth1Probe().toString());
                 }
                 else if (this.kioskService) {
                     this.logoutService = this.kioskService.getService(manifesto.ServiceProfile.auth1Logout().toString());
                     this.tokenService = this.kioskService.getService(manifesto.ServiceProfile.auth1Token().toString());
+                    this.probeService = this.kioskService.getService(manifesto.ServiceProfile.auth1Probe().toString());
                 }
             }
         };
@@ -15106,7 +15127,7 @@ var Manifold;
             }
         };
         ExternalResource.prototype.isAccessControlled = function () {
-            if (this.clickThroughService || this.loginService || this.externalService || this.kioskService) {
+            if (this.clickThroughService || this.loginService || this.externalService || this.kioskService || this.probeService) {
                 return true;
             }
             return false;
@@ -15125,68 +15146,92 @@ var Manifold;
                 if (!_this.dataUri) {
                     reject('There is no dataUri to fetch');
                 }
-                // check if dataUri ends with info.json
-                // if not issue a HEAD request.
-                var type = 'GET';
-                if (!that.hasServiceDescriptor()) {
-                    // If access control is unnecessary, short circuit the process.
-                    // Note that isAccessControlled check for short-circuiting only
-                    // works in the "binary resource" context, since in that case,
-                    // we know about access control from the manifest. For image
-                    // resources, we need to check info.json for details and can't
-                    // short-circuit like this.
-                    if (!that.isAccessControlled()) {
-                        that.status = HTTPStatusCode.OK;
-                        resolve(that);
-                        return;
-                    }
-                    type = 'HEAD';
-                }
-                $.ajax({
-                    url: that.dataUri,
-                    type: type,
-                    dataType: 'json',
-                    beforeSend: function (xhr) {
-                        if (accessToken) {
-                            xhr.setRequestHeader("Authorization", "Bearer " + accessToken.accessToken);
-                        }
-                    }
-                }).done(function (data) {
-                    // if it's a resource without an info.json
-                    // todo: if resource doesn't have a @profile
-                    if (!data) {
-                        that.status = HTTPStatusCode.OK;
-                        resolve(that);
-                    }
-                    else {
-                        var uri = unescape(data['@id']);
-                        that.data = data;
-                        that._parseAuthServices(that.data);
-                        // remove trailing /info.json
-                        if (uri.endsWith('/info.json')) {
-                            uri = uri.substr(0, uri.lastIndexOf('/'));
-                        }
-                        var dataUri = that.dataUri;
-                        if (dataUri && dataUri.endsWith('/info.json')) {
-                            dataUri = dataUri.substr(0, dataUri.lastIndexOf('/'));
-                        }
-                        // if the request was redirected to a degraded version and there's a login service to get the full quality version
-                        if (uri !== dataUri && that.loginService) {
+                // if the resource has a probe service, use that to get http status code
+                if (that.probeService && !that.isProbed) {
+                    that.isProbed = true;
+                    $.ajax({
+                        url: that.probeService.id,
+                        type: 'GET',
+                        dataType: 'json'
+                    }).done(function (data) {
+                        var contentLocation = unescape(data.contentLocation);
+                        if (contentLocation !== that.dataUri) {
                             that.status = HTTPStatusCode.MOVED_TEMPORARILY;
                         }
                         else {
                             that.status = HTTPStatusCode.OK;
                         }
                         resolve(that);
+                    }).fail(function (error) {
+                        that.status = error.status;
+                        that.error = error;
+                        resolve(that);
+                    });
+                }
+                else {
+                    // check if dataUri ends with info.json
+                    // if not issue a HEAD request.
+                    var type = 'GET';
+                    if (!that.hasServiceDescriptor()) {
+                        // If access control is unnecessary, short circuit the process.
+                        // Note that isAccessControlled check for short-circuiting only
+                        // works in the "binary resource" context, since in that case,
+                        // we know about access control from the manifest. For image
+                        // resources, we need to check info.json for details and can't
+                        // short-circuit like this.
+                        if (!that.isAccessControlled()) {
+                            that.status = HTTPStatusCode.OK;
+                            resolve(that);
+                            return;
+                        }
+                        type = 'HEAD';
                     }
-                }).fail(function (error) {
-                    that.status = error.status;
-                    that.error = error;
-                    if (error.responseJSON) {
-                        that._parseAuthServices(error.responseJSON);
-                    }
-                    resolve(that);
-                });
+                    $.ajax({
+                        url: that.dataUri,
+                        type: type,
+                        dataType: 'json',
+                        beforeSend: function (xhr) {
+                            if (accessToken) {
+                                xhr.setRequestHeader("Authorization", "Bearer " + accessToken.accessToken);
+                            }
+                        }
+                    }).done(function (data) {
+                        // if it's a resource without an info.json
+                        // todo: if resource doesn't have a @profile
+                        if (!data) {
+                            that.status = HTTPStatusCode.OK;
+                            resolve(that);
+                        }
+                        else {
+                            var uri = unescape(data['@id']);
+                            that.data = data;
+                            that._parseAuthServices(that.data);
+                            // remove trailing /info.json
+                            if (uri.endsWith('/info.json')) {
+                                uri = uri.substr(0, uri.lastIndexOf('/'));
+                            }
+                            var dataUri = that.dataUri;
+                            if (dataUri && dataUri.endsWith('/info.json')) {
+                                dataUri = dataUri.substr(0, dataUri.lastIndexOf('/'));
+                            }
+                            // if the request was redirected to a degraded version and there's a login service to get the full quality version
+                            if (uri !== dataUri && that.loginService) {
+                                that.status = HTTPStatusCode.MOVED_TEMPORARILY;
+                            }
+                            else {
+                                that.status = HTTPStatusCode.OK;
+                            }
+                            resolve(that);
+                        }
+                    }).fail(function (error) {
+                        that.status = error.status;
+                        that.error = error;
+                        if (error.responseJSON) {
+                            that._parseAuthServices(error.responseJSON);
+                        }
+                        resolve(that);
+                    });
+                }
             });
         };
         return ExternalResource;
@@ -17608,8 +17653,9 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         __extends(AVCenterPanel, _super);
         function AVCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
+            _this.avcomponent = null;
             _this._mediaReady = false;
-            _this._resourceOpened = false;
+            //private _resourceOpened: boolean = false;
             _this._isThumbsViewOpen = false;
             _this.attributionPosition = Position_1.Position.BOTTOM_RIGHT;
             return _this;
@@ -17620,10 +17666,10 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             _super.prototype.create.call(this);
             var that = this;
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
-                if (!_this._resourceOpened) {
-                    that.openMedia(resources);
-                    _this._resourceOpened = true;
-                }
+                //if (!this._resourceOpened) {
+                that.openMedia(resources);
+                //this._resourceOpened = true;
+                //}
             });
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this._whenMediaReady(function () {
@@ -17641,10 +17687,12 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             });
             $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this._whenMediaReady(function () {
-                    _this.avcomponent.set({
-                        limitToRange: _this._limitToRange(),
-                        constrainNavigationToRange: _this._limitToRange()
-                    });
+                    if (_this.avcomponent) {
+                        _this.avcomponent.set({
+                            limitToRange: _this._limitToRange(),
+                            constrainNavigationToRange: _this._limitToRange()
+                        });
+                    }
                 });
             });
             $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
@@ -17653,23 +17701,32 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
                 _this._isThumbsViewOpen = true;
                 _this._whenMediaReady(function () {
-                    _this.avcomponent.set({
-                        virtualCanvasEnabled: false
-                    });
-                    var canvas = _this.extension.helper.getCurrentCanvas();
-                    if (canvas) {
-                        _this._viewCanvas(_this.extension.helper.canvasIndex);
+                    if (_this.avcomponent) {
+                        _this.avcomponent.set({
+                            virtualCanvasEnabled: false
+                        });
+                        var canvas = _this.extension.helper.getCurrentCanvas();
+                        if (canvas) {
+                            _this._viewCanvas(_this.extension.helper.canvasIndex);
+                        }
                     }
                 });
             });
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
                 _this._isThumbsViewOpen = false;
                 _this._whenMediaReady(function () {
-                    _this.avcomponent.set({
-                        virtualCanvasEnabled: true
-                    });
+                    if (_this.avcomponent) {
+                        _this.avcomponent.set({
+                            virtualCanvasEnabled: true
+                        });
+                    }
                 });
             });
+        };
+        AVCenterPanel.prototype._createAVComponent = function () {
+            var _this = this;
+            this.$content.empty();
+            this.avcomponent = null;
             this.$avcomponent = $('<div class="iiif-av-component"></div>');
             this.$content.prepend(this.$avcomponent);
             this.avcomponent = new IIIFComponents.AVComponent({
@@ -17740,19 +17797,22 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         };
         AVCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
+            this._createAVComponent();
             this.extension.getExternalResources(resources).then(function () {
-                _this.avcomponent.set({
-                    helper: _this.extension.helper,
-                    autoPlay: _this.config.options.autoPlay,
-                    autoSelectRange: true,
-                    constrainNavigationToRange: _this._limitToRange(),
-                    content: _this.content,
-                    defaultAspectRatio: 0.56,
-                    doubleClickMS: 350,
-                    limitToRange: _this._limitToRange(),
-                    posterImageRatio: _this.config.options.posterImageRatio
-                });
-                _this.resize();
+                if (_this.avcomponent) {
+                    _this.avcomponent.set({
+                        helper: _this.extension.helper,
+                        autoPlay: _this.config.options.autoPlay,
+                        autoSelectRange: true,
+                        constrainNavigationToRange: _this._limitToRange(),
+                        content: _this.content,
+                        defaultAspectRatio: 0.56,
+                        doubleClickMS: 350,
+                        limitToRange: _this._limitToRange(),
+                        posterImageRatio: _this.config.options.posterImageRatio
+                    });
+                    _this.resize();
+                }
             });
         };
         AVCenterPanel.prototype._limitToRange = function () {
@@ -17767,7 +17827,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         AVCenterPanel.prototype._viewRange = function (range) {
             var _this = this;
             this._whenMediaReady(function () {
-                if (range) {
+                if (range && _this.avcomponent) {
                     //setTimeout(() => {
                     //console.log('view ' + range.id);
                     _this.avcomponent.playRange(range.id);
@@ -17782,7 +17842,9 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 return _this._mediaReady;
             }, function () {
                 var canvas = _this.extension.helper.getCanvasByIndex(canvasIndex);
-                _this.avcomponent.showCanvas(canvas.id);
+                if (_this.avcomponent) {
+                    _this.avcomponent.showCanvas(canvas.id);
+                }
             });
         };
         AVCenterPanel.prototype.resize = function (resizeAVComponent) {
@@ -17791,8 +17853,8 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             if (this.title) {
                 this.$title.ellipsisFill(this.title);
             }
-            this.$avcomponent.height(this.$content.height());
-            if (resizeAVComponent) {
+            if (resizeAVComponent && this.avcomponent) {
+                this.$avcomponent.height(this.$content.height());
                 this.avcomponent.resize();
             }
         };
