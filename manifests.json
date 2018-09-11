@@ -831,30 +831,6 @@
           "visible": true
         },
         {
-          "@id": "https://iiifauth.digtest.co.uk/manifest/20_av_big_buck_bunny",
-          "@type": "sc:Manifest",
-          "label": "Not a service - basic AV test with no auth",
-          "visible": true
-        },
-        {
-          "@id": "https://iiifauth.digtest.co.uk/manifest/21_av_lego",
-          "@type": "sc:Manifest",
-          "label": "Not a service - AV test with no explicit probe",
-          "visible": true
-        },
-        {
-          "@id": "https://iiifauth.digtest.co.uk/manifest/22_av_stars",
-          "@type": "sc:Manifest",
-          "label": "Not a service - AV test with separate probe",
-          "visible": true
-        },
-        {
-          "@id": "https://iiifauth.digtest.co.uk/manifest/23_32vs192kbps",
-          "@type": "sc:Manifest",
-          "label": "Degraded flow test for AV - published resource",
-          "visible": true
-        },
-        {
           "@id": "https://edsilv.github.io/test-manifests/auth1-standard.json",
           "@type": "sc:Manifest",
           "label": "Multiple Auth1 Standard",
@@ -999,6 +975,36 @@
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98_hls.json",
           "@type": "sc:Manifest",
           "label": "HLS",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/20_av_big_buck_bunny",
+          "@type": "sc:Manifest",
+          "label": "Not a service - basic AV test with no auth",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/21_av_lego",
+          "@type": "sc:Manifest",
+          "label": "Not a service - AV test with no explicit probe",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/22_av_stars",
+          "@type": "sc:Manifest",
+          "label": "Not a service - AV test with separate probe",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/23_32vs192kbps",
+          "@type": "sc:Manifest",
+          "label": "Degraded flow test for AV - Audio",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/26_bbb",
+          "@type": "sc:Manifest",
+          "label": "Degraded flow test for AV - Video",
           "visible": true
         }
       ]
