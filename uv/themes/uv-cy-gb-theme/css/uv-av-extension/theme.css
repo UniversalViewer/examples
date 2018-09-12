@@ -1949,6 +1949,9 @@ a.ui-button:active,
 .uv .centerPanel .iiif-av-component .controls-container .volume .volume-slider {
   margin-top: 16px;
 }
+.uv.mobile .centerPanel .iiif-av-component .controls-container .volume {
+  display: none;
+}
 .uv .leftPanel .views .thumbsView {
   overflow: auto;
 }
