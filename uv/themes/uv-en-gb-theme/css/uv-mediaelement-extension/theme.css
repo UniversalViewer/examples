@@ -2179,7 +2179,7 @@ input[type=range]:focus::-ms-fill-upper {
   overflow: hidden;
 }
 .uv .centerPanel .content .attribution .header .title {
-  width: 162px;
+  width: 158px;
   min-height: 38px;
   font-size: 11px;
   font-weight: bold;
@@ -3410,12 +3410,12 @@ input[type=range]:focus::-ms-fill-upper {
     margin-top: -38px;
   }
 }
-.uv .mobileFooterPanel .options .btn.fullScreen {
+.uv.fullscreen-supported .mobileFooterPanel .options .btn.fullScreen {
   display: block !important;
   float: left !important;
 }
 @media only screen and (min-width: 0px) and (max-width: 600px) {
-  .uv .mobileFooterPanel .options .btn.fullScreen {
+  .uv.fullscreen-supported .mobileFooterPanel .options .btn.fullScreen {
     display: none !important;
   }
 }
