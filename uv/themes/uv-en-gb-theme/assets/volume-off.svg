@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4021"
+   version="1.1"
+   viewBox="0 0 30 30"
+   height="30"
+   width="30"
+   sodipodi:docname="volume-off.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <sodipodi:namedview
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview14"
+     showgrid="false"
+     inkscape:zoom="28.333333"
+     inkscape:cx="15"
+     inkscape:cy="15"
+     inkscape:window-x="2552"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4021" />
+  <metadata
+     id="metadata4040">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>VolumeMuted</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title4023">VolumeMuted</title>
+  <desc
+     id="desc4025">Created with Sketch.</desc>
+  <defs
+     id="defs4027" />
+  <g
+     transform="matrix(1.0737979,0,0,1.0737979,-2.3752542,4.2542369)"
+     style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1"
+     id="Page-1">
+    <g
+       style="fill:#ffffff"
+       transform="translate(-185,-20)"
+       id="BritishLibraryIcons">
+      <g
+         style="fill:#ffffff"
+         transform="translate(185,20)"
+         id="VolumeMuted">
+        <g
+           style="fill:#ffffff;fill-rule:nonzero"
+           transform="translate(14,4)"
+           id="Group">
+          <rect
+             style="fill:#ffffff"
+             height="15"
+             width="3"
+             y="-1"
+             x="6"
+             transform="rotate(45,7.5,6.5)"
+             id="Rectangle-3" />
+          <rect
+             style="fill:#ffffff"
+             height="15"
+             width="3"
+             y="-1"
+             x="6"
+             transform="rotate(135,7.5,6.5)"
+             id="rect4034" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <g
+     transform="matrix(1.0728067,0,0,1.0728067,-16.098972,-20.20152)"
+     style="opacity:0.98999999;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1"
+     id="Fina-Designs-17th-June-2018">
+    <g
+       style="fill:#ffffff"
+       transform="translate(-505,-560)"
+       id="mainPlayer-desktop-wide-view">
+      <g
+         style="fill:#ffffff"
+         transform="translate(505,560)"
+         id="VolumeControl">
+        <g
+           style="fill:#ffffff"
+           id="button/volume">
+          <path
+             style="fill:#ffffff"
+             id="Page-1-3"
+             d="m 15.048441,29.614907 v 7.014922 h 4.695172 l 5.868967,5.845768 V 23.769138 l -5.868967,5.845769 z"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

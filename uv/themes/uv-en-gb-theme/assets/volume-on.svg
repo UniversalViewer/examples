@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4185"
+   version="1.1"
+   viewBox="0 0 30 30"
+   height="30"
+   width="30"
+   sodipodi:docname="volume-on.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <sodipodi:namedview
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview12"
+     showgrid="false"
+     inkscape:zoom="22.250293"
+     inkscape:cx="12.18603"
+     inkscape:cy="14.708613"
+     inkscape:window-x="2552"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4185" />
+  <metadata
+     id="metadata4200">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>button__volume</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title4187">button__volume</title>
+  <desc
+     id="desc4189">Created with Sketch.</desc>
+  <defs
+     id="defs4191" />
+  <g
+     transform="matrix(1.0728067,0,0,1.0728067,-0.08697375,4.0898867)"
+     style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1"
+     id="Fina-Designs-17th-June-2018">
+    <g
+       style="fill:#ffffff"
+       transform="translate(-505,-560)"
+       id="mainPlayer-desktop-wide-view">
+      <g
+         style="fill:#ffffff"
+         transform="translate(505,560)"
+         id="VolumeControl">
+        <g
+           style="fill:#ffffff"
+           id="button/volume">
+          <path
+             style="fill:#ffffff"
+             id="Page-1"
+             d="M 13.030217,0.23698332 V 2.6454399 c 3.392262,1.0054722 5.868966,4.138804 5.868966,7.8450211 0,3.706217 -2.476704,6.839549 -5.868966,7.845021 v 2.408457 c 4.706911,-1.06393 8.216552,-5.2495 8.216552,-10.253478 0,-5.0039776 -3.509641,-9.1895478 -8.216552,-10.25347768 z M 15.9647,10.490461 c 0,-2.0694019 -1.197269,-3.8465155 -2.934483,-4.7116892 V 15.190459 C 14.767431,14.336977 15.9647,12.559863 15.9647,10.490461 Z M 0.11849166,6.9830001 V 13.997922 H 4.8136644 L 10.682631,19.84369 V 1.1372317 L 4.8136644,6.9830001 Z"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

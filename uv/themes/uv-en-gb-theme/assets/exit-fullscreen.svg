@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg3798"
+   version="1.1"
+   viewBox="0 0 30 30"
+   height="30"
+   width="30">
+  <metadata
+     id="metadata3814">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>DecreasePlayer</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title3800">DecreasePlayer</title>
+  <desc
+     id="desc3802">Created with Sketch.</desc>
+  <defs
+     id="defs3804" />
+  <g
+     transform="translate(4,4)"
+     style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1"
+     id="Page-1">
+    <g
+       style="fill:#ffffff"
+       transform="translate(-275,-20)"
+       id="BritishLibraryIcons">
+      <g
+         style="fill:#ffffff"
+         transform="translate(275,20)"
+         id="DecreasePlayer">
+        <polygon
+           style="fill:#ffffff"
+           points="22,2.3665827e-030 13.908889,2.3665827e-030 13.908889,2 18,2 5.8177778,14.458889 7.5411111,16.182222 20,4 20,8.5555556 22,8.5555556 "
+           transform="matrix(-1,0,0,-1,27.817778,16.182222)"
+           id="Path" />
+        <path
+           style="fill:#ffffff"
+           id="path3810"
+           d="M 20,20 2,20 2,2 14,2 14,0 C 4.6666667,0 0,0 0,0 c 0,15 0,22.333333 0,22 14.666667,0 22,0 22,0 L 22,8 20,8.0054348 20,20 Z" />
+      </g>
+    </g>
+  </g>
+</svg>

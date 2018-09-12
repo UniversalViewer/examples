@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg4050"
+   version="1.1"
+   viewBox="0 0 30 30"
+   height="30"
+   width="30">
+  <metadata
+     id="metadata4065">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>button__download</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title4052">button__download</title>
+  <desc
+     id="desc4054">Created with Sketch.</desc>
+  <defs
+     id="defs4056" />
+  <g
+     transform="matrix(0.95652174,0,0,0.95652174,4.4785,4)"
+     style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1"
+     id="Fina-Designs-17th-June-2018">
+    <g
+       style="fill:#ffffff"
+       transform="translate(-1038,-559)"
+       id="mainPlayer-desktop-wide-view">
+      <g
+         style="fill:#ffffff"
+         transform="translate(1038,559)"
+         id="button/download">
+        <g
+           style="fill:#ffffff"
+           id="icon/download">
+          <path
+             style="fill:#ffffff"
+             id="Page-1"
+             d="m 8,0 0,8 -5,0 8,9 8,-9 -5,0 0,-8 -6,0 z m -8,23 22,0 0,-2 -22,0 0,2 z m 0,-6 2,0 0,4 -2,0 0,-4 z m 20,0 2,0 0,4 -2,0 0,-4 z" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

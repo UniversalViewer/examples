@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>ExpandPlayer</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="BritishLibraryIcons" transform="translate(-233.000000, -20.000000)" fill="#FFFFFF">
+            <g id="ExpandPlayer" transform="translate(233.000000, 20.000000)">
+                <polygon id="Path" points="13.9088889 2.36658272e-30 13.9088889 2 18 2 5.81777778 14.4588889 7.54111111 16.1822222 20 4 20 8.55555556 22 8.55555556 22 2.36658272e-30"></polygon>
+                <path d="M20,20 L2,20 L2,2 L11,2 L11,1.06529934e-14 C3.66666667,3.55099781e-15 0,0 0,0 C0,15 0,22.3333333 0,22 C14.6666667,22 22,22 22,22 L22,11 L20,11.0054348 L20,20 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>
