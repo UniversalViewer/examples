@@ -867,9 +867,6 @@
 .uv .leftPanel .views .thumbsView .thumbs.right-to-left .thumb {
   float: right;
 }
-.uv .leftPanel .views .thumbsView .thumbs.right-to-left .thumb.first {
-  float: left;
-}
 .uv .leftPanel .top .title {
   text-transform: uppercase;
 }
