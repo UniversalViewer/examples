@@ -2095,7 +2095,7 @@ input[type=range]:focus::-ms-fill-upper {
   border: none;
   border-radius: 8px;
   background-color: #14a4c3;
-  z-index: 1;
+  z-index: 2;
   cursor: pointer;
 }
 .iiif-av-component .canvas-timeline-container .ui-slider-handle:focus {
@@ -2115,7 +2115,7 @@ input[type=range]:focus::-ms-fill-upper {
   border: none;
   border-radius: 8px;
   background-color: #14a4c3;
-  z-index: 1;
+  z-index: 2;
   cursor: pointer;
 }
 .iiif-av-component .range-timeline-container .ui-slider-handle:focus {
