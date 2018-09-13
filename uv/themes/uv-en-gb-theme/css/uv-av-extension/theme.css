@@ -1949,6 +1949,9 @@ a.ui-button:active,
 .uv .centerPanel .iiif-av-component .controls-container .volume .volume-slider {
   margin-top: 16px;
 }
+.uv.mobile .centerPanel .iiif-av-component .controls-container .volume {
+  display: none;
+}
 .uv .leftPanel .views .thumbsView {
   overflow: auto;
 }
@@ -2081,9 +2084,6 @@ a.ui-button:active,
 }
 .uv .leftPanel .views .thumbsView .thumbs.right-to-left .thumb {
   float: right;
-}
-.uv .leftPanel .views .thumbsView .thumbs.right-to-left .thumb.first {
-  float: left;
 }
 .uv .leftPanel .top .title {
   text-transform: uppercase;
@@ -3297,7 +3297,7 @@ input[type=range]:focus::-ms-fill-upper {
   overflow: hidden;
 }
 .uv .centerPanel .content .attribution .header .title {
-  width: 162px;
+  width: 158px;
   min-height: 38px;
   font-size: 11px;
   font-weight: bold;
