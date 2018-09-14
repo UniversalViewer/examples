@@ -17653,9 +17653,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         __extends(AVCenterPanel, _super);
         function AVCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
-            _this.avcomponent = null;
             _this._mediaReady = false;
-            //private _resourceOpened: boolean = false;
             _this._isThumbsViewOpen = false;
             _this.attributionPosition = Position_1.Position.BOTTOM_RIGHT;
             return _this;
@@ -17666,10 +17664,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             _super.prototype.create.call(this);
             var that = this;
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
-                //if (!this._resourceOpened) {
                 that.openMedia(resources);
-                //this._resourceOpened = true;
-                //}
             });
             $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this._whenMediaReady(function () {
@@ -17722,11 +17717,10 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     }
                 });
             });
+            this._createAVComponent();
         };
         AVCenterPanel.prototype._createAVComponent = function () {
             var _this = this;
-            this.$content.empty();
-            this.avcomponent = null;
             this.$avcomponent = $('<div class="iiif-av-component"></div>');
             this.$content.prepend(this.$avcomponent);
             this.avcomponent = new IIIFComponents.AVComponent({
@@ -17797,7 +17791,6 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
         };
         AVCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
-            this._createAVComponent();
             this.extension.getExternalResources(resources).then(function () {
                 if (_this.avcomponent) {
                     _this.avcomponent.set({
