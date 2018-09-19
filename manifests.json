@@ -871,6 +871,12 @@
       "visible": true,
       "manifests": [
         {
+          "@id": "https://iiif-video-nav-demo.netlify.com/",
+          "@type": "sc:Manifest",
+          "label": "Story Session 1 - Dad & Mom - Learning to Ski & A Night in Kentucky",
+          "visible": true
+        },
+        {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/01_gapless_audio.json",
           "@type": "sc:Manifest",
           "label": "Gapless audio playback",
@@ -1000,6 +1006,12 @@
           "@id": "https://iiifauth.digtest.co.uk/manifest/26_bbb",
           "@type": "sc:Manifest",
           "label": "Degraded flow test for AV - Video",
+          "visible": true
+        },
+        {
+          "@id": "https://iiifauth.digtest.co.uk/manifest/31_adaptive_audio",
+          "@type": "sc:Manifest",
+          "label": "Adaptive audio auth",
           "visible": true
         }
       ]
