@@ -871,7 +871,7 @@
       "visible": true,
       "manifests": [
         {
-          "@id": "https://iiif-video-nav-demo.netlify.com/",
+          "@id": "https://iiif-video-nav-demo.netlify.com/iiif-manifest.json",
           "@type": "sc:Manifest",
           "label": "Story Session 1 - Dad & Mom - Learning to Ski & A Night in Kentucky",
           "visible": true
