@@ -876,6 +876,12 @@
       "visible": true,
       "manifests": [
         {
+          "@id": "https://iiif-video-nav-demo.netlify.com/",
+          "@type": "sc:Manifest",
+          "label": "Story Session 1 - Dad & Mom - Learning to Ski & A Night in Kentucky",
+          "visible": true
+        },
+        {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/01_gapless_audio.json",
           "@type": "sc:Manifest",
           "label": "Gapless audio playback",
