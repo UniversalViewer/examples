@@ -153,6 +153,21 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "V&A",
+      "visible": true,
+      "manifests": [
+        {
+          "@id": "https://iiif.vam.ac.uk/collections/MSL:1876:Forster:141:I/manifest.json",
+          "@type": "sc:Manifest",
+          "label": "Codex Forster I",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "Internet Archive",
       "visible": true,
       "manifests": [
