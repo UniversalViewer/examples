@@ -715,6 +715,12 @@
       "visible": true,
       "manifests": [
         {
+          "@id": "https://edsilv.github.io/code-of-ethics-zine/collection/index.json",
+          "@type": "sc:Manifest",
+          "label": "Zine Code of Ethics",
+          "visible": true
+        },
+        {
           "@id": "https://edsilv.github.io/biiif-workshop/collection/index.json",
           "@type": "sc:Manifest",
           "label": "Cats",
