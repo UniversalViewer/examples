@@ -3365,7 +3365,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .footerPanel .options .btn {
   color: white;
-  font-size: 0;
+  font-size: auto;
 }
 .uv .footerPanel .options .btn.moreInfo {
   display: none;
@@ -3373,6 +3373,9 @@ input[type=range]:focus::-ms-fill-upper {
 .uv .footerPanel .options .btn.fullScreen,
 .uv .footerPanel .options .btn.exitFullscreen {
   float: right;
+}
+.uv .footerPanel .options.minimiseButtons .btn {
+  font-size: 0;
 }
 .uv.lightbox .footerPanel .options a.imageBtn.normal {
   background: url('../../../modules/uv-shared-module/img/close_lightbox.png');
