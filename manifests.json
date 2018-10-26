@@ -1060,6 +1060,12 @@
       "visible": true,
       "manifests": [
         {
+          "@id": "http://174.138.105.19:3000/5fe9b8d2ce257bccf05211597350d2459d7cf76701264cca70f3ffbec7bf605f/index.json",
+          "@type": "sc:Manifest",
+          "label": "Code of Ethics Zine",
+          "visible": true
+        },        
+        {
           "@id": "dat://f370c50889fe51511e8dcec10537c94c02360a4c4351c5af1e353c696a255204/collection/woody/index.json",
           "@type": "sc:Manifest",
           "label": "Fisherman",
