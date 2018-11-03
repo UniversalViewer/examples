@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple UVs</title>
+	<link rel="stylesheet" type="text/css" href="uv/uv.css">
+    <script src="uv/lib/offline.js"></script>
+    <script src="uv/helpers.js"></script>
+    <style>
+        #uv1, #uv2 {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="uv1" class="uv"></div>
+    
+    <div id="uv2" class="uv"></div>
+
+    <script type="text/javascript">
+
+		window.addEventListener('uvLoaded', function (e) {
+
+            var urlDataProvider = new UV.URLDataProvider();
+
+			var data = {
+                root: './uv',
+                iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest',
+				collectionIndex: 0,
+				manifestIndex: 0,
+				sequenceIndex: 0,
+				canvasIndex: 0,
+				locales: [
+					{
+						name: 'en-GB'
+					}
+				]
+			};
+
+			var uv1 = createUV('#uv1', data, urlDataProvider);
+			var uv2 = createUV('#uv2', data, urlDataProvider);
+
+		}, false);
+
+
+	</script>
+	
+	<script src="uv/uv.js"></script>
+
+</body>
+
+</html>
