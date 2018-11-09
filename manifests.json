@@ -892,6 +892,12 @@
       "visible": true,
       "manifests": [
         {
+          "@id": "https://edsilv.github.io/biiif-test-manifests/sound-manifest/index.json",
+          "@type": "sc:Manifest",
+          "label": "Somali Love Song (mp3)",
+          "visible": true
+        },
+        {
           "@id": "https://iiif-video-nav-demo.netlify.com/iiif-manifest.json",
           "@type": "sc:Manifest",
           "label": "Story Session 1 - Dad & Mom - Learning to Ski & A Night in Kentucky",
