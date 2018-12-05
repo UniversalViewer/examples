@@ -18,7 +18,6 @@
     "jquery-plugins": "edsilv/jquery-plugins#~0.0.11",
     "foundation": "~5.5.0",
     "fontawesome": "~4.2.0",
-    "jmespath.js": "git@github.com:edsilv/jmespath.js.git#~0.12.7",
     "utils": "edsilv/utils#~0.0.38"
   },
   "devDependencies": {},
