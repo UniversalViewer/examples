@@ -1,4 +1,4 @@
-// virtex v0.3.17 https://github.com/edsilv/virtex#readme
+// virtex v0.3.18 https://github.com/edsilv/virtex#readme
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.virtex = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 var Virtex;
@@ -296,12 +296,15 @@ var Virtex;
             this._viewport.classList.add('viewport');
             this._loading = document.createElement('div');
             this._loading.classList.add('loading');
+            this._loadingBar = document.createElement('div');
+            this._loadingBar.classList.add('loadingBar');
+            this._loadingBarProgress = document.createElement('div');
+            this._loadingBarProgress.classList.add('loadingBarProgress');
             this._spinner = document.createElement('div');
             this._spinner.classList.add('spinner');
-            this._loadingBar = document.createElement('div');
-            this._loadingBar.classList.add('bar');
-            this._loading.style.visibility = "hidden";
-            this._spinner.style.visibility = "hidden";
+            this._loadingBar.style.display = 'none';
+            this._loadingBarProgress.style.display = 'none';
+            this._spinner.style.display = 'none';
             this._element.appendChild(this._viewport);
             this._raycaster = new THREE.Raycaster();
             this.scene = new THREE.Scene();
@@ -315,6 +318,7 @@ var Virtex;
             this._animate();
             this._viewport.appendChild(this._loading);
             this._loading.appendChild(this._loadingBar);
+            this._loading.appendChild(this._loadingBarProgress);
             this._loading.appendChild(this._spinner);
             this._loading.classList.add('beforeload');
             this._loadObject(this.options.data.file);
@@ -555,18 +559,38 @@ var Virtex;
                     // e.lengthComputable is false when content is gzipped.
                     // https://stackoverflow.com/questions/11127654/why-is-progressevent-lengthcomputable-false/11848934?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
                     if (e.lengthComputable) {
-                        _this._loading.style.visibility = "visible";
+                        _this._loadingBarVisible(true);
+                        _this._spinnerVisible(false);
                         _this._loadProgress(e.loaded / e.total);
                     }
                     else {
                         // show a spinner
-                        _this._spinner.style.visibility = "visible";
+                        _this._loadingBarVisible(false);
+                        _this._spinnerVisible(true);
                     }
                 }, function (e) {
                     // error
                     console.error(e);
                 });
             });
+        };
+        Viewport.prototype._loadingBarVisible = function (visible) {
+            if (visible) {
+                this._loadingBar.style.display = 'block';
+                this._loadingBarProgress.style.display = 'block';
+            }
+            else {
+                this._loadingBar.style.display = 'none';
+                this._loadingBarProgress.style.display = 'none';
+            }
+        };
+        Viewport.prototype._spinnerVisible = function (visible) {
+            if (visible) {
+                this._spinner.style.display = 'block';
+            }
+            else {
+                this._spinner.style.display = 'none';
+            }
         };
         Viewport.prototype._loaded = function (obj) {
             // const boundingBox = new THREE.BoxHelper(this.objectGroup, new THREE.Color(0xffffff));
@@ -642,7 +666,7 @@ var Virtex;
         Viewport.prototype._loadProgress = function (progress) {
             var fullWidth = this._loading.offsetWidth;
             var width = Math.floor(fullWidth * progress);
-            this._loadingBar.style.width = String(width) + "px";
+            this._loadingBarProgress.style.width = String(width) + "px";
         };
         Viewport.prototype._onMouseDown = function (event) {
             event.preventDefault();
