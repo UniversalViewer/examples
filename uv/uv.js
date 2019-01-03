@@ -17371,7 +17371,7 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
             this._createAMIComponent();
         };
         AMICenterPanel.prototype._createAMIComponent = function () {
-            this.$amicomponent = $('<my-el name="ed"></my-el>');
+            this.$amicomponent = $('<ami-viewer series="36444280,36444294,36444308,36444322,36444336"></ami-viewer>');
             this.$content.prepend(this.$amicomponent);
         };
         AMICenterPanel.prototype.openMedia = function (resources) {
