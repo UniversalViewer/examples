@@ -17373,7 +17373,7 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
         AMICenterPanel.prototype._createAMIComponent = function () {
             var _this = this;
             this.$guiContainer = $('<div id="my-gui-container"></div>');
-            this.$amicomponent = $('<ami-viewer files="36444280,36444294,36444308,36444322,36444336,36444350,36444364,36444378,36444392,36444406,36444434,36444448,36444462,36444476,36444490,36444504,36444518,36444532,36746856"></ami-viewer>');
+            this.$amicomponent = $('<ami-viewer></ami-viewer>');
             this.$content.prepend(this.$amicomponent);
             this.$content.prepend(this.$guiContainer);
             this.$amicomponent[0].addEventListener('onLoaded', function (e) {
@@ -17430,6 +17430,16 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
         AMICenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
             this.extension.getExternalResources(resources).then(function () {
+                var canvas = _this.extension.helper.getCurrentCanvas();
+                var annotations = canvas.getContent();
+                if (annotations.length) {
+                    var annotation = annotations[0];
+                    var body = annotation.getBody();
+                    if (body.length) {
+                        //const type: Manifesto.ResourceType | null = body[0].getType();
+                        _this.$amicomponent[0].series = body[0].id;
+                    }
+                }
                 _this.resize();
             });
         };
@@ -17437,6 +17447,9 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
             _super.prototype.resize.call(this);
             this.$amicomponent.height(this.$content.height());
             this.$amicomponent.width(this.$content.width());
+            if (this.$amicomponent[0] && this.$amicomponent[0].resize) {
+                this.$amicomponent[0].resize();
+            }
         };
         return AMICenterPanel;
     }(CenterPanel_1.CenterPanel));
@@ -28773,13 +28786,9 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 type: Extension_4.Extension,
                 name: 'uv-mediaelement-extension'
             };
-            // this._extensions[manifesto.ResourceType.physicalobject().toString()] = {
-            //     type: VirtexExtension,
-            //     name: 'uv-virtex-extension'
-            // };
             this._extensions[manifesto.ResourceType.physicalobject().toString()] = {
-                type: Extension_1.Extension,
-                name: 'uv-ami-extension'
+                type: Extension_7.Extension,
+                name: 'uv-virtex-extension'
             };
             this._extensions[manifesto.ResourceType.sound().toString()] = {
                 type: Extension_4.Extension,
@@ -28825,6 +28834,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             this._extensions['audio/mp4'] = {
                 type: Extension_2.Extension,
                 name: 'uv-av-extension'
+            };
+            this._extensions['application/dicom'] = {
+                type: Extension_1.Extension,
+                name: 'uv-ami-extension'
             };
             this._extensions['application/vnd.apple.mpegurl'] = {
                 type: Extension_2.Extension,
