@@ -17373,15 +17373,18 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
         AMICenterPanel.prototype._createAMIComponent = function () {
             var _this = this;
             this.$guiContainer = $('<div id="my-gui-container"></div>');
-            this.$amicomponent = $('<ami-viewer></ami-viewer>');
+            this.$amicomponent = $('<ami-viewer mode="volume"></ami-viewer>');
             this.$content.prepend(this.$amicomponent);
             this.$content.prepend(this.$guiContainer);
-            this.$amicomponent[0].addEventListener('onLoaded', function (e) {
-                var stackhelper = e.detail;
-                _this._createGUI(stackhelper);
+            this.$amicomponent[0].addEventListener('onSlicesLoaded', function (e) {
+                _this._createSlicesGUI(e.detail);
+            });
+            this.$amicomponent[0].addEventListener('onVolumeLoaded', function (e) {
+                _this._createVolumeGUI(e.detail);
             });
         };
-        AMICenterPanel.prototype._createGUI = function (stackHelper) {
+        AMICenterPanel.prototype._createSlicesGUI = function (params) {
+            var stackHelper = params.stackHelper;
             var stack = stackHelper.stack;
             var gui = new dat.GUI({
                 autoPlace: false,
@@ -17426,6 +17429,80 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
             borderFolder.add(stackHelper.border, 'visible');
             borderFolder.addColor(stackHelper.border, 'color');
             borderFolder.open();
+        };
+        AMICenterPanel.prototype._createVolumeGUI = function (params) {
+            var myStack = {
+                algorithm: 'ray marching',
+                lut: 'random',
+                opacity: 'random',
+                steps: 128,
+                alphaCorrection: 0.5,
+                frequence: 0,
+                amplitude: 0,
+                interpolation: 1,
+            };
+            var stackHelper = params.stackHelper;
+            var gui = new dat.GUI({
+                autoPlace: false,
+            });
+            this.$guiContainer.append(gui.domElement);
+            var stackFolder = gui.addFolder('Settings');
+            var algorithmUpdate = stackFolder.add(myStack, 'algorithm', ['ray marching', 'mip']);
+            algorithmUpdate.onChange(function (value) {
+                stackHelper.algorithm = value === 'mip' ? 1 : 0;
+                params.modified = true;
+            });
+            var lutUpdate = stackFolder.add(myStack, 'lut', params.lut.lutsAvailable());
+            lutUpdate.onChange(function (value) {
+                params.lut.lut = value;
+                stackHelper.uniforms.uTextureLUT.value.dispose();
+                stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
+                params.modified = true;
+            });
+            // init LUT
+            params.lut.lut = myStack.lut;
+            stackHelper.uniforms.uTextureLUT.value.dispose();
+            stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
+            var opacityUpdate = stackFolder.add(myStack, 'opacity', params.lut.lutsAvailable('opacity'));
+            opacityUpdate.onChange(function (value) {
+                params.lut.lutO = value;
+                stackHelper.uniforms.uTextureLUT.value.dispose();
+                stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
+                params.modified = true;
+            });
+            var stepsUpdate = stackFolder.add(myStack, 'steps', 0, 512).step(1);
+            stepsUpdate.onChange(function (value) {
+                if (stackHelper.uniforms) {
+                    stackHelper.uniforms.uSteps.value = value;
+                    params.modified = true;
+                }
+            });
+            var alphaCorrrectionUpdate = stackFolder.add(myStack, 'alphaCorrection', 0, 1).step(0.01);
+            alphaCorrrectionUpdate.onChange(function (value) {
+                if (stackHelper.uniforms) {
+                    stackHelper.uniforms.uAlphaCorrection.value = value;
+                    params.modified = true;
+                }
+            });
+            var interpolationUpdate = stackFolder.add(stackHelper, 'interpolation', 0, 1).step(1);
+            interpolationUpdate.onChange(function () {
+                if (stackHelper.uniforms) {
+                    params.modified = true;
+                }
+            });
+            var shadingUpdate = stackFolder.add(stackHelper, 'shading', 0, 1).step(1);
+            shadingUpdate.onChange(function () {
+                if (stackHelper.uniforms) {
+                    params.modified = true;
+                }
+            });
+            var shininessUpdate = stackFolder.add(stackHelper, 'shininess', 0, 20).step(0.1);
+            shininessUpdate.onChange(function () {
+                if (stackHelper.uniforms) {
+                    params.modified = true;
+                }
+            });
+            stackFolder.open();
         };
         AMICenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
@@ -28836,6 +28913,11 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 name: 'uv-av-extension'
             };
             this._extensions['application/dicom'] = {
+                type: Extension_1.Extension,
+                name: 'uv-ami-extension'
+            };
+            // todo: need to create a map
+            this._extensions['application/gzip'] = {
                 type: Extension_1.Extension,
                 name: 'uv-ami-extension'
             };
