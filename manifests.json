@@ -332,6 +332,34 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "AMI",
+      "manifests": [
+        {
+          "@id": "https://ami-test-manifests.netlify.com/collection/nifti/brain/index.json",
+          "@type": "sc:Manifest",
+          "label": "Brain (nifti)"
+        },
+        {
+          "@id": "https://ami-test-manifests.netlify.com/collection/dicom/brain/index.json",
+          "@type": "sc:Manifest",
+          "label": "Brain (dicom)"
+        },
+        {
+          "@id": "https://ami-test-manifests.netlify.com/collection/dicom/platypus/platypus-jpeg2000-16bit-20/index.json",
+          "@type": "sc:Manifest",
+          "label": "Platypus (dicom jpeg2000 16bit)"
+        },
+        {
+          "@id": "https://ami-test-manifests.netlify.com/collection/stl/brain/index.json",
+          "@type": "sc:Manifest",
+          "label": "Brain (stl)"
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "National Library of Wales",
       "manifests": [
         {

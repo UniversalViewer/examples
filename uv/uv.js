@@ -17341,6 +17341,64 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
     exports.CenterPanel = CenterPanel;
 });
 
+define('modules/uv-amicenterpanel-module/Actions',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var TypeKeys;
+    (function (TypeKeys) {
+        TypeKeys["CHANGE_MODE"] = "CHANGE_MODE";
+        TypeKeys["MODEL_LOADED"] = "MODEL_LOADED";
+        TypeKeys["OTHER"] = "OTHER";
+    })(TypeKeys = exports.TypeKeys || (exports.TypeKeys = {}));
+});
+
+define('modules/uv-amicenterpanel-module/Reducer',["require", "exports", "./Actions"], function (require, exports, Actions_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AMIViewerReducer = function (state, action) {
+        switch (action.type) {
+            case Actions_1.TypeKeys.CHANGE_MODE:
+                return {
+                    mode: action.payload,
+                    series: state.series,
+                    modeldata: null
+                };
+            case Actions_1.TypeKeys.MODEL_LOADED:
+                return {
+                    mode: state.mode,
+                    series: state.series,
+                    modeldata: action.payload
+                };
+            default:
+                return state;
+        }
+    };
+});
+
+define('modules/uv-amicenterpanel-module/ActionCreators',["require", "exports", "./Actions"], function (require, exports, Actions_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.changeMode = function (payload) { return ({
+        type: Actions_1.TypeKeys.CHANGE_MODE,
+        payload: payload
+    }); };
+    exports.modelLoaded = function (payload) { return ({
+        type: Actions_1.TypeKeys.MODEL_LOADED,
+        payload: payload
+    }); };
+});
+
+define('modules/uv-amicenterpanel-module/Mode',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Mode;
+    (function (Mode) {
+        Mode["SLICES"] = "slices";
+        Mode["VOLUME"] = "volume";
+        Mode["MESH"] = "mesh";
+    })(Mode = exports.Mode || (exports.Mode = {}));
+});
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -17351,7 +17409,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1) {
+define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position", "./Reducer", "./ActionCreators", "./Mode"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1, Reducer_1, ActionCreators_1, Mode_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AMICenterPanel = /** @class */ (function (_super) {
@@ -17362,147 +17420,88 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
             return _this;
         }
         AMICenterPanel.prototype.create = function () {
-            this.setConfig('amiCenterPanel');
+            var _this = this;
+            this.setConfig("amiCenterPanel");
             _super.prototype.create.call(this);
             var that = this;
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 that.openMedia(resources);
             });
-            this._createAMIComponent();
+            this.amiviewerContainer = document.createElement('div');
+            this.$content[0].appendChild(this.amiviewerContainer);
+            this.guiContainer = document.createElement('div');
+            this.guiContainer.id = 'gui-container';
+            this.guiContainer.innerHTML = "\n          <ion-app>\n            <ion-item id=\"mode\">\n              <ion-label>Mode</ion-label>\n              <ion-select id=\"modeSelect\" value=\"slices\" ok-text=\"OK\" cancel-text=\"Cancel\">\n                <ion-select-option value=\"slices\">Slices</ion-select-option>\n                <ion-select-option value=\"volume\">Volume</ion-select-option>\n              </ion-select>\n            </ion-item>\n            <ion-view id=\"slices\">\n              <ion-content>\n                <ion-item>\n                  <ion-label>Index</ion-label>\n                  <ion-range id=\"slicesIndexRange\" pin=\"true\"></ion-range>\n                </ion-item>\n                <ion-item>\n                  <ion-label>Orientation</ion-label>\n                  <ion-select id=\"slicesOrientationSelect\" value=\"0\" ok-text=\"OK\" cancel-text=\"Cancel\">\n                    <ion-select-option value=\"0\">Coronal (x)</ion-select-option>\n                    <ion-select-option value=\"1\">Saggital (y)</ion-select-option>\n                    <ion-select-option value=\"2\">Axial (z)</ion-select-option>\n                  </ion-select>\n                </ion-item>\n                <ion-item>\n                  <ion-label>Window Width</ion-label>\n                  <ion-range id=\"slicesWindowWidthRange\" pin=\"true\"></ion-range>\n                </ion-item>\n                <ion-item>\n                  <ion-label>Window Center</ion-label>\n                  <ion-range id=\"slicesWindowCenterRange\" pin=\"true\"></ion-range>\n                </ion-item>\n              </ion-content>\n            </ion-view>\n            <ion-view id=\"volume\">\n              <ion-content>\n                <ion-item>\n                  <ion-label>Steps</ion-label>\n                  <ion-range id=\"volumeStepsRange\" pin=\"true\"></ion-range>\n                </ion-item>\n                <ion-item>\n                  <ion-label>LUT</ion-label>\n                  <ion-select id=\"volumeLUTSelect\" value=\"0\" ok-text=\"OK\" cancel-text=\"Cancel\">\n                  </ion-select>\n                </ion-item>\n                <ion-item>\n                  <ion-label>Window Width</ion-label>\n                  <ion-range id=\"volumeWindowWidthRange\" pin=\"true\"></ion-range>\n                </ion-item>\n                <ion-item>\n                  <ion-label>Window Center</ion-label>\n                  <ion-range id=\"volumeWindowCenterRange\" pin=\"true\"></ion-range>\n                </ion-item>\n              </ion-content>\n            </ion-view>\n            <ion-view id=\"mesh\">\n              <ion-content>\n\n              </ion-content>\n            </ion-view>\n          </ion-app>";
+            this.$content[0].appendChild(this.guiContainer);
+            this.slicesGUI = this.guiContainer.querySelector("#slices");
+            this.volumeGUI = this.guiContainer.querySelector("#volume");
+            this.meshGUI = this.guiContainer.querySelector("#mesh");
+            this.mode = this.guiContainer.querySelector("#mode");
+            this.modeSelect = this.guiContainer.querySelector("#modeSelect");
+            this.initialState = {};
+            this.store = Redux.createStore(Reducer_1.AMIViewerReducer, this.initialState);
+            this.store.subscribe(this._render.bind(this));
+            this.modeSelect.addEventListener("ionChange", function (e) {
+                _this.store.dispatch(ActionCreators_1.changeMode(e.detail.value));
+            });
         };
-        AMICenterPanel.prototype._createAMIComponent = function () {
+        AMICenterPanel.prototype._createAMIViewer = function (series, mode) {
             var _this = this;
-            this.$guiContainer = $('<div id="my-gui-container"></div>');
-            this.$amicomponent = $('<ami-viewer mode="volume"></ami-viewer>');
-            this.$content.prepend(this.$amicomponent);
-            this.$content.prepend(this.$guiContainer);
-            this.$amicomponent[0].addEventListener('onSlicesLoaded', function (e) {
-                _this._createSlicesGUI(e.detail);
+            if (this.amiviewer && (this.amiviewer.series === series && this.amiviewer.mode === mode)) {
+                return;
+            }
+            this.amiviewerContainer.innerHTML = '';
+            this.amiviewer = document.createElement('ami-viewer');
+            this.amiviewer.setAttribute('series', series);
+            this.amiviewer.setAttribute('mode', mode);
+            this.amiviewerContainer.appendChild(this.amiviewer);
+            this.amiviewer.addEventListener("onSlicesLoaded", function (e) {
+                _this.store.dispatch(ActionCreators_1.modelLoaded(e.detail));
             });
-            this.$amicomponent[0].addEventListener('onVolumeLoaded', function (e) {
-                _this._createVolumeGUI(e.detail);
+            this.amiviewer.addEventListener("onVolumeLoaded", function (e) {
+                _this.store.dispatch(ActionCreators_1.modelLoaded(e.detail));
+            });
+            this.amiviewer.addEventListener("onMeshLoaded", function (e) {
+                _this.store.dispatch(ActionCreators_1.modelLoaded(e.detail));
             });
         };
-        AMICenterPanel.prototype._createSlicesGUI = function (params) {
-            var stackHelper = params.stackHelper;
-            var stack = stackHelper.stack;
-            var gui = new dat.GUI({
-                autoPlace: false,
-            });
-            this.$guiContainer.append(gui.domElement);
-            // stack
-            var stackFolder = gui.addFolder('Stack');
-            // index range depends on stackHelper orientation.
-            var index = stackFolder
-                .add(stackHelper, 'index', 0, stack.dimensionsIJK.z - 1)
-                .step(1)
-                .listen();
-            var orientation = stackFolder
-                .add(stackHelper, 'orientation', 0, 2)
-                .step(1)
-                .listen();
-            orientation.onChange(function () {
-                index.__max = stackHelper.orientationMaxIndex;
-                stackHelper.index = Math.floor(index.__max / 2);
-            });
-            stackFolder.open();
-            // slice
-            var sliceFolder = gui.addFolder('Slice');
-            sliceFolder
-                .add(stackHelper.slice, 'windowWidth', 1, stack.minMax[1] - stack.minMax[0])
-                .step(1)
-                .listen();
-            sliceFolder
-                .add(stackHelper.slice, 'windowCenter', stack.minMax[0], stack.minMax[1])
-                .step(1)
-                .listen();
-            sliceFolder.add(stackHelper.slice, 'intensityAuto').listen();
-            sliceFolder.add(stackHelper.slice, 'invert');
-            sliceFolder.open();
-            // bbox
-            var bboxFolder = gui.addFolder('Bounding Box');
-            bboxFolder.add(stackHelper.bbox, 'visible');
-            bboxFolder.addColor(stackHelper.bbox, 'color');
-            bboxFolder.open();
-            // border
-            var borderFolder = gui.addFolder('Border');
-            borderFolder.add(stackHelper.border, 'visible');
-            borderFolder.addColor(stackHelper.border, 'color');
-            borderFolder.open();
-        };
-        AMICenterPanel.prototype._createVolumeGUI = function (params) {
-            var myStack = {
-                algorithm: 'ray marching',
-                lut: 'random',
-                opacity: 'random',
-                steps: 128,
-                alphaCorrection: 0.5,
-                frequence: 0,
-                amplitude: 0,
-                interpolation: 1,
-            };
-            var stackHelper = params.stackHelper;
-            var gui = new dat.GUI({
-                autoPlace: false,
-            });
-            this.$guiContainer.append(gui.domElement);
-            var stackFolder = gui.addFolder('Settings');
-            var algorithmUpdate = stackFolder.add(myStack, 'algorithm', ['ray marching', 'mip']);
-            algorithmUpdate.onChange(function (value) {
-                stackHelper.algorithm = value === 'mip' ? 1 : 0;
-                params.modified = true;
-            });
-            var lutUpdate = stackFolder.add(myStack, 'lut', params.lut.lutsAvailable());
-            lutUpdate.onChange(function (value) {
-                params.lut.lut = value;
-                stackHelper.uniforms.uTextureLUT.value.dispose();
-                stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
-                params.modified = true;
-            });
-            // init LUT
-            params.lut.lut = myStack.lut;
-            stackHelper.uniforms.uTextureLUT.value.dispose();
-            stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
-            var opacityUpdate = stackFolder.add(myStack, 'opacity', params.lut.lutsAvailable('opacity'));
-            opacityUpdate.onChange(function (value) {
-                params.lut.lutO = value;
-                stackHelper.uniforms.uTextureLUT.value.dispose();
-                stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
-                params.modified = true;
-            });
-            var stepsUpdate = stackFolder.add(myStack, 'steps', 0, 512).step(1);
-            stepsUpdate.onChange(function (value) {
-                if (stackHelper.uniforms) {
-                    stackHelper.uniforms.uSteps.value = value;
-                    params.modified = true;
+        AMICenterPanel.prototype._render = function () {
+            // hide gui
+            this.slicesGUI.classList.add("hidden");
+            this.volumeGUI.classList.add("hidden");
+            this.meshGUI.classList.add("hidden");
+            this._controlsDisabled(true);
+            var state = this.store.getState();
+            switch (state.mode) {
+                case Mode_1.Mode.SLICES:
+                    this._createAMIViewer(state.series, Mode_1.Mode.SLICES);
+                    break;
+                case Mode_1.Mode.VOLUME:
+                    this._createAMIViewer(state.series, Mode_1.Mode.VOLUME);
+                    break;
+                case Mode_1.Mode.MESH:
+                    this.mode.classList.add("hidden");
+                    this._createAMIViewer(state.series, Mode_1.Mode.MESH);
+                    break;
+            }
+            // if modeldata received, initialise GUI
+            if (state.modeldata) {
+                this._controlsDisabled(false);
+                switch (state.mode) {
+                    case Mode_1.Mode.SLICES:
+                        this.slicesGUI.classList.remove("hidden");
+                        this._initSlicesGUI(state.modeldata);
+                        break;
+                    case Mode_1.Mode.VOLUME:
+                        this.volumeGUI.classList.remove("hidden");
+                        this._initVolumeGUI(state.modeldata);
+                        break;
+                    case Mode_1.Mode.MESH:
+                        this.meshGUI.classList.remove("hidden");
+                        this._initMeshGUI(state.modeldata);
+                        break;
                 }
-            });
-            var alphaCorrrectionUpdate = stackFolder.add(myStack, 'alphaCorrection', 0, 1).step(0.01);
-            alphaCorrrectionUpdate.onChange(function (value) {
-                if (stackHelper.uniforms) {
-                    stackHelper.uniforms.uAlphaCorrection.value = value;
-                    params.modified = true;
-                }
-            });
-            var interpolationUpdate = stackFolder.add(stackHelper, 'interpolation', 0, 1).step(1);
-            interpolationUpdate.onChange(function () {
-                if (stackHelper.uniforms) {
-                    params.modified = true;
-                }
-            });
-            var shadingUpdate = stackFolder.add(stackHelper, 'shading', 0, 1).step(1);
-            shadingUpdate.onChange(function () {
-                if (stackHelper.uniforms) {
-                    params.modified = true;
-                }
-            });
-            var shininessUpdate = stackFolder.add(stackHelper, 'shininess', 0, 20).step(0.1);
-            shininessUpdate.onChange(function () {
-                if (stackHelper.uniforms) {
-                    params.modified = true;
-                }
-            });
-            stackFolder.open();
+            }
         };
         AMICenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
@@ -17514,18 +17513,129 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
                     var body = annotation.getBody();
                     if (body.length) {
                         //const type: Manifesto.ResourceType | null = body[0].getType();
-                        _this.$amicomponent[0].series = body[0].id;
+                        var media = body[0];
+                        _this.initialState.series = media.id;
+                        var format = media.getFormat();
+                        _this.initialState.mode = (format && format.toString() === "model/stl") ? Mode_1.Mode.MESH : Mode_1.Mode.SLICES;
+                        _this._render();
                     }
                 }
                 _this.resize();
             });
         };
+        AMICenterPanel.prototype._initSlicesGUI = function (params) {
+            var stackHelper = params.stackHelper;
+            var stack = stackHelper.stack;
+            // slice index range
+            var slicesIndexRange = document.getElementById('slicesIndexRange');
+            slicesIndexRange.max = stack.dimensionsIJK.z - 1;
+            // slicesIndexRange.querySelector('ion-label[slot="start"]').innerText = 0;
+            // slicesIndexRange.querySelector('ion-label[slot="end"]').innerText = slicesIndexRange.max;
+            slicesIndexRange.value = stackHelper.index;
+            slicesIndexRange.addEventListener('ionChange', function (ev) {
+                var i = ev.detail.value;
+                stackHelper.index = i;
+            });
+            // orientation selectbox
+            var slicesOrientationSelect = document.getElementById('slicesOrientationSelect');
+            slicesOrientationSelect.addEventListener('ionChange', function (ev) {
+                stackHelper.orientation = Number(ev.detail.value);
+                slicesIndexRange.max = stackHelper.orientationMaxIndex;
+                var mid = Math.floor(slicesIndexRange.max / 2);
+                stackHelper.index = mid;
+                slicesIndexRange.value = mid;
+            });
+            // slice window width range
+            var slicesWindowWidthRange = document.getElementById('slicesWindowWidthRange');
+            slicesWindowWidthRange.min = 1;
+            slicesWindowWidthRange.max = stack.minMax[1] - stack.minMax[0];
+            slicesWindowWidthRange.value = slicesWindowWidthRange.max / 2;
+            slicesWindowWidthRange.addEventListener('ionChange', function (ev) {
+                stackHelper.slice.windowWidth = ev.detail.value;
+            });
+            // slice window center range
+            var slicesWindowCenterRange = document.getElementById('slicesWindowCenterRange');
+            slicesWindowCenterRange.min = stack.minMax[0];
+            slicesWindowCenterRange.max = stack.minMax[1];
+            slicesWindowCenterRange.value = slicesWindowCenterRange.max / 2;
+            slicesWindowCenterRange.addEventListener('ionChange', function (ev) {
+                stackHelper.slice.windowCenter = ev.detail.value;
+            });
+        };
+        AMICenterPanel.prototype._initVolumeGUI = function (params) {
+            var stackHelper = params.stackHelper;
+            var stack = stackHelper.stack;
+            // steps range
+            var volumeStepsRange = document.getElementById('volumeStepsRange');
+            volumeStepsRange.max = 512;
+            volumeStepsRange.value = 64; // todo: make configurable?
+            volumeStepsRange.addEventListener('ionChange', function (ev) {
+                if (stackHelper.uniforms) {
+                    stackHelper.uniforms.uSteps.value = ev.detail.value;
+                    params.modifiedCallback();
+                }
+            });
+            // LUT selectbox
+            var volumeLUTSelect = document.getElementById('volumeLUTSelect');
+            volumeLUTSelect.addEventListener('ionChange', function (ev) {
+                var value = ev.detail.value;
+                params.lut.lut = value;
+                stackHelper.uniforms.uTextureLUT.value.dispose();
+                stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
+                params.modifiedCallback();
+            });
+            // add available LUTs to select box
+            var availableLUTs = params.lut.lutsAvailable();
+            for (var i = 0; i < availableLUTs.length; i++) {
+                var lut = availableLUTs[i];
+                var option = document.createElement('ion-select-option');
+                option.value = lut;
+                option.innerText = lut;
+                volumeLUTSelect.appendChild(option);
+            }
+            // init LUT
+            params.lut.lut = 'random';
+            stackHelper.uniforms.uTextureLUT.value.dispose();
+            stackHelper.uniforms.uTextureLUT.value = params.lut.texture;
+            volumeLUTSelect.value = 'random';
+            //volumeLUTSelect.forceUpdate(); // todo: random not appearing as selected
+            // volume window width range
+            var volumeWindowWidthRange = document.getElementById('volumeWindowWidthRange');
+            volumeWindowWidthRange.min = 1;
+            volumeWindowWidthRange.max = stack.minMax[1] - stack.minMax[0];
+            volumeWindowWidthRange.value = volumeWindowWidthRange.max / 2;
+            volumeWindowWidthRange.addEventListener('ionChange', function (ev) {
+                stackHelper.windowWidth = ev.detail.value;
+                params.modifiedCallback();
+            });
+            // volume window center range
+            var volumeWindowCenterRange = document.getElementById('volumeWindowCenterRange');
+            volumeWindowCenterRange.min = stack.minMax[0];
+            volumeWindowCenterRange.max = stack.minMax[1];
+            volumeWindowCenterRange.value = volumeWindowCenterRange.max / 2;
+            volumeWindowCenterRange.addEventListener('ionChange', function (ev) {
+                stackHelper.windowCenter = ev.detail.value;
+                params.modifiedCallback();
+            });
+        };
+        AMICenterPanel.prototype._initMeshGUI = function (params) {
+            console.log('init mesh gui');
+        };
+        AMICenterPanel.prototype._getAllControls = function () {
+            return this.guiContainer.querySelectorAll('ion-select, ion-range, ion-toggle');
+        };
+        AMICenterPanel.prototype._controlsDisabled = function (disabled) {
+            this._getAllControls().forEach(function (control) {
+                control.disabled = disabled;
+            });
+        };
         AMICenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            this.$amicomponent.height(this.$content.height());
-            this.$amicomponent.width(this.$content.width());
-            if (this.$amicomponent[0] && this.$amicomponent[0].resize) {
-                this.$amicomponent[0].resize();
+            var $amiviewer = $(this.amiviewer);
+            $amiviewer.height(this.$content.height());
+            $amiviewer.width(this.$content.width());
+            if (this.amiviewer && this.amiviewer.resize) {
+                this.amiviewer.resize();
             }
         };
         return AMICenterPanel;
@@ -22275,6 +22385,9 @@ define('extensions/uv-ami-extension/Extension',["require", "exports", "../../mod
             // } else 
             if (index === this.getDependencyIndex('three.min')) {
                 window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
+            }
+            else if (index === this.getDependencyIndex('redux')) {
+                window.Redux = dep;
             }
         };
         Extension.prototype.render = function () {
@@ -28913,6 +29026,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 name: 'uv-av-extension'
             };
             this._extensions['application/dicom'] = {
+                type: Extension_1.Extension,
+                name: 'uv-ami-extension'
+            };
+            this._extensions['model/stl'] = {
                 type: Extension_1.Extension,
                 name: 'uv-ami-extension'
             };
