@@ -27833,7 +27833,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var searchUri = this.getSearchServiceUri();
             if (!searchUri)
                 return;
-            searchUri = Utils.Strings.format(searchUri, terms);
+            searchUri = Utils.Strings.format(searchUri, encodeURIComponent(terms));
             this.getSearchResults(searchUri, terms, this.annotations, function (annotations) {
                 that.isAnnotating = false;
                 if (annotations.length) {
