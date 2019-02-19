@@ -350,19 +350,19 @@
           "label": "Brain (stl)"
         },
         {
-          "@id": "https://ami-test-manifests.netlify.com/collection/dicom/platypus/dcm_multi_jpeg2000_16bit_20_slices/index.json",
+          "@id": "https://ami-test-manifests-fork.netlify.com/collection/dicom/platypus/dcm_multi_vf300_16bit/index.json",
           "@type": "sc:Manifest",
-          "label": "Platypus (dicom jpeg2000 16bit)"
+          "label": "Platypus (dicom)"
         },
         {
-          "@id": "https://ami-test-manifests.netlify.com/collection/dicom/elephant/dcm_multi_jpeg2000_16bit_20_slices/index.json",
+          "@id": "https://ami-test-manifests-fork.netlify.com/collection/dicom/elephant/dcm_multi_vf300_jpegQ95_16bit/index.json",
           "@type": "sc:Manifest",
-          "label": "Elephant (dicom jpeg2000 16bit)"
+          "label": "Elephant (dicom)"
         },
         {
-          "@id": "https://ami-test-manifests.netlify.com/collection/dicom/bat/dcm_multi_jpeg2000_16bit_20_slices/index.json",
+          "@id": "https://ami-test-manifests.netlify.com/collection/gltf/bowl-draco/index.json",
           "@type": "sc:Manifest",
-          "label": "Bat (dicom jpeg2000 16bit)"
+          "label": "Bowl (draco)"
         }
       ]
     },
