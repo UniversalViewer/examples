@@ -4,6 +4,7 @@
 (function() {
     var t = document.createElement('script');
     t.type = 'text/javascript';
-    t.src = 'uv/lib/amiviewer.js';
+    //uv/lib/amiviewer.js
+    t.src = (true)? 'lib/amiviewer.js' : '';
     document.body.appendChild(t);
 })();

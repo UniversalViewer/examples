@@ -1,16 +1,16 @@
-.uv .overlay {
+.uv .uv-overlay {
   color: #000000;
 }
-.uv .overlay.share {
+.uv .uv-overlay.share {
   width: 280px;
   padding: 0 0 0 8px;
 }
-.uv .overlay.share .middle .content .tabs {
+.uv .uv-overlay.share .middle .content .tabs {
   padding: 5px 0 0 0;
   line-height: normal;
   font-size: 0px;
 }
-.uv .overlay.share .middle .content .tabs .tab {
+.uv .uv-overlay.share .middle .content .tabs .tab {
   line-height: normal;
   color: #565656;
   font-size: 12px;
@@ -24,7 +24,7 @@
   cursor: pointer;
   text-decoration: none;
 }
-.uv .overlay.share .middle .content .tabs .tab:hover {
+.uv .uv-overlay.share .middle .content .tabs .tab:hover {
   border-bottom: 1px solid #14a4c3;
   color: #000000;
   margin-bottom: -1px;
@@ -33,10 +33,10 @@
   line-height: 23px;
   text-decoration: none;
 }
-.uv .overlay.share .middle .content .tabs .tab.first {
+.uv .uv-overlay.share .middle .content .tabs .tab.first {
   margin: 0 0 0 10px;
 }
-.uv .overlay.share .middle .content .tabs .tab.on {
+.uv .uv-overlay.share .middle .content .tabs .tab.on {
   border-bottom: 1px solid #14a4c3;
   color: #000000;
   margin-bottom: -1px;
@@ -44,261 +44,261 @@
   height: 23px;
   line-height: 23px;
 }
-.uv .overlay.share .middle .content .tabsContent {
+.uv .uv-overlay.share .middle .content .tabsContent {
   padding: 10px 0 5px 0;
   border-top: 1px solid #efefef;
 }
-.uv .overlay.share .middle .content .tabsContent .header {
+.uv .uv-overlay.share .middle .content .tabsContent .header {
   margin-bottom: 5px;
   font-size: 11px;
 }
-.uv .overlay.share .middle .content .tabsContent .shareView .shareInput {
+.uv .uv-overlay.share .middle .content .tabsContent .shareView .shareInput {
   width: 100%;
   background: #efefef;
   border: 1px solid #9a9a9a;
   font-size: 11px;
 }
-.uv .overlay.share .middle .content .tabsContent .shareView .shareLink {
+.uv .uv-overlay.share .middle .content .tabsContent .shareView .shareLink {
   display: block;
   overflow: hidden;
   height: 18px;
   text-overflow: ellipsis;
 }
-.uv .overlay.share .middle .content .tabsContent .shareView .shareFrame {
+.uv .uv-overlay.share .middle .content .tabsContent .shareView .shareFrame {
   width: 240px;
   border: none;
   height: 30px;
   margin-top: 5px;
 }
-.uv .overlay.share .middle .content .tabsContent .embedView .code {
+.uv .uv-overlay.share .middle .content .tabsContent .embedView .code {
   width: 100%;
   background: #efefef;
   border: 1px solid #9a9a9a;
   font-size: 11px;
 }
-.uv .overlay.share .middle .content .tabsContent .embedView .customSize {
+.uv .uv-overlay.share .middle .content .tabsContent .embedView .customSize {
   overflow: hidden;
   padding-top: 10px;
 }
-.uv .overlay.share .middle .content .tabsContent .embedView .customSize .size {
+.uv .uv-overlay.share .middle .content .tabsContent .embedView .customSize .size {
   padding: 0 5px 0 0;
 }
-.uv .overlay.share .middle .content .tabsContent .embedView .customSize .x {
+.uv .uv-overlay.share .middle .content .tabsContent .embedView .customSize .x {
   padding: 0 5px 0 5px;
 }
-.uv .overlay.share .middle .content .tabsContent .embedView .customSize select {
+.uv .uv-overlay.share .middle .content .tabsContent .embedView .customSize select {
   margin-right: 5px;
   height: 21px;
   font-size: 11px;
 }
-.uv .overlay.share .middle .content .tabsContent .embedView .customSize input {
+.uv .uv-overlay.share .middle .content .tabsContent .embedView .customSize input {
   display: inline-block;
   width: 50px;
   height: 21px;
   font-size: 11px;
 }
-.uv .overlay.share .middle .content .footer {
+.uv .uv-overlay.share .middle .content .footer {
   overflow: hidden;
 }
-.uv .overlay.share .middle .content .footer a {
+.uv .uv-overlay.share .middle .content .footer a {
   font-size: 11px;
   display: block;
   float: left;
   line-height: 30px;
 }
-.uv .overlay.share .middle .content .footer a.imageBtn {
+.uv .uv-overlay.share .middle .content .footer a.imageBtn {
   width: 30px;
   height: 30px;
 }
-.uv .overlay.share .middle .content .footer a.iiif {
+.uv .uv-overlay.share .middle .content .footer a.iiif {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTMyIDc5LjE1OTI4NCwgMjAxNi8wNC8xOS0xMzoxMzo0MCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUuNSAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTVEQzM5QTI4NTZFMTFFNkE0OUFBNDg2MDVDN0IxNjYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTVEQzM5QTM4NTZFMTFFNkE0OUFBNDg2MDVDN0IxNjYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NURDMzlBMDg1NkUxMUU2QTQ5QUE0ODYwNUM3QjE2NiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NURDMzlBMTg1NkUxMUU2QTQ5QUE0ODYwNUM3QjE2NiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkHtxoIAAAA8UExURdra2s7Ozr6+vsbGxtXV1e7u7sHBwba2tujo6Pn5+aqqqv39/fT09OHh4aampq6urrq6uvf396Wlpf///4ypwX8AAACnSURBVHja1NLbCsMgDABQjfGSeFmb/P+/LnYM9KXsbVQwRI+SIDq9He5x3IEXdoBVtaRAPnXVGkRk4SEC2i1620dF2fllyzKDs8lkGfuF5/F5MVew2G2GrTVkjjCgKYWRy+S4sMfTWqs9Neikk8daO4ndRCvZZtXJsrO1luVi4YvHLQPd8tb5Dxz/xMgfPgjGxQO3N68dYsJm2YlHORw99iN/x1uAAQCk8zs3N8QNGAAAAABJRU5ErkJggg==");
   background-repeat: no-repeat;
   margin-right: 5px;
 }
-.uv .overlay.moreInfo {
+.uv .uv-overlay.moreInfo {
   width: 260px;
   padding: 0 0 0 8px;
 }
-.uv .overlay.moreInfo .content .iiif-metadata-component {
+.uv .uv-overlay.moreInfo .content .iiif-metadata-component {
   height: 200px;
   overflow: auto;
 }
-.uv .overlay.moreInfo .content .iiif-metadata-component .items {
+.uv .uv-overlay.moreInfo .content .iiif-metadata-component .items {
   padding-left: 0px;
 }
-.uv .overlay.moreInfo .content .iiif-metadata-component .items .item .value {
+.uv .uv-overlay.moreInfo .content .iiif-metadata-component .items .item .value {
   color: #000000;
 }
-.uv .overlay.download {
+.uv .uv-overlay.download {
   width: 260px;
   padding: 0 0 0 8px;
 }
-.uv .overlay.download .middle .noneAvailable {
+.uv .uv-overlay.download .middle .noneAvailable {
   padding: 10px 0 10px 0;
 }
-.uv .overlay.download .middle .pagingNote {
+.uv .uv-overlay.download .middle .pagingNote {
   padding: 10px 0 0 0;
 }
-.uv .overlay.download .middle ol.options {
+.uv .uv-overlay.download .middle ol.options {
   padding: 0;
 }
-.uv .overlay.download .middle ol.options li.group {
+.uv .uv-overlay.download .middle ol.options li.group {
   border-bottom: 1px solid #efefef;
 }
-.uv .overlay.download .middle ol.options li.group.lastVisible {
+.uv .uv-overlay.download .middle ol.options li.group.lastVisible {
   border-bottom: none;
 }
-.uv .overlay.download .middle ol.options li.group ul {
+.uv .uv-overlay.download .middle ol.options li.group ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-.uv .overlay.download .middle ol.options li.group ul li {
+.uv .uv-overlay.download .middle ol.options li.group ul li {
   overflow: hidden;
 }
-.uv .overlay.download .middle ol.options li.group ul li input {
+.uv .uv-overlay.download .middle ol.options li.group ul li input {
   float: left;
   display: block;
 }
-.uv .overlay.download .middle ol.options li.group ul li label {
+.uv .uv-overlay.download .middle ol.options li.group ul li label {
   float: left;
   width: 190px;
   line-height: 1.2em;
 }
-.uv .overlay.download .middle ol.options li.group ul li label span.explanatory {
+.uv .uv-overlay.download .middle ol.options li.group ul li label span.explanatory {
   display: block;
   font-size: 11px;
   margin: 4px 0 4px 0;
   color: #949494;
 }
-.uv .overlay.download .middle .footer a {
+.uv .uv-overlay.download .middle .footer a {
   margin-top: 5px;
   font-size: 11px;
   display: block;
 }
-.uv .overlay.help {
+.uv .uv-overlay.help {
   width: 470px;
   height: 250px;
 }
-.uv .overlay.help .scroll {
+.uv .uv-overlay.help .scroll {
   height: 180px;
 }
-.uv .overlay.help .bottom {
+.uv .uv-overlay.help .bottom {
   background: none;
 }
-.uv .overlay.settings {
+.uv .uv-overlay.settings {
   width: 470px;
   height: 250px;
 }
-.uv .overlay.settings .scroll {
+.uv .uv-overlay.settings .scroll {
   height: 180px;
 }
-.uv .overlay.settings .scroll .setting {
+.uv .uv-overlay.settings .scroll .setting {
   margin-bottom: 10px;
 }
-.uv .overlay.settings .scroll .setting input {
+.uv .uv-overlay.settings .scroll .setting input {
   margin: 0 5px 0 0;
 }
-.uv .overlay.settings .scroll .setting label {
+.uv .uv-overlay.settings .scroll .setting label {
   margin: 0 5px 0 0;
 }
-.uv .overlay.settings .version {
+.uv .uv-overlay.settings .version {
   float: left;
 }
-.uv .overlay.settings .website {
+.uv .uv-overlay.settings .website {
   float: right;
 }
-.uv .overlay.settings .bottom {
+.uv .uv-overlay.settings .bottom {
   background: none;
 }
-.uv .overlay.externalContent {
+.uv .uv-overlay.externalContent {
   width: 470px;
   height: 300px;
 }
-.uv .overlay.externalContent .middle .content {
+.uv .uv-overlay.externalContent .middle .content {
   width: 470px;
   height: 300px;
   overflow: hidden;
 }
-.uv .overlay.externalContent .middle .content iframe {
+.uv .uv-overlay.externalContent .middle .content iframe {
   overflow: auto;
   border: none;
 }
-.uv .overlay.externalContent .bottom {
+.uv .uv-overlay.externalContent .bottom {
   background: none;
 }
-.uv .overlay.clickthrough {
+.uv .uv-overlay.clickthrough {
   width: 470px;
   height: 250px;
 }
-.uv .overlay.clickthrough .message {
+.uv .uv-overlay.clickthrough .message {
   height: 180px;
 }
-.uv .overlay.clickthrough .message.loading {
+.uv .uv-overlay.clickthrough .message.loading {
   background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH+GkNyZWF0ZWQgd2l0aCBhamF4bG9hZC5pbmZvACH5BAAKAAAAIf8LTkVUU0NBUEUyLjADAQAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQACgABACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkEAAoAAgAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkEAAoAAwAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkEAAoABAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQACgAFACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQACgAGACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAAKAAcALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==');
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
-.uv .overlay.clickthrough .message h1 {
+.uv .uv-overlay.clickthrough .message h1 {
   border-bottom: none;
   font-size: 12px;
 }
-.uv .overlay.clickthrough .bottom {
+.uv .uv-overlay.clickthrough .bottom {
   background: none;
 }
-.uv .overlay.login {
+.uv .uv-overlay.login {
   width: 470px;
   height: 250px;
 }
-.uv .overlay.login .message {
+.uv .uv-overlay.login .message {
   height: 180px;
 }
-.uv .overlay.login .message h1 {
+.uv .uv-overlay.login .message h1 {
   border-bottom: none !important;
   font-size: 12px !important;
 }
-.uv .overlay.login .message .warning {
+.uv .uv-overlay.login .message .warning {
   display: block;
   background-color: #ffb81d;
   font-weight: bold;
   padding: 10px 10px 10px 10px;
   margin-bottom: 10px;
 }
-.uv .overlay.login .bottom {
+.uv .uv-overlay.login .bottom {
   background: none;
 }
-.uv .overlay.auth {
+.uv .uv-overlay.auth {
   width: 470px;
   height: 250px;
 }
-.uv .overlay.auth .message {
+.uv .uv-overlay.auth .message {
   height: 180px;
 }
-.uv .overlay.auth .message h1 {
+.uv .uv-overlay.auth .message h1 {
   border-bottom: none !important;
   font-size: 12px !important;
 }
-.uv .overlay.auth .message .warning {
+.uv .uv-overlay.auth .message .warning {
   display: block;
   background-color: #ffb81d;
   font-weight: bold;
   padding: 10px 10px 10px 10px;
   margin-bottom: 10px;
 }
-.uv .overlay.auth .bottom {
+.uv .uv-overlay.auth .bottom {
   background: none;
 }
 @media only screen and (min-width: 0px) and (max-width: 415px) {
-  .uv .overlay.share {
+  .uv .uv-overlay.share {
     padding: 0 0 0 8px;
   }
-  .uv .overlay.download {
+  .uv .uv-overlay.download {
     padding: 0 0 0 8px;
   }
-  .uv .overlay.moreInfo {
+  .uv .uv-overlay.moreInfo {
     padding: 0 0 0 8px;
   }
-  .uv .overlay.auth {
+  .uv .uv-overlay.auth {
     width: 250px;
     height: 250px;
   }
@@ -3381,7 +3381,7 @@ input[type=range]:focus::-ms-fill-upper {
   background: url('../../../modules/uv-shared-module/img/close_lightbox.png');
   background-repeat: no-repeat;
 }
-.uv .overlays {
+.uv .uv-overlays {
   position: absolute;
   top: 0;
   left: 0;
@@ -3390,14 +3390,14 @@ input[type=range]:focus::-ms-fill-upper {
   display: none;
   z-index: 10;
 }
-.uv .overlay {
+.uv .uv-overlay {
   position: absolute;
 }
-.uv .overlay .top {
+.uv .uv-overlay .top {
   width: 100%;
   overflow: auto;
 }
-.uv .overlay .top .close {
+.uv .uv-overlay .top .close {
   font: 0/0 a;
   text-shadow: none;
   background-color: transparent;
@@ -3411,69 +3411,69 @@ input[type=range]:focus::-ms-fill-upper {
   float: right;
   background-color: #14a4c3;
 }
-.uv .overlay .middle {
+.uv .uv-overlay .middle {
   width: 100%;
   background: #ffffff;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
-.uv .overlay .middle .buttons {
+.uv .uv-overlay .middle .buttons {
   padding: 10px;
   float: right;
 }
-.uv .overlay .middle .buttons .btn {
+.uv .uv-overlay .middle .buttons .btn {
   margin: 0 0 0 10px;
 }
-.uv .overlay .middle .content {
+.uv .uv-overlay .middle .content {
   padding-right: 10px;
   padding-bottom: 10px;
   padding-left: 10px;
   overflow: auto;
   text-overflow: ellipsis;
 }
-.uv .overlay .middle .content h1 {
+.uv .uv-overlay .middle .content h1 {
   color: #000000;
   font-size: 18px;
   font-weight: bold;
   margin: 15px 0px 0px 0px;
   padding: 0 0 10px 0;
 }
-.uv .overlay .middle .content h2 {
+.uv .uv-overlay .middle .content h2 {
   color: #000000;
   font-size: 14px;
   font-weight: bold;
   margin: 0;
   padding: 15px 0 10px 0;
 }
-.uv .overlay .middle .content p {
+.uv .uv-overlay .middle .content p {
   margin: 0;
   padding: 10px 0 10px 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.uv .overlay .middle .content p p {
+.uv .uv-overlay .middle .content p p {
   padding-top: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.uv .overlay .middle .content ol.options {
+.uv .uv-overlay .middle .content ol.options {
   list-style-image: none;
   list-style-position: inside;
   list-style-type: none;
   margin: 0;
 }
-.uv .overlay .middle .content ol.options li {
+.uv .uv-overlay .middle .content ol.options li {
   margin: 2px 0 0 0;
   padding: 4px;
 }
-.uv .overlay .middle .content ol.options li input {
+.uv .uv-overlay .middle .content ol.options li input {
   margin: 0;
   padding: 0;
   width: auto;
   height: auto;
   display: inline;
 }
-.uv .overlay .middle .content ol.options li label {
+.uv .uv-overlay .middle .content ol.options li label {
   display: inline;
   margin: 0 0 0 5px;
   padding: 0;
@@ -3483,26 +3483,26 @@ input[type=range]:focus::-ms-fill-upper {
   text-align: left;
   width: 200px;
 }
-.uv .overlay .bottom {
+.uv .uv-overlay .bottom {
   height: 11px;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAALAgMAAAAGkpXtAAAAA3NCSVQICAjb4U/gAAAACVBMVEUAAAD///+goKDSb8EQAAAAA3RSTlMA//9EUNYhAAAACXBIWXMAAAsSAAALEgHS3X78AAAAFnRFWHRDcmVhdGlvbiBUaW1lADA0LzA1LzEyKlljLAAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNXG14zYAAAA4SURBVAiZHcmxDQAgDAPBFx3skZFAlBklS2RfbCI5Xxy9dUk4xdQ/MJQLtAljKdNkNAnzJ+pnaQ991wzvAlzhpAAAAABJRU5ErkJggg==");
   background-repeat: no-repeat;
   margin-top: -1px;
 }
-.uv .overlay.genericDialogue {
+.uv .uv-overlay.genericDialogue {
   width: 250px;
 }
-.uv .overlay.genericDialogue .bottom {
+.uv .uv-overlay.genericDialogue .bottom {
   background: none;
 }
-.uv .overlay.genericDialogue .message {
+.uv .uv-overlay.genericDialogue .message {
   color: #000;
   padding: 10px 0 10px 0;
 }
-.uv .overlay.genericDialogue .accept {
+.uv .uv-overlay.genericDialogue .accept {
   float: right;
 }
-.uv .overlay .scroll {
+.uv .uv-overlay .scroll {
   margin: 10px 0 0 0;
   padding: 0 10px 0 0;
   overflow: auto;

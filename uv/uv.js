@@ -17108,12 +17108,12 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "
             Shell.$element.append(Shell.$footerPanel);
             Shell.$mobileFooterPanel = $('<div class="mobileFooterPanel"></div>');
             Shell.$element.append(Shell.$mobileFooterPanel);
-            Shell.$overlays = $('<div class="overlays"></div>');
+            Shell.$overlays = $('<div class="uv-overlays"></div>');
             Shell.$element.append(Shell.$overlays);
-            Shell.$genericDialogue = $('<div class="overlay genericDialogue" aria-hidden="true"></div>');
+            Shell.$genericDialogue = $('<div class="uv-overlay genericDialogue" aria-hidden="true"></div>');
             Shell.$overlays.append(Shell.$genericDialogue);
             Shell.$overlays.on('click', function (e) {
-                if ($(e.target).hasClass('overlays')) {
+                if ($(e.target).hasClass('uv-overlays')) {
                     e.preventDefault();
                     $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
                 }
@@ -17123,8 +17123,10 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "
         };
         Shell.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            Shell.$overlays.width(this.extension.width());
-            Shell.$overlays.height(this.extension.height());
+            var width = this.extension.width();
+            var height = this.extension.height();
+            Shell.$overlays.width(width);
+            Shell.$overlays.height(height);
             var mainHeight = this.$element.height() - parseInt(Shell.$mainPanel.css('paddingTop'))
                 - (Shell.$headerPanel.is(':visible') ? Shell.$headerPanel.height() : 0)
                 - (Shell.$footerPanel.is(':visible') ? Shell.$footerPanel.height() : 0)
@@ -17341,6 +17343,17 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
     exports.CenterPanel = CenterPanel;
 });
 
+define('modules/uv-amicenterpanel-module/Mode',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Mode;
+    (function (Mode) {
+        Mode["SLICES"] = "slices";
+        Mode["VOLUME"] = "volume";
+        Mode["MESH"] = "mesh";
+    })(Mode = exports.Mode || (exports.Mode = {}));
+});
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -17351,7 +17364,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1) {
+define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position", "./Mode"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1, Mode_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AMICenterPanel = /** @class */ (function (_super) {
@@ -17383,17 +17396,20 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
                         var media = body[0];
                         _this._src = media.id;
                         var format = media.getFormat();
-                        _this._display = (format && format.toString() === "model/stl") ? "mesh" : "slices";
+                        _this._display = (format && format.toString() === "model/stl" ||
+                            format && format.toString() === "application/gltf") ? Mode_1.Mode.MESH : Mode_1.Mode.SLICES;
                         _this._render();
                     }
                 }
-                _this.resize();
+                $.publish(BaseEvents_1.BaseEvents.RESIZE);
             });
         };
         AMICenterPanel.prototype._render = function () {
             var _this = this;
             this.amiviewerContainer.innerHTML = '';
             this.amiviewer = document.createElement('ami-viewer');
+            //this.amiviewer.setAttribute('draco-decoder-path', this.config.options.dracoDecoderPath);
+            this.amiviewer.setAttribute('draco-decoder-path', 'lib/'); // todo, like amiviewer.proxy.js and ionic.proxy.js, this needs to by dynamic
             this.amiviewerContainer.appendChild(this.amiviewer);
             this.amiviewer.addEventListener('onLoaded', function () {
                 _this.amiviewer.setToolsVisible(true); // can only show them after src loaded
@@ -17401,7 +17417,7 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
             }, false);
             this.amiviewer.componentOnReady().then(function (component) {
                 component.setDisplay(_this._display);
-                component.src = _this._src;
+                component.setSrc(_this._src);
             });
         };
         AMICenterPanel.prototype.resize = function () {
@@ -18769,16 +18785,16 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
             });
         };
         BaseExtension.prototype.createModules = function () {
-            this.$authDialogue = $('<div class="overlay auth" aria-hidden="true"></div>');
+            this.$authDialogue = $('<div class="uv-overlay auth" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$authDialogue);
             this.authDialogue = new AuthDialogue_1.AuthDialogue(this.$authDialogue);
-            this.$clickThroughDialogue = $('<div class="overlay clickthrough" aria-hidden="true"></div>');
+            this.$clickThroughDialogue = $('<div class="uv-overlay clickthrough" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$clickThroughDialogue);
             this.clickThroughDialogue = new ClickThroughDialogue_1.ClickThroughDialogue(this.$clickThroughDialogue);
-            this.$restrictedDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
+            this.$restrictedDialogue = $('<div class="uv-overlay login" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$restrictedDialogue);
             this.restrictedDialogue = new RestrictedDialogue_1.RestrictedDialogue(this.$restrictedDialogue);
-            this.$loginDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
+            this.$loginDialogue = $('<div class="uv-overlay login" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$loginDialogue);
             this.loginDialogue = new LoginDialogue_1.LoginDialogue(this.$loginDialogue);
         };
@@ -22132,13 +22148,13 @@ define('extensions/uv-ami-extension/Extension',["require", "exports", "../../mod
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isHeaderPanelEnabled()) {
@@ -22160,9 +22176,6 @@ define('extensions/uv-ami-extension/Extension',["require", "exports", "../../mod
             // } else 
             if (index === this.getDependencyIndex('three.min')) {
                 window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
-            }
-            else if (index === this.getDependencyIndex('redux')) {
-                window.Redux = dep;
             }
         };
         Extension.prototype.render = function () {
@@ -22645,13 +22658,13 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isHeaderPanelEnabled()) {
@@ -23126,13 +23139,13 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
+            this.$helpDialogue = $('<div class="uv-overlay help" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -23540,16 +23553,16 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
+            this.$helpDialogue = $('<div class="uv-overlay help" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -27109,25 +27122,25 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
+            this.$helpDialogue = $('<div class="uv-overlay help" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
-            this.$moreInfoDialogue = $('<div class="overlay moreInfo" aria-hidden="true"></div>');
+            this.$moreInfoDialogue = $('<div class="uv-overlay moreInfo" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$moreInfoDialogue);
             this.moreInfoDialogue = new MoreInfoDialogue_1.MoreInfoDialogue(this.$moreInfoDialogue);
-            this.$multiSelectDialogue = $('<div class="overlay multiSelect" aria-hidden="true"></div>');
+            this.$multiSelectDialogue = $('<div class="uv-overlay multiSelect" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$multiSelectDialogue);
             this.multiSelectDialogue = new MultiSelectDialogue_1.MultiSelectDialogue(this.$multiSelectDialogue);
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
-            this.$externalContentDialogue = $('<div class="overlay externalContent" aria-hidden="true"></div>');
+            this.$externalContentDialogue = $('<div class="uv-overlay externalContent" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$externalContentDialogue);
             this.externalContentDialogue = new ExternalContentDialogue_1.ExternalContentDialogue(this.$externalContentDialogue);
             if (this.isHeaderPanelEnabled()) {
@@ -28344,13 +28357,13 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -28652,13 +28665,13 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
             else {
                 Shell_1.Shell.$footerPanel.hide();
             }
-            this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
             Shell_1.Shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
@@ -28805,6 +28818,10 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 name: 'uv-ami-extension'
             };
             this._extensions['model/stl'] = {
+                type: Extension_1.Extension,
+                name: 'uv-ami-extension'
+            };
+            this._extensions['application/gltf'] = {
                 type: Extension_1.Extension,
                 name: 'uv-ami-extension'
             };
