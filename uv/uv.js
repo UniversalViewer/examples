@@ -17409,7 +17409,8 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
             this.amiviewerContainer.innerHTML = '';
             this.amiviewer = document.createElement('ami-viewer');
             //this.amiviewer.setAttribute('draco-decoder-path', this.config.options.dracoDecoderPath);
-            this.amiviewer.setAttribute('draco-decoder-path', 'lib/'); // todo, like amiviewer.proxy.js and ionic.proxy.js, this needs to by dynamic
+            var dracoDecoderPath = (window.self !== window.top) ? 'lib/' : 'uv/lib/';
+            this.amiviewer.setAttribute('draco-decoder-path', dracoDecoderPath);
             this.amiviewerContainer.appendChild(this.amiviewer);
             this.amiviewer.addEventListener('onLoaded', function () {
                 _this.amiviewer.setToolsVisible(true); // can only show them after src loaded
