@@ -491,6 +491,9 @@
 .uv .mejs__inner .mejs__controls {
   background-color: #000;
 }
+.uv .centerPanel .content .attribution {
+  z-index: 100;
+}
 /* Accessibility: hide screen reader texts (and prefer "top" for RTL languages).
 Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-how/ */
 .mejs__offscreen {
