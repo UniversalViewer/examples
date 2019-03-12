@@ -17122,9 +17122,12 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "
             new GenericDialogue_1.GenericDialogue(Shell.$genericDialogue);
         };
         Shell.prototype.resize = function () {
+            var _this = this;
             _super.prototype.resize.call(this);
-            Shell.$overlays.width(this.extension.width());
-            Shell.$overlays.height(this.extension.height());
+            setTimeout(function () {
+                Shell.$overlays.width(_this.extension.width());
+                Shell.$overlays.height(_this.extension.height());
+            }, 1);
             var mainHeight = this.$element.height() - parseInt(Shell.$mainPanel.css('paddingTop'))
                 - (Shell.$headerPanel.is(':visible') ? Shell.$headerPanel.height() : 0)
                 - (Shell.$footerPanel.is(':visible') ? Shell.$footerPanel.height() : 0)
