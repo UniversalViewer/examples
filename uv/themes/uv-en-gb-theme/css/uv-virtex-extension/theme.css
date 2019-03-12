@@ -1802,8 +1802,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .centerPanel .subtitle .wrapper {
   z-index: 9999;
-  background: #000000b0;
-  overflow: auto;
+  background: rgba(0, 0, 0, 0.8);
 }
 .uv .centerPanel .subtitle .wrapper .expand-btn {
   width: 20px;
@@ -1824,6 +1823,8 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .centerPanel .subtitle .wrapper.expanded {
   position: absolute;
+  overflow-y: scroll;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 .uv .centerPanel .subtitle .wrapper.expanded .text {
   white-space: normal;
