@@ -3115,8 +3115,10 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .uv .headerPanel .informationBox .message {
   float: left;
-  overflow: hidden;
   margin: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .uv .headerPanel .informationBox .actions {
   float: left;
@@ -3281,9 +3283,47 @@ input[type=range]:focus::-ms-fill-upper {
   font-size: 20px;
   color: #ffffff;
   padding: 0 20px 0 20px;
-}
-.uv .centerPanel .title span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 30px;
+}
+.uv .centerPanel .subtitle {
+  font-size: 14px;
+  color: #ffffff;
+  line-height: 30px;
+  height: 30px;
+}
+.uv .centerPanel .subtitle .wrapper {
+  z-index: 9999;
+  background: #000000b0;
+  overflow: auto;
+}
+.uv .centerPanel .subtitle .wrapper .expand-btn {
+  width: 20px;
+  height: 30px;
+  float: left;
+  background: #000;
+  border: none;
+  color: #fff;
+  padding: 0;
+}
+.uv .centerPanel .subtitle .wrapper .text {
+  display: block;
+  float: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0 10px 0 0;
+}
+.uv .centerPanel .subtitle .wrapper.expanded {
+  position: absolute;
+}
+.uv .centerPanel .subtitle .wrapper.expanded .text {
+  white-space: normal;
+  text-overflow: inherit;
+  overflow: scroll;
+  margin: -30px 10px 0 20px;
 }
 .uv .centerPanel .content .attribution {
   background: #343434;
