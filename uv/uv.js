@@ -17257,11 +17257,17 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
                 }
                 _this.resize();
             });
-            if (!Utils.Bools.getBool(this.options.titleEnabled, true)) {
+            if (Utils.Bools.getBool(this.options.titleEnabled, true)) {
+                this.$title.show();
+            }
+            else {
                 this.$title.hide();
             }
             if (Utils.Bools.getBool(this.options.subtitleEnabled, false)) {
                 this.$subtitle.show();
+            }
+            else {
+                this.$subtitle.hide();
             }
             this.whenResized(function () {
                 _this.updateRequiredStatement();
@@ -17367,15 +17373,15 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
                     this.$attribution.show();
                 }
             }
-            if (this.subtitle) {
+            if (this.subtitle && this.options.subtitleEnabled) {
+                this.$subtitleText.html(Utils_1.UVUtils.sanitize(this.subtitle.replace(/<br\s*[\/]?>/gi, '; ')));
+                this.$subtitleText.removeClass('elided');
                 this.$subtitle.show();
                 this.$subtitleWrapper.css('max-height', this.$content.height() + this.$subtitle.outerHeight());
                 this.$subtitleWrapper.width(this.$content.width());
                 if (!this.subtitleExpanded) {
                     this.$subtitleText.width('auto');
                     this.$subtitleWrapper.width('auto');
-                    //this.$subtitleText.html(UVUtils.sanitize(this.subtitle.replace(/<br\s*[\/]?>/gi, ', ')));
-                    this.$subtitleText.html("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean in neque at dolor efficitur vestibulum quis sed neque. Vivamus malesuada aliquet sapien sed tempus. Morbi congue pretium fermentum. Donec eget justo quis urna tristique tempus quis sed mauris. Vivamus consequat, nibh at molestie dapibus, nisi magna hendrerit diam, ac viverra nisl leo vitae eros. Etiam faucibus metus eu magna molestie commodo. Donec scelerisque malesuada urna, in cursus dolor aliquet nec. Sed vestibulum et lectus at volutpat. Donec fermentum odio vitae libero suscipit fringilla. Praesent augue libero, posuere in massa quis, molestie malesuada purus. Curabitur eget iaculis diam, vel fermentum purus. Praesent dapibus, lacus nec pulvinar scelerisque, ipsum dui eleifend massa, vel porta lorem mi at mi. Nullam nec massa rhoncus, dignissim ex eget, blandit libero. Curabitur mattis eros at ullamcorper tempor. Aliquam erat volutpat.\n\n                Ut malesuada, neque ac mollis suscipit, dui sem placerat diam, et placerat odio dolor nec orci. Nunc nec ullamcorper felis, nec varius velit. In eget elementum nisl, euismod feugiat ligula. Aliquam lorem arcu, laoreet vel euismod eu, maximus nec turpis. Curabitur at facilisis erat. Suspendisse nec odio dignissim, pellentesque nunc nec, dictum leo. Ut varius felis vitae risus consectetur, ut tempor purus pellentesque. Ut gravida nisl sit amet magna imperdiet interdum. In dapibus, magna et consectetur dapibus, nisi sem sollicitudin lectus, vel ultricies augue nulla quis est. Nulla augue dui, auctor at maximus sed, laoreet a velit. In tristique, augue quis tincidunt molestie, massa lorem fringilla lorem, in fringilla leo elit eu turpis. Duis nec faucibus neque.\n                \n                Mauris commodo arcu et leo bibendum posuere. Aenean nec varius nibh. Aliquam eget sapien porta, interdum urna quis, viverra turpis. Praesent ultricies lectus ac ipsum rhoncus bibendum. Praesent ut commodo justo. Etiam tincidunt id ipsum sodales ultrices. Maecenas consequat finibus erat quis vehicula. Proin varius quam in sapien mollis consectetur. Phasellus sed luctus tellus. Donec ac lorem luctus, dapibus metus in, tincidunt odio.");
                     this.$subtitleExpand.hide();
                     // if the subtitle span is wider than the container, set it to display:block 
                     // and set its width to that of the container
@@ -17383,6 +17389,7 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
                     // show the expand button
                     if (this.$subtitleText.width() > this.$content.width()) {
                         this.$subtitleExpand.show();
+                        this.$subtitleText.addClass('elided');
                         this.$subtitleText.width(this.$content.width() - (this.$subtitleExpand.outerWidth() + this.$subtitleText.horizontalMargins()));
                     }
                 }
@@ -17518,6 +17525,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             return false;
         };
         AVCenterPanel.prototype._setTitle = function () {
+            var _this = this;
             var title = '';
             var value;
             var label;
@@ -17550,15 +17558,15 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             }
             this.title = title;
             // set subtitle
-            //this.subtitle = "this is a very long subtitle that will be elided as it fills more space that can fit within the current available width of the center panel";
-            //this.subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id tortor in libero lacinia rutrum. Donec pretium, ipsum a tristique tempus, velit ex consequat tellus, ut malesuada risus enim vitae arcu. Sed lacinia mollis mi, fermentum feugiat mauris accumsan et. Sed vitae felis eu tellus suscipit eleifend ut vel elit. Suspendisse quis turpis id orci volutpat fringilla. Phasellus id tortor eu justo condimentum hendrerit sed sed urna. Morbi sed turpis porta, interdum ligula id, pellentesque nisl. Cras tincidunt nec eros et dapibus. Nulla rutrum, purus eget finibus facilisis, lorem nisi ullamcorper mauris, quis lobortis ipsum neque at purus. Aenean neque mauris, feugiat non risus vel, euismod convallis leo. Sed sit amet ipsum eget libero tempor pellentesque a ut quam. Maecenas consectetur pharetra tincidunt. Cras lacinia quam fermentum nisi dignissim pulvinar. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer lobortis ante commodo magna tincidunt, non porta lacus cursus. Sed pharetra, felis in scelerisque molestie, ipsum velit consectetur neque, sed auctor arcu eros et nunc. Donec tincidunt mollis finibus. Nunc vitae luctus velit. Suspendisse viverra maximus diam vel dignissim. Aenean eros ante, gravida eget viverra ut, dignissim vitae magna. Etiam dictum interdum nulla, id tincidunt lectus. Curabitur vitae justo rhoncus, vulputate ligula non, blandit massa. Quisque pulvinar rutrum nibh, eget accumsan lectus venenatis in. In hac habitasse platea dictumst. Donec tortor libero, pretium vel arcu sit amet, cursus ornare ipsum. Nulla facilisi. Quisque scelerisque dictum turpis ut lobortis. Phasellus congue viverra lacus id sodales.";
-            //this.subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id tortor in libero lacinia rutrum. Donec pretium, ipsum a tristique tempus, velit ex consequat tellus, ut malesuada risus enim vitae arcu. Sed lacinia mollis mi, fermentum feugiat mauris accumsan et.";
-            if (currentRange) {
-                var metadata = currentRange.getMetadata();
-                var item = metadata.find(function (el) {
+            var groups = this.extension.helper.getMetadata({
+                range: currentRange
+            });
+            for (var i = 0; i < groups.length; i++) {
+                var group = groups[i];
+                var item = group.items.find(function (el) {
                     if (el.label) {
                         var label_1 = Manifesto.LanguageMap.getValue(el.label);
-                        if (label_1 && label_1.toLowerCase() === 'contributor') {
+                        if (label_1 && label_1.toLowerCase() === _this.config.options.subtitleMetadataField) {
                             return true;
                         }
                     }
@@ -17566,6 +17574,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                 });
                 if (item) {
                     this.subtitle = Manifesto.LanguageMap.getValue(item.value);
+                    break;
                 }
             }
             this.$title.text(Utils_1.UVUtils.sanitize(this.title));
@@ -18599,9 +18608,13 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
             this.$element.addClass('browser-' + window.browserDetect.browser);
             this.$element.addClass('browser-version-' + window.browserDetect.version);
             this.$element.prop('tabindex', 0);
+            if (this.data.embedded) {
+                this.$element.addClass('embedded');
+            }
             if (this.isMobile()) {
                 this.$element.addClass('mobile');
             }
+            // todo: deprecate?
             if (this.data.isLightbox) {
                 this.$element.addClass('lightbox');
             }
