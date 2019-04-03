@@ -332,7 +332,7 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
-      "label": "AMI",
+      "label": "Aleph",
       "manifests": [
         {
           "@id": "https://ami-test-manifests.netlify.com/collection/nifti/brain/index.json",
@@ -361,9 +361,9 @@
           "visible": false
         },
         {
-          "@id": "https://ami-test-manifests.netlify.com/collection/gltf/bowl-draco/index.json",
+          "@id": "https://nomad-project.co.uk/objects/collection/woven-bowl/index.json",
           "@type": "sc:Manifest",
-          "label": "Bowl (draco)"
+          "label": "Bowl"
         }
       ]
     },

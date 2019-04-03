@@ -17343,17 +17343,6 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
     exports.CenterPanel = CenterPanel;
 });
 
-define('modules/uv-amicenterpanel-module/Mode',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Mode;
-    (function (Mode) {
-        Mode["SLICES"] = "slices";
-        Mode["VOLUME"] = "volume";
-        Mode["MESH"] = "mesh";
-    })(Mode = exports.Mode || (exports.Mode = {}));
-});
-
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -17364,27 +17353,30 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position", "./Mode"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1, Mode_1) {
+define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var AMICenterPanel = /** @class */ (function (_super) {
-        __extends(AMICenterPanel, _super);
-        function AMICenterPanel($element) {
+    //import { Mode } from "./Mode";
+    var AlephCenterPanel = /** @class */ (function (_super) {
+        __extends(AlephCenterPanel, _super);
+        //private _display: string;
+        function AlephCenterPanel($element) {
             var _this = _super.call(this, $element) || this;
             _this.attributionPosition = Position_1.Position.BOTTOM_RIGHT;
             return _this;
         }
-        AMICenterPanel.prototype.create = function () {
-            this.setConfig("amiCenterPanel");
+        AlephCenterPanel.prototype.create = function () {
+            this.setConfig("alephCenterPanel");
             _super.prototype.create.call(this);
             var that = this;
             $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 that.openMedia(resources);
             });
-            this.amiviewerContainer = document.createElement('div');
-            this.$content[0].appendChild(this.amiviewerContainer);
+            //this.alephContainer = document.createElement('div');
+            //this.alephContainer.id = 'container';
+            //this.$content.prepend(this.alephContainer);
         };
-        AMICenterPanel.prototype.openMedia = function (resources) {
+        AlephCenterPanel.prototype.openMedia = function (resources) {
             var _this = this;
             this.extension.getExternalResources(resources).then(function () {
                 var canvas = _this.extension.helper.getCurrentCanvas();
@@ -17395,44 +17387,44 @@ define('modules/uv-amicenterpanel-module/AMICenterPanel',["require", "exports", 
                     if (body.length) {
                         var media = body[0];
                         _this._src = media.id;
-                        var format = media.getFormat();
-                        _this._display = (format && format.toString() === "model/stl" ||
-                            format && format.toString() === "application/gltf") ? Mode_1.Mode.MESH : Mode_1.Mode.SLICES;
+                        // const format: Manifesto.MediaType | null = media.getFormat();
+                        // this._display = (format && format.toString() === "model/stl" || 
+                        //                  format && format.toString() === "application/gltf") ? Mode.MESH : Mode.SLICES;
                         _this._render();
                     }
                 }
                 $.publish(BaseEvents_1.BaseEvents.RESIZE);
             });
         };
-        AMICenterPanel.prototype._render = function () {
+        AlephCenterPanel.prototype._render = function () {
             var _this = this;
-            this.amiviewerContainer.innerHTML = '';
-            this.amiviewer = document.createElement('ami-viewer');
-            //this.amiviewer.setAttribute('draco-decoder-path', this.config.options.dracoDecoderPath);
+            //this.alephContainer.innerHTML = '';
+            this.aleph = document.createElement('uv-aleph');
+            this.$content.prepend(this.aleph);
+            this.aleph.setAttribute('width', '100%');
+            this.aleph.setAttribute('height', '100%');
+            //this.aleph.setAttribute('draco-decoder-path', this.config.options.dracoDecoderPath);
             var dracoDecoderPath = (window.self !== window.top) ? 'lib/' : 'uv/lib/';
-            this.amiviewer.setAttribute('draco-decoder-path', dracoDecoderPath);
-            this.amiviewerContainer.appendChild(this.amiviewer);
-            this.amiviewer.addEventListener('onLoaded', function () {
-                _this.amiviewer.setToolsVisible(true); // can only show them after src loaded
-                _this.amiviewer.setOptionsVisible(true); // can only show them after src loaded
+            this.aleph.setAttribute('draco-decoder-path', dracoDecoderPath);
+            //this.alephContainer.appendChild(this.aleph);
+            this.aleph.addEventListener('onChanged', function () {
+                //this.aleph.setToolsVisible(true); // can only show them after src loaded
+                //this.aleph.setOptionsVisible(true); // can only show them after src loaded
             }, false);
-            this.amiviewer.componentOnReady().then(function (component) {
-                component.setDisplay(_this._display);
-                component.setSrc(_this._src);
+            this.aleph.componentOnReady().then(function (aleph) {
+                //aleph.setDisplay(this._display);
+                aleph.load(_this._src);
             });
         };
-        AMICenterPanel.prototype.resize = function () {
+        AlephCenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            var $amiviewer = $(this.amiviewer);
-            $amiviewer.height(this.$content.height());
-            $amiviewer.width(this.$content.width());
-            if (this.amiviewer && this.amiviewer.resize) {
-                this.amiviewer.resize();
+            if (this.aleph && this.aleph.resize) {
+                this.aleph.resize();
             }
         };
-        return AMICenterPanel;
+        return AlephCenterPanel;
     }(CenterPanel_1.CenterPanel));
-    exports.AMICenterPanel = AMICenterPanel;
+    exports.AlephCenterPanel = AlephCenterPanel;
 });
 
 define('modules/uv-shared-module/InformationArgs',["require", "exports"], function (require, exports) {
@@ -21022,7 +21014,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-ami-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
+define('extensions/uv-aleph-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var DownloadDialogue = /** @class */ (function (_super) {
@@ -21746,7 +21738,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-ami-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
+define('extensions/uv-aleph-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SettingsDialogue = /** @class */ (function (_super) {
@@ -22071,7 +22063,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-ami-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
+define('extensions/uv-aleph-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ShareDialogue = /** @class */ (function (_super) {
@@ -22106,7 +22098,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-ami-extension/Extension',["require", "exports", "../../modules/uv-amicenterpanel-module/AMICenterPanel", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-avmobilefooterpanel-module/MobileFooter", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AMICenterPanel_1, BaseEvents_1, BaseExtension_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, MobileFooter_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../modules/uv-alephcenterpanel-module/AlephCenterPanel", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-avmobilefooterpanel-module/MobileFooter", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AlephCenterPanel_1, BaseEvents_1, BaseExtension_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, MobileFooter_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -22135,7 +22127,7 @@ define('extensions/uv-ami-extension/Extension',["require", "exports", "../../mod
             else {
                 Shell_1.Shell.$leftPanel.hide();
             }
-            this.centerPanel = new AMICenterPanel_1.AMICenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new AlephCenterPanel_1.AlephCenterPanel(Shell_1.Shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
                 this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
             }
@@ -28409,333 +28401,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-virtex-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var DownloadDialogue = /** @class */ (function (_super) {
-        __extends(DownloadDialogue, _super);
-        function DownloadDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        DownloadDialogue.prototype.create = function () {
-            this.setConfig('downloadDialogue');
-            _super.prototype.create.call(this);
-        };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
-            this.addEntireFileDownloadOptions();
-            this.updateNoneAvailable();
-            this.resize();
-        };
-        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            return _super.prototype.isDownloadOptionAvailable.call(this, option);
-        };
-        return DownloadDialogue;
-    }(DownloadDialogue_1.DownloadDialogue));
-    exports.DownloadDialogue = DownloadDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-virtex-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SettingsDialogue = /** @class */ (function (_super) {
-        __extends(SettingsDialogue, _super);
-        function SettingsDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        SettingsDialogue.prototype.create = function () {
-            this.setConfig('settingsDialogue');
-            _super.prototype.create.call(this);
-        };
-        return SettingsDialogue;
-    }(SettingsDialogue_1.SettingsDialogue));
-    exports.SettingsDialogue = SettingsDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-virtex-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var ShareDialogue = /** @class */ (function (_super) {
-        __extends(ShareDialogue, _super);
-        function ShareDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        ShareDialogue.prototype.create = function () {
-            this.setConfig('shareDialogue');
-            _super.prototype.create.call(this);
-        };
-        ShareDialogue.prototype.update = function () {
-            _super.prototype.update.call(this);
-            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
-            this.$code.val(this.code);
-        };
-        ShareDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return ShareDialogue;
-    }(ShareDialogue_1.ShareDialogue));
-    exports.ShareDialogue = ShareDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel"], function (require, exports, BaseEvents_1, CenterPanel_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var VirtexCenterPanel = /** @class */ (function (_super) {
-        __extends(VirtexCenterPanel, _super);
-        function VirtexCenterPanel($element) {
-            return _super.call(this, $element) || this;
-        }
-        VirtexCenterPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('virtexCenterPanel');
-            _super.prototype.create.call(this);
-            var that = this;
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
-                that.openMedia(resources);
-            });
-            this.$navigation = $('<div class="navigation"></div>');
-            this.$content.prepend(this.$navigation);
-            this.$zoomInButton = $("\n          <button class=\"btn imageBtn zoomIn\" title=\"" + this.content.zoomIn + "\">\n            <i class=\"uv-icon-zoom-in\" aria-hidden=\"true\"></i>" + this.content.zoomIn + "\n          </button>\n        ");
-            this.$navigation.append(this.$zoomInButton);
-            this.$zoomOutButton = $("\n          <button class=\"btn imageBtn zoomOut\" title=\"" + this.content.zoomOut + "\">\n            <i class=\"uv-icon-zoom-out\" aria-hidden=\"true\"></i>" + this.content.zoomOut + "\n          </button>\n        ");
-            this.$navigation.append(this.$zoomOutButton);
-            this.$vrButton = $("\n          <button class=\"btn imageBtn vr\" title=\"" + this.content.vr + "\">\n            <i class=\"uv-icon-vr\" aria-hidden=\"true\"></i>" + this.content.vr + "\n          </button>\n        ");
-            this.$navigation.append(this.$vrButton);
-            this.$viewport = $('<div class="virtex"></div>');
-            this.$content.prepend(this.$viewport);
-            this.title = this.extension.helper.getLabel();
-            this.$zoomInButton.on('click', function (e) {
-                e.preventDefault();
-                if (_this.viewport) {
-                    _this.viewport.zoomIn();
-                }
-            });
-            this.$zoomOutButton.on('click', function (e) {
-                e.preventDefault();
-                if (_this.viewport) {
-                    _this.viewport.zoomOut();
-                }
-            });
-            this.$vrButton.on('click', function (e) {
-                e.preventDefault();
-                if (_this.viewport) {
-                    _this.viewport.toggleVR();
-                }
-            });
-            if (!this._isVREnabled()) {
-                this.$vrButton.hide();
-            }
-        };
-        VirtexCenterPanel.prototype.openMedia = function (resources) {
-            var _this = this;
-            this.extension.getExternalResources(resources).then(function () {
-                _this.$viewport.empty();
-                var mediaUri = null;
-                var canvas = _this.extension.helper.getCurrentCanvas();
-                var formats = _this.extension.getMediaFormats(canvas);
-                var resourceType = null;
-                // default to threejs format.
-                var fileType = new Virtex.FileType("application/vnd.threejs+json");
-                if (formats && formats.length) {
-                    mediaUri = formats[0].id;
-                    resourceType = formats[0].getFormat();
-                }
-                else {
-                    mediaUri = canvas.id;
-                }
-                if (resourceType) {
-                    fileType = new Virtex.FileType(resourceType.toString());
-                }
-                var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
-                _this.viewport = new Virtex.Viewport({
-                    target: _this.$viewport[0],
-                    data: {
-                        antialias: !isAndroid,
-                        file: mediaUri,
-                        fullscreenEnabled: false,
-                        type: fileType,
-                        showStats: _this.options.showStats
-                    }
-                });
-                if (_this.viewport) {
-                    _this.viewport.on('vravailable', function () {
-                        _this.$vrButton.show();
-                    }, false);
-                    _this.viewport.on('vrunavailable', function () {
-                        _this.$vrButton.hide();
-                    }, false);
-                }
-                _this.resize();
-            });
-        };
-        VirtexCenterPanel.prototype._isVREnabled = function () {
-            return (Utils.Bools.getBool(this.config.options.vrEnabled, false) && WEBVR.isAvailable());
-        };
-        VirtexCenterPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            if (this.title) {
-                this.$title.ellipsisFill(this.title);
-            }
-            this.$viewport.width(this.$content.width());
-            this.$viewport.height(this.$content.height());
-            if (this.viewport) {
-                this.viewport.resize();
-            }
-        };
-        return VirtexCenterPanel;
-    }(CenterPanel_1.CenterPanel));
-    exports.VirtexCenterPanel = VirtexCenterPanel;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1, VirtexCenterPanel_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Extension = /** @class */ (function (_super) {
-        __extends(Extension, _super);
-        function Extension() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        Extension.prototype.create = function () {
-            var _this = this;
-            _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this.viewCanvas(canvasIndex);
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
-            });
-        };
-        Extension.prototype.createModules = function () {
-            _super.prototype.createModules.call(this);
-            if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
-            }
-            else {
-                Shell_1.Shell.$headerPanel.hide();
-            }
-            if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(Shell_1.Shell.$leftPanel);
-            }
-            this.centerPanel = new VirtexCenterPanel_1.VirtexCenterPanel(Shell_1.Shell.$centerPanel);
-            if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
-            }
-            if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
-            }
-            else {
-                Shell_1.Shell.$footerPanel.hide();
-            }
-            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
-            this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
-            this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
-            this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
-            if (this.isLeftPanelEnabled()) {
-                this.leftPanel.init();
-            }
-            else {
-                Shell_1.Shell.$leftPanel.hide();
-            }
-            if (this.isRightPanelEnabled()) {
-                this.rightPanel.init();
-            }
-            else {
-                Shell_1.Shell.$rightPanel.hide();
-            }
-        };
-        Extension.prototype.render = function () {
-            _super.prototype.render.call(this);
-        };
-        Extension.prototype.dependencyLoaded = function (index, dep) {
-            if (index === 0) {
-                window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
-            }
-        };
-        Extension.prototype.isLeftPanelEnabled = function () {
-            return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true)
-                && (this.helper.isMultiCanvas() || this.helper.isMultiSequence());
-        };
-        Extension.prototype.bookmark = function () {
-            _super.prototype.bookmark.call(this);
-            var canvas = this.helper.getCurrentCanvas();
-            var bookmark = new Bookmark_1.Bookmark();
-            bookmark.index = this.helper.canvasIndex;
-            bookmark.label = Manifesto.LanguageMap.getValue(canvas.getLabel());
-            bookmark.thumb = canvas.getProperty('thumbnail');
-            bookmark.title = this.helper.getLabel();
-            bookmark.trackingLabel = window.trackingLabel;
-            bookmark.type = manifesto.ResourceType.physicalobject().toString();
-            this.fire(BaseEvents_1.BaseEvents.BOOKMARK, bookmark);
-        };
-        Extension.prototype.getEmbedScript = function (template, width, height) {
-            //const configUri: string = this.data.config.uri || '';
-            //const script: string = String.format(template, this.getSerializedLocales(), configUri, this.helper.iiifResourceUri, this.helper.collectionIndex, this.helper.manifestIndex, this.helper.sequenceIndex, this.helper.canvasIndex, width, height, this.data.embedScriptUri);
-            var appUri = this.getAppUri();
-            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex;
-            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
-            return script;
-        };
-        return Extension;
-    }(BaseExtension_1.BaseExtension));
-    exports.Extension = Extension;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./extensions/uv-ami-extension/Extension", "./extensions/uv-av-extension/Extension", "./extensions/uv-default-extension/Extension", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension", "./Utils"], function (require, exports, BaseEvents_1, Extension_1, Extension_2, Extension_3, Extension_4, Extension_5, Extension_6, Extension_7, Utils_1) {
+define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./extensions/uv-aleph-extension/Extension", "./extensions/uv-av-extension/Extension", "./extensions/uv-default-extension/Extension", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./Utils"], function (require, exports, BaseEvents_1, Extension_1, Extension_2, Extension_3, Extension_4, Extension_5, Extension_6, Utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var UVComponent = /** @class */ (function (_super) {
@@ -28766,8 +28432,8 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 name: 'uv-mediaelement-extension'
             };
             this._extensions[manifesto.ResourceType.physicalobject().toString()] = {
-                type: Extension_7.Extension,
-                name: 'uv-virtex-extension'
+                type: Extension_1.Extension,
+                name: 'uv-aleph-extension'
             };
             this._extensions[manifesto.ResourceType.sound().toString()] = {
                 type: Extension_4.Extension,
@@ -28794,10 +28460,6 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 type: Extension_2.Extension,
                 name: 'uv-av-extension'
             };
-            this._extensions[manifesto.MediaType.threejs().toString()] = {
-                type: Extension_7.Extension,
-                name: 'uv-virtex-extension'
-            };
             this._extensions['av'] = {
                 type: Extension_2.Extension,
                 name: 'uv-av-extension'
@@ -28816,20 +28478,20 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             };
             this._extensions['application/dicom'] = {
                 type: Extension_1.Extension,
-                name: 'uv-ami-extension'
+                name: 'uv-aleph-extension'
             };
             this._extensions['model/stl'] = {
                 type: Extension_1.Extension,
-                name: 'uv-ami-extension'
+                name: 'uv-aleph-extension'
             };
             this._extensions['application/gltf'] = {
                 type: Extension_1.Extension,
-                name: 'uv-ami-extension'
+                name: 'uv-aleph-extension'
             };
             // todo: need to create a map
             this._extensions['application/gzip'] = {
                 type: Extension_1.Extension,
-                name: 'uv-ami-extension'
+                name: 'uv-aleph-extension'
             };
             this._extensions['application/vnd.apple.mpegurl'] = {
                 type: Extension_2.Extension,
