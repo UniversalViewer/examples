@@ -19384,6 +19384,31 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
     exports.BaseExtension = BaseExtension;
 });
 
+define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var DownloadOption = /** @class */ (function () {
+        function DownloadOption(value) {
+            this.value = value;
+        }
+        DownloadOption.prototype.toString = function () {
+            return this.value;
+        };
+        DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
+        DownloadOption.dynamicCanvasRenderings = new DownloadOption("dynamicCanvasRenderings");
+        DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
+        DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
+        DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
+        DownloadOption.rangeRendering = new DownloadOption("rangeRendering");
+        DownloadOption.selection = new DownloadOption("selection");
+        DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
+        DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
+        DownloadOption.wholeImagesHighRes = new DownloadOption("wholeImagesHighRes");
+        return DownloadOption;
+    }());
+    exports.DownloadOption = DownloadOption;
+});
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -19394,75 +19419,664 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
+define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseEvents_1, Dialogue_1, DownloadOption_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var GalleryView = /** @class */ (function (_super) {
-        __extends(GalleryView, _super);
-        function GalleryView($element) {
-            var _this = _super.call(this, $element, true, true) || this;
-            _this.isOpen = false;
-            return _this;
+    var DownloadDialogue = /** @class */ (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            return _super.call(this, $element) || this;
         }
-        GalleryView.prototype.create = function () {
-            this.setConfig('contentLeftPanel');
+        DownloadDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('downloadDialogue');
             _super.prototype.create.call(this);
-            // search preview doesn't work well with the gallery because it loads thumbs in "chunks"
-            // $.subscribe(Events.SEARCH_PREVIEW_START, (e, canvasIndex) => {
-            //     this.galleryComponent.searchPreviewStart(canvasIndex);
-            // });
-            // $.subscribe(Events.SEARCH_PREVIEW_FINISH, () => {
-            //     this.galleryComponent.searchPreviewFinish();
-            // });
-            this.$gallery = $('<div class="iiif-gallery-component"></div>');
-            this.$element.append(this.$gallery);
-            // stencil.js demo
-            // const gallery = document.createElement('iiif-gallery');
-            // gallery.setAttribute('manifest', this.extension.helper.manifest.id);
-            // this.$element[0].appendChild(gallery);
-        };
-        GalleryView.prototype.setup = function () {
-            this.galleryComponent = new IIIFComponents.GalleryComponent({
-                target: this.$gallery[0]
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
+            $.subscribe(this.openCommand, function (e, $triggerButton) {
+                _this.open($triggerButton);
             });
-            this.galleryComponent.on('thumbSelected', function (thumb) {
-                $.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
-                $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
-            }, false);
-            this.galleryComponent.on('decreaseSize', function () {
-                $.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
-            }, false);
-            this.galleryComponent.on('increaseSize', function () {
-                $.publish(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
-            }, false);
+            $.subscribe(this.closeCommand, function () {
+                _this.close();
+            });
+            // create ui.
+            this.$title = $('<h1>' + this.content.title + '</h1>');
+            this.$content.append(this.$title);
+            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
+            this.$content.append(this.$noneAvailable);
+            this.$downloadOptions = $('<ol class="options"></ol>');
+            this.$content.append(this.$downloadOptions);
+            this.$footer = $('<div class="footer"></div>');
+            this.$content.append(this.$footer);
+            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
+            this.$footer.append(this.$termsOfUseButton);
+            this.$termsOfUseButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
+            });
+            // hide
+            this.$element.hide();
+            this.updateTermsOfUseButton();
         };
-        GalleryView.prototype.databind = function () {
-            this.galleryComponent.options.data = this.galleryData;
-            this.galleryComponent.set(this.galleryData);
+        DownloadDialogue.prototype.addEntireFileDownloadOptions = function () {
+            if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.entireFileAsOriginal)) {
+                this.$downloadOptions.empty();
+                // add each file src
+                var canvas = this.extension.helper.getCurrentCanvas();
+                var renderingFound = false;
+                var renderings = canvas.getRenderings();
+                for (var i = 0; i < renderings.length; i++) {
+                    var rendering = renderings[i];
+                    var renderingFormat = rendering.getFormat();
+                    var format = '';
+                    if (renderingFormat) {
+                        format = renderingFormat.toString();
+                    }
+                    this.addEntireFileDownloadOption(rendering.id, Manifesto.LanguageMap.getValue(rendering.getLabel()), format);
+                    renderingFound = true;
+                }
+                if (!renderingFound) {
+                    var annotationFound = false;
+                    var annotations = canvas.getContent();
+                    for (var i = 0; i < annotations.length; i++) {
+                        var annotation = annotations[i];
+                        var body = annotation.getBody();
+                        if (body.length) {
+                            var format = body[0].getFormat();
+                            if (format) {
+                                this.addEntireFileDownloadOption(body[0].id, '', format.toString());
+                                annotationFound = true;
+                            }
+                        }
+                    }
+                    if (!annotationFound) {
+                        this.addEntireFileDownloadOption(canvas.id, '', '');
+                    }
+                }
+            }
+        };
+        DownloadDialogue.prototype.addEntireFileDownloadOption = function (uri, label, format) {
+            var fileType;
+            if (format) {
+                fileType = Utils.Files.simplifyMimeType(format);
+            }
+            else {
+                fileType = this.getFileExtension(uri);
+            }
+            if (!label) {
+                label = this.content.entireFileAsOriginal;
+            }
+            if (fileType) {
+                label += " (" + fileType + ")";
+            }
+            this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + label + '</li>');
+        };
+        DownloadDialogue.prototype.resetDynamicDownloadOptions = function () {
+            this.renderingUrls = [];
+            this.renderingUrlsCount = 0;
+            this.$downloadOptions.find('li.dynamic').remove();
+        };
+        DownloadDialogue.prototype.getDownloadOptionsForRenderings = function (resource, defaultLabel, type) {
+            var renderings = resource.getRenderings();
+            var downloadOptions = [];
+            for (var i = 0; i < renderings.length; i++) {
+                var rendering = renderings[i];
+                if (rendering) {
+                    var label = Manifesto.LanguageMap.getValue(rendering.getLabel(), this.extension.getLocale());
+                    var currentId = "downloadOption" + ++this.renderingUrlsCount;
+                    if (label) {
+                        label += " ({0})";
+                    }
+                    else {
+                        label = defaultLabel;
+                    }
+                    var mime = Utils.Files.simplifyMimeType(rendering.getFormat().toString());
+                    label = Utils.Strings.format(label, mime);
+                    this.renderingUrls[currentId] = rendering.id;
+                    var $button = $('<li class="option dynamic"><input id="' + currentId + '" data-mime="' + mime + '" title="' + label + '" type="radio" name="downloadOptions" tabindex="0" /><label for="' + currentId + '">' + label + '</label></li>');
+                    downloadOptions.push({
+                        type: type,
+                        button: $button
+                    });
+                }
+            }
+            return downloadOptions;
+        };
+        DownloadDialogue.prototype.getSelectedOption = function () {
+            return this.$downloadOptions.find("li.option input:checked");
+        };
+        DownloadDialogue.prototype.getCurrentResourceId = function () {
+            var canvas = this.extension.helper.getCurrentCanvas();
+            return canvas.externalResource.data.id;
+        };
+        DownloadDialogue.prototype.getCurrentResourceFormat = function () {
+            var id = this.getCurrentResourceId();
+            return id.substr(id.lastIndexOf('.') + 1).toLowerCase();
+        };
+        DownloadDialogue.prototype.updateNoneAvailable = function () {
+            if (!this.$downloadOptions.find('li:visible').length) {
+                this.$noneAvailable.show();
+            }
+            else {
+                // select first option.
+                this.$noneAvailable.hide();
+            }
+        };
+        DownloadDialogue.prototype.updateTermsOfUseButton = function () {
+            var requiredStatement = this.extension.helper.getRequiredStatement();
+            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && requiredStatement && requiredStatement.value) {
+                this.$termsOfUseButton.show();
+            }
+            else {
+                this.$termsOfUseButton.hide();
+            }
+        };
+        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
+            var extension = fileUri.split('.').pop();
+            // if it's not a valid file extension
+            if (extension.length > 5 || extension.indexOf('/') !== -1) {
+                return null;
+            }
+            return extension;
+        };
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            switch (option) {
+                case DownloadOption_1.DownloadOption.entireFileAsOriginal:
+                    // check if ui-extensions disable it
+                    var uiExtensions = this.extension.helper.manifest.getService(manifesto.ServiceProfile.uiExtensions());
+                    if (uiExtensions && !this.extension.helper.isUIEnabled('mediaDownload')) {
+                        return false;
+                    }
+            }
+            return true;
+        };
+        DownloadDialogue.prototype.close = function () {
+            _super.prototype.close.call(this);
+        };
+        DownloadDialogue.prototype.resize = function () {
+            this.setDockedPosition();
+        };
+        return DownloadDialogue;
+    }(Dialogue_1.Dialogue));
+    exports.DownloadDialogue = DownloadDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-aleph-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var DownloadDialogue = /** @class */ (function (_super) {
+        __extends(DownloadDialogue, _super);
+        function DownloadDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        DownloadDialogue.prototype.create = function () {
+            this.setConfig('downloadDialogue');
+            _super.prototype.create.call(this);
+        };
+        DownloadDialogue.prototype.open = function ($triggerButton) {
+            _super.prototype.open.call(this, $triggerButton);
+            this.addEntireFileDownloadOptions();
+            this.updateNoneAvailable();
             this.resize();
         };
-        GalleryView.prototype.show = function () {
+        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
+            return _super.prototype.isDownloadOptionAvailable.call(this, option);
+        };
+        return DownloadDialogue;
+    }(DownloadDialogue_1.DownloadDialogue));
+    exports.DownloadDialogue = DownloadDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEvents", "./BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var FooterPanel = /** @class */ (function (_super) {
+        __extends(FooterPanel, _super);
+        function FooterPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        FooterPanel.prototype.create = function () {
             var _this = this;
-            this.isOpen = true;
-            this.$element.show();
-            // todo: would be better to have no imperative methods on components and use a reactive pattern
-            setTimeout(function () {
-                _this.galleryComponent.selectIndex(_this.extension.helper.canvasIndex);
-            }, 10);
+            this.setConfig('footerPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+                _this.updateFullScreenButton();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+                _this.updateMinimisedButtons();
+                _this.updateMoreInfoButton();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
+                _this.updateDownloadButton();
+            });
+            this.$options = $('<div class="options"></div>');
+            this.$element.append(this.$options);
+            this.$feedbackButton = $("\n          <button class=\"feedback btn imageBtn\" title=\"" + this.content.feedback + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-feedback\" aria-hidden=\"true\"></i>" + this.content.feedback + "\n          </button>\n        ");
+            this.$options.prepend(this.$feedbackButton);
+            this.$openButton = $("\n          <button class=\"open btn imageBtn\" title=\"" + this.content.open + "\" tabindex=\"0\">\n            <i class=\"uv-icon-open\" aria-hidden=\"true\"></i>" + this.content.open + "\n          </button>\n        ");
+            this.$options.prepend(this.$openButton);
+            this.$bookmarkButton = $("\n          <button class=\"bookmark btn imageBtn\" title=\"" + this.content.bookmark + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-bookmark\" aria-hidden=\"true\"></i>" + this.content.bookmark + "\n          </button>\n        ");
+            this.$options.prepend(this.$bookmarkButton);
+            this.$shareButton = $("\n          <button class=\"share btn imageBtn\" title=\"" + this.content.share + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-share\" aria-hidden=\"true\"></i>" + this.content.share + "\n          </button>\n        ");
+            this.$options.append(this.$shareButton);
+            this.$embedButton = $("\n          <button class=\"embed btn imageBtn\" title=\"" + this.content.embed + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-embed\" aria-hidden=\"true\"></i>" + this.content.embed + "\n          </button>\n        ");
+            this.$options.append(this.$embedButton);
+            this.$downloadButton = $("\n          <button class=\"download btn imageBtn\" title=\"" + this.content.download + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-download\" aria-hidden=\"true\"></i>" + this.content.download + "\n          </button>\n        ");
+            this.$options.prepend(this.$downloadButton);
+            this.$moreInfoButton = $("\n          <button class=\"moreInfo btn imageBtn\" title=\"" + this.content.moreInfo + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-more-info\" aria-hidden=\"true\"></i>" + this.content.moreInfo + "\n          </button>\n        ");
+            this.$options.prepend(this.$moreInfoButton);
+            this.$fullScreenBtn = $("\n          <button class=\"fullScreen btn imageBtn\" title=\"" + this.content.fullScreen + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-fullscreen\" aria-hidden=\"true\"></i>" + this.content.fullScreen + "\n          </button>\n        ");
+            this.$options.append(this.$fullScreenBtn);
+            this.$openButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.OPEN);
+            });
+            this.$feedbackButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.FEEDBACK);
+            });
+            this.$bookmarkButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.BOOKMARK);
+            });
+            this.$shareButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE, [_this.$shareButton]);
+            });
+            this.$embedButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, [_this.$embedButton]);
+            });
+            this.$downloadButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, [_this.$downloadButton]);
+            });
+            this.$moreInfoButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE, [_this.$moreInfoButton]);
+            });
+            this.$fullScreenBtn.on('click', function (e) {
+                e.preventDefault();
+                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+            });
+            if (!Utils.Bools.getBool(this.options.embedEnabled, true)) {
+                this.$embedButton.hide();
+            }
+            this.updateMoreInfoButton();
+            this.updateOpenButton();
+            this.updateFeedbackButton();
+            this.updateBookmarkButton();
+            this.updateEmbedButton();
+            this.updateDownloadButton();
+            this.updateFullScreenButton();
+            this.updateShareButton();
+            this.updateMinimisedButtons();
         };
-        GalleryView.prototype.hide = function () {
-            this.isOpen = false;
-            this.$element.hide();
+        FooterPanel.prototype.updateMinimisedButtons = function () {
+            // if configured to always minimise buttons
+            if (Utils.Bools.getBool(this.options.minimiseButtons, false)) {
+                this.$options.addClass('minimiseButtons');
+                return;
+            }
+            // otherwise, check metric
+            if (!this.extension.isDesktopMetric()) {
+                this.$options.addClass('minimiseButtons');
+            }
+            else {
+                this.$options.removeClass('minimiseButtons');
+            }
         };
-        GalleryView.prototype.resize = function () {
+        FooterPanel.prototype.updateMoreInfoButton = function () {
+            var configEnabled = Utils.Bools.getBool(this.options.moreInfoEnabled, false);
+            if (configEnabled && !this.extension.isDesktopMetric() && !this.extension.isCatchAllMetric()) {
+                this.$moreInfoButton.show();
+            }
+            else {
+                this.$moreInfoButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateOpenButton = function () {
+            var configEnabled = Utils.Bools.getBool(this.options.openEnabled, false);
+            if (configEnabled && Utils.Documents.isInIFrame()) {
+                this.$openButton.show();
+            }
+            else {
+                this.$openButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateFullScreenButton = function () {
+            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true) || !Utils.Documents.supportsFullscreen()) {
+                this.$fullScreenBtn.hide();
+                return;
+            }
+            if (this.extension.data.isLightbox) {
+                this.$fullScreenBtn.addClass('lightbox');
+            }
+            if (this.extension.isFullScreen()) {
+                this.$fullScreenBtn.switchClass('fullScreen', 'exitFullscreen');
+                this.$fullScreenBtn.find('i').switchClass('uv-icon-fullscreen', 'uv-icon-exit-fullscreen');
+                this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
+                $(this.$fullScreenBtn[0].firstChild.nextSibling.nextSibling).replaceWith(this.content.exitFullScreen);
+            }
+            else {
+                this.$fullScreenBtn.switchClass('exitFullscreen', 'fullScreen');
+                this.$fullScreenBtn.find('i').switchClass('uv-icon-exit-fullscreen', 'uv-icon-fullscreen');
+                this.$fullScreenBtn.attr('title', this.content.fullScreen);
+                $(this.$fullScreenBtn[0].firstChild.nextSibling.nextSibling).replaceWith(this.content.fullScreen);
+            }
+        };
+        FooterPanel.prototype.updateEmbedButton = function () {
+            if (this.extension.helper.isUIEnabled('embed') && Utils.Bools.getBool(this.options.embedEnabled, false)) {
+                // current jquery version sets display to 'inline' in mobile version, while this should remain hidden (see media query)
+                if (!this.extension.isMobile()) {
+                    this.$embedButton.show();
+                }
+            }
+            else {
+                this.$embedButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateShareButton = function () {
+            if (this.extension.helper.isUIEnabled('share') && Utils.Bools.getBool(this.options.shareEnabled, true)) {
+                this.$shareButton.show();
+            }
+            else {
+                this.$shareButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateDownloadButton = function () {
+            var configEnabled = Utils.Bools.getBool(this.options.downloadEnabled, true);
+            if (configEnabled) {
+                this.$downloadButton.show();
+            }
+            else {
+                this.$downloadButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateFeedbackButton = function () {
+            var configEnabled = Utils.Bools.getBool(this.options.feedbackEnabled, false);
+            if (configEnabled) {
+                this.$feedbackButton.show();
+            }
+            else {
+                this.$feedbackButton.hide();
+            }
+        };
+        FooterPanel.prototype.updateBookmarkButton = function () {
+            var configEnabled = Utils.Bools.getBool(this.options.bookmarkEnabled, false);
+            if (configEnabled) {
+                this.$bookmarkButton.show();
+            }
+            else {
+                this.$bookmarkButton.hide();
+            }
+        };
+        FooterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            var $main = this.$gallery.find('.main');
-            var $header = this.$gallery.find('.header');
-            $main.height(this.$element.height() - $header.height());
         };
-        return GalleryView;
+        return FooterPanel;
     }(BaseView_1.BaseView));
-    exports.GalleryView = GalleryView;
+    exports.FooterPanel = FooterPanel;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-avmobilefooterpanel-module/MobileFooter',["require", "exports", "../uv-shared-module/FooterPanel"], function (require, exports, FooterPanel_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var FooterPanel = /** @class */ (function (_super) {
+        __extends(FooterPanel, _super);
+        function FooterPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        FooterPanel.prototype.create = function () {
+            this.setConfig('mobileFooterPanel');
+            _super.prototype.create.call(this);
+        };
+        FooterPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            this.$options.css('left', Math.floor((this.$element.width() / 2) - (this.$options.width() / 2)));
+        };
+        return FooterPanel;
+    }(FooterPanel_1.FooterPanel));
+    exports.FooterPanel = FooterPanel;
+});
+
+define('modules/uv-shared-module/Information',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Information = /** @class */ (function () {
+        function Information(message, actions) {
+            this.message = message;
+            this.actions = actions;
+        }
+        return Information;
+    }());
+    exports.Information = Information;
+});
+
+define('modules/uv-shared-module/InformationAction',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var InformationAction = /** @class */ (function () {
+        function InformationAction() {
+        }
+        return InformationAction;
+    }());
+    exports.InformationAction = InformationAction;
+});
+
+define('modules/uv-shared-module/InformationFactory',["require", "exports", "./BaseEvents", "./Information", "./InformationAction", "./InformationType"], function (require, exports, BaseEvents_1, Information_1, InformationAction_1, InformationType_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var InformationFactory = /** @class */ (function () {
+        function InformationFactory(extension) {
+            this.extension = extension;
+        }
+        InformationFactory.prototype.Get = function (args) {
+            switch (args.informationType) {
+                case (InformationType_1.InformationType.AUTH_CORS_ERROR):
+                    return new Information_1.Information(this.extension.data.config.content.authCORSError, []);
+                case (InformationType_1.InformationType.DEGRADED_RESOURCE):
+                    var actions = [];
+                    var loginAction = new InformationAction_1.InformationAction();
+                    var label = args.param.loginService.getConfirmLabel();
+                    if (!label) {
+                        label = this.extension.data.config.content.fallbackDegradedLabel;
+                    }
+                    loginAction.label = label;
+                    var resource_1 = args.param;
+                    loginAction.action = function () {
+                        resource_1.authHoldingPage = window.open("", "_blank");
+                        $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
+                        $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
+                    };
+                    actions.push(loginAction);
+                    var message = args.param.loginService.getServiceLabel();
+                    if (!message) {
+                        message = this.extension.data.config.content.fallbackDegradedMessage;
+                    }
+                    return new Information_1.Information(message, actions);
+            }
+        };
+        return InformationFactory;
+    }());
+    exports.InformationFactory = InformationFactory;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEvents", "./BaseView", "../uv-shared-module/InformationFactory"], function (require, exports, BaseEvents_1, BaseView_1, InformationFactory_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var HeaderPanel = /** @class */ (function (_super) {
+        __extends(HeaderPanel, _super);
+        function HeaderPanel($element) {
+            return _super.call(this, $element, false, false) || this;
+        }
+        HeaderPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('headerPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function (e, args) {
+                _this.showInformation(args);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
+                _this.hideInformation();
+            });
+            this.$options = $('<div class="options"></div>');
+            this.$element.append(this.$options);
+            this.$centerOptions = $('<div class="centerOptions"></div>');
+            this.$options.append(this.$centerOptions);
+            this.$rightOptions = $('<div class="rightOptions"></div>');
+            this.$options.append(this.$rightOptions);
+            //this.$helpButton = $('<a href="#" class="action help">' + this.content.help + '</a>');
+            //this.$rightOptions.append(this.$helpButton);
+            this.$localeToggleButton = $('<a class="localeToggle" tabindex="0"></a>');
+            this.$rightOptions.append(this.$localeToggleButton);
+            this.$settingsButton = $("\n          <button class=\"btn imageBtn settings\" tabindex=\"0\" title=\"" + this.content.settings + "\">\n            <i class=\"uv-icon-settings\" aria-hidden=\"true\"></i>" + this.content.settings + "\n          </button>\n        ");
+            this.$settingsButton.attr('title', this.content.settings);
+            this.$rightOptions.append(this.$settingsButton);
+            this.$informationBox = $('<div class="informationBox" aria-hidden="true"> \
+                                    <div class="message"></div> \
+                                    <div class="actions"></div> \
+                                    <button type="button" class="close" aria-label="Close"> \
+                                        <span aria-hidden="true">&times;</span>\
+                                    </button> \
+                                  </div>');
+            this.$element.append(this.$informationBox);
+            this.$informationBox.hide();
+            this.$informationBox.find('.close').attr('title', this.content.close);
+            this.$informationBox.find('.close').on('click', function (e) {
+                e.preventDefault();
+                $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
+            });
+            this.$localeToggleButton.on('click', function () {
+                _this.extension.changeLocale(String(_this.$localeToggleButton.data('locale')));
+            });
+            this.$settingsButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
+            });
+            if (!Utils.Bools.getBool(this.options.centerOptionsEnabled, true)) {
+                this.$centerOptions.hide();
+            }
+            this.updateLocaleToggle();
+            this.updateSettingsButton();
+        };
+        HeaderPanel.prototype.updateLocaleToggle = function () {
+            if (!this.localeToggleIsVisible()) {
+                this.$localeToggleButton.hide();
+                return;
+            }
+            var alternateLocale = this.extension.getAlternateLocale();
+            var text = alternateLocale.name.split('-')[0].toUpperCase();
+            this.$localeToggleButton.data('locale', alternateLocale.name);
+            this.$localeToggleButton.attr('title', alternateLocale.label);
+            this.$localeToggleButton.text(text);
+        };
+        HeaderPanel.prototype.updateSettingsButton = function () {
+            var settingsEnabled = Utils.Bools.getBool(this.options.settingsButtonEnabled, true);
+            if (!settingsEnabled) {
+                this.$settingsButton.hide();
+            }
+            else {
+                this.$settingsButton.show();
+            }
+        };
+        HeaderPanel.prototype.localeToggleIsVisible = function () {
+            var locales = this.extension.data.locales;
+            if (locales) {
+                return locales.length > 1 && Utils.Bools.getBool(this.options.localeToggleEnabled, false);
+            }
+            return false;
+        };
+        HeaderPanel.prototype.showInformation = function (args) {
+            var informationFactory = new InformationFactory_1.InformationFactory(this.extension);
+            this.information = informationFactory.Get(args);
+            var $message = this.$informationBox.find('.message');
+            $message.html(this.information.message).find('a').attr('target', '_top');
+            var $actions = this.$informationBox.find('.actions');
+            $actions.empty();
+            for (var i = 0; i < this.information.actions.length; i++) {
+                var action = this.information.actions[i];
+                var $action = $('<a href="#" class="btn btn-default">' + action.label + '</a>');
+                $action.on('click', action.action);
+                $actions.append($action);
+            }
+            this.$informationBox.attr('aria-hidden', 'false');
+            this.$informationBox.show();
+            this.$element.addClass('showInformation');
+            this.extension.resize();
+        };
+        HeaderPanel.prototype.hideInformation = function () {
+            this.$element.removeClass('showInformation');
+            this.$informationBox.attr('aria-hidden', 'true');
+            this.$informationBox.hide();
+            this.extension.resize();
+        };
+        HeaderPanel.prototype.getSettings = function () {
+            return this.extension.getSettings();
+        };
+        HeaderPanel.prototype.updateSettings = function (settings) {
+            this.extension.updateSettings(settings);
+            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
+        };
+        HeaderPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            var headerWidth = this.$element.width();
+            var center = headerWidth / 2;
+            var containerWidth = this.$centerOptions.outerWidth();
+            var pos = center - (containerWidth / 2);
+            this.$centerOptions.css({
+                left: pos
+            });
+            if (this.$informationBox.is(':visible')) {
+                var $actions = this.$informationBox.find('.actions');
+                var $message = this.$informationBox.find('.message');
+                $message.width(Math.floor(this.$element.width()) - Math.ceil($message.horizontalMargins()) - Math.ceil($actions.outerWidth(true)) - Math.ceil(this.$informationBox.find('.close').outerWidth(true)) - 2);
+                $message.ellipsisFill(this.information.message);
+            }
+            // hide toggle buttons below minimum width
+            if (this.extension.width() < this.extension.data.config.options.minWidthBreakPoint) {
+                if (this.localeToggleIsVisible())
+                    this.$localeToggleButton.hide();
+            }
+            else {
+                if (this.localeToggleIsVisible())
+                    this.$localeToggleButton.show();
+            }
+        };
+        return HeaderPanel;
+    }(BaseView_1.BaseView));
+    exports.HeaderPanel = HeaderPanel;
 });
 
 var __extends = (this && this.__extends) || (function () {
@@ -19687,6 +20301,611 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseEvents", "./BaseExpandPanel"], function (require, exports, BaseEvents_1, BaseExpandPanel_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var RightPanel = /** @class */ (function (_super) {
+        __extends(RightPanel, _super);
+        function RightPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        RightPanel.prototype.create = function () {
+            _super.prototype.create.call(this);
+            this.$element.width(this.options.panelCollapsedWidth);
+        };
+        RightPanel.prototype.init = function () {
+            var _this = this;
+            _super.prototype.init.call(this);
+            var shouldOpenPanel = Utils.Bools.getBool(this.extension.getSettings().rightPanelOpen, this.options.panelOpen);
+            if (shouldOpenPanel) {
+                this.toggle(true);
+            }
+            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL, function () {
+                if (_this.isFullyExpanded) {
+                    _this.collapseFull();
+                }
+                else {
+                    _this.expandFull();
+                }
+            });
+        };
+        RightPanel.prototype.getTargetWidth = function () {
+            return this.isExpanded ? this.options.panelCollapsedWidth : this.options.panelExpandedWidth;
+        };
+        RightPanel.prototype.getTargetLeft = function () {
+            return this.isExpanded ? this.$element.parent().width() - this.options.panelCollapsedWidth : this.$element.parent().width() - this.options.panelExpandedWidth;
+        };
+        RightPanel.prototype.toggleFinish = function () {
+            _super.prototype.toggleFinish.call(this);
+            if (this.isExpanded) {
+                $.publish(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
+            }
+            else {
+                $.publish(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
+            }
+            this.extension.updateSettings({ rightPanelOpen: this.isExpanded });
+        };
+        RightPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            this.$element.css({
+                'left': Math.floor(this.$element.parent().width() - this.$element.outerWidth())
+            });
+        };
+        return RightPanel;
+    }(BaseExpandPanel_1.BaseExpandPanel));
+    exports.RightPanel = RightPanel;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/RightPanel", "../../Utils"], function (require, exports, BaseEvents_1, RightPanel_1, Utils_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var MoreInfoRightPanel = /** @class */ (function (_super) {
+        __extends(MoreInfoRightPanel, _super);
+        function MoreInfoRightPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        MoreInfoRightPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('moreInfoRightPanel');
+            _super.prototype.create.call(this);
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+                _this.databind();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
+                _this.databind();
+            });
+            this.setTitle(this.config.content.title);
+            this.$metadata = $('<div class="iiif-metadata-component"></div>');
+            this.$main.append(this.$metadata);
+            this.metadataComponent = new IIIFComponents.MetadataComponent({
+                target: this.$metadata[0],
+                data: this._getData()
+            });
+            this.metadataComponent.on('iiifViewerLinkClicked', function (href) {
+                // get the hash param.
+                var rangeId = Utils.Urls.getHashParameterFromString('rid', href);
+                if (rangeId) {
+                    var range = _this.extension.helper.getRangeById(rangeId);
+                    if (range) {
+                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                    }
+                }
+            }, false);
+        };
+        MoreInfoRightPanel.prototype.toggleFinish = function () {
+            _super.prototype.toggleFinish.call(this);
+            this.databind();
+        };
+        MoreInfoRightPanel.prototype.databind = function () {
+            this.metadataComponent.set(this._getData());
+        };
+        MoreInfoRightPanel.prototype._getCurrentRange = function () {
+            var range = this.extension.helper.getCurrentRange();
+            return range;
+        };
+        MoreInfoRightPanel.prototype._getData = function () {
+            return {
+                canvasDisplayOrder: this.config.options.canvasDisplayOrder,
+                canvases: this.extension.getCurrentCanvases(),
+                canvasExclude: this.config.options.canvasExclude,
+                canvasLabels: this.extension.getCanvasLabels(this.content.page),
+                content: this.config.content,
+                copiedMessageDuration: 2000,
+                copyToClipboardEnabled: Utils.Bools.getBool(this.config.options.copyToClipboardEnabled, false),
+                helper: this.extension.helper,
+                licenseFormatter: new Manifold.UriLabeller(this.config.license ? this.config.license : {}),
+                limit: this.config.options.textLimit || 4,
+                limitType: IIIFComponents.LimitType.LINES,
+                limitToRange: Utils.Bools.getBool(this.config.options.limitToRange, false),
+                manifestDisplayOrder: this.config.options.manifestDisplayOrder,
+                manifestExclude: this.config.options.manifestExclude,
+                range: this._getCurrentRange(),
+                rtlLanguageCodes: this.config.options.rtlLanguageCodes,
+                sanitizer: function (html) {
+                    return Utils_1.UVUtils.sanitize(html);
+                },
+                showAllLanguages: this.config.options.showAllLanguages
+            };
+        };
+        MoreInfoRightPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            this.$main.height(this.$element.height() - this.$top.height() - this.$main.verticalMargins());
+        };
+        return MoreInfoRightPanel;
+    }(RightPanel_1.RightPanel));
+    exports.MoreInfoRightPanel = MoreInfoRightPanel;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SettingsDialogue = /** @class */ (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        SettingsDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE;
+            $.subscribe(this.openCommand, function () {
+                _this.open();
+            });
+            $.subscribe(this.closeCommand, function () {
+                _this.close();
+            });
+            this.$title = $('<h1></h1>');
+            this.$content.append(this.$title);
+            this.$scroll = $('<div class="scroll"></div>');
+            this.$content.append(this.$scroll);
+            this.$version = $('<div class="version"></div>');
+            this.$content.append(this.$version);
+            this.$website = $('<div class="website"></div>');
+            this.$content.append(this.$website);
+            this.$locale = $('<div class="setting locale"></div>');
+            this.$scroll.append(this.$locale);
+            this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
+            this.$locale.append(this.$localeLabel);
+            this.$localeDropDown = $('<select id="locale"></select>');
+            this.$locale.append(this.$localeDropDown);
+            // initialise ui.
+            this.$title.text(this.content.title);
+            this.$website.html(this.content.website);
+            this.$website.targetBlank();
+            this._createLocalesMenu();
+            this.$element.hide();
+        };
+        SettingsDialogue.prototype.getSettings = function () {
+            return this.extension.getSettings();
+        };
+        SettingsDialogue.prototype.updateSettings = function (settings) {
+            this.extension.updateSettings(settings);
+            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
+        };
+        SettingsDialogue.prototype.open = function () {
+            var _this = this;
+            _super.prototype.open.call(this);
+            $.getJSON(this.extension.data.root + "/info.json", function (pjson) {
+                _this.$version.text("v" + pjson.version);
+            });
+        };
+        SettingsDialogue.prototype._createLocalesMenu = function () {
+            var _this = this;
+            var locales = this.extension.data.locales;
+            if (locales && locales.length > 1) {
+                for (var i = 0; i < locales.length; i++) {
+                    var locale = locales[i];
+                    this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
+                }
+                this.$localeDropDown.val(locales[0].name);
+            }
+            else {
+                this.$locale.hide();
+            }
+            this.$localeDropDown.change(function () {
+                _this.extension.changeLocale(_this.$localeDropDown.val());
+            });
+        };
+        SettingsDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return SettingsDialogue;
+    }(Dialogue_1.Dialogue));
+    exports.SettingsDialogue = SettingsDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-aleph-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SettingsDialogue = /** @class */ (function (_super) {
+        __extends(SettingsDialogue, _super);
+        function SettingsDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        SettingsDialogue.prototype.create = function () {
+            this.setConfig('settingsDialogue');
+            _super.prototype.create.call(this);
+        };
+        return SettingsDialogue;
+    }(SettingsDialogue_1.SettingsDialogue));
+    exports.SettingsDialogue = SettingsDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var ShareDialogue = /** @class */ (function (_super) {
+        __extends(ShareDialogue, _super);
+        function ShareDialogue($element) {
+            var _this = _super.call(this, $element) || this;
+            _this.aspectRatio = .75;
+            _this.isEmbedViewVisible = false;
+            _this.isShareViewVisible = false;
+            _this.maxWidth = 8000;
+            _this.maxHeight = _this.maxWidth * _this.aspectRatio;
+            _this.minWidth = 200;
+            _this.minHeight = _this.minWidth * _this.aspectRatio;
+            return _this;
+        }
+        ShareDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('shareDialogue');
+            _super.prototype.create.call(this);
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SHARE_DIALOGUE;
+            $.subscribe(this.openCommand, function (e, $triggerButton) {
+                _this.open($triggerButton);
+                if (_this.isShareAvailable()) {
+                    _this.openShareView();
+                }
+                else {
+                    _this.openEmbedView();
+                }
+            });
+            $.subscribe(this.closeCommand, function () {
+                _this.close();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function (e, $triggerButton) {
+                _this.open($triggerButton);
+                _this.openEmbedView();
+            });
+            this.$tabs = $('<div class="tabs"></div>');
+            this.$content.append(this.$tabs);
+            this.$shareButton = $('<a class="share tab default" tabindex="0">' + this.content.share + '</a>');
+            this.$shareButton.prop('title', this.content.share);
+            this.$tabs.append(this.$shareButton);
+            this.$embedButton = $('<a class="embed tab" tabindex="0">' + this.content.embed + '</a>');
+            this.$embedButton.prop('title', this.content.embed);
+            this.$tabs.append(this.$embedButton);
+            this.$tabsContent = $('<div class="tabsContent"></div>');
+            this.$content.append(this.$tabsContent);
+            this.$footer = $('<div class="footer"></div>');
+            this.$content.append(this.$footer);
+            this.$shareView = $('<div class="shareView view"></div>');
+            this.$tabsContent.append(this.$shareView);
+            this.$shareHeader = $('<div class="header"></div>');
+            this.$shareView.append(this.$shareHeader);
+            this.$shareLink = $('<a class="shareLink" onclick="return false;"></a>');
+            this.$shareView.append(this.$shareLink);
+            this.$shareInput = $("<input class=\"shareInput\" type=\"text\" readonly aria-label=\"" + this.content.shareUrl + "\"/>");
+            this.$shareView.append(this.$shareInput);
+            this.$shareFrame = $('<iframe class="shareFrame"></iframe>');
+            this.$shareView.append(this.$shareFrame);
+            this.$embedView = $('<div class="embedView view"></div>');
+            this.$tabsContent.append(this.$embedView);
+            this.$embedHeader = $('<div class="header"></div>');
+            this.$embedView.append(this.$embedHeader);
+            // this.$link = $('<a target="_blank"></a>');
+            // this.$embedView.find('.leftCol').append(this.$link);
+            // this.$image = $('<img class="share" />');
+            // this.$embedView.append(this.$image);
+            this.$code = $("<input class=\"code\" type=\"text\" readonly aria-label=\"" + this.content.embed + "\"/>");
+            this.$embedView.append(this.$code);
+            this.$customSize = $('<div class="customSize"></div>');
+            this.$embedView.append(this.$customSize);
+            this.$size = $('<span class="size">' + this.content.size + '</span>');
+            this.$customSize.append(this.$size);
+            this.$customSizeDropDown = $('<select id="size" aria-label="' + this.content.size + '"></select>');
+            this.$customSize.append(this.$customSizeDropDown);
+            this.$customSizeDropDown.append('<option value="small" data-width="560" data-height="420">560 x 420</option>');
+            this.$customSizeDropDown.append('<option value="medium" data-width="640" data-height="480">640 x 480</option>');
+            this.$customSizeDropDown.append('<option value="large" data-width="800" data-height="600">800 x 600</option>');
+            this.$customSizeDropDown.append('<option value="custom">' + this.content.customSize + '</option>');
+            this.$widthInput = $('<input class="width" type="text" maxlength="10" aria-label="' + this.content.width + '"/>');
+            this.$customSize.append(this.$widthInput);
+            this.$x = $('<span class="x">x</span>');
+            this.$customSize.append(this.$x);
+            this.$heightInput = $('<input class="height" type="text" maxlength="10" aria-label="' + this.content.height + '"/>');
+            this.$customSize.append(this.$heightInput);
+            var iiifUrl = this.extension.getIIIFShareUrl();
+            this.$iiifButton = $('<a class="imageBtn iiif" href="' + iiifUrl + '" title="' + this.content.iiif + '" target="_blank"></a>');
+            this.$footer.append(this.$iiifButton);
+            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
+            this.$footer.append(this.$termsOfUseButton);
+            this.$widthInput.on('keydown', function (e) {
+                return Utils.Numbers.numericalInput(e);
+            });
+            this.$heightInput.on('keydown', function (e) {
+                return Utils.Numbers.numericalInput(e);
+            });
+            this.$shareInput.focus(function () {
+                $(this).select();
+            });
+            this.$code.focus(function () {
+                $(this).select();
+            });
+            this.$shareButton.onPressed(function () {
+                _this.openShareView();
+            });
+            this.$embedButton.onPressed(function () {
+                _this.openEmbedView();
+            });
+            this.$customSizeDropDown.change(function () {
+                _this.update();
+            });
+            this.$widthInput.change(function () {
+                _this.updateHeightRatio();
+                _this.update();
+            });
+            this.$heightInput.change(function () {
+                _this.updateWidthRatio();
+                _this.update();
+            });
+            this.$termsOfUseButton.onPressed(function () {
+                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
+            });
+            this.$element.hide();
+            this.update();
+        };
+        ShareDialogue.prototype.open = function ($triggerButton) {
+            _super.prototype.open.call(this, $triggerButton);
+            this.update();
+        };
+        ShareDialogue.prototype.getShareUrl = function () {
+            return this.extension.getShareUrl();
+        };
+        ShareDialogue.prototype.isShareAvailable = function () {
+            return !!this.getShareUrl();
+        };
+        ShareDialogue.prototype.update = function () {
+            if (this.isShareAvailable()) {
+                this.$shareButton.show();
+            }
+            else {
+                this.$shareButton.hide();
+            }
+            var $selected = this.getSelectedSize();
+            if ($selected.val() === 'custom') {
+                this.$widthInput.show();
+                this.$x.show();
+                this.$heightInput.show();
+            }
+            else {
+                this.$widthInput.hide();
+                this.$x.hide();
+                this.$heightInput.hide();
+                this.currentWidth = Number($selected.data('width'));
+                this.currentHeight = Number($selected.data('height'));
+                this.$widthInput.val(String(this.currentWidth));
+                this.$heightInput.val(String(this.currentHeight));
+            }
+            this.updateInstructions();
+            this.updateShareOptions();
+            this.updateShareFrame();
+            this.updateTermsOfUseButton();
+        };
+        ShareDialogue.prototype.updateShareOptions = function () {
+            var shareUrl = this.getShareUrl();
+            if (shareUrl) {
+                this.$shareInput.val(shareUrl);
+                this.$shareLink.prop('href', shareUrl);
+                this.$shareLink.text(shareUrl);
+            }
+            if (this.extension.isMobile()) {
+                this.$shareInput.hide();
+                this.$shareLink.show();
+            }
+            else {
+                this.$shareInput.show();
+                this.$shareLink.hide();
+            }
+        };
+        ShareDialogue.prototype.updateInstructions = function () {
+            if (Utils.Bools.getBool(this.options.instructionsEnabled, false)) {
+                this.$shareHeader.show();
+                this.$embedHeader.show();
+                this.$shareHeader.text(this.content.shareInstructions);
+                this.$embedHeader.text(this.content.embedInstructions);
+            }
+            else {
+                this.$shareHeader.hide();
+                this.$embedHeader.hide();
+            }
+        };
+        // updateThumbnail(): void {
+        //     var canvas: Manifesto.ICanvas = this.extension.helper.getCurrentCanvas();
+        //     if (!canvas) return;
+        //     var thumbnail = canvas.getProperty('thumbnail');
+        //     if (!thumbnail || !_.isString(thumbnail)){
+        //         thumbnail = canvas.getCanonicalImageUri(this.extension.data.config.options.bookmarkThumbWidth);
+        //     }
+        //     this.$link.attr('href', thumbnail);
+        //     this.$image.attr('src', thumbnail);
+        // }
+        ShareDialogue.prototype.getSelectedSize = function () {
+            return this.$customSizeDropDown.find(':selected');
+        };
+        ShareDialogue.prototype.updateWidthRatio = function () {
+            this.currentHeight = Number(this.$heightInput.val());
+            if (this.currentHeight < this.minHeight) {
+                this.currentHeight = this.minHeight;
+                this.$heightInput.val(String(this.currentHeight));
+            }
+            else if (this.currentHeight > this.maxHeight) {
+                this.currentHeight = this.maxHeight;
+                this.$heightInput.val(String(this.currentHeight));
+            }
+            this.currentWidth = Math.floor(this.currentHeight / this.aspectRatio);
+            this.$widthInput.val(String(this.currentWidth));
+        };
+        ShareDialogue.prototype.updateHeightRatio = function () {
+            this.currentWidth = Number(this.$widthInput.val());
+            if (this.currentWidth < this.minWidth) {
+                this.currentWidth = this.minWidth;
+                this.$widthInput.val(String(this.currentWidth));
+            }
+            else if (this.currentWidth > this.maxWidth) {
+                this.currentWidth = this.maxWidth;
+                this.$widthInput.val(String(this.currentWidth));
+            }
+            this.currentHeight = Math.floor(this.currentWidth * this.aspectRatio);
+            this.$heightInput.val(String(this.currentHeight));
+        };
+        ShareDialogue.prototype.updateShareFrame = function () {
+            var shareUrl = this.extension.helper.getShareServiceUrl();
+            if (!shareUrl) {
+                return;
+            }
+            if (Utils.Bools.getBool(this.config.options.shareFrameEnabled, true) && shareUrl) {
+                this.$shareFrame.prop('src', shareUrl);
+                this.$shareFrame.show();
+            }
+            else {
+                this.$shareFrame.hide();
+            }
+        };
+        ShareDialogue.prototype.updateTermsOfUseButton = function () {
+            var requiredStatement = this.extension.helper.getRequiredStatement();
+            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && requiredStatement && requiredStatement.value) {
+                this.$termsOfUseButton.show();
+            }
+            else {
+                this.$termsOfUseButton.hide();
+            }
+        };
+        ShareDialogue.prototype.openShareView = function () {
+            this.isShareViewVisible = true;
+            this.isEmbedViewVisible = false;
+            this.$embedView.hide();
+            this.$shareView.show();
+            this.$shareButton.addClass('on default');
+            this.$embedButton.removeClass('on default');
+            this.resize();
+        };
+        ShareDialogue.prototype.openEmbedView = function () {
+            this.isShareViewVisible = false;
+            this.isEmbedViewVisible = true;
+            this.$embedView.show();
+            this.$shareView.hide();
+            this.$shareButton.removeClass('on default');
+            this.$embedButton.addClass('on default');
+            this.resize();
+        };
+        ShareDialogue.prototype.close = function () {
+            _super.prototype.close.call(this);
+        };
+        ShareDialogue.prototype.getViews = function () {
+            return this.$tabsContent.find('.view');
+        };
+        ShareDialogue.prototype.equaliseViewHeights = function () {
+            this.getViews().equaliseHeight(true);
+        };
+        ShareDialogue.prototype.resize = function () {
+            this.equaliseViewHeights();
+            this.setDockedPosition();
+        };
+        return ShareDialogue;
+    }(Dialogue_1.Dialogue));
+    exports.ShareDialogue = ShareDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-aleph-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var ShareDialogue = /** @class */ (function (_super) {
+        __extends(ShareDialogue, _super);
+        function ShareDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        ShareDialogue.prototype.create = function () {
+            this.setConfig('shareDialogue');
+            _super.prototype.create.call(this);
+        };
+        ShareDialogue.prototype.update = function () {
+            _super.prototype.update.call(this);
+            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
+            this.$code.val(this.code);
+        };
+        ShareDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return ShareDialogue;
+    }(ShareDialogue_1.ShareDialogue));
+    exports.ShareDialogue = ShareDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseEvents", "./BaseExpandPanel"], function (require, exports, BaseEvents_1, BaseExpandPanel_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -19745,6 +20964,459 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseEvents
         return LeftPanel;
     }(BaseExpandPanel_1.BaseExpandPanel));
     exports.LeftPanel = LeftPanel;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-alephleftpanel-module/AlephLeftPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/LeftPanel"], function (require, exports, BaseEvents_1, LeftPanel_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var AlephLeftPanel = /** @class */ (function (_super) {
+        __extends(AlephLeftPanel, _super);
+        function AlephLeftPanel($element) {
+            return _super.call(this, $element) || this;
+        }
+        AlephLeftPanel.prototype.create = function () {
+            this.setConfig('alephLeftPanel');
+            _super.prototype.create.call(this);
+            this.$main.append('<al-control-panel nodes-visible="false" options-enabled="true"></al-control-panel>');
+            this.setTitle(this.content.title);
+        };
+        AlephLeftPanel.prototype.expandFullStart = function () {
+            _super.prototype.expandFullStart.call(this);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+        };
+        AlephLeftPanel.prototype.expandFullFinish = function () {
+            _super.prototype.expandFullFinish.call(this);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+        };
+        AlephLeftPanel.prototype.collapseFullStart = function () {
+            _super.prototype.collapseFullStart.call(this);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+        };
+        AlephLeftPanel.prototype.collapseFullFinish = function () {
+            _super.prototype.collapseFullFinish.call(this);
+            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+        };
+        AlephLeftPanel.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return AlephLeftPanel;
+    }(LeftPanel_1.LeftPanel));
+    exports.AlephLeftPanel = AlephLeftPanel;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../modules/uv-alephcenterpanel-module/AlephCenterPanel", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-avmobilefooterpanel-module/MobileFooter", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-alephleftpanel-module/AlephLeftPanel"], function (require, exports, AlephCenterPanel_1, BaseEvents_1, BaseExtension_1, DownloadDialogue_1, FooterPanel_1, MobileFooter_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1, AlephLeftPanel_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Extension = /** @class */ (function (_super) {
+        __extends(Extension, _super);
+        function Extension() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Extension.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this.viewCanvas(canvasIndex);
+            });
+        };
+        Extension.prototype.createModules = function () {
+            _super.prototype.createModules.call(this);
+            if (this.isHeaderPanelEnabled()) {
+                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+            }
+            else {
+                Shell_1.Shell.$headerPanel.hide();
+            }
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel = new AlephLeftPanel_1.AlephLeftPanel(Shell_1.Shell.$leftPanel);
+            }
+            else {
+                Shell_1.Shell.$leftPanel.hide();
+            }
+            this.centerPanel = new AlephCenterPanel_1.AlephCenterPanel(Shell_1.Shell.$centerPanel);
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+            }
+            else {
+                Shell_1.Shell.$rightPanel.hide();
+            }
+            if (this.isFooterPanelEnabled()) {
+                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
+                this.mobileFooterPanel = new MobileFooter_1.FooterPanel(Shell_1.Shell.$mobileFooterPanel);
+            }
+            else {
+                Shell_1.Shell.$footerPanel.hide();
+            }
+            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
+            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
+            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
+            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
+            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
+            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
+            if (this.isHeaderPanelEnabled()) {
+                this.headerPanel.init();
+            }
+            if (this.isLeftPanelEnabled()) {
+                this.leftPanel.init();
+            }
+            if (this.isRightPanelEnabled()) {
+                this.rightPanel.init();
+            }
+            if (this.isFooterPanelEnabled()) {
+                this.footerPanel.init();
+            }
+        };
+        Extension.prototype.dependencyLoaded = function (index, dep) {
+            // if (index === (<any>this).getDependencyIndex('ami')) {
+            //     window.AMI = dep;
+            // } else 
+            if (index === this.getDependencyIndex('three.min')) {
+                window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
+            }
+        };
+        Extension.prototype.render = function () {
+            _super.prototype.render.call(this);
+        };
+        Extension.prototype.isLeftPanelEnabled = function () {
+            return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true);
+        };
+        Extension.prototype.getEmbedScript = function (template, width, height) {
+            var appUri = this.getAppUri();
+            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "}";
+            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
+            return script;
+        };
+        return Extension;
+    }(BaseExtension_1.BaseExtension));
+    exports.Extension = Extension;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var AVCenterPanel = /** @class */ (function (_super) {
+        __extends(AVCenterPanel, _super);
+        function AVCenterPanel($element) {
+            var _this = _super.call(this, $element) || this;
+            _this._mediaReady = false;
+            _this._isThumbsViewOpen = false;
+            _this.attributionPosition = Position_1.Position.BOTTOM_RIGHT;
+            return _this;
+        }
+        AVCenterPanel.prototype.create = function () {
+            var _this = this;
+            this.setConfig('avCenterPanel');
+            _super.prototype.create.call(this);
+            var that = this;
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+                that.openMedia(resources);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+                _this._viewCanvas(canvasIndex);
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
+                if (!_this._observeRangeChanges()) {
+                    return;
+                }
+                _this._whenMediaReady(function () {
+                    that._viewRange(range);
+                    that._setTitle();
+                });
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+                _this._whenMediaReady(function () {
+                    if (_this.avcomponent) {
+                        _this.avcomponent.set({
+                            limitToRange: _this._limitToRange(),
+                            constrainNavigationToRange: _this._limitToRange()
+                        });
+                    }
+                });
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
+                _this._setTitle();
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
+                _this._isThumbsViewOpen = true;
+                _this._whenMediaReady(function () {
+                    if (_this.avcomponent) {
+                        _this.avcomponent.set({
+                            virtualCanvasEnabled: false
+                        });
+                        var canvas = _this.extension.helper.getCurrentCanvas();
+                        if (canvas) {
+                            _this._viewCanvas(_this.extension.helper.canvasIndex);
+                        }
+                    }
+                });
+            });
+            $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
+                _this._isThumbsViewOpen = false;
+                _this._whenMediaReady(function () {
+                    if (_this.avcomponent) {
+                        _this.avcomponent.set({
+                            virtualCanvasEnabled: true
+                        });
+                    }
+                });
+            });
+            this._createAVComponent();
+        };
+        AVCenterPanel.prototype._createAVComponent = function () {
+            var _this = this;
+            this.$avcomponent = $('<div class="iiif-av-component"></div>');
+            this.$content.prepend(this.$avcomponent);
+            this.avcomponent = new IIIFComponents.AVComponent({
+                target: this.$avcomponent[0]
+            });
+            this.avcomponent.on('mediaready', function () {
+                console.log('mediaready');
+                _this._mediaReady = true;
+            }, false);
+            this.avcomponent.on('rangechanged', function (rangeId) {
+                if (rangeId) {
+                    _this._setTitle();
+                    var range = _this.extension.helper.getRangeById(rangeId);
+                    if (range) {
+                        var currentRange = _this.extension.helper.getCurrentRange();
+                        if (range !== currentRange) {
+                            $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                        }
+                    }
+                    else {
+                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
+                    }
+                }
+                else {
+                    $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
+                }
+            }, false);
+        };
+        AVCenterPanel.prototype._observeRangeChanges = function () {
+            if (!this._isThumbsViewOpen) {
+                return true;
+            }
+            return false;
+        };
+        AVCenterPanel.prototype._setTitle = function () {
+            var title = '';
+            var value;
+            var label;
+            // get the current range or canvas title
+            var currentRange = this.extension.helper.getCurrentRange();
+            if (currentRange) {
+                label = currentRange.getLabel();
+            }
+            else {
+                label = this.extension.helper.getCurrentCanvas().getLabel();
+            }
+            value = Manifesto.LanguageMap.getValue(label);
+            if (value) {
+                title = value;
+            }
+            if (Utils.Bools.getBool(this.config.options.includeParentInTitleEnabled, false)) {
+                // get the parent range or manifest's title
+                if (currentRange) {
+                    if (currentRange.parentRange) {
+                        label = currentRange.parentRange.getLabel();
+                        value = Manifesto.LanguageMap.getValue(label);
+                    }
+                }
+                else {
+                    value = this.extension.helper.getLabel();
+                }
+                if (value) {
+                    title += this.content.delimiter + value;
+                }
+            }
+            this.title = title;
+            this.resize(false);
+        };
+        AVCenterPanel.prototype._isCurrentResourceAccessControlled = function () {
+            var canvas = this.extension.helper.getCurrentCanvas();
+            return canvas.externalResource.isAccessControlled();
+        };
+        AVCenterPanel.prototype.openMedia = function (resources) {
+            var _this = this;
+            this.extension.getExternalResources(resources).then(function () {
+                if (_this.avcomponent) {
+                    // reset if the media has already been loaded (degraded flow has happened)
+                    if (_this.extension.helper.canvasIndex === _this._lastCanvasIndex) {
+                        _this.avcomponent.reset();
+                    }
+                    _this._lastCanvasIndex = _this.extension.helper.canvasIndex;
+                    _this.avcomponent.set({
+                        helper: _this.extension.helper,
+                        adaptiveAuthEnabled: _this._isCurrentResourceAccessControlled(),
+                        autoPlay: _this.config.options.autoPlay,
+                        autoSelectRange: true,
+                        constrainNavigationToRange: _this._limitToRange(),
+                        content: _this.content,
+                        defaultAspectRatio: 0.56,
+                        doubleClickMS: 350,
+                        limitToRange: _this._limitToRange(),
+                        posterImageRatio: _this.config.options.posterImageRatio
+                    });
+                    _this.resize();
+                }
+            });
+        };
+        AVCenterPanel.prototype._limitToRange = function () {
+            return !this.extension.isDesktopMetric();
+        };
+        AVCenterPanel.prototype._whenMediaReady = function (cb) {
+            var _this = this;
+            Utils.Async.waitFor(function () {
+                return _this._mediaReady;
+            }, cb);
+        };
+        AVCenterPanel.prototype._viewRange = function (range) {
+            var _this = this;
+            this._whenMediaReady(function () {
+                if (range && _this.avcomponent) {
+                    _this.avcomponent.playRange(range.id);
+                }
+                // don't resize the av component to avoid expensively redrawing waveforms
+                _this.resize(false);
+            });
+        };
+        AVCenterPanel.prototype._viewCanvas = function (canvasIndex) {
+            var _this = this;
+            this._whenMediaReady(function () {
+                var canvas = _this.extension.helper.getCanvasByIndex(canvasIndex);
+                if (_this.avcomponent) {
+                    _this.avcomponent.showCanvas(canvas.id);
+                }
+            });
+        };
+        AVCenterPanel.prototype.resize = function (resizeAVComponent) {
+            if (resizeAVComponent === void 0) { resizeAVComponent = true; }
+            _super.prototype.resize.call(this);
+            if (this.title) {
+                this.$title.ellipsisFill(this.title);
+            }
+            if (resizeAVComponent && this.avcomponent) {
+                this.$avcomponent.height(this.$content.height());
+                this.avcomponent.resize();
+            }
+        };
+        return AVCenterPanel;
+    }(CenterPanel_1.CenterPanel));
+    exports.AVCenterPanel = AVCenterPanel;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var GalleryView = /** @class */ (function (_super) {
+        __extends(GalleryView, _super);
+        function GalleryView($element) {
+            var _this = _super.call(this, $element, true, true) || this;
+            _this.isOpen = false;
+            return _this;
+        }
+        GalleryView.prototype.create = function () {
+            this.setConfig('contentLeftPanel');
+            _super.prototype.create.call(this);
+            // search preview doesn't work well with the gallery because it loads thumbs in "chunks"
+            // $.subscribe(Events.SEARCH_PREVIEW_START, (e, canvasIndex) => {
+            //     this.galleryComponent.searchPreviewStart(canvasIndex);
+            // });
+            // $.subscribe(Events.SEARCH_PREVIEW_FINISH, () => {
+            //     this.galleryComponent.searchPreviewFinish();
+            // });
+            this.$gallery = $('<div class="iiif-gallery-component"></div>');
+            this.$element.append(this.$gallery);
+            // stencil.js demo
+            // const gallery = document.createElement('iiif-gallery');
+            // gallery.setAttribute('manifest', this.extension.helper.manifest.id);
+            // this.$element[0].appendChild(gallery);
+        };
+        GalleryView.prototype.setup = function () {
+            this.galleryComponent = new IIIFComponents.GalleryComponent({
+                target: this.$gallery[0]
+            });
+            this.galleryComponent.on('thumbSelected', function (thumb) {
+                $.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
+                $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
+            }, false);
+            this.galleryComponent.on('decreaseSize', function () {
+                $.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
+            }, false);
+            this.galleryComponent.on('increaseSize', function () {
+                $.publish(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
+            }, false);
+        };
+        GalleryView.prototype.databind = function () {
+            this.galleryComponent.options.data = this.galleryData;
+            this.galleryComponent.set(this.galleryData);
+            this.resize();
+        };
+        GalleryView.prototype.show = function () {
+            var _this = this;
+            this.isOpen = true;
+            this.$element.show();
+            // todo: would be better to have no imperative methods on components and use a reactive pattern
+            setTimeout(function () {
+                _this.galleryComponent.selectIndex(_this.extension.helper.canvasIndex);
+            }, 10);
+        };
+        GalleryView.prototype.hide = function () {
+            this.isOpen = false;
+            this.$element.hide();
+        };
+        GalleryView.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            var $main = this.$gallery.find('.main');
+            var $header = this.$gallery.find('.header');
+            $main.height(this.$element.height() - $header.height());
+        };
+        return GalleryView;
+    }(BaseView_1.BaseView));
+    exports.GalleryView = GalleryView;
 });
 
 define('extensions/uv-seadragon-extension/Mode',["require", "exports"], function (require, exports) {
@@ -20786,1627 +22458,6 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         return ContentLeftPanel;
     }(LeftPanel_1.LeftPanel));
     exports.ContentLeftPanel = ContentLeftPanel;
-});
-
-define('modules/uv-shared-module/DownloadOption',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var DownloadOption = /** @class */ (function () {
-        function DownloadOption(value) {
-            this.value = value;
-        }
-        DownloadOption.prototype.toString = function () {
-            return this.value;
-        };
-        DownloadOption.currentViewAsJpg = new DownloadOption("currentViewAsJpg");
-        DownloadOption.dynamicCanvasRenderings = new DownloadOption("dynamicCanvasRenderings");
-        DownloadOption.dynamicImageRenderings = new DownloadOption("dynamicImageRenderings");
-        DownloadOption.dynamicSequenceRenderings = new DownloadOption("dynamicSequenceRenderings");
-        DownloadOption.entireFileAsOriginal = new DownloadOption("entireFileAsOriginal");
-        DownloadOption.rangeRendering = new DownloadOption("rangeRendering");
-        DownloadOption.selection = new DownloadOption("selection");
-        DownloadOption.wholeImageHighRes = new DownloadOption("wholeImageHighRes");
-        DownloadOption.wholeImageLowResAsJpg = new DownloadOption("wholeImageLowResAsJpg");
-        DownloadOption.wholeImagesHighRes = new DownloadOption("wholeImagesHighRes");
-        return DownloadOption;
-    }());
-    exports.DownloadOption = DownloadOption;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../uv-shared-module/DownloadOption"], function (require, exports, BaseEvents_1, Dialogue_1, DownloadOption_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var DownloadDialogue = /** @class */ (function (_super) {
-        __extends(DownloadDialogue, _super);
-        function DownloadDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        DownloadDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('downloadDialogue');
-            _super.prototype.create.call(this);
-            this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
-            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, $triggerButton) {
-                _this.open($triggerButton);
-            });
-            $.subscribe(this.closeCommand, function () {
-                _this.close();
-            });
-            // create ui.
-            this.$title = $('<h1>' + this.content.title + '</h1>');
-            this.$content.append(this.$title);
-            this.$noneAvailable = $('<div class="noneAvailable">' + this.content.noneAvailable + '</div>');
-            this.$content.append(this.$noneAvailable);
-            this.$downloadOptions = $('<ol class="options"></ol>');
-            this.$content.append(this.$downloadOptions);
-            this.$footer = $('<div class="footer"></div>');
-            this.$content.append(this.$footer);
-            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
-            this.$footer.append(this.$termsOfUseButton);
-            this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
-            });
-            // hide
-            this.$element.hide();
-            this.updateTermsOfUseButton();
-        };
-        DownloadDialogue.prototype.addEntireFileDownloadOptions = function () {
-            if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.entireFileAsOriginal)) {
-                this.$downloadOptions.empty();
-                // add each file src
-                var canvas = this.extension.helper.getCurrentCanvas();
-                var renderingFound = false;
-                var renderings = canvas.getRenderings();
-                for (var i = 0; i < renderings.length; i++) {
-                    var rendering = renderings[i];
-                    var renderingFormat = rendering.getFormat();
-                    var format = '';
-                    if (renderingFormat) {
-                        format = renderingFormat.toString();
-                    }
-                    this.addEntireFileDownloadOption(rendering.id, Manifesto.LanguageMap.getValue(rendering.getLabel()), format);
-                    renderingFound = true;
-                }
-                if (!renderingFound) {
-                    var annotationFound = false;
-                    var annotations = canvas.getContent();
-                    for (var i = 0; i < annotations.length; i++) {
-                        var annotation = annotations[i];
-                        var body = annotation.getBody();
-                        if (body.length) {
-                            var format = body[0].getFormat();
-                            if (format) {
-                                this.addEntireFileDownloadOption(body[0].id, '', format.toString());
-                                annotationFound = true;
-                            }
-                        }
-                    }
-                    if (!annotationFound) {
-                        this.addEntireFileDownloadOption(canvas.id, '', '');
-                    }
-                }
-            }
-        };
-        DownloadDialogue.prototype.addEntireFileDownloadOption = function (uri, label, format) {
-            var fileType;
-            if (format) {
-                fileType = Utils.Files.simplifyMimeType(format);
-            }
-            else {
-                fileType = this.getFileExtension(uri);
-            }
-            if (!label) {
-                label = this.content.entireFileAsOriginal;
-            }
-            if (fileType) {
-                label += " (" + fileType + ")";
-            }
-            this.$downloadOptions.append('<li><a href="' + uri + '" target="_blank" download tabindex="0">' + label + '</li>');
-        };
-        DownloadDialogue.prototype.resetDynamicDownloadOptions = function () {
-            this.renderingUrls = [];
-            this.renderingUrlsCount = 0;
-            this.$downloadOptions.find('li.dynamic').remove();
-        };
-        DownloadDialogue.prototype.getDownloadOptionsForRenderings = function (resource, defaultLabel, type) {
-            var renderings = resource.getRenderings();
-            var downloadOptions = [];
-            for (var i = 0; i < renderings.length; i++) {
-                var rendering = renderings[i];
-                if (rendering) {
-                    var label = Manifesto.LanguageMap.getValue(rendering.getLabel(), this.extension.getLocale());
-                    var currentId = "downloadOption" + ++this.renderingUrlsCount;
-                    if (label) {
-                        label += " ({0})";
-                    }
-                    else {
-                        label = defaultLabel;
-                    }
-                    var mime = Utils.Files.simplifyMimeType(rendering.getFormat().toString());
-                    label = Utils.Strings.format(label, mime);
-                    this.renderingUrls[currentId] = rendering.id;
-                    var $button = $('<li class="option dynamic"><input id="' + currentId + '" data-mime="' + mime + '" title="' + label + '" type="radio" name="downloadOptions" tabindex="0" /><label for="' + currentId + '">' + label + '</label></li>');
-                    downloadOptions.push({
-                        type: type,
-                        button: $button
-                    });
-                }
-            }
-            return downloadOptions;
-        };
-        DownloadDialogue.prototype.getSelectedOption = function () {
-            return this.$downloadOptions.find("li.option input:checked");
-        };
-        DownloadDialogue.prototype.getCurrentResourceId = function () {
-            var canvas = this.extension.helper.getCurrentCanvas();
-            return canvas.externalResource.data.id;
-        };
-        DownloadDialogue.prototype.getCurrentResourceFormat = function () {
-            var id = this.getCurrentResourceId();
-            return id.substr(id.lastIndexOf('.') + 1).toLowerCase();
-        };
-        DownloadDialogue.prototype.updateNoneAvailable = function () {
-            if (!this.$downloadOptions.find('li:visible').length) {
-                this.$noneAvailable.show();
-            }
-            else {
-                // select first option.
-                this.$noneAvailable.hide();
-            }
-        };
-        DownloadDialogue.prototype.updateTermsOfUseButton = function () {
-            var requiredStatement = this.extension.helper.getRequiredStatement();
-            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && requiredStatement && requiredStatement.value) {
-                this.$termsOfUseButton.show();
-            }
-            else {
-                this.$termsOfUseButton.hide();
-            }
-        };
-        DownloadDialogue.prototype.getFileExtension = function (fileUri) {
-            var extension = fileUri.split('.').pop();
-            // if it's not a valid file extension
-            if (extension.length > 5 || extension.indexOf('/') !== -1) {
-                return null;
-            }
-            return extension;
-        };
-        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            switch (option) {
-                case DownloadOption_1.DownloadOption.entireFileAsOriginal:
-                    // check if ui-extensions disable it
-                    var uiExtensions = this.extension.helper.manifest.getService(manifesto.ServiceProfile.uiExtensions());
-                    if (uiExtensions && !this.extension.helper.isUIEnabled('mediaDownload')) {
-                        return false;
-                    }
-            }
-            return true;
-        };
-        DownloadDialogue.prototype.close = function () {
-            _super.prototype.close.call(this);
-        };
-        DownloadDialogue.prototype.resize = function () {
-            this.setDockedPosition();
-        };
-        return DownloadDialogue;
-    }(Dialogue_1.Dialogue));
-    exports.DownloadDialogue = DownloadDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-aleph-extension/DownloadDialogue',["require", "exports", "../../modules/uv-dialogues-module/DownloadDialogue"], function (require, exports, DownloadDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var DownloadDialogue = /** @class */ (function (_super) {
-        __extends(DownloadDialogue, _super);
-        function DownloadDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        DownloadDialogue.prototype.create = function () {
-            this.setConfig('downloadDialogue');
-            _super.prototype.create.call(this);
-        };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
-            this.addEntireFileDownloadOptions();
-            this.updateNoneAvailable();
-            this.resize();
-        };
-        DownloadDialogue.prototype.isDownloadOptionAvailable = function (option) {
-            return _super.prototype.isDownloadOptionAvailable.call(this, option);
-        };
-        return DownloadDialogue;
-    }(DownloadDialogue_1.DownloadDialogue));
-    exports.DownloadDialogue = DownloadDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEvents", "./BaseView"], function (require, exports, BaseEvents_1, BaseView_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var FooterPanel = /** @class */ (function (_super) {
-        __extends(FooterPanel, _super);
-        function FooterPanel($element) {
-            return _super.call(this, $element) || this;
-        }
-        FooterPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('footerPanel');
-            _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
-                _this.updateFullScreenButton();
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                _this.updateMinimisedButtons();
-                _this.updateMoreInfoButton();
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
-                _this.updateDownloadButton();
-            });
-            this.$options = $('<div class="options"></div>');
-            this.$element.append(this.$options);
-            this.$feedbackButton = $("\n          <button class=\"feedback btn imageBtn\" title=\"" + this.content.feedback + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-feedback\" aria-hidden=\"true\"></i>" + this.content.feedback + "\n          </button>\n        ");
-            this.$options.prepend(this.$feedbackButton);
-            this.$openButton = $("\n          <button class=\"open btn imageBtn\" title=\"" + this.content.open + "\" tabindex=\"0\">\n            <i class=\"uv-icon-open\" aria-hidden=\"true\"></i>" + this.content.open + "\n          </button>\n        ");
-            this.$options.prepend(this.$openButton);
-            this.$bookmarkButton = $("\n          <button class=\"bookmark btn imageBtn\" title=\"" + this.content.bookmark + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-bookmark\" aria-hidden=\"true\"></i>" + this.content.bookmark + "\n          </button>\n        ");
-            this.$options.prepend(this.$bookmarkButton);
-            this.$shareButton = $("\n          <button class=\"share btn imageBtn\" title=\"" + this.content.share + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-share\" aria-hidden=\"true\"></i>" + this.content.share + "\n          </button>\n        ");
-            this.$options.append(this.$shareButton);
-            this.$embedButton = $("\n          <button class=\"embed btn imageBtn\" title=\"" + this.content.embed + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-embed\" aria-hidden=\"true\"></i>" + this.content.embed + "\n          </button>\n        ");
-            this.$options.append(this.$embedButton);
-            this.$downloadButton = $("\n          <button class=\"download btn imageBtn\" title=\"" + this.content.download + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-download\" aria-hidden=\"true\"></i>" + this.content.download + "\n          </button>\n        ");
-            this.$options.prepend(this.$downloadButton);
-            this.$moreInfoButton = $("\n          <button class=\"moreInfo btn imageBtn\" title=\"" + this.content.moreInfo + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-more-info\" aria-hidden=\"true\"></i>" + this.content.moreInfo + "\n          </button>\n        ");
-            this.$options.prepend(this.$moreInfoButton);
-            this.$fullScreenBtn = $("\n          <button class=\"fullScreen btn imageBtn\" title=\"" + this.content.fullScreen + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-fullscreen\" aria-hidden=\"true\"></i>" + this.content.fullScreen + "\n          </button>\n        ");
-            this.$options.append(this.$fullScreenBtn);
-            this.$openButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.OPEN);
-            });
-            this.$feedbackButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.FEEDBACK);
-            });
-            this.$bookmarkButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.BOOKMARK);
-            });
-            this.$shareButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE, [_this.$shareButton]);
-            });
-            this.$embedButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, [_this.$embedButton]);
-            });
-            this.$downloadButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, [_this.$downloadButton]);
-            });
-            this.$moreInfoButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE, [_this.$moreInfoButton]);
-            });
-            this.$fullScreenBtn.on('click', function (e) {
-                e.preventDefault();
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
-            });
-            if (!Utils.Bools.getBool(this.options.embedEnabled, true)) {
-                this.$embedButton.hide();
-            }
-            this.updateMoreInfoButton();
-            this.updateOpenButton();
-            this.updateFeedbackButton();
-            this.updateBookmarkButton();
-            this.updateEmbedButton();
-            this.updateDownloadButton();
-            this.updateFullScreenButton();
-            this.updateShareButton();
-            this.updateMinimisedButtons();
-        };
-        FooterPanel.prototype.updateMinimisedButtons = function () {
-            // if configured to always minimise buttons
-            if (Utils.Bools.getBool(this.options.minimiseButtons, false)) {
-                this.$options.addClass('minimiseButtons');
-                return;
-            }
-            // otherwise, check metric
-            if (!this.extension.isDesktopMetric()) {
-                this.$options.addClass('minimiseButtons');
-            }
-            else {
-                this.$options.removeClass('minimiseButtons');
-            }
-        };
-        FooterPanel.prototype.updateMoreInfoButton = function () {
-            var configEnabled = Utils.Bools.getBool(this.options.moreInfoEnabled, false);
-            if (configEnabled && !this.extension.isDesktopMetric() && !this.extension.isCatchAllMetric()) {
-                this.$moreInfoButton.show();
-            }
-            else {
-                this.$moreInfoButton.hide();
-            }
-        };
-        FooterPanel.prototype.updateOpenButton = function () {
-            var configEnabled = Utils.Bools.getBool(this.options.openEnabled, false);
-            if (configEnabled && Utils.Documents.isInIFrame()) {
-                this.$openButton.show();
-            }
-            else {
-                this.$openButton.hide();
-            }
-        };
-        FooterPanel.prototype.updateFullScreenButton = function () {
-            if (!Utils.Bools.getBool(this.options.fullscreenEnabled, true) || !Utils.Documents.supportsFullscreen()) {
-                this.$fullScreenBtn.hide();
-                return;
-            }
-            if (this.extension.data.isLightbox) {
-                this.$fullScreenBtn.addClass('lightbox');
-            }
-            if (this.extension.isFullScreen()) {
-                this.$fullScreenBtn.switchClass('fullScreen', 'exitFullscreen');
-                this.$fullScreenBtn.find('i').switchClass('uv-icon-fullscreen', 'uv-icon-exit-fullscreen');
-                this.$fullScreenBtn.attr('title', this.content.exitFullScreen);
-                $(this.$fullScreenBtn[0].firstChild.nextSibling.nextSibling).replaceWith(this.content.exitFullScreen);
-            }
-            else {
-                this.$fullScreenBtn.switchClass('exitFullscreen', 'fullScreen');
-                this.$fullScreenBtn.find('i').switchClass('uv-icon-exit-fullscreen', 'uv-icon-fullscreen');
-                this.$fullScreenBtn.attr('title', this.content.fullScreen);
-                $(this.$fullScreenBtn[0].firstChild.nextSibling.nextSibling).replaceWith(this.content.fullScreen);
-            }
-        };
-        FooterPanel.prototype.updateEmbedButton = function () {
-            if (this.extension.helper.isUIEnabled('embed') && Utils.Bools.getBool(this.options.embedEnabled, false)) {
-                // current jquery version sets display to 'inline' in mobile version, while this should remain hidden (see media query)
-                if (!this.extension.isMobile()) {
-                    this.$embedButton.show();
-                }
-            }
-            else {
-                this.$embedButton.hide();
-            }
-        };
-        FooterPanel.prototype.updateShareButton = function () {
-            if (this.extension.helper.isUIEnabled('share') && Utils.Bools.getBool(this.options.shareEnabled, true)) {
-                this.$shareButton.show();
-            }
-            else {
-                this.$shareButton.hide();
-            }
-        };
-        FooterPanel.prototype.updateDownloadButton = function () {
-            var configEnabled = Utils.Bools.getBool(this.options.downloadEnabled, true);
-            if (configEnabled) {
-                this.$downloadButton.show();
-            }
-            else {
-                this.$downloadButton.hide();
-            }
-        };
-        FooterPanel.prototype.updateFeedbackButton = function () {
-            var configEnabled = Utils.Bools.getBool(this.options.feedbackEnabled, false);
-            if (configEnabled) {
-                this.$feedbackButton.show();
-            }
-            else {
-                this.$feedbackButton.hide();
-            }
-        };
-        FooterPanel.prototype.updateBookmarkButton = function () {
-            var configEnabled = Utils.Bools.getBool(this.options.bookmarkEnabled, false);
-            if (configEnabled) {
-                this.$bookmarkButton.show();
-            }
-            else {
-                this.$bookmarkButton.hide();
-            }
-        };
-        FooterPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return FooterPanel;
-    }(BaseView_1.BaseView));
-    exports.FooterPanel = FooterPanel;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-avmobilefooterpanel-module/MobileFooter',["require", "exports", "../uv-shared-module/FooterPanel"], function (require, exports, FooterPanel_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var FooterPanel = /** @class */ (function (_super) {
-        __extends(FooterPanel, _super);
-        function FooterPanel($element) {
-            return _super.call(this, $element) || this;
-        }
-        FooterPanel.prototype.create = function () {
-            this.setConfig('mobileFooterPanel');
-            _super.prototype.create.call(this);
-        };
-        FooterPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            this.$options.css('left', Math.floor((this.$element.width() / 2) - (this.$options.width() / 2)));
-        };
-        return FooterPanel;
-    }(FooterPanel_1.FooterPanel));
-    exports.FooterPanel = FooterPanel;
-});
-
-define('modules/uv-shared-module/Information',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Information = /** @class */ (function () {
-        function Information(message, actions) {
-            this.message = message;
-            this.actions = actions;
-        }
-        return Information;
-    }());
-    exports.Information = Information;
-});
-
-define('modules/uv-shared-module/InformationAction',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var InformationAction = /** @class */ (function () {
-        function InformationAction() {
-        }
-        return InformationAction;
-    }());
-    exports.InformationAction = InformationAction;
-});
-
-define('modules/uv-shared-module/InformationFactory',["require", "exports", "./BaseEvents", "./Information", "./InformationAction", "./InformationType"], function (require, exports, BaseEvents_1, Information_1, InformationAction_1, InformationType_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var InformationFactory = /** @class */ (function () {
-        function InformationFactory(extension) {
-            this.extension = extension;
-        }
-        InformationFactory.prototype.Get = function (args) {
-            switch (args.informationType) {
-                case (InformationType_1.InformationType.AUTH_CORS_ERROR):
-                    return new Information_1.Information(this.extension.data.config.content.authCORSError, []);
-                case (InformationType_1.InformationType.DEGRADED_RESOURCE):
-                    var actions = [];
-                    var loginAction = new InformationAction_1.InformationAction();
-                    var label = args.param.loginService.getConfirmLabel();
-                    if (!label) {
-                        label = this.extension.data.config.content.fallbackDegradedLabel;
-                    }
-                    loginAction.label = label;
-                    var resource_1 = args.param;
-                    loginAction.action = function () {
-                        resource_1.authHoldingPage = window.open("", "_blank");
-                        $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
-                        $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
-                    };
-                    actions.push(loginAction);
-                    var message = args.param.loginService.getServiceLabel();
-                    if (!message) {
-                        message = this.extension.data.config.content.fallbackDegradedMessage;
-                    }
-                    return new Information_1.Information(message, actions);
-            }
-        };
-        return InformationFactory;
-    }());
-    exports.InformationFactory = InformationFactory;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEvents", "./BaseView", "../uv-shared-module/InformationFactory"], function (require, exports, BaseEvents_1, BaseView_1, InformationFactory_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var HeaderPanel = /** @class */ (function (_super) {
-        __extends(HeaderPanel, _super);
-        function HeaderPanel($element) {
-            return _super.call(this, $element, false, false) || this;
-        }
-        HeaderPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('headerPanel');
-            _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function (e, args) {
-                _this.showInformation(args);
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
-                _this.hideInformation();
-            });
-            this.$options = $('<div class="options"></div>');
-            this.$element.append(this.$options);
-            this.$centerOptions = $('<div class="centerOptions"></div>');
-            this.$options.append(this.$centerOptions);
-            this.$rightOptions = $('<div class="rightOptions"></div>');
-            this.$options.append(this.$rightOptions);
-            //this.$helpButton = $('<a href="#" class="action help">' + this.content.help + '</a>');
-            //this.$rightOptions.append(this.$helpButton);
-            this.$localeToggleButton = $('<a class="localeToggle" tabindex="0"></a>');
-            this.$rightOptions.append(this.$localeToggleButton);
-            this.$settingsButton = $("\n          <button class=\"btn imageBtn settings\" tabindex=\"0\" title=\"" + this.content.settings + "\">\n            <i class=\"uv-icon-settings\" aria-hidden=\"true\"></i>" + this.content.settings + "\n          </button>\n        ");
-            this.$settingsButton.attr('title', this.content.settings);
-            this.$rightOptions.append(this.$settingsButton);
-            this.$informationBox = $('<div class="informationBox" aria-hidden="true"> \
-                                    <div class="message"></div> \
-                                    <div class="actions"></div> \
-                                    <button type="button" class="close" aria-label="Close"> \
-                                        <span aria-hidden="true">&times;</span>\
-                                    </button> \
-                                  </div>');
-            this.$element.append(this.$informationBox);
-            this.$informationBox.hide();
-            this.$informationBox.find('.close').attr('title', this.content.close);
-            this.$informationBox.find('.close').on('click', function (e) {
-                e.preventDefault();
-                $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
-            });
-            this.$localeToggleButton.on('click', function () {
-                _this.extension.changeLocale(String(_this.$localeToggleButton.data('locale')));
-            });
-            this.$settingsButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
-            });
-            if (!Utils.Bools.getBool(this.options.centerOptionsEnabled, true)) {
-                this.$centerOptions.hide();
-            }
-            this.updateLocaleToggle();
-            this.updateSettingsButton();
-        };
-        HeaderPanel.prototype.updateLocaleToggle = function () {
-            if (!this.localeToggleIsVisible()) {
-                this.$localeToggleButton.hide();
-                return;
-            }
-            var alternateLocale = this.extension.getAlternateLocale();
-            var text = alternateLocale.name.split('-')[0].toUpperCase();
-            this.$localeToggleButton.data('locale', alternateLocale.name);
-            this.$localeToggleButton.attr('title', alternateLocale.label);
-            this.$localeToggleButton.text(text);
-        };
-        HeaderPanel.prototype.updateSettingsButton = function () {
-            var settingsEnabled = Utils.Bools.getBool(this.options.settingsButtonEnabled, true);
-            if (!settingsEnabled) {
-                this.$settingsButton.hide();
-            }
-            else {
-                this.$settingsButton.show();
-            }
-        };
-        HeaderPanel.prototype.localeToggleIsVisible = function () {
-            var locales = this.extension.data.locales;
-            if (locales) {
-                return locales.length > 1 && Utils.Bools.getBool(this.options.localeToggleEnabled, false);
-            }
-            return false;
-        };
-        HeaderPanel.prototype.showInformation = function (args) {
-            var informationFactory = new InformationFactory_1.InformationFactory(this.extension);
-            this.information = informationFactory.Get(args);
-            var $message = this.$informationBox.find('.message');
-            $message.html(this.information.message).find('a').attr('target', '_top');
-            var $actions = this.$informationBox.find('.actions');
-            $actions.empty();
-            for (var i = 0; i < this.information.actions.length; i++) {
-                var action = this.information.actions[i];
-                var $action = $('<a href="#" class="btn btn-default">' + action.label + '</a>');
-                $action.on('click', action.action);
-                $actions.append($action);
-            }
-            this.$informationBox.attr('aria-hidden', 'false');
-            this.$informationBox.show();
-            this.$element.addClass('showInformation');
-            this.extension.resize();
-        };
-        HeaderPanel.prototype.hideInformation = function () {
-            this.$element.removeClass('showInformation');
-            this.$informationBox.attr('aria-hidden', 'true');
-            this.$informationBox.hide();
-            this.extension.resize();
-        };
-        HeaderPanel.prototype.getSettings = function () {
-            return this.extension.getSettings();
-        };
-        HeaderPanel.prototype.updateSettings = function (settings) {
-            this.extension.updateSettings(settings);
-            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
-        };
-        HeaderPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            var headerWidth = this.$element.width();
-            var center = headerWidth / 2;
-            var containerWidth = this.$centerOptions.outerWidth();
-            var pos = center - (containerWidth / 2);
-            this.$centerOptions.css({
-                left: pos
-            });
-            if (this.$informationBox.is(':visible')) {
-                var $actions = this.$informationBox.find('.actions');
-                var $message = this.$informationBox.find('.message');
-                $message.width(Math.floor(this.$element.width()) - Math.ceil($message.horizontalMargins()) - Math.ceil($actions.outerWidth(true)) - Math.ceil(this.$informationBox.find('.close').outerWidth(true)) - 2);
-                $message.ellipsisFill(this.information.message);
-            }
-            // hide toggle buttons below minimum width
-            if (this.extension.width() < this.extension.data.config.options.minWidthBreakPoint) {
-                if (this.localeToggleIsVisible())
-                    this.$localeToggleButton.hide();
-            }
-            else {
-                if (this.localeToggleIsVisible())
-                    this.$localeToggleButton.show();
-            }
-        };
-        return HeaderPanel;
-    }(BaseView_1.BaseView));
-    exports.HeaderPanel = HeaderPanel;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseEvents", "./BaseExpandPanel"], function (require, exports, BaseEvents_1, BaseExpandPanel_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var RightPanel = /** @class */ (function (_super) {
-        __extends(RightPanel, _super);
-        function RightPanel($element) {
-            return _super.call(this, $element) || this;
-        }
-        RightPanel.prototype.create = function () {
-            _super.prototype.create.call(this);
-            this.$element.width(this.options.panelCollapsedWidth);
-        };
-        RightPanel.prototype.init = function () {
-            var _this = this;
-            _super.prototype.init.call(this);
-            var shouldOpenPanel = Utils.Bools.getBool(this.extension.getSettings().rightPanelOpen, this.options.panelOpen);
-            if (shouldOpenPanel) {
-                this.toggle(true);
-            }
-            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL, function () {
-                if (_this.isFullyExpanded) {
-                    _this.collapseFull();
-                }
-                else {
-                    _this.expandFull();
-                }
-            });
-        };
-        RightPanel.prototype.getTargetWidth = function () {
-            return this.isExpanded ? this.options.panelCollapsedWidth : this.options.panelExpandedWidth;
-        };
-        RightPanel.prototype.getTargetLeft = function () {
-            return this.isExpanded ? this.$element.parent().width() - this.options.panelCollapsedWidth : this.$element.parent().width() - this.options.panelExpandedWidth;
-        };
-        RightPanel.prototype.toggleFinish = function () {
-            _super.prototype.toggleFinish.call(this);
-            if (this.isExpanded) {
-                $.publish(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
-            }
-            else {
-                $.publish(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
-            }
-            this.extension.updateSettings({ rightPanelOpen: this.isExpanded });
-        };
-        RightPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            this.$element.css({
-                'left': Math.floor(this.$element.parent().width() - this.$element.outerWidth())
-            });
-        };
-        return RightPanel;
-    }(BaseExpandPanel_1.BaseExpandPanel));
-    exports.RightPanel = RightPanel;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/RightPanel", "../../Utils"], function (require, exports, BaseEvents_1, RightPanel_1, Utils_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var MoreInfoRightPanel = /** @class */ (function (_super) {
-        __extends(MoreInfoRightPanel, _super);
-        function MoreInfoRightPanel($element) {
-            return _super.call(this, $element) || this;
-        }
-        MoreInfoRightPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('moreInfoRightPanel');
-            _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
-                _this.databind();
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
-                _this.databind();
-            });
-            this.setTitle(this.config.content.title);
-            this.$metadata = $('<div class="iiif-metadata-component"></div>');
-            this.$main.append(this.$metadata);
-            this.metadataComponent = new IIIFComponents.MetadataComponent({
-                target: this.$metadata[0],
-                data: this._getData()
-            });
-            this.metadataComponent.on('iiifViewerLinkClicked', function (href) {
-                // get the hash param.
-                var rangeId = Utils.Urls.getHashParameterFromString('rid', href);
-                if (rangeId) {
-                    var range = _this.extension.helper.getRangeById(rangeId);
-                    if (range) {
-                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
-                    }
-                }
-            }, false);
-        };
-        MoreInfoRightPanel.prototype.toggleFinish = function () {
-            _super.prototype.toggleFinish.call(this);
-            this.databind();
-        };
-        MoreInfoRightPanel.prototype.databind = function () {
-            this.metadataComponent.set(this._getData());
-        };
-        MoreInfoRightPanel.prototype._getCurrentRange = function () {
-            var range = this.extension.helper.getCurrentRange();
-            return range;
-        };
-        MoreInfoRightPanel.prototype._getData = function () {
-            return {
-                canvasDisplayOrder: this.config.options.canvasDisplayOrder,
-                canvases: this.extension.getCurrentCanvases(),
-                canvasExclude: this.config.options.canvasExclude,
-                canvasLabels: this.extension.getCanvasLabels(this.content.page),
-                content: this.config.content,
-                copiedMessageDuration: 2000,
-                copyToClipboardEnabled: Utils.Bools.getBool(this.config.options.copyToClipboardEnabled, false),
-                helper: this.extension.helper,
-                licenseFormatter: new Manifold.UriLabeller(this.config.license ? this.config.license : {}),
-                limit: this.config.options.textLimit || 4,
-                limitType: IIIFComponents.LimitType.LINES,
-                limitToRange: Utils.Bools.getBool(this.config.options.limitToRange, false),
-                manifestDisplayOrder: this.config.options.manifestDisplayOrder,
-                manifestExclude: this.config.options.manifestExclude,
-                range: this._getCurrentRange(),
-                rtlLanguageCodes: this.config.options.rtlLanguageCodes,
-                sanitizer: function (html) {
-                    return Utils_1.UVUtils.sanitize(html);
-                },
-                showAllLanguages: this.config.options.showAllLanguages
-            };
-        };
-        MoreInfoRightPanel.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            this.$main.height(this.$element.height() - this.$top.height() - this.$main.verticalMargins());
-        };
-        return MoreInfoRightPanel;
-    }(RightPanel_1.RightPanel));
-    exports.MoreInfoRightPanel = MoreInfoRightPanel;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SettingsDialogue = /** @class */ (function (_super) {
-        __extends(SettingsDialogue, _super);
-        function SettingsDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        SettingsDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('settingsDialogue');
-            _super.prototype.create.call(this);
-            this.openCommand = BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE;
-            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE;
-            $.subscribe(this.openCommand, function () {
-                _this.open();
-            });
-            $.subscribe(this.closeCommand, function () {
-                _this.close();
-            });
-            this.$title = $('<h1></h1>');
-            this.$content.append(this.$title);
-            this.$scroll = $('<div class="scroll"></div>');
-            this.$content.append(this.$scroll);
-            this.$version = $('<div class="version"></div>');
-            this.$content.append(this.$version);
-            this.$website = $('<div class="website"></div>');
-            this.$content.append(this.$website);
-            this.$locale = $('<div class="setting locale"></div>');
-            this.$scroll.append(this.$locale);
-            this.$localeLabel = $('<label for="locale">' + this.content.locale + '</label>');
-            this.$locale.append(this.$localeLabel);
-            this.$localeDropDown = $('<select id="locale"></select>');
-            this.$locale.append(this.$localeDropDown);
-            // initialise ui.
-            this.$title.text(this.content.title);
-            this.$website.html(this.content.website);
-            this.$website.targetBlank();
-            this._createLocalesMenu();
-            this.$element.hide();
-        };
-        SettingsDialogue.prototype.getSettings = function () {
-            return this.extension.getSettings();
-        };
-        SettingsDialogue.prototype.updateSettings = function (settings) {
-            this.extension.updateSettings(settings);
-            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
-        };
-        SettingsDialogue.prototype.open = function () {
-            var _this = this;
-            _super.prototype.open.call(this);
-            $.getJSON(this.extension.data.root + "/info.json", function (pjson) {
-                _this.$version.text("v" + pjson.version);
-            });
-        };
-        SettingsDialogue.prototype._createLocalesMenu = function () {
-            var _this = this;
-            var locales = this.extension.data.locales;
-            if (locales && locales.length > 1) {
-                for (var i = 0; i < locales.length; i++) {
-                    var locale = locales[i];
-                    this.$localeDropDown.append('<option value="' + locale.name + '">' + locale.label + '</option>');
-                }
-                this.$localeDropDown.val(locales[0].name);
-            }
-            else {
-                this.$locale.hide();
-            }
-            this.$localeDropDown.change(function () {
-                _this.extension.changeLocale(_this.$localeDropDown.val());
-            });
-        };
-        SettingsDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return SettingsDialogue;
-    }(Dialogue_1.Dialogue));
-    exports.SettingsDialogue = SettingsDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-aleph-extension/SettingsDialogue',["require", "exports", "../../modules/uv-dialogues-module/SettingsDialogue"], function (require, exports, SettingsDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SettingsDialogue = /** @class */ (function (_super) {
-        __extends(SettingsDialogue, _super);
-        function SettingsDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        SettingsDialogue.prototype.create = function () {
-            this.setConfig('settingsDialogue');
-            _super.prototype.create.call(this);
-        };
-        return SettingsDialogue;
-    }(SettingsDialogue_1.SettingsDialogue));
-    exports.SettingsDialogue = SettingsDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var ShareDialogue = /** @class */ (function (_super) {
-        __extends(ShareDialogue, _super);
-        function ShareDialogue($element) {
-            var _this = _super.call(this, $element) || this;
-            _this.aspectRatio = .75;
-            _this.isEmbedViewVisible = false;
-            _this.isShareViewVisible = false;
-            _this.maxWidth = 8000;
-            _this.maxHeight = _this.maxWidth * _this.aspectRatio;
-            _this.minWidth = 200;
-            _this.minHeight = _this.minWidth * _this.aspectRatio;
-            return _this;
-        }
-        ShareDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('shareDialogue');
-            _super.prototype.create.call(this);
-            this.openCommand = BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE;
-            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SHARE_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, $triggerButton) {
-                _this.open($triggerButton);
-                if (_this.isShareAvailable()) {
-                    _this.openShareView();
-                }
-                else {
-                    _this.openEmbedView();
-                }
-            });
-            $.subscribe(this.closeCommand, function () {
-                _this.close();
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function (e, $triggerButton) {
-                _this.open($triggerButton);
-                _this.openEmbedView();
-            });
-            this.$tabs = $('<div class="tabs"></div>');
-            this.$content.append(this.$tabs);
-            this.$shareButton = $('<a class="share tab default" tabindex="0">' + this.content.share + '</a>');
-            this.$shareButton.prop('title', this.content.share);
-            this.$tabs.append(this.$shareButton);
-            this.$embedButton = $('<a class="embed tab" tabindex="0">' + this.content.embed + '</a>');
-            this.$embedButton.prop('title', this.content.embed);
-            this.$tabs.append(this.$embedButton);
-            this.$tabsContent = $('<div class="tabsContent"></div>');
-            this.$content.append(this.$tabsContent);
-            this.$footer = $('<div class="footer"></div>');
-            this.$content.append(this.$footer);
-            this.$shareView = $('<div class="shareView view"></div>');
-            this.$tabsContent.append(this.$shareView);
-            this.$shareHeader = $('<div class="header"></div>');
-            this.$shareView.append(this.$shareHeader);
-            this.$shareLink = $('<a class="shareLink" onclick="return false;"></a>');
-            this.$shareView.append(this.$shareLink);
-            this.$shareInput = $("<input class=\"shareInput\" type=\"text\" readonly aria-label=\"" + this.content.shareUrl + "\"/>");
-            this.$shareView.append(this.$shareInput);
-            this.$shareFrame = $('<iframe class="shareFrame"></iframe>');
-            this.$shareView.append(this.$shareFrame);
-            this.$embedView = $('<div class="embedView view"></div>');
-            this.$tabsContent.append(this.$embedView);
-            this.$embedHeader = $('<div class="header"></div>');
-            this.$embedView.append(this.$embedHeader);
-            // this.$link = $('<a target="_blank"></a>');
-            // this.$embedView.find('.leftCol').append(this.$link);
-            // this.$image = $('<img class="share" />');
-            // this.$embedView.append(this.$image);
-            this.$code = $("<input class=\"code\" type=\"text\" readonly aria-label=\"" + this.content.embed + "\"/>");
-            this.$embedView.append(this.$code);
-            this.$customSize = $('<div class="customSize"></div>');
-            this.$embedView.append(this.$customSize);
-            this.$size = $('<span class="size">' + this.content.size + '</span>');
-            this.$customSize.append(this.$size);
-            this.$customSizeDropDown = $('<select id="size" aria-label="' + this.content.size + '"></select>');
-            this.$customSize.append(this.$customSizeDropDown);
-            this.$customSizeDropDown.append('<option value="small" data-width="560" data-height="420">560 x 420</option>');
-            this.$customSizeDropDown.append('<option value="medium" data-width="640" data-height="480">640 x 480</option>');
-            this.$customSizeDropDown.append('<option value="large" data-width="800" data-height="600">800 x 600</option>');
-            this.$customSizeDropDown.append('<option value="custom">' + this.content.customSize + '</option>');
-            this.$widthInput = $('<input class="width" type="text" maxlength="10" aria-label="' + this.content.width + '"/>');
-            this.$customSize.append(this.$widthInput);
-            this.$x = $('<span class="x">x</span>');
-            this.$customSize.append(this.$x);
-            this.$heightInput = $('<input class="height" type="text" maxlength="10" aria-label="' + this.content.height + '"/>');
-            this.$customSize.append(this.$heightInput);
-            var iiifUrl = this.extension.getIIIFShareUrl();
-            this.$iiifButton = $('<a class="imageBtn iiif" href="' + iiifUrl + '" title="' + this.content.iiif + '" target="_blank"></a>');
-            this.$footer.append(this.$iiifButton);
-            this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
-            this.$footer.append(this.$termsOfUseButton);
-            this.$widthInput.on('keydown', function (e) {
-                return Utils.Numbers.numericalInput(e);
-            });
-            this.$heightInput.on('keydown', function (e) {
-                return Utils.Numbers.numericalInput(e);
-            });
-            this.$shareInput.focus(function () {
-                $(this).select();
-            });
-            this.$code.focus(function () {
-                $(this).select();
-            });
-            this.$shareButton.onPressed(function () {
-                _this.openShareView();
-            });
-            this.$embedButton.onPressed(function () {
-                _this.openEmbedView();
-            });
-            this.$customSizeDropDown.change(function () {
-                _this.update();
-            });
-            this.$widthInput.change(function () {
-                _this.updateHeightRatio();
-                _this.update();
-            });
-            this.$heightInput.change(function () {
-                _this.updateWidthRatio();
-                _this.update();
-            });
-            this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
-            });
-            this.$element.hide();
-            this.update();
-        };
-        ShareDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
-            this.update();
-        };
-        ShareDialogue.prototype.getShareUrl = function () {
-            return this.extension.getShareUrl();
-        };
-        ShareDialogue.prototype.isShareAvailable = function () {
-            return !!this.getShareUrl();
-        };
-        ShareDialogue.prototype.update = function () {
-            if (this.isShareAvailable()) {
-                this.$shareButton.show();
-            }
-            else {
-                this.$shareButton.hide();
-            }
-            var $selected = this.getSelectedSize();
-            if ($selected.val() === 'custom') {
-                this.$widthInput.show();
-                this.$x.show();
-                this.$heightInput.show();
-            }
-            else {
-                this.$widthInput.hide();
-                this.$x.hide();
-                this.$heightInput.hide();
-                this.currentWidth = Number($selected.data('width'));
-                this.currentHeight = Number($selected.data('height'));
-                this.$widthInput.val(String(this.currentWidth));
-                this.$heightInput.val(String(this.currentHeight));
-            }
-            this.updateInstructions();
-            this.updateShareOptions();
-            this.updateShareFrame();
-            this.updateTermsOfUseButton();
-        };
-        ShareDialogue.prototype.updateShareOptions = function () {
-            var shareUrl = this.getShareUrl();
-            if (shareUrl) {
-                this.$shareInput.val(shareUrl);
-                this.$shareLink.prop('href', shareUrl);
-                this.$shareLink.text(shareUrl);
-            }
-            if (this.extension.isMobile()) {
-                this.$shareInput.hide();
-                this.$shareLink.show();
-            }
-            else {
-                this.$shareInput.show();
-                this.$shareLink.hide();
-            }
-        };
-        ShareDialogue.prototype.updateInstructions = function () {
-            if (Utils.Bools.getBool(this.options.instructionsEnabled, false)) {
-                this.$shareHeader.show();
-                this.$embedHeader.show();
-                this.$shareHeader.text(this.content.shareInstructions);
-                this.$embedHeader.text(this.content.embedInstructions);
-            }
-            else {
-                this.$shareHeader.hide();
-                this.$embedHeader.hide();
-            }
-        };
-        // updateThumbnail(): void {
-        //     var canvas: Manifesto.ICanvas = this.extension.helper.getCurrentCanvas();
-        //     if (!canvas) return;
-        //     var thumbnail = canvas.getProperty('thumbnail');
-        //     if (!thumbnail || !_.isString(thumbnail)){
-        //         thumbnail = canvas.getCanonicalImageUri(this.extension.data.config.options.bookmarkThumbWidth);
-        //     }
-        //     this.$link.attr('href', thumbnail);
-        //     this.$image.attr('src', thumbnail);
-        // }
-        ShareDialogue.prototype.getSelectedSize = function () {
-            return this.$customSizeDropDown.find(':selected');
-        };
-        ShareDialogue.prototype.updateWidthRatio = function () {
-            this.currentHeight = Number(this.$heightInput.val());
-            if (this.currentHeight < this.minHeight) {
-                this.currentHeight = this.minHeight;
-                this.$heightInput.val(String(this.currentHeight));
-            }
-            else if (this.currentHeight > this.maxHeight) {
-                this.currentHeight = this.maxHeight;
-                this.$heightInput.val(String(this.currentHeight));
-            }
-            this.currentWidth = Math.floor(this.currentHeight / this.aspectRatio);
-            this.$widthInput.val(String(this.currentWidth));
-        };
-        ShareDialogue.prototype.updateHeightRatio = function () {
-            this.currentWidth = Number(this.$widthInput.val());
-            if (this.currentWidth < this.minWidth) {
-                this.currentWidth = this.minWidth;
-                this.$widthInput.val(String(this.currentWidth));
-            }
-            else if (this.currentWidth > this.maxWidth) {
-                this.currentWidth = this.maxWidth;
-                this.$widthInput.val(String(this.currentWidth));
-            }
-            this.currentHeight = Math.floor(this.currentWidth * this.aspectRatio);
-            this.$heightInput.val(String(this.currentHeight));
-        };
-        ShareDialogue.prototype.updateShareFrame = function () {
-            var shareUrl = this.extension.helper.getShareServiceUrl();
-            if (!shareUrl) {
-                return;
-            }
-            if (Utils.Bools.getBool(this.config.options.shareFrameEnabled, true) && shareUrl) {
-                this.$shareFrame.prop('src', shareUrl);
-                this.$shareFrame.show();
-            }
-            else {
-                this.$shareFrame.hide();
-            }
-        };
-        ShareDialogue.prototype.updateTermsOfUseButton = function () {
-            var requiredStatement = this.extension.helper.getRequiredStatement();
-            if (Utils.Bools.getBool(this.extension.data.config.options.termsOfUseEnabled, false) && requiredStatement && requiredStatement.value) {
-                this.$termsOfUseButton.show();
-            }
-            else {
-                this.$termsOfUseButton.hide();
-            }
-        };
-        ShareDialogue.prototype.openShareView = function () {
-            this.isShareViewVisible = true;
-            this.isEmbedViewVisible = false;
-            this.$embedView.hide();
-            this.$shareView.show();
-            this.$shareButton.addClass('on default');
-            this.$embedButton.removeClass('on default');
-            this.resize();
-        };
-        ShareDialogue.prototype.openEmbedView = function () {
-            this.isShareViewVisible = false;
-            this.isEmbedViewVisible = true;
-            this.$embedView.show();
-            this.$shareView.hide();
-            this.$shareButton.removeClass('on default');
-            this.$embedButton.addClass('on default');
-            this.resize();
-        };
-        ShareDialogue.prototype.close = function () {
-            _super.prototype.close.call(this);
-        };
-        ShareDialogue.prototype.getViews = function () {
-            return this.$tabsContent.find('.view');
-        };
-        ShareDialogue.prototype.equaliseViewHeights = function () {
-            this.getViews().equaliseHeight(true);
-        };
-        ShareDialogue.prototype.resize = function () {
-            this.equaliseViewHeights();
-            this.setDockedPosition();
-        };
-        return ShareDialogue;
-    }(Dialogue_1.Dialogue));
-    exports.ShareDialogue = ShareDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-aleph-extension/ShareDialogue',["require", "exports", "../../modules/uv-dialogues-module/ShareDialogue"], function (require, exports, ShareDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var ShareDialogue = /** @class */ (function (_super) {
-        __extends(ShareDialogue, _super);
-        function ShareDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        ShareDialogue.prototype.create = function () {
-            this.setConfig('shareDialogue');
-            _super.prototype.create.call(this);
-        };
-        ShareDialogue.prototype.update = function () {
-            _super.prototype.update.call(this);
-            this.code = this.extension.getEmbedScript(this.options.embedTemplate, this.currentWidth, this.currentHeight);
-            this.$code.val(this.code);
-        };
-        ShareDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return ShareDialogue;
-    }(ShareDialogue_1.ShareDialogue));
-    exports.ShareDialogue = ShareDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../modules/uv-alephcenterpanel-module/AlephCenterPanel", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-avmobilefooterpanel-module/MobileFooter", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AlephCenterPanel_1, BaseEvents_1, BaseExtension_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, MobileFooter_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Extension = /** @class */ (function (_super) {
-        __extends(Extension, _super);
-        function Extension() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        Extension.prototype.create = function () {
-            var _this = this;
-            _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this.viewCanvas(canvasIndex);
-            });
-        };
-        Extension.prototype.createModules = function () {
-            _super.prototype.createModules.call(this);
-            if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
-            }
-            else {
-                Shell_1.Shell.$headerPanel.hide();
-            }
-            if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(Shell_1.Shell.$leftPanel);
-            }
-            else {
-                Shell_1.Shell.$leftPanel.hide();
-            }
-            this.centerPanel = new AlephCenterPanel_1.AlephCenterPanel(Shell_1.Shell.$centerPanel);
-            if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
-            }
-            else {
-                Shell_1.Shell.$rightPanel.hide();
-            }
-            if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
-                this.mobileFooterPanel = new MobileFooter_1.FooterPanel(Shell_1.Shell.$mobileFooterPanel);
-            }
-            else {
-                Shell_1.Shell.$footerPanel.hide();
-            }
-            this.$shareDialogue = $('<div class="uv-overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
-            this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
-            this.$downloadDialogue = $('<div class="uv-overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
-            this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
-            this.$settingsDialogue = $('<div class="uv-overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
-            this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
-            if (this.isHeaderPanelEnabled()) {
-                this.headerPanel.init();
-            }
-            if (this.isLeftPanelEnabled()) {
-                this.leftPanel.init();
-            }
-            if (this.isRightPanelEnabled()) {
-                this.rightPanel.init();
-            }
-            if (this.isFooterPanelEnabled()) {
-                this.footerPanel.init();
-            }
-        };
-        Extension.prototype.dependencyLoaded = function (index, dep) {
-            // if (index === (<any>this).getDependencyIndex('ami')) {
-            //     window.AMI = dep;
-            // } else 
-            if (index === this.getDependencyIndex('three.min')) {
-                window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
-            }
-        };
-        Extension.prototype.render = function () {
-            _super.prototype.render.call(this);
-        };
-        Extension.prototype.getEmbedScript = function (template, width, height) {
-            var appUri = this.getAppUri();
-            var iframeSrc = appUri + "#?manifest=" + this.helper.iiifResourceUri + "&c=" + this.helper.collectionIndex + "&m=" + this.helper.manifestIndex + "&s=" + this.helper.sequenceIndex + "&cv=" + this.helper.canvasIndex + "&rid=" + this.helper.rangeId;
-            var script = Utils.Strings.format(template, iframeSrc, width.toString(), height.toString());
-            return script;
-        };
-        return Extension;
-    }(BaseExtension_1.BaseExtension));
-    exports.Extension = Extension;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/CenterPanel", "../uv-shared-module/Position"], function (require, exports, BaseEvents_1, CenterPanel_1, Position_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var AVCenterPanel = /** @class */ (function (_super) {
-        __extends(AVCenterPanel, _super);
-        function AVCenterPanel($element) {
-            var _this = _super.call(this, $element) || this;
-            _this._mediaReady = false;
-            _this._isThumbsViewOpen = false;
-            _this.attributionPosition = Position_1.Position.BOTTOM_RIGHT;
-            return _this;
-        }
-        AVCenterPanel.prototype.create = function () {
-            var _this = this;
-            this.setConfig('avCenterPanel');
-            _super.prototype.create.call(this);
-            var that = this;
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
-                that.openMedia(resources);
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
-                _this._viewCanvas(canvasIndex);
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
-                if (!_this._observeRangeChanges()) {
-                    return;
-                }
-                _this._whenMediaReady(function () {
-                    that._viewRange(range);
-                    that._setTitle();
-                });
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
-                _this._whenMediaReady(function () {
-                    if (_this.avcomponent) {
-                        _this.avcomponent.set({
-                            limitToRange: _this._limitToRange(),
-                            constrainNavigationToRange: _this._limitToRange()
-                        });
-                    }
-                });
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
-                _this._setTitle();
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
-                _this._isThumbsViewOpen = true;
-                _this._whenMediaReady(function () {
-                    if (_this.avcomponent) {
-                        _this.avcomponent.set({
-                            virtualCanvasEnabled: false
-                        });
-                        var canvas = _this.extension.helper.getCurrentCanvas();
-                        if (canvas) {
-                            _this._viewCanvas(_this.extension.helper.canvasIndex);
-                        }
-                    }
-                });
-            });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
-                _this._isThumbsViewOpen = false;
-                _this._whenMediaReady(function () {
-                    if (_this.avcomponent) {
-                        _this.avcomponent.set({
-                            virtualCanvasEnabled: true
-                        });
-                    }
-                });
-            });
-            this._createAVComponent();
-        };
-        AVCenterPanel.prototype._createAVComponent = function () {
-            var _this = this;
-            this.$avcomponent = $('<div class="iiif-av-component"></div>');
-            this.$content.prepend(this.$avcomponent);
-            this.avcomponent = new IIIFComponents.AVComponent({
-                target: this.$avcomponent[0]
-            });
-            this.avcomponent.on('mediaready', function () {
-                console.log('mediaready');
-                _this._mediaReady = true;
-            }, false);
-            this.avcomponent.on('rangechanged', function (rangeId) {
-                if (rangeId) {
-                    _this._setTitle();
-                    var range = _this.extension.helper.getRangeById(rangeId);
-                    if (range) {
-                        var currentRange = _this.extension.helper.getCurrentRange();
-                        if (range !== currentRange) {
-                            $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
-                        }
-                    }
-                    else {
-                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
-                    }
-                }
-                else {
-                    $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
-                }
-            }, false);
-        };
-        AVCenterPanel.prototype._observeRangeChanges = function () {
-            if (!this._isThumbsViewOpen) {
-                return true;
-            }
-            return false;
-        };
-        AVCenterPanel.prototype._setTitle = function () {
-            var title = '';
-            var value;
-            var label;
-            // get the current range or canvas title
-            var currentRange = this.extension.helper.getCurrentRange();
-            if (currentRange) {
-                label = currentRange.getLabel();
-            }
-            else {
-                label = this.extension.helper.getCurrentCanvas().getLabel();
-            }
-            value = Manifesto.LanguageMap.getValue(label);
-            if (value) {
-                title = value;
-            }
-            if (Utils.Bools.getBool(this.config.options.includeParentInTitleEnabled, false)) {
-                // get the parent range or manifest's title
-                if (currentRange) {
-                    if (currentRange.parentRange) {
-                        label = currentRange.parentRange.getLabel();
-                        value = Manifesto.LanguageMap.getValue(label);
-                    }
-                }
-                else {
-                    value = this.extension.helper.getLabel();
-                }
-                if (value) {
-                    title += this.content.delimiter + value;
-                }
-            }
-            this.title = title;
-            this.resize(false);
-        };
-        AVCenterPanel.prototype._isCurrentResourceAccessControlled = function () {
-            var canvas = this.extension.helper.getCurrentCanvas();
-            return canvas.externalResource.isAccessControlled();
-        };
-        AVCenterPanel.prototype.openMedia = function (resources) {
-            var _this = this;
-            this.extension.getExternalResources(resources).then(function () {
-                if (_this.avcomponent) {
-                    // reset if the media has already been loaded (degraded flow has happened)
-                    if (_this.extension.helper.canvasIndex === _this._lastCanvasIndex) {
-                        _this.avcomponent.reset();
-                    }
-                    _this._lastCanvasIndex = _this.extension.helper.canvasIndex;
-                    _this.avcomponent.set({
-                        helper: _this.extension.helper,
-                        adaptiveAuthEnabled: _this._isCurrentResourceAccessControlled(),
-                        autoPlay: _this.config.options.autoPlay,
-                        autoSelectRange: true,
-                        constrainNavigationToRange: _this._limitToRange(),
-                        content: _this.content,
-                        defaultAspectRatio: 0.56,
-                        doubleClickMS: 350,
-                        limitToRange: _this._limitToRange(),
-                        posterImageRatio: _this.config.options.posterImageRatio
-                    });
-                    _this.resize();
-                }
-            });
-        };
-        AVCenterPanel.prototype._limitToRange = function () {
-            return !this.extension.isDesktopMetric();
-        };
-        AVCenterPanel.prototype._whenMediaReady = function (cb) {
-            var _this = this;
-            Utils.Async.waitFor(function () {
-                return _this._mediaReady;
-            }, cb);
-        };
-        AVCenterPanel.prototype._viewRange = function (range) {
-            var _this = this;
-            this._whenMediaReady(function () {
-                if (range && _this.avcomponent) {
-                    _this.avcomponent.playRange(range.id);
-                }
-                // don't resize the av component to avoid expensively redrawing waveforms
-                _this.resize(false);
-            });
-        };
-        AVCenterPanel.prototype._viewCanvas = function (canvasIndex) {
-            var _this = this;
-            this._whenMediaReady(function () {
-                var canvas = _this.extension.helper.getCanvasByIndex(canvasIndex);
-                if (_this.avcomponent) {
-                    _this.avcomponent.showCanvas(canvas.id);
-                }
-            });
-        };
-        AVCenterPanel.prototype.resize = function (resizeAVComponent) {
-            if (resizeAVComponent === void 0) { resizeAVComponent = true; }
-            _super.prototype.resize.call(this);
-            if (this.title) {
-                this.$title.ellipsisFill(this.title);
-            }
-            if (resizeAVComponent && this.avcomponent) {
-                this.$avcomponent.height(this.$content.height());
-                this.avcomponent.resize();
-            }
-        };
-        return AVCenterPanel;
-    }(CenterPanel_1.CenterPanel));
-    exports.AVCenterPanel = AVCenterPanel;
 });
 
 define('extensions/uv-seadragon-extension/DownloadType',["require", "exports"], function (require, exports) {

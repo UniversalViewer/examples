@@ -1,1 +1,0 @@
-aleph.loadBundle("chunk-5d93a85a.js",["exports"],function(a){var e,i;(e=a.DisplayMode||(a.DisplayMode={})).SLICES="slices",e.VOLUME="volume",e.MESH="mesh",(i=a.Orientation||(a.Orientation={})).CORONAL="coronal",i.SAGGITAL="saggital",i.AXIAL="axial"});
