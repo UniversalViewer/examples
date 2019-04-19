@@ -17429,15 +17429,12 @@ define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "export
         };
         AlephCenterPanel.prototype._render = function () {
             var _this = this;
-            //this.alephContainer.innerHTML = '';
             this.aleph = document.createElement('uv-aleph');
             this.$content.prepend(this.aleph);
             this.aleph.setAttribute('width', '100%');
             this.aleph.setAttribute('height', '100%');
-            //this.aleph.setAttribute('draco-decoder-path', this.config.options.dracoDecoderPath);
             var dracoDecoderPath = (window.self !== window.top) ? 'lib/' : 'uv/lib/';
             this.aleph.setAttribute('draco-decoder-path', dracoDecoderPath);
-            //this.alephContainer.appendChild(this.aleph);
             this.aleph.addEventListener('changed', function (e) {
                 _this._displayMode = e.detail.displayMode;
             }, false);
@@ -17447,8 +17444,8 @@ define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "export
                         displayMode: _this._displayMode
                     }]);
             }, false);
-            this.aleph.componentOnReady().then(function (aleph) {
-                aleph.load(_this._src);
+            this.aleph.componentOnReady().then(function () {
+                _this.aleph.load(_this._src);
             });
             $.subscribe(Events_1.Events.DISPLAY_MODE_CHANGED, function (e, displayMode) {
                 _this.aleph.setDisplayMode(displayMode);
@@ -21050,15 +21047,18 @@ define('modules/uv-alephleftpanel-module/AlephLeftPanel',["require", "exports", 
             return _super.call(this, $element) || this;
         }
         AlephLeftPanel.prototype.create = function () {
+            var _this = this;
             this.setConfig('alephLeftPanel');
             _super.prototype.create.call(this);
-            this._$controlPanel = $('<al-control-panel nodes-visible="false"></al-control-panel>');
+            this._$controlPanel = $('<al-control-panel></al-control-panel>');
             var alControlPanel = this._$controlPanel[0];
+            this.$main.addClass('disabled');
             this.$main.append(this._$controlPanel);
             this.setTitle(this.content.title);
             $.subscribe(Events_1.Events.LOADED, function (e, args) {
                 alControlPanel.stackhelper = args.stackhelper;
                 alControlPanel.displayMode = args.displayMode;
+                _this.$main.removeClass('disabled');
             });
             alControlPanel.componentOnReady().then(function () {
                 alControlPanel.addEventListener("displayModeChanged", function (e) {

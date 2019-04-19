@@ -1,0 +1,1 @@
+var a,o;window,function(a){a.SLICES="slices",a.VOLUME="volume",a.MESH="mesh"}(a||(a={})),function(a){a.CORONAL="coronal",a.SAGGITAL="saggital",a.AXIAL="axial"}(o||(o={}));export{a,o as b};
