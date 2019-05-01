@@ -17361,12 +17361,12 @@ define('extensions/uv-aleph-extension/Events',["require", "exports"], function (
         function Events() {
         }
         Events.namespace = 'alephExtension.';
-        Events.LOADED = Events.namespace + 'loaded';
+        Events.BOUNDING_BOX_ENABLED_CHANGED = Events.namespace + 'boundingBoxEnabledChanged';
         Events.DISPLAY_MODE_CHANGED = Events.namespace + 'displayModeChanged';
         Events.GRAPH_ENABLED_CHANGED = Events.namespace + 'graphEnabledChangedChanged';
-        Events.BOUNDING_BOX_VISIBLE_CHANGED = Events.namespace + 'boundingBoxVisibleChanged';
-        Events.SLICES_INDEX_CHANGED = Events.namespace + 'slicesIndexChanged';
+        Events.LOADED = Events.namespace + 'loaded';
         Events.ORIENTATION_CHANGED = Events.namespace + 'orientationChanged';
+        Events.SLICES_INDEX_CHANGED = Events.namespace + 'slicesIndexChanged';
         Events.SLICES_WINDOW_CENTER_CHANGED = Events.namespace + 'slicesWindowCenterChanged';
         Events.SLICES_WINDOW_WIDTH_CHANGED = Events.namespace + 'slicesWindowWidthChanged';
         Events.VOLUME_STEPS_CHANGED = Events.namespace + 'volumeStepsChanged';
@@ -17453,8 +17453,8 @@ define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "export
             $.subscribe(Events_1.Events.GRAPH_ENABLED_CHANGED, function (e, enabled) {
                 _this.aleph.setGraphEnabled(enabled);
             });
-            $.subscribe(Events_1.Events.BOUNDING_BOX_VISIBLE_CHANGED, function (e, visible) {
-                _this.aleph.setBoundingBoxVisible(visible);
+            $.subscribe(Events_1.Events.BOUNDING_BOX_ENABLED_CHANGED, function (e, enabled) {
+                _this.aleph.setBoundingBoxEnabled(enabled);
             });
             $.subscribe(Events_1.Events.SLICES_INDEX_CHANGED, function (e, index) {
                 _this.aleph.setSlicesIndex(index);
@@ -21067,8 +21067,8 @@ define('modules/uv-alephleftpanel-module/AlephLeftPanel',["require", "exports", 
                 alControlPanel.addEventListener("graphEnabledChanged", function (e) {
                     $.publish(Events_1.Events.GRAPH_ENABLED_CHANGED, [e.detail]);
                 }, false);
-                alControlPanel.addEventListener("boundingBoxVisibleChanged", function (e) {
-                    $.publish(Events_1.Events.BOUNDING_BOX_VISIBLE_CHANGED, [e.detail]);
+                alControlPanel.addEventListener("boundingBoxEnabledChanged", function (e) {
+                    $.publish(Events_1.Events.BOUNDING_BOX_ENABLED_CHANGED, [e.detail]);
                 }, false);
                 alControlPanel.addEventListener("slicesIndexChanged", function (e) {
                     $.publish(Events_1.Events.SLICES_INDEX_CHANGED, [e.detail]);

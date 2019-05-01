@@ -340,7 +340,7 @@
           "label": "Brain (dicom)"
         },
         {
-          "@id": "https://ami-test-manifests-fork.netlify.com/collection/dicom/platypus/dcm_multi_vf300_16bit/index.json",
+          "@id": "https://ami-test-manifests-fork.netlify.com/collection/dicom/platypus2/dcm_multi_vf300_jpegQ95_16bit/index.json",
           "@type": "sc:Manifest",
           "label": "Platypus (dicom)"
         },
