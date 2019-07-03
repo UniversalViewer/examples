@@ -16962,12 +16962,12 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
                 'left': left
             });
         };
-        Dialogue.prototype.open = function ($triggerButton) {
+        Dialogue.prototype.open = function (triggerButton) {
             var _this = this;
             this.$element.attr('aria-hidden', 'false');
             this.$element.show();
-            if ($triggerButton && $triggerButton.length) {
-                this.$triggerButton = $triggerButton;
+            if (triggerButton) {
+                this.$triggerButton = $(triggerButton);
                 this.$bottom.show();
             }
             else {
@@ -21096,8 +21096,8 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
-            this.component.subscribe(this.openCommand, function ($triggerButton) {
-                _this.open($triggerButton);
+            this.component.subscribe(this.openCommand, function (triggerButton) {
+                _this.open(triggerButton);
             });
             this.component.subscribe(this.closeCommand, function () {
                 _this.close();
@@ -21324,8 +21324,8 @@ define('extensions/uv-av-extension/DownloadDialogue',["require", "exports", "../
             var format = this.getCurrentResourceFormat();
             return format === 'mpd' || format === 'm3u8';
         };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        DownloadDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             var canvas = this.extension.helper.getCurrentCanvas();
             if (this.isDownloadOptionAvailable(DownloadOption_1.DownloadOption.ENTIRE_FILE_AS_ORIGINAL) && !this._isAdaptive()) {
                 var $input = this.$entireFileAsOriginal.find('input');
@@ -22159,8 +22159,8 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SHARE_DIALOGUE;
-            this.component.subscribe(this.openCommand, function ($triggerButton) {
-                _this.open($triggerButton);
+            this.component.subscribe(this.openCommand, function (triggerButton) {
+                _this.open(triggerButton);
                 if (_this.isShareAvailable()) {
                     _this.openShareView();
                 }
@@ -22171,8 +22171,8 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
-            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function ($triggerButton) {
-                _this.open($triggerButton);
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function (triggerButton) {
+                _this.open(triggerButton);
                 _this.openEmbedView();
             });
             this.$tabs = $('<div class="tabs"></div>');
@@ -22263,8 +22263,8 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             this.$element.hide();
             this.update();
         };
-        ShareDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        ShareDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             this.update();
         };
         ShareDialogue.prototype.getShareUrl = function () {
@@ -23079,8 +23079,8 @@ define('extensions/uv-mediaelement-extension/DownloadDialogue',["require", "expo
             this.setConfig('downloadDialogue');
             _super.prototype.create.call(this);
         };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        DownloadDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             this.addEntireFileDownloadOptions();
             this.updateNoneAvailable();
             this.resize();
@@ -23688,8 +23688,8 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                 _this.component.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
         };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        DownloadDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             var canvas = this.extension.helper.getCurrentCanvas();
             var rotation = this.extension.getViewerRotation();
             var hasNormalDimensions = rotation % 180 == 0;
@@ -24973,8 +24973,8 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_MOREINFO_DIALOGUE;
-            this.component.subscribe(this.openCommand, function ($triggerButton) {
-                _this.open($triggerButton);
+            this.component.subscribe(this.openCommand, function (triggerButton) {
+                _this.open(triggerButton);
             });
             this.component.subscribe(this.closeCommand, function () {
                 _this.close();
@@ -24992,8 +24992,8 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
             // hide
             this.$element.hide();
         };
-        MoreInfoDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        MoreInfoDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             this.metadataComponent.set(this._getData());
         };
         MoreInfoDialogue.prototype._getData = function () {
@@ -27627,8 +27627,8 @@ define('extensions/uv-pdf-extension/DownloadDialogue',["require", "exports", "..
             this.setConfig('downloadDialogue');
             _super.prototype.create.call(this);
         };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        DownloadDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             this.addEntireFileDownloadOptions();
             if (!this.$downloadOptions.find('li:visible').length) {
                 this.$noneAvailable.show();
@@ -28305,8 +28305,8 @@ define('extensions/uv-virtex-extension/DownloadDialogue',["require", "exports", 
             this.setConfig('downloadDialogue');
             _super.prototype.create.call(this);
         };
-        DownloadDialogue.prototype.open = function ($triggerButton) {
-            _super.prototype.open.call(this, $triggerButton);
+        DownloadDialogue.prototype.open = function (triggerButton) {
+            _super.prototype.open.call(this, triggerButton);
             this.addEntireFileDownloadOptions();
             this.updateNoneAvailable();
             this.resize();
@@ -28616,16 +28616,15 @@ define('Pubsub',["require", "exports"], function (require, exports) {
         function PubSub() {
             this.events = {};
         }
-        PubSub.prototype.publish = function (name, data) {
+        PubSub.prototype.publish = function (name, args) {
             var _this = this;
             var handlers = this.events[name];
             if (handlers === undefined)
                 return;
             handlers.forEach(function (handler) {
-                handler.call(_this, data);
+                handler.call(_this, args);
             });
         };
-        ;
         PubSub.prototype.subscribe = function (name, handler) {
             var handlers = this.events[name];
             if (handlers === undefined) {
@@ -28633,7 +28632,6 @@ define('Pubsub',["require", "exports"], function (require, exports) {
             }
             handlers.push(handler);
         };
-        ;
         PubSub.prototype.unsubscribe = function (name, handler) {
             var handlers = this.events[name];
             if (handlers === undefined)
@@ -28641,7 +28639,6 @@ define('Pubsub',["require", "exports"], function (require, exports) {
             var handlerIdx = handlers.indexOf(handler);
             handlers.splice(handlerIdx);
         };
-        ;
         PubSub.prototype.dispose = function () {
             this.events = {};
         };
