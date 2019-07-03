@@ -11,6 +11,7 @@
     <style>
         #uv1, #uv2 {
             height: 500px;
+			margin: 1rem;
         }
     </style>
 </head>
@@ -27,7 +28,7 @@
 
             var urlDataProvider = new UV.URLDataProvider();
 
-			var data = {
+			var data1 = {
                 root: './uv',
                 iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest',
 				collectionIndex: 0,
@@ -41,8 +42,26 @@
 				]
 			};
 
-			var uv1 = createUV('#uv1', data, urlDataProvider);
-			var uv2 = createUV('#uv2', data, urlDataProvider);
+			var data2 = {
+                root: './uv',
+                iiifResourceUri: 'http://wellcomelibrary.org/iiif/b18035978/manifest',
+				collectionIndex: 0,
+				manifestIndex: 0,
+				sequenceIndex: 0,
+				canvasIndex: 0,
+				locales: [
+					{
+						name: 'en-GB'
+					}
+				]
+			};
+
+			var uv2 = createUV('#uv2', data1, urlDataProvider);
+
+			setTimeout(() => {
+				var uv1 = createUV('#uv1', data2, urlDataProvider);
+			}, 500);
+			
 
 		}, false);
 

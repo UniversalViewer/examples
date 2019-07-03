@@ -16787,7 +16787,7 @@ define('modules/uv-shared-module/Panel',["require", "exports", "./BaseEvents"], 
         }
         Panel.prototype.create = function () {
             var _this = this;
-            $.subscribe(BaseEvents_1.BaseEvents.RESIZE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RESIZE, function () {
                 _this.resize();
             });
         };
@@ -16831,7 +16831,7 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
             return _super.call(this, $element, fitToParentWidth, fitToParentHeight) || this;
         }
         BaseView.prototype.create = function () {
-            this.component = this.$element.closest('.uv').data("component");
+            this.component = this.$element.closest(".uv").data("component");
             _super.prototype.create.call(this);
             this.extension = this.component.extension;
             this.config = {};
@@ -16891,14 +16891,14 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             this.setConfig('dialogue');
             _super.prototype.create.call(this);
             // events.
-            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
                         _this.close();
                     }
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
                 if (_this.isActive) {
                     if (_this.allowClose) {
                         _this.close();
@@ -16992,7 +16992,7 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
                     }
                 }
             }, 1);
-            $.publish(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
+            this.component.publish(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
             if (this.isUnopened) {
                 this.isUnopened = false;
                 this.afterFirstOpen();
@@ -17007,8 +17007,8 @@ define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", 
             this.$element.attr('aria-hidden', 'true');
             this.$element.hide();
             this.isActive = false;
-            $.publish(this.closeCommand);
-            $.publish(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
+            this.component.publish(this.closeCommand);
+            this.component.publish(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
         };
         Dialogue.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -17046,11 +17046,11 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
+            this.component.subscribe(this.openCommand, function (params) {
                 _this.acceptCallback = params.acceptCallback;
                 _this.showMessage(params);
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$message = $('<p></p>');
@@ -17070,7 +17070,7 @@ define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./Base
             this.$element.hide();
         };
         GenericDialogue.prototype.accept = function () {
-            $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+            this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
             if (this.acceptCallback)
                 this.acceptCallback();
         };
@@ -17117,11 +17117,12 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "
             return _this;
         }
         Shell.prototype.create = function () {
+            var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
                 Shell.$overlays.show();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
                 Shell.$overlays.hide();
             });
             Shell.$headerPanel = $('<div class="headerPanel"></div>');
@@ -17145,7 +17146,7 @@ define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "
             Shell.$overlays.on('click', function (e) {
                 if ($(e.target).hasClass('overlays')) {
                     e.preventDefault();
-                    $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+                    _this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
                 }
             });
             // create shared views.
@@ -17464,13 +17465,13 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
             this.setConfig('avCenterPanel');
             _super.prototype.create.call(this);
             var that = this;
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (resources) {
                 that.openMedia(resources);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this._viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (range) {
                 if (!_this._observeRangeChanges()) {
                     return;
                 }
@@ -17479,7 +17480,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     that._setTitle();
                 });
             });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this._whenMediaReady(function () {
                     if (_this.avcomponent) {
                         _this.avcomponent.set({
@@ -17489,10 +17490,10 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     }
                 });
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
                 _this._setTitle();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
                 _this._isThumbsViewOpen = true;
                 _this._whenMediaReady(function () {
                     if (_this.avcomponent) {
@@ -17506,7 +17507,7 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     }
                 });
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
                 _this._isThumbsViewOpen = false;
                 _this._whenMediaReady(function () {
                     if (_this.avcomponent) {
@@ -17536,15 +17537,15 @@ define('modules/uv-avcenterpanel-module/AVCenterPanel',["require", "exports", ".
                     if (range) {
                         var currentRange = _this.extension.helper.getCurrentRange();
                         if (range !== currentRange) {
-                            $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                            _this.component.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, range);
                         }
                     }
                     else {
-                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
+                        _this.component.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, null);
                     }
                 }
                 else {
-                    $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [null]);
+                    _this.component.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, null);
                 }
             }, false);
         };
@@ -17728,23 +17729,23 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                 })['catch'](function (error) {
                     switch (error.name) {
                         case manifesto.StatusCodes.AUTHORIZATION_FAILED.toString():
-                            $.publish(BaseEvents_1.BaseEvents.LOGIN_FAILED);
+                            Auth09.publish(BaseEvents_1.BaseEvents.LOGIN_FAILED);
                             break;
                         case manifesto.StatusCodes.FORBIDDEN.toString():
-                            $.publish(BaseEvents_1.BaseEvents.FORBIDDEN);
+                            Auth09.publish(BaseEvents_1.BaseEvents.FORBIDDEN);
                             break;
                         case manifesto.StatusCodes.RESTRICTED.toString():
                             // do nothing
                             break;
                         default:
-                            $.publish(BaseEvents_1.BaseEvents.SHOW_MESSAGE, [error.message || error]);
+                            Auth09.publish(BaseEvents_1.BaseEvents.SHOW_MESSAGE, [error.message || error]);
                     }
                 });
             });
         };
         Auth09.clickThrough = function (resource) {
             return new Promise(function (resolve) {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, [{
+                Auth09.publish(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, [{
                         resource: resource,
                         acceptCallback: function () {
                             if (resource.clickThroughService) {
@@ -17752,7 +17753,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                                 var pollTimer_1 = window.setInterval(function () {
                                     if (win_1 && win_1.closed) {
                                         window.clearInterval(pollTimer_1);
-                                        $.publish(BaseEvents_1.BaseEvents.CLICKTHROUGH);
+                                        Auth09.publish(BaseEvents_1.BaseEvents.CLICKTHROUGH);
                                         resolve();
                                     }
                                 }, 500);
@@ -17763,10 +17764,10 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
         };
         Auth09.restricted = function (resource) {
             return new Promise(function (resolve, reject) {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, [{
+                Auth09.publish(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, [{
                         resource: resource,
                         acceptCallback: function () {
-                            $.publish(BaseEvents_1.BaseEvents.LOAD_FAILED);
+                            Auth09.publish(BaseEvents_1.BaseEvents.LOAD_FAILED);
                             reject(resource);
                         }
                     }]);
@@ -17779,7 +17780,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                     options.warningMessage = LoginWarningMessages_1.LoginWarningMessages.FORBIDDEN;
                     options.showCancelButton = true;
                 }
-                $.publish(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE, [{
+                Auth09.publish(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE, [{
                         resource: resource,
                         loginCallback: function () {
                             if (resource.loginService) {
@@ -17787,7 +17788,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                                 var pollTimer_2 = window.setInterval(function () {
                                     if (win_2 && win_2.closed) {
                                         window.clearInterval(pollTimer_2);
-                                        $.publish(BaseEvents_1.BaseEvents.LOGIN);
+                                        Auth09.publish(BaseEvents_1.BaseEvents.LOGIN);
                                         resolve();
                                     }
                                 }, 500);
@@ -17799,7 +17800,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                                 var pollTimer_3 = window.setInterval(function () {
                                     if (win_3 && win_3.closed) {
                                         window.clearInterval(pollTimer_3);
-                                        $.publish(BaseEvents_1.BaseEvents.LOGOUT);
+                                        Auth09.publish(BaseEvents_1.BaseEvents.LOGOUT);
                                         resolve();
                                     }
                                 }, 500);
@@ -17891,7 +17892,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                 }
                 else if (resource.status === HTTPStatusCode.MOVED_TEMPORARILY) {
                     resolve(resource);
-                    $.publish(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, [resource]);
+                    Auth09.publish(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, [resource]);
                 }
                 else {
                     if (resource.error.status === HTTPStatusCode.UNAUTHORIZED ||
@@ -17899,7 +17900,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
                         // if the browser doesn't support CORS
                         if (!Modernizr.cors) {
                             var informationArgs = new InformationArgs_1.InformationArgs(InformationType_1.InformationType.AUTH_CORS_ERROR, null);
-                            $.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
+                            Auth09.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
                             resolve(resource);
                         }
                         else {
@@ -17920,7 +17921,7 @@ define('modules/uv-shared-module/Auth09',["require", "exports", "./BaseEvents", 
         };
         Auth09.handleDegraded = function (resource) {
             var informationArgs = new InformationArgs_1.InformationArgs(InformationType_1.InformationType.DEGRADED_RESOURCE, resource);
-            $.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
+            Auth09.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
         };
         return Auth09;
     }());
@@ -17947,16 +17948,16 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                 })['catch'](function (error) {
                     switch (error.name) {
                         case manifesto.StatusCodes.AUTHORIZATION_FAILED.toString():
-                            $.publish(BaseEvents_1.BaseEvents.LOGIN_FAILED);
+                            Auth1.publish(BaseEvents_1.BaseEvents.LOGIN_FAILED);
                             break;
                         case manifesto.StatusCodes.FORBIDDEN.toString():
-                            $.publish(BaseEvents_1.BaseEvents.FORBIDDEN);
+                            Auth1.publish(BaseEvents_1.BaseEvents.FORBIDDEN);
                             break;
                         case manifesto.StatusCodes.RESTRICTED.toString():
                             // do nothing
                             break;
                         default:
-                            $.publish(BaseEvents_1.BaseEvents.SHOW_MESSAGE, [error.message || error]);
+                            Auth1.publish(BaseEvents_1.BaseEvents.SHOW_MESSAGE, [error.message || error]);
                     }
                 });
             });
@@ -17999,7 +18000,7 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
         };
         Auth1.showDegradedMessage = function (resource) {
             var informationArgs = new InformationArgs_1.InformationArgs(InformationType_1.InformationType.DEGRADED_RESOURCE, resource);
-            $.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
+            Auth1.publish(BaseEvents_1.BaseEvents.SHOW_INFORMATION, [informationArgs]);
         };
         Auth1.storeAccessToken = function (resource, token) {
             return new Promise(function (resolve, reject) {
@@ -18058,7 +18059,7 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
                     resolve(resource.authHoldingPage);
                 }
                 else {
-                    $.publish(BaseEvents_1.BaseEvents.SHOW_AUTH_DIALOGUE, [{
+                    Auth1.publish(BaseEvents_1.BaseEvents.SHOW_AUTH_DIALOGUE, [{
                             service: service,
                             closeCallback: function () {
                                 resolve(null);
@@ -18129,7 +18130,7 @@ define('modules/uv-shared-module/Auth1',["require", "exports", "./BaseEvents", "
             if (service.getFailureDescription()) {
                 errorMessage += service.getFailureDescription();
             }
-            $.publish(BaseEvents_1.BaseEvents.SHOW_MESSAGE, [Utils_1.UVUtils.sanitize(errorMessage)]);
+            Auth1.publish(BaseEvents_1.BaseEvents.SHOW_MESSAGE, [Utils_1.UVUtils.sanitize(errorMessage)]);
         };
         Auth1.messages = {};
         return Auth1;
@@ -18161,14 +18162,14 @@ define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_AUTH_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_AUTH_DIALOGUE;
-            $.subscribe(this.openCommand, function (s, e) {
+            this.component.subscribe(this.openCommand, function (e) {
                 _this.closeCallback = e.closeCallback;
                 _this.confirmCallback = e.confirmCallback;
                 _this.cancelCallback = e.cancelCallback;
                 _this.service = e.service;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -18212,7 +18213,7 @@ define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-
                 this.$message.targetBlank();
                 this.$message.find('a').on('click', function () {
                     var url = $(this).attr('href');
-                    $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                    this.component.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
                 });
             }
             if (confirmLabel) {
@@ -18260,12 +18261,12 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_CLICKTHROUGH_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
+            this.component.subscribe(this.openCommand, function (params) {
                 _this.acceptCallback = params.acceptCallback;
                 _this.resource = params.resource;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -18285,7 +18286,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
             this.$acceptTermsButton.on('click', function (e) {
                 e.preventDefault();
                 _this.close();
-                $.publish(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
+                _this.component.publish(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
                 if (_this.acceptCallback)
                     _this.acceptCallback();
             });
@@ -18299,7 +18300,7 @@ define('modules/uv-dialogues-module/ClickThroughDialogue',["require", "exports",
             }
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
-                $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                this.component.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
             });
             this.resize();
         };
@@ -18335,14 +18336,14 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE;
-            $.subscribe(this.openCommand, function (s, e) {
+            this.component.subscribe(this.openCommand, function (e) {
                 _this.loginCallback = e.loginCallback;
                 _this.logoutCallback = e.logoutCallback;
                 _this.options = e.options;
                 _this.resource = e.resource;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -18397,7 +18398,7 @@ define('modules/uv-dialogues-module/LoginDialogue',["require", "exports", "../uv
             this.$message.targetBlank();
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
-                $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                this.component.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
             });
             if (this.options.showCancelButton) {
                 this.$cancelButton.show();
@@ -18493,13 +18494,13 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE;
-            $.subscribe(this.openCommand, function (s, e) {
+            this.component.subscribe(this.openCommand, function (e) {
                 _this.acceptCallback = e.acceptCallback;
                 _this.options = e.options;
                 _this.resource = e.resource;
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -18536,7 +18537,7 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
             this.$message.targetBlank();
             this.$message.find('a').on('click', function () {
                 var url = $(this).attr('href');
-                $.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, [url]);
+                this.component.publish(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
             });
             this.resize();
         };
@@ -18618,6 +18619,8 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
         BaseExtension.prototype.create = function () {
             var _this = this;
             var that = this;
+            Auth09_1.Auth09.publish = this.component.publish;
+            Auth1_1.Auth1.publish = this.component.publish;
             this.$element = $(this.component.options.target);
             this.$element.data("component", this.component);
             this.fire(BaseEvents_1.BaseEvents.CREATE, {
@@ -18736,179 +18739,179 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
                         if (preventDefault) {
                             e.preventDefault();
                         }
-                        $.publish(event);
+                        _this.component.publish(event);
                     }
                 });
             }
-            $.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
                 if (_this.isOverlayActive()) {
-                    $.publish(BaseEvents_1.BaseEvents.ESCAPE);
+                    _this.component.publish(BaseEvents_1.BaseEvents.ESCAPE);
                 }
-                $.publish(BaseEvents_1.BaseEvents.ESCAPE);
-                $.publish(BaseEvents_1.BaseEvents.RESIZE);
+                _this.component.publish(BaseEvents_1.BaseEvents.ESCAPE);
+                _this.component.publish(BaseEvents_1.BaseEvents.RESIZE);
             });
             this.$element.append('<a href="/" id="top"></a>');
             this.$element.append('<iframe id="commsFrame" style="display:none"></iframe>');
             this.$element.append('<div id="debug"><span id="watch">Watch</span><span id="mobile-portrait">Mobile Portrait</span><span id="mobile-landscape">Mobile Landscape</span><span id="desktop">Desktop</span></div>');
-            $.subscribe(BaseEvents_1.BaseEvents.ACCEPT_TERMS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ACCEPT_TERMS, function () {
                 _this.fire(BaseEvents_1.BaseEvents.ACCEPT_TERMS);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LOGIN_FAILED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LOGIN_FAILED, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LOGIN_FAILED);
                 _this.showMessage(_this.data.config.content.authorisationFailedMessage);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
                 _this.isLoggedIn = true;
                 _this.fire(BaseEvents_1.BaseEvents.LOGIN);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LOGOUT, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LOGOUT, function () {
                 _this.isLoggedIn = false;
                 _this.fire(BaseEvents_1.BaseEvents.LOGOUT);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.BOOKMARK, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.BOOKMARK, function () {
                 _this.bookmark();
                 _this.fire(BaseEvents_1.BaseEvents.BOOKMARK);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
                 _this.fire(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.data.canvasIndex = canvasIndex;
                 _this.lastCanvasIndex = _this.helper.canvasIndex;
                 _this.helper.canvasIndex = canvasIndex;
                 _this.fire(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.data.canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
                 _this.fire(BaseEvents_1.BaseEvents.CLICKTHROUGH);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL, function () {
                 _this.fire(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL, function () {
                 _this.fire(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, function (e, collectionIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, function (collectionIndex) {
                 _this.data.collectionIndex = collectionIndex;
                 _this.fire(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, _this.data.collectionIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CREATED, function () {
                 _this.isCreated = true;
                 _this.fire(BaseEvents_1.BaseEvents.CREATED);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.DOWN_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.DOWN_ARROW, function () {
                 _this.fire(BaseEvents_1.BaseEvents.DOWN_ARROW);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.DOWNLOAD, function (e, obj) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.DOWNLOAD, function (obj) {
                 _this.fire(BaseEvents_1.BaseEvents.DOWNLOAD, obj);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.END, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.END, function () {
                 _this.fire(BaseEvents_1.BaseEvents.END);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.ESCAPE);
                 if (_this.isFullScreen() && !_this.isOverlayActive()) {
-                    $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+                    _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, function (e, url) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, function (url) {
                 _this.fire(BaseEvents_1.BaseEvents.EXTERNAL_LINK_CLICKED, url);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.FEEDBACK, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.FEEDBACK, function () {
                 _this.feedback();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.FORBIDDEN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.FORBIDDEN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.FORBIDDEN);
-                $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
+                _this.component.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_EMBED_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_EMBED_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_EMBED_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_LOGIN_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_RESTRICTED_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
                 _this.fire(BaseEvents_1.BaseEvents.HOME);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LEFT_ARROW);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LOAD_FAILED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LOAD_FAILED, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LOAD_FAILED);
                 if (!that.lastCanvasIndex == null && that.lastCanvasIndex !== that.helper.canvasIndex) {
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [that.lastCanvasIndex]);
+                    _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, that.lastCanvasIndex);
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, function (e, manifestIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, function (manifestIndex) {
                 _this.data.manifestIndex = manifestIndex;
                 _this.fire(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, _this.data.manifestIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.NOT_FOUND, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.NOT_FOUND, function () {
                 _this.fire(BaseEvents_1.BaseEvents.NOT_FOUND);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN);
                 var openUri = Utils.Strings.format(_this.data.config.options.openTemplate, _this.helper.iiifResourceUri);
                 window.open(openUri);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
                 _this.resize();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.PAGE_DOWN);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
                 _this.fire(BaseEvents_1.BaseEvents.PAGE_UP);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (e, range) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function (range) {
                 if (range) {
                     _this.data.rangeId = range.id;
                     _this.helper.rangeId = range.id;
@@ -18920,72 +18923,72 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
                     _this.fire(BaseEvents_1.BaseEvents.RANGE_CHANGED, null);
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, function (e, resource) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED, function (resource) {
                 _this.fire(BaseEvents_1.BaseEvents.RESOURCE_DEGRADED);
                 Auth09_1.Auth09.handleDegraded(resource);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RETURN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RETURN, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RETURN);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RIGHT_ARROW);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_FINISH);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RIGHTPANEL_COLLAPSE_FULL_START);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_FINISH);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START, function () {
                 _this.fire(BaseEvents_1.BaseEvents.RIGHTPANEL_EXPAND_FULL_START);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, function (e, sequenceIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, function (sequenceIndex) {
                 _this.data.sequenceIndex = sequenceIndex;
                 _this.fire(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, _this.data.sequenceIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (args) {
                 _this.fire(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, args);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_INFORMATION);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_LOGIN_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_CLICKTHROUGH_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_MESSAGE, function (e, message) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_MESSAGE, function (message) {
                 _this.showMessage(message);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_RESTRICTED_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
                 var terms = _this.helper.getLicense();
                 if (!terms) {
@@ -18998,10 +19001,10 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
                     _this.showMessage(terms);
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (thumb) {
                 _this.fire(BaseEvents_1.BaseEvents.THUMB_SELECTED, thumb.index);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
                 $('#top').focus();
                 _this.component.isFullScreen = !_this.component.isFullScreen;
                 if (_this.component.isFullScreen) {
@@ -19015,16 +19018,16 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
                     overrideFullScreen: _this.data.config.options.overrideFullScreen
                 });
             });
-            $.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
                 _this.fire(BaseEvents_1.BaseEvents.UP_ARROW);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
                 _this.fire(BaseEvents_1.BaseEvents.UPDATE_SETTINGS);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.VIEW_FULL_TERMS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.VIEW_FULL_TERMS, function () {
                 _this.fire(BaseEvents_1.BaseEvents.VIEW_FULL_TERMS);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.WINDOW_UNLOAD, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.WINDOW_UNLOAD, function () {
                 _this.fire(BaseEvents_1.BaseEvents.WINDOW_UNLOAD);
             });
             // create shell and shared views.
@@ -19139,31 +19142,31 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
             }
             this.createModules();
             this.modulesCreated();
-            $.publish(BaseEvents_1.BaseEvents.RESIZE); // initial sizing
+            this.component.publish(BaseEvents_1.BaseEvents.RESIZE); // initial sizing
             setTimeout(function () {
                 _this.render();
-                $.publish(BaseEvents_1.BaseEvents.CREATED);
+                _this.component.publish(BaseEvents_1.BaseEvents.CREATED);
                 _this._setDefaultFocus();
             }, 1);
         };
         BaseExtension.prototype.render = function () {
             if (!this.isCreated || (this.data.collectionIndex !== this.helper.collectionIndex)) {
-                $.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, [this.data.collectionIndex]);
+                this.component.publish(BaseEvents_1.BaseEvents.COLLECTION_INDEX_CHANGED, this.data.collectionIndex);
             }
             if (!this.isCreated || (this.data.manifestIndex !== this.helper.manifestIndex)) {
-                $.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, [this.data.manifestIndex]);
+                this.component.publish(BaseEvents_1.BaseEvents.MANIFEST_INDEX_CHANGED, this.data.manifestIndex);
             }
             if (!this.isCreated || (this.data.sequenceIndex !== this.helper.sequenceIndex)) {
-                $.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, [this.data.sequenceIndex]);
+                this.component.publish(BaseEvents_1.BaseEvents.SEQUENCE_INDEX_CHANGED, this.data.sequenceIndex);
             }
             if (!this.isCreated || (this.data.canvasIndex !== this.helper.canvasIndex)) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.data.canvasIndex]);
+                this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, this.data.canvasIndex);
             }
             if (!this.isCreated || (this.data.rangeId !== this.helper.rangeId)) {
                 if (this.data.rangeId) {
                     var range = this.helper.getRangeById(this.data.rangeId);
                     if (range) {
-                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                        this.component.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, range);
                     }
                     else {
                         console.warn('range id not found:', this.data.rangeId);
@@ -19186,7 +19189,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
             return this.$element.height();
         };
         BaseExtension.prototype.exitFullScreen = function () {
-            $.publish(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN);
+            this.component.publish(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN);
         };
         BaseExtension.prototype.fire = function (name) {
             var args = [];
@@ -19265,25 +19268,25 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
                         metricFound = true;
                         if (_this.metric !== metric.type) {
                             _this.metric = metric.type;
-                            $.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
+                            _this.component.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
                         }
                     }
                 }
                 if (!metricFound) {
                     if (_this.metric !== MetricType_1.MetricType.NONE) {
                         _this.metric = MetricType_1.MetricType.NONE;
-                        $.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
+                        _this.component.publish(BaseEvents_1.BaseEvents.METRIC_CHANGED);
                     }
                 }
             }, 1);
         };
         BaseExtension.prototype.resize = function () {
             this._updateMetric();
-            $.publish(BaseEvents_1.BaseEvents.RESIZE);
+            this.component.publish(BaseEvents_1.BaseEvents.RESIZE);
         };
         // re-bootstraps the application with new querystring params
         BaseExtension.prototype.reload = function (data) {
-            $.publish(BaseEvents_1.BaseEvents.RELOAD, [data]);
+            this.component.publish(BaseEvents_1.BaseEvents.RELOAD, data);
         };
         BaseExtension.prototype.isSeeAlsoEnabled = function () {
             return this.data.config.options.seeAlsoEnabled !== false;
@@ -19513,21 +19516,19 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
                 this.showMessage(this.data.config.content.canvasIndexOutOfRange);
                 return;
             }
-            $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
+            this.component.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE);
         };
         BaseExtension.prototype.showMessage = function (message, acceptCallback, buttonText, allowClose) {
             this.closeActiveDialogue();
-            $.publish(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE, [
-                {
-                    message: message,
-                    acceptCallback: acceptCallback,
-                    buttonText: buttonText,
-                    allowClose: allowClose
-                }
-            ]);
+            this.component.publish(BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE, {
+                message: message,
+                acceptCallback: acceptCallback,
+                buttonText: buttonText,
+                allowClose: allowClose
+            });
         };
         BaseExtension.prototype.closeActiveDialogue = function () {
-            $.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+            this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
         };
         BaseExtension.prototype.isOverlayActive = function () {
             return Shell_1.Shell.$overlays.is(':visible');
@@ -19667,10 +19668,10 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
             // search preview doesn't work well with the gallery because it loads thumbs in "chunks"
-            // $.subscribe(Events.SEARCH_PREVIEW_START, (e, canvasIndex) => {
+            // this.component.subscribe(Events.SEARCH_PREVIEW_START, (e, canvasIndex) => {
             //     this.galleryComponent.searchPreviewStart(canvasIndex);
             // });
-            // $.subscribe(Events.SEARCH_PREVIEW_FINISH, () => {
+            // this.component.subscribe(Events.SEARCH_PREVIEW_FINISH, () => {
             //     this.galleryComponent.searchPreviewFinish();
             // });
             this.$gallery = $('<div class="iiif-gallery-component"></div>');
@@ -19681,18 +19682,19 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
             // this.$element[0].appendChild(gallery);
         };
         GalleryView.prototype.setup = function () {
+            var that = this;
             this.galleryComponent = new IIIFComponents.GalleryComponent({
                 target: this.$gallery[0]
             });
             this.galleryComponent.on('thumbSelected', function (thumb) {
-                $.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
-                $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
+                that.component.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
+                that.component.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
             }, false);
             this.galleryComponent.on('decreaseSize', function () {
-                $.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
+                that.component.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
             }, false);
             this.galleryComponent.on('increaseSize', function () {
-                $.publish(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
+                that.component.publish(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
             }, false);
         };
         GalleryView.prototype.databind = function () {
@@ -19958,7 +19960,7 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseEvents
             var _this = this;
             _super.prototype.create.call(this);
             this.$element.width(this.options.panelCollapsedWidth);
-            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -19988,10 +19990,10 @@ define('modules/uv-shared-module/LeftPanel',["require", "exports", "./BaseEvents
         LeftPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
             if (this.isExpanded) {
-                $.publish(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL);
+                this.component.publish(BaseEvents_1.BaseEvents.OPEN_LEFT_PANEL);
             }
             else {
-                $.publish(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL);
+                this.component.publish(BaseEvents_1.BaseEvents.CLOSE_LEFT_PANEL);
             }
             this.extension.updateSettings({ leftPanelOpen: this.isExpanded });
         };
@@ -20047,13 +20049,13 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
         ThumbsView.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, index) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (index) {
                 _this.selectIndex(parseInt(index));
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LOGIN, function () {
                 _this.loadThumbs();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLICKTHROUGH, function () {
                 _this.loadThumbs();
             });
             this.$thumbs = $('<div class="thumbs"></div>');
@@ -20149,7 +20151,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                 e.preventDefault();
                 var data = $.view(this).data;
                 that.lastThumbClickedIndex = data.index;
-                $.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [data]);
+                that.component.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [data]);
             });
             this.setLabel();
             this.isCreated = true;
@@ -20346,13 +20348,13 @@ define('modules/uv-contentleftpanel-module/ThumbsView',["require", "exports", ".
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
             // todo: this should be a setting
-            $.subscribe(Events_1.Events.MODE_CHANGED, function () {
+            this.component.subscribe(Events_1.Events.MODE_CHANGED, function () {
                 _this.setLabel();
             });
-            $.subscribe(Events_1.Events.SEARCH_PREVIEW_START, function (e, canvasIndex) {
+            this.component.subscribe(Events_1.Events.SEARCH_PREVIEW_START, function (canvasIndex) {
                 _this.searchPreviewStart(canvasIndex);
             });
-            $.subscribe(Events_1.Events.SEARCH_PREVIEW_FINISH, function () {
+            this.component.subscribe(Events_1.Events.SEARCH_PREVIEW_FINISH, function () {
                 _this.searchPreviewFinish();
             });
             if (this.extension.helper.isPaged()) {
@@ -20439,15 +20441,16 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
             this.$element.append(this.$tree);
         };
         TreeView.prototype.setup = function () {
+            var that = this;
             this.treeComponent = new IIIFComponents.TreeComponent({
                 target: this.$tree[0],
                 data: this.treeData
             });
             this.treeComponent.on('treeNodeSelected', function (node) {
-                $.publish(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, [node]);
+                that.component.publish(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, [node]);
             }, false);
             this.treeComponent.on('treeNodeMultiSelected', function (node) {
-                $.publish(BaseEvents_1.BaseEvents.TREE_NODE_MULTISELECTED, [node]);
+                that.component.publish(BaseEvents_1.BaseEvents.TREE_NODE_MULTISELECTED, [node]);
             }, false);
         };
         TreeView.prototype.databind = function () {
@@ -20506,39 +20509,39 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             var _this = this;
             this.setConfig('contentLeftPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.databind();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, function () {
                 _this.collapseFull();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 if (!_this.extension.isDesktopMetric()) {
                     if (_this.isFullyExpanded) {
                         _this.collapseFull();
                     }
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function () {
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_CLEARED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_CLEARED, function () {
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
                 _this.databindThumbsView();
                 _this.databindGalleryView();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
                 _this.selectCurrentTreeNode();
                 _this.updateTreeTabBySelection();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -20889,7 +20892,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
         };
         ContentLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
         };
         ContentLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
@@ -20899,11 +20902,11 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             else if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
         };
         ContentLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
         };
         ContentLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
@@ -20913,7 +20916,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             if (this.$thumbsButton.hasClass('on')) {
                 this.openThumbsView();
             }
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
         };
         ContentLeftPanel.prototype.openTreeView = function () {
             this.isTreeViewOpen = true;
@@ -20932,7 +20935,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
             this.selectCurrentTreeNode();
             this.resize();
             this.treeView.resize();
-            $.publish(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW);
+            this.component.publish(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW);
         };
         ContentLeftPanel.prototype.openThumbsView = function () {
             this.isTreeViewOpen = false;
@@ -20963,7 +20966,7 @@ define('modules/uv-contentleftpanel-module/ContentLeftPanel',["require", "export
                 this.thumbsView.show();
                 this.thumbsView.resize();
             }
-            $.publish(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW);
+            this.component.publish(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW);
         };
         ContentLeftPanel.prototype.selectTopRangeIndex = function (index) {
             this.$treeSelect.prop('selectedIndex', index);
@@ -21093,10 +21096,10 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, $triggerButton) {
+            this.component.subscribe(this.openCommand, function ($triggerButton) {
                 _this.open($triggerButton);
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             // create ui.
@@ -21111,7 +21114,7 @@ define('modules/uv-dialogues-module/DownloadDialogue',["require", "exports", "..
             this.$termsOfUseButton = $('<a href="#">' + this.extension.data.config.content.termsOfUse + '</a>');
             this.$footer.append(this.$termsOfUseButton);
             this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
             });
             // hide
             this.$element.hide();
@@ -21310,10 +21313,10 @@ define('extensions/uv-av-extension/DownloadDialogue',["require", "exports", "../
                     var id_1 = _this.getCurrentResourceId();
                     window.open(id_1);
                 }
-                $.publish(BaseEvents_1.BaseEvents.DOWNLOAD, [{
-                        "type": type,
-                        "label": label
-                    }]);
+                _this.component.publish(BaseEvents_1.BaseEvents.DOWNLOAD, {
+                    "type": type,
+                    "label": label
+                });
                 _this.close();
             });
         };
@@ -21430,14 +21433,14 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             var _this = this;
             this.setConfig('footerPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
                 _this.updateFullScreenButton();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.updateMinimisedButtons();
                 _this.updateMoreInfoButton();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.updateDownloadButton();
             });
             this.$options = $('<div class="options"></div>');
@@ -21459,29 +21462,29 @@ define('modules/uv-shared-module/FooterPanel',["require", "exports", "./BaseEven
             this.$fullScreenBtn = $("\n          <button class=\"fullScreen btn imageBtn\" title=\"" + this.content.fullScreen + "\" tabindex=\"0\">\n            <i class=\"uv-icon uv-icon-fullscreen\" aria-hidden=\"true\"></i>" + this.content.fullScreen + "\n          </button>\n        ");
             this.$options.append(this.$fullScreenBtn);
             this.$openButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.OPEN);
+                _this.component.publish(BaseEvents_1.BaseEvents.OPEN);
             });
             this.$feedbackButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.FEEDBACK);
+                _this.component.publish(BaseEvents_1.BaseEvents.FEEDBACK);
             });
             this.$bookmarkButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.BOOKMARK);
+                _this.component.publish(BaseEvents_1.BaseEvents.BOOKMARK);
             });
             this.$shareButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE, [_this.$shareButton]);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE, _this.$shareButton);
             });
             this.$embedButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, [_this.$embedButton]);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, _this.$embedButton);
             });
             this.$downloadButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, [_this.$downloadButton]);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_DOWNLOAD_DIALOGUE, _this.$downloadButton);
             });
             this.$moreInfoButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE, [_this.$moreInfoButton]);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE, _this.$moreInfoButton);
             });
             this.$fullScreenBtn.on('click', function (e) {
                 e.preventDefault();
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+                _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
             if (!Utils.Bools.getBool(this.options.embedEnabled, true)) {
                 this.$embedButton.hide();
@@ -21666,6 +21669,7 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
             this.extension = extension;
         }
         InformationFactory.prototype.Get = function (args) {
+            var _this = this;
             switch (args.informationType) {
                 case (InformationType_1.InformationType.AUTH_CORS_ERROR):
                     return new Information_1.Information(this.extension.data.config.content.authCORSError, []);
@@ -21680,8 +21684,8 @@ define('modules/uv-shared-module/InformationFactory',["require", "exports", "./B
                     var resource_1 = args.param;
                     loginAction.action = function () {
                         resource_1.authHoldingPage = window.open("", "_blank");
-                        $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
-                        $.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
+                        _this.extension.component.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
+                        _this.extension.component.publish(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, [[resource_1]]);
                     };
                     actions.push(loginAction);
                     var message = args.param.loginService.getServiceLabel();
@@ -21718,10 +21722,10 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
             var _this = this;
             this.setConfig('headerPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function (e, args) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_INFORMATION, function (args) {
                 _this.showInformation(args);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_INFORMATION, function () {
                 _this.hideInformation();
             });
             this.$options = $('<div class="options"></div>');
@@ -21749,13 +21753,13 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
             this.$informationBox.find('.close').attr('title', this.content.close);
             this.$informationBox.find('.close').on('click', function (e) {
                 e.preventDefault();
-                $.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
+                _this.component.publish(BaseEvents_1.BaseEvents.HIDE_INFORMATION);
             });
             this.$localeToggleButton.on('click', function () {
                 _this.extension.changeLocale(String(_this.$localeToggleButton.data('locale')));
             });
             this.$settingsButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
             if (!Utils.Bools.getBool(this.options.centerOptionsEnabled, true)) {
                 this.$centerOptions.hide();
@@ -21819,7 +21823,7 @@ define('modules/uv-shared-module/HeaderPanel',["require", "exports", "./BaseEven
         };
         HeaderPanel.prototype.updateSettings = function (settings) {
             this.extension.updateSettings(settings);
-            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
+            this.component.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, settings);
         };
         HeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -21880,7 +21884,7 @@ define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseEvent
             if (shouldOpenPanel) {
                 this.toggle(true);
             }
-            $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_RIGHT_PANEL, function () {
                 if (_this.isFullyExpanded) {
                     _this.collapseFull();
                 }
@@ -21898,10 +21902,10 @@ define('modules/uv-shared-module/RightPanel',["require", "exports", "./BaseEvent
         RightPanel.prototype.toggleFinish = function () {
             _super.prototype.toggleFinish.call(this);
             if (this.isExpanded) {
-                $.publish(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
+                this.component.publish(BaseEvents_1.BaseEvents.OPEN_RIGHT_PANEL);
             }
             else {
-                $.publish(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
+                this.component.publish(BaseEvents_1.BaseEvents.CLOSE_RIGHT_PANEL);
             }
             this.extension.updateSettings({ rightPanelOpen: this.isExpanded });
         };
@@ -21938,10 +21942,10 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
             var _this = this;
             this.setConfig('moreInfoRightPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 _this.databind();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RANGE_CHANGED, function () {
                 _this.databind();
             });
             this.setTitle(this.config.content.title);
@@ -21957,7 +21961,7 @@ define('modules/uv-moreinforightpanel-module/MoreInfoRightPanel',["require", "ex
                 if (rangeId) {
                     var range = _this.extension.helper.getRangeById(rangeId);
                     if (range) {
-                        $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+                        _this.component.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, range);
                     }
                 }
             }, false);
@@ -22030,10 +22034,10 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SETTINGS_DIALOGUE;
-            $.subscribe(this.openCommand, function () {
+            this.component.subscribe(this.openCommand, function () {
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -22062,7 +22066,7 @@ define('modules/uv-dialogues-module/SettingsDialogue',["require", "exports", "..
         };
         SettingsDialogue.prototype.updateSettings = function (settings) {
             this.extension.updateSettings(settings);
-            $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, [settings]);
+            this.component.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, settings);
         };
         SettingsDialogue.prototype.open = function () {
             var _this = this;
@@ -22155,7 +22159,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_SHARE_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_SHARE_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, $triggerButton) {
+            this.component.subscribe(this.openCommand, function ($triggerButton) {
                 _this.open($triggerButton);
                 if (_this.isShareAvailable()) {
                     _this.openShareView();
@@ -22164,10 +22168,10 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
                     _this.openEmbedView();
                 }
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function (e, $triggerButton) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_EMBED_DIALOGUE, function ($triggerButton) {
                 _this.open($triggerButton);
                 _this.openEmbedView();
             });
@@ -22254,7 +22258,7 @@ define('modules/uv-dialogues-module/ShareDialogue',["require", "exports", "../uv
                 _this.update();
             });
             this.$termsOfUseButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_TERMS_OF_USE);
             });
             this.$element.hide();
             this.update();
@@ -22478,15 +22482,15 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             var _this = this;
             _super.prototype.create.call(this);
             //requirejs.config({shim: {'uv/lib/hls.min': { deps: ['require'], exports: "Hls"}}});
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, function (e, node) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, function (node) {
                 _this.fire(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, node.data.path);
                 _this.treeNodeSelected(node);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (thumb) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, thumb.index);
             });
         };
         Extension.prototype.dependencyLoaded = function (index, dep) {
@@ -22584,7 +22588,7 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             var range = this.helper.getRangeByPath(path);
             if (!range)
                 return;
-            $.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, [range]);
+            this.component.publish(BaseEvents_1.BaseEvents.RANGE_CHANGED, range);
             // don't update the canvas index, only when thumbs are clicked
             // if (range.canvases && range.canvases.length) {
             //     const canvasId: string = range.canvases[0];
@@ -22592,7 +22596,7 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
             //     if (canvas) {
             //         const canvasIndex: number = canvas.index;
             //         if (canvasIndex !== this.helper.canvasIndex) {
-            //             $.publish(BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
+            //             this.component.publish(BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
             //         }
             //     }
             // }
@@ -22624,7 +22628,7 @@ define('modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel',["require", "
             var _this = this;
             this.setConfig('fileLinkCenterPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (resources) {
                 _this.openMedia(resources);
             });
             this.$scroll = $('<div class="scroll"><div>');
@@ -22714,10 +22718,10 @@ define('modules/uv-dialogues-module/HelpDialogue',["require", "exports", "../uv-
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_HELP_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_HELP_DIALOGUE;
-            $.subscribe(this.openCommand, function () {
+            this.component.subscribe(this.openCommand, function () {
                 _this.open();
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$title = $('<h1></h1>');
@@ -22864,19 +22868,19 @@ define('modules/uv-resourcesleftpanel-module/ResourcesLeftPanel',["require", "ex
         };
         ResourcesLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
         };
         ResourcesLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
         };
         ResourcesLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
         };
         ResourcesLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
         };
         ResourcesLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -22973,16 +22977,16 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
             _super.prototype.create.call(this);
             // listen for mediaelement enter/exit fullscreen events.
             $(window).bind('enterfullscreen', function () {
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+                _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
             $(window).bind('exitfullscreen', function () {
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+                _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (canvasIndex) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, canvasIndex);
             });
         };
         Extension.prototype.createModules = function () {
@@ -23129,7 +23133,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
             // events.
             // only full screen video
             if (this.isVideo()) {
-                $.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
+                this.component.subscribe(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN, function () {
                     if (that.component.isFullScreen) {
                         that.player.enterFullScreen(false);
                     }
@@ -23138,7 +23142,7 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                     }
                 });
             }
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (resources) {
                 that.openMedia(resources);
             });
             this.$container = $('<div class="container"></div>');
@@ -23192,16 +23196,16 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                                 that.resize();
                             });
                             mediaElement.addEventListener('play', function () {
-                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                                that.component.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
                             });
                             mediaElement.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
-                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                    that.component.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
                                 }
                             });
                             mediaElement.addEventListener('ended', function () {
-                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                                that.component.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
                             });
                             mediaElement.setSrc(sources);
                         }
@@ -23217,20 +23221,21 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                         showPosterWhenPaused: true,
                         showPosterWhenEnded: true,
                         success: function (mediaElement, originalNode) {
+                            var _this = this;
                             mediaElement.addEventListener('canplay', function () {
                                 that.resize();
                             });
                             mediaElement.addEventListener('play', function () {
-                                $.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                                _this.component.publish(Events_1.Events.MEDIA_PLAYED, Math.floor(mediaElement.currentTime));
                             });
                             mediaElement.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
-                                    $.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                    _this.component.publish(Events_1.Events.MEDIA_PAUSED, Math.floor(mediaElement.currentTime));
                                 }
                             });
                             mediaElement.addEventListener('ended', function () {
-                                $.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                                _this.component.publish(Events_1.Events.MEDIA_ENDED, Math.floor(mediaElement.duration));
                             });
                             mediaElement.setSrc(sources);
                         }
@@ -23369,33 +23374,33 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
             _super.prototype.create.call(this);
             // listen for mediaelement enter/exit fullscreen events.
             $(window).bind('enterfullscreen', function () {
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+                _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
             $(window).bind('exitfullscreen', function () {
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
+                _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_FULLSCREEN);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (thumb) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, thumb.index);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 Shell_1.Shell.$rightPanel.show();
                 _this.resize();
             });
-            $.subscribe(Events_1.Events.MEDIA_ENDED, function () {
+            this.component.subscribe(Events_1.Events.MEDIA_ENDED, function () {
                 _this.fire(Events_1.Events.MEDIA_ENDED);
             });
-            $.subscribe(Events_1.Events.MEDIA_PAUSED, function () {
+            this.component.subscribe(Events_1.Events.MEDIA_PAUSED, function () {
                 _this.fire(Events_1.Events.MEDIA_PAUSED);
             });
-            $.subscribe(Events_1.Events.MEDIA_PLAYED, function () {
+            this.component.subscribe(Events_1.Events.MEDIA_PLAYED, function () {
                 _this.fire(Events_1.Events.MEDIA_PLAYED);
             });
         };
@@ -23635,7 +23640,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                         //var printService: Manifesto.IService = this.extension.helper.manifest.getService(manifesto.ServiceProfile.printExtensions());
                         // if downloading a pdf - if there's a print service, generate an event instead of opening a new window.
                         // if (printService && this.extension.isOnHomeDomain()){
-                        //     $.publish(Events.PRINT);
+                        //     this.component.publish(Events.PRINT);
                         // } else {
                         window.open(_this.renderingUrls[id]);
                         //}
@@ -23652,7 +23657,7 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             Utils.Async.waitFor(function () {
                                 return !_this.isActive;
                             }, function () {
-                                $.publish(BaseEvents_1.BaseEvents.SHOW_MULTISELECT_DIALOGUE);
+                                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_MULTISELECT_DIALOGUE);
                             });
                             break;
                         case DownloadOption_1.DownloadOption.WHOLE_IMAGE_HIGH_RES:
@@ -23672,15 +23677,15 @@ define('extensions/uv-seadragon-extension/DownloadDialogue',["require", "exports
                             break;
                     }
                 }
-                $.publish(BaseEvents_1.BaseEvents.DOWNLOAD, [{
-                        "type": type,
-                        "label": label
-                    }]);
+                _this.component.publish(BaseEvents_1.BaseEvents.DOWNLOAD, {
+                    "type": type,
+                    "label": label
+                });
                 _this.close();
             });
             this.$settingsButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE);
-                $.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
+                _this.component.publish(BaseEvents_1.BaseEvents.HIDE_DOWNLOAD_DIALOGUE);
+                _this.component.publish(BaseEvents_1.BaseEvents.SHOW_SETTINGS_DIALOGUE);
             });
         };
         DownloadDialogue.prototype.open = function ($triggerButton) {
@@ -24110,11 +24115,11 @@ define('modules/uv-dialogues-module/ExternalContentDialogue',["require", "export
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_EXTERNALCONTENT_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_EXTERNALCONTENT_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, params) {
+            this.component.subscribe(this.openCommand, function (params) {
                 _this.open();
                 _this.$iframe.prop('src', params.uri);
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.$iframe = $('<iframe></iframe>');
@@ -24150,6 +24155,7 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
             return _super.call(this, $element) || this;
         }
         FooterPanel.prototype.create = function () {
+            var _this = this;
             this.setConfig('mobileFooterPanel');
             _super.prototype.create.call(this);
             this.$spacer = $('<div class="spacer"></div>');
@@ -24161,13 +24167,13 @@ define('modules/uv-osdmobilefooterpanel-module/MobileFooter',["require", "export
             this.$zoomInButton = $("\n            <button class=\"btn imageBtn zoomIn\" title=\"" + this.content.zoomIn + "\">\n                <i class=\"uv-icon-zoom-in\" aria-hidden=\"true\"></i>" + this.content.zoomIn + "\n            </button>\n        ");
             this.$options.prepend(this.$zoomInButton);
             this.$zoomInButton.onPressed(function () {
-                $.publish(Events_1.Events.ZOOM_IN);
+                _this.component.publish(Events_1.Events.ZOOM_IN);
             });
             this.$zoomOutButton.onPressed(function () {
-                $.publish(Events_1.Events.ZOOM_OUT);
+                _this.component.publish(Events_1.Events.ZOOM_OUT);
             });
             this.$rotateButton.onPressed(function () {
-                $.publish(Events_1.Events.ROTATE);
+                _this.component.publish(Events_1.Events.ROTATE);
             });
         };
         FooterPanel.prototype.resize = function () {
@@ -24411,32 +24417,32 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var _this = this;
             this.setConfig('searchFooterPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 _this.canvasIndexChanged();
                 _this.setCurrentSearchResultPlacemarker();
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS, function () {
                 _this.clearSearchResults();
             });
             // todo: this should be a setting
-            $.subscribe(Events_1.Events.MODE_CHANGED, function () {
+            this.component.subscribe(Events_1.Events.MODE_CHANGED, function () {
                 _this.settingsChanged();
             });
-            $.subscribe(Events_1.Events.SEARCH, function (e, terms) {
+            this.component.subscribe(Events_1.Events.SEARCH, function (terms) {
                 _this.terms = terms;
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (e, annotationResults) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (annotationResults) {
                 _this.displaySearchResults(annotationResults.annotations, annotationResults.terms);
                 _this.setCurrentSearchResultPlacemarker();
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
                 _this.hideSearchSpinner();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATION_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATION_CHANGED, function () {
                 _this.updatePrevButton();
                 _this.updateNextButton();
             });
@@ -24498,33 +24504,33 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                     _this.$searchText.val('');
             });
             this.$placemarkerDetails.on('mouseover', function () {
-                $.publish(Events_1.Events.SEARCH_PREVIEW_START, [_this.currentPlacemarkerIndex]);
+                that.component.publish(Events_1.Events.SEARCH_PREVIEW_START, [_this.currentPlacemarkerIndex]);
             });
             this.$placemarkerDetails.on('mouseleave', function () {
                 $(this).hide();
-                $.publish(Events_1.Events.SEARCH_PREVIEW_FINISH);
+                that.component.publish(Events_1.Events.SEARCH_PREVIEW_FINISH);
                 // reset all placemarkers.
                 var placemarkers = that.getSearchResultPlacemarkers();
                 placemarkers.removeClass('hover');
             });
             this.$placemarkerDetails.on('click', function () {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.currentPlacemarkerIndex]);
+                that.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.currentPlacemarkerIndex]);
             });
             this.$previousResultButton.on('click', function (e) {
                 e.preventDefault();
                 if (_this.isPreviousButtonEnabled()) {
-                    $.publish(Events_1.Events.PREV_SEARCH_RESULT);
+                    that.component.publish(Events_1.Events.PREV_SEARCH_RESULT);
                 }
             });
             this.$nextResultButton.on('click', function (e) {
                 e.preventDefault();
                 if (_this.isNextButtonEnabled()) {
-                    $.publish(Events_1.Events.NEXT_SEARCH_RESULT);
+                    that.component.publish(Events_1.Events.NEXT_SEARCH_RESULT);
                 }
             });
             this.$clearSearchResultsButton.on('click', function (e) {
                 e.preventDefault();
-                $.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
+                that.component.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
             });
             // hide search options if not enabled/supported.
             if (!this.isSearchEnabled()) {
@@ -24558,7 +24564,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 });
             }
             this.$printButton.onPressed(function () {
-                $.publish(Events_1.Events.PRINT);
+                that.component.publish(Events_1.Events.PRINT);
             });
             this.updatePrintButton();
             var positionMarkerEnabled = Utils.Bools.getBool(this.config.options.positionMarkerEnabled, true);
@@ -24676,7 +24682,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             // blur search field
             this.$searchText.blur();
             this.showSearchSpinner();
-            $.publish(Events_1.Events.SEARCH, [this.terms]);
+            this.component.publish(Events_1.Events.SEARCH, this.terms);
         };
         FooterPanel.prototype.getSearchResultPlacemarkers = function () {
             return this.$searchResultsContainer.find('.searchResultPlacemarker');
@@ -24720,7 +24726,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             that.placemarkerTouched = true;
             //const $placemarker: JQuery = $(this);
             //const index: number = parseInt($placemarker.attr('data-index'));
-            //$.publish(Events.VIEW_PAGE, [index]);
+            //this.component.publish(Events.VIEW_PAGE, [index]);
         };
         FooterPanel.prototype.onPlacemarkerClick = function (that) {
             if (that.placemarkerTouched)
@@ -24728,7 +24734,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             that.placemarkerTouched = false;
             //const $placemarker: JQuery = $(this);
             //const index: number = parseInt($placemarker.attr('data-index'));
-            //$.publish(Events.VIEW_PAGE, [index]);
+            //this.component.publish(Events.VIEW_PAGE, [index]);
         };
         FooterPanel.prototype.onPlacemarkerMouseEnter = function (that) {
             if (that.placemarkerTouched)
@@ -24736,7 +24742,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var $placemarker = $(this);
             $placemarker.addClass('hover');
             var canvasIndex = parseInt($placemarker.attr('data-index'));
-            $.publish(Events_1.Events.SEARCH_PREVIEW_START, [canvasIndex]);
+            that.component.publish(Events_1.Events.SEARCH_PREVIEW_START, [canvasIndex]);
             var $placemarkers = that.getSearchResultPlacemarkers();
             var elemIndex = $placemarkers.index($placemarker[0]);
             that.currentPlacemarkerIndex = canvasIndex;
@@ -24791,7 +24797,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             });
         };
         FooterPanel.prototype.onPlacemarkerMouseLeave = function (e, that) {
-            $.publish(Events_1.Events.SEARCH_PREVIEW_FINISH);
+            that.component.publish(Events_1.Events.SEARCH_PREVIEW_FINISH);
             var $placemarker = $(this);
             var newElement = e.toElement || e.relatedTarget;
             var isChild = $(newElement).closest(that.$placemarkerDetails).length;
@@ -24967,10 +24973,10 @@ define('modules/uv-dialogues-module/MoreInfoDialogue',["require", "exports", "..
             _super.prototype.create.call(this);
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_MOREINFO_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_MOREINFO_DIALOGUE;
-            $.subscribe(this.openCommand, function (e, $triggerButton) {
+            this.component.subscribe(this.openCommand, function ($triggerButton) {
                 _this.open($triggerButton);
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
             });
             this.config.content = this.extension.data.config.modules.moreInfoRightPanel.content;
@@ -25049,13 +25055,13 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             var that = this;
             this.openCommand = BaseEvents_1.BaseEvents.SHOW_MULTISELECT_DIALOGUE;
             this.closeCommand = BaseEvents_1.BaseEvents.HIDE_MULTISELECT_DIALOGUE;
-            $.subscribe(this.openCommand, function () {
+            this.component.subscribe(this.openCommand, function () {
                 _this.open();
                 var multiSelectState = _this.extension.helper.getMultiSelectState();
                 multiSelectState.setEnabled(true);
                 _this.galleryComponent.set(_this.data);
             });
-            $.subscribe(this.closeCommand, function () {
+            this.component.subscribe(this.closeCommand, function () {
                 _this.close();
                 var multiSelectState = _this.extension.helper.getMultiSelectState();
                 multiSelectState.setEnabled(false);
@@ -25088,7 +25094,7 @@ define('modules/uv-multiselectdialogue-module/MultiSelectDialogue',["require", "
             var $selectButton = this.$gallery.find('a.select');
             $selectButton.addClass('btn btn-primary');
             this.galleryComponent.on('multiSelectionMade', function (ids) {
-                $.publish(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, [ids]);
+                _this.component.publish(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, ids);
                 that.close();
             }, false);
             this.$element.hide();
@@ -25151,20 +25157,20 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             var _this = this;
             this.setConfig('pagingHeaderPanel');
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.canvasIndexChanged(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function () {
                 _this.modeChanged();
                 _this.updatePagingToggle();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED, function () {
                 _this.setSearchFieldValue(_this.extension.helper.canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 _this.openGallery();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 _this.closeGallery();
             });
             this.$prevOptions = $('<div class="prevOptions"></div>');
@@ -25232,7 +25238,7 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 }
                 this.$imageSelectionBox.change(function () {
                     var imageIndex = parseInt(_this.$imageSelectionBox.val());
-                    $.publish(Events_1.Events.IMAGE_SEARCH, [imageIndex]);
+                    _this.component.publish(Events_1.Events.IMAGE_SEARCH, imageIndex);
                 });
             }
             this.$total = $('<span class="total"></span>');
@@ -25275,15 +25281,15 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
             this.$oneUpButton.onPressed(function () {
                 var enabled = false;
                 _this.updateSettings({ pagingEnabled: enabled });
-                $.publish(Events_1.Events.PAGING_TOGGLED, [enabled]);
+                _this.component.publish(Events_1.Events.PAGING_TOGGLED, enabled);
             });
             this.$twoUpButton.onPressed(function () {
                 var enabled = true;
                 _this.updateSettings({ pagingEnabled: enabled });
-                $.publish(Events_1.Events.PAGING_TOGGLED, [enabled]);
+                _this.component.publish(Events_1.Events.PAGING_TOGGLED, enabled);
             });
             this.$galleryButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL);
+                _this.component.publish(BaseEvents_1.BaseEvents.TOGGLE_EXPAND_LEFT_PANEL);
             });
             this.setNavigationTitles();
             this.setTotal();
@@ -25298,10 +25304,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
-                        $.publish(BaseEvents_1.BaseEvents.FIRST);
+                        _this.component.publish(BaseEvents_1.BaseEvents.FIRST);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(BaseEvents_1.BaseEvents.LAST);
+                        _this.component.publish(BaseEvents_1.BaseEvents.LAST);
                         break;
                 }
             });
@@ -25310,10 +25316,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(BaseEvents_1.BaseEvents.PREV);
+                        _this.component.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(BaseEvents_1.BaseEvents.NEXT);
+                        _this.component.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                 }
             });
@@ -25322,10 +25328,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(BaseEvents_1.BaseEvents.NEXT);
+                        _this.component.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(BaseEvents_1.BaseEvents.PREV);
+                        _this.component.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                 }
             });
@@ -25334,10 +25340,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
-                        $.publish(BaseEvents_1.BaseEvents.LAST);
+                        _this.component.publish(BaseEvents_1.BaseEvents.LAST);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(BaseEvents_1.BaseEvents.FIRST);
+                        _this.component.publish(BaseEvents_1.BaseEvents.FIRST);
                         break;
                 }
             });
@@ -25353,10 +25359,10 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 // visible, since otherwise, clicking on the "Image" label can
                 // trigger unexpected/undesired side effects.
                 this.$imageModeOption.on('click', function (e) {
-                    $.publish(Events_1.Events.MODE_CHANGED, [Mode_1.Mode.image.toString()]);
+                    _this.component.publish(Events_1.Events.MODE_CHANGED, Mode_1.Mode.image.toString());
                 });
                 this.$pageModeOption.on('click', function (e) {
-                    $.publish(Events_1.Events.MODE_CHANGED, [Mode_1.Mode.page.toString()]);
+                    _this.component.publish(Events_1.Events.MODE_CHANGED, Mode_1.Mode.page.toString());
                 });
             }
             this.$searchText.onEnter(function () {
@@ -25525,11 +25531,11 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
         PagingHeaderPanel.prototype.search = function (value) {
             if (!value) {
                 this.extension.showMessage(this.content.emptyValue);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
             if (this.isPageModeEnabled()) {
-                $.publish(Events_1.Events.PAGE_SEARCH, [value]);
+                this.component.publish(Events_1.Events.PAGE_SEARCH, value);
             }
             else {
                 var index = void 0;
@@ -25542,16 +25548,16 @@ define('modules/uv-pagingheaderpanel-module/PagingHeaderPanel',["require", "expo
                 index -= 1;
                 if (isNaN(index)) {
                     this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.invalidNumber);
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                    this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
                 var asset = this.extension.helper.getCanvasByIndex(index);
                 if (!asset) {
                     this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.pageNotFound);
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                    this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                     return;
                 }
-                $.publish(Events_1.Events.IMAGE_SEARCH, [index]);
+                this.component.publish(Events_1.Events.IMAGE_SEARCH, index);
             }
         };
         PagingHeaderPanel.prototype.canvasIndexChanged = function (index) {
@@ -25708,52 +25714,52 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             _super.prototype.create.call(this);
             this.$viewer = $('<div id="viewer"></div>');
             this.$content.prepend(this.$viewer);
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (e, args) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (args) {
                 _this.overlayAnnotations();
                 _this.zoomToInitialAnnotation();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (e, args) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, function (args) {
                 _this.viewer.gestureSettingsMouse.clickToZoom = args.clickToZoomEnabled;
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (resources) {
                 _this.whenResized(function () {
                     if (!_this.isCreated)
                         _this.createUI();
                     _this.openMedia(resources);
                 });
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS, function () {
                 _this.whenCreated(function () {
                     _this.extension.currentAnnotationRect = null;
                     _this.clearAnnotations();
                 });
             });
-            $.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
+            this.component.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
                 _this.whenCreated(function () {
                     _this.nextAnnotation();
                 });
             });
-            $.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
+            this.component.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
                 _this.whenCreated(function () {
                     _this.prevAnnotation();
                 });
             });
-            $.subscribe(Events_1.Events.ZOOM_IN, function () {
+            this.component.subscribe(Events_1.Events.ZOOM_IN, function () {
                 _this.whenCreated(function () {
                     _this.zoomIn();
                 });
             });
-            $.subscribe(Events_1.Events.ZOOM_OUT, function () {
+            this.component.subscribe(Events_1.Events.ZOOM_OUT, function () {
                 _this.whenCreated(function () {
                     _this.zoomOut();
                 });
             });
-            $.subscribe(Events_1.Events.ROTATE, function () {
+            this.component.subscribe(Events_1.Events.ROTATE, function () {
                 _this.whenCreated(function () {
                     _this.rotateRight();
                 });
             });
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 _this.whenCreated(function () {
                     _this.updateResponsiveView();
                 });
@@ -25917,22 +25923,22 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             //this.viewer.addHandler("open-failed", () => {
             //});
             this.viewer.addHandler('resize', function (viewer) {
-                $.publish(Events_1.Events.SEADRAGON_RESIZE, [viewer]);
+                _this.component.publish(Events_1.Events.SEADRAGON_RESIZE, viewer);
                 _this.viewerResize(viewer);
             });
             this.viewer.addHandler('animation-start', function (viewer) {
-                $.publish(Events_1.Events.SEADRAGON_ANIMATION_START, [viewer]);
+                _this.component.publish(Events_1.Events.SEADRAGON_ANIMATION_START, viewer);
             });
             this.viewer.addHandler('animation', function (viewer) {
-                $.publish(Events_1.Events.SEADRAGON_ANIMATION, [viewer]);
+                _this.component.publish(Events_1.Events.SEADRAGON_ANIMATION, viewer);
             });
             this.viewer.addHandler('animation-finish', function (viewer) {
                 _this.currentBounds = _this.getViewportBounds();
                 _this.updateVisibleAnnotationRects();
-                $.publish(Events_1.Events.SEADRAGON_ANIMATION_FINISH, [viewer]);
+                _this.component.publish(Events_1.Events.SEADRAGON_ANIMATION_FINISH, viewer);
             });
             this.viewer.addHandler('rotate', function (args) {
-                $.publish(Events_1.Events.SEADRAGON_ROTATION, [args.degrees]);
+                _this.component.publish(Events_1.Events.SEADRAGON_ROTATION, args.degrees);
             });
             this.title = this.extension.helper.getLabel();
             this.createNavigationButtons();
@@ -25978,10 +25984,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(BaseEvents_1.BaseEvents.PREV);
+                        _this.component.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(BaseEvents_1.BaseEvents.NEXT);
+                        _this.component.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                 }
             });
@@ -25994,10 +26000,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                     case manifesto.ViewingDirection.leftToRight().toString():
                     case manifesto.ViewingDirection.bottomToTop().toString():
                     case manifesto.ViewingDirection.topToBottom().toString():
-                        $.publish(BaseEvents_1.BaseEvents.NEXT);
+                        _this.component.publish(BaseEvents_1.BaseEvents.NEXT);
                         break;
                     case manifesto.ViewingDirection.rightToLeft().toString():
-                        $.publish(BaseEvents_1.BaseEvents.PREV);
+                        _this.component.publish(BaseEvents_1.BaseEvents.PREV);
                         break;
                 }
             });
@@ -26123,7 +26129,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             return resources;
         };
         SeadragonCenterPanel.prototype.openPagesHandler = function () {
-            $.publish(Events_1.Events.SEADRAGON_OPEN);
+            this.component.publish(Events_1.Events.SEADRAGON_OPEN);
             if (this.extension.helper.isMultiCanvas() && !this.extension.helper.isContinuous()) {
                 this.showPrevButton();
                 this.showNextButton();
@@ -26350,7 +26356,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 if (foundRect.canvasIndex < this.extension.helper.canvasIndex) {
                     this.extension.currentAnnotationRect = foundRect;
                     this.navigatedFromSearch = true;
-                    $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
+                    this.component.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, foundRect);
                 }
                 else {
                     this.zoomToAnnotation(foundRect);
@@ -26358,7 +26364,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             }
             else {
                 this.navigatedFromSearch = true;
-                $.publish(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+                this.component.publish(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
             }
         };
         SeadragonCenterPanel.prototype.nextAnnotation = function () {
@@ -26384,7 +26390,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 if (foundRect.canvasIndex > this.extension.helper.canvasIndex) {
                     this.extension.currentAnnotationRect = foundRect;
                     this.navigatedFromSearch = true;
-                    $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
+                    this.component.publish(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, [foundRect]);
                 }
                 else {
                     this.zoomToAnnotation(foundRect);
@@ -26392,7 +26398,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             }
             else {
                 this.navigatedFromSearch = true;
-                $.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
+                this.component.publish(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
             }
         };
         SeadragonCenterPanel.prototype.getAnnotationRectByIndex = function (index) {
@@ -26436,7 +26442,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
                 this.fitToBounds(bounds);
             }
             this.highlightAnnotationRect(annotationRect);
-            $.publish(BaseEvents_1.BaseEvents.ANNOTATION_CHANGED);
+            this.component.publish(BaseEvents_1.BaseEvents.ANNOTATION_CHANGED);
         };
         SeadragonCenterPanel.prototype.highlightAnnotationRect = function (annotationRect) {
             var $rect = $('#searchResult-' + annotationRect.canvasIndex + '-' + annotationRect.index);
@@ -26683,10 +26689,10 @@ define('extensions/uv-seadragon-extension/ShareDialogue',["require", "exports", 
         __extends(ShareDialogue, _super);
         function ShareDialogue($element) {
             var _this = _super.call(this, $element) || this;
-            $.subscribe(Events_1.Events.SEADRAGON_OPEN, function () {
+            _this.component.subscribe(Events_1.Events.SEADRAGON_OPEN, function () {
                 _this.update();
             });
-            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION_FINISH, function () {
+            _this.component.subscribe(Events_1.Events.SEADRAGON_ANIMATION_FINISH, function () {
                 _this.update();
             });
             return _this;
@@ -26736,91 +26742,91 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.METRIC_CHANGED, function () {
                 if (!_this.isDesktopMetric()) {
                     var settings = {};
                     settings.pagingEnabled = false;
                     _this.updateSettings(settings);
-                    $.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS);
+                    _this.component.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS);
                     Shell_1.Shell.$rightPanel.hide();
                 }
                 else {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.previousAnnotationRect = null;
                 _this.currentAnnotationRect = null;
                 _this.viewPage(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS, function () {
                 _this.clearAnnotations();
-                $.publish(BaseEvents_1.BaseEvents.ANNOTATIONS_CLEARED);
+                _this.component.publish(BaseEvents_1.BaseEvents.ANNOTATIONS_CLEARED);
                 _this.fire(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.DOWN_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.DOWN_ARROW, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.END, function () {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getLastPageIndex()]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.END, function () {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.helper.getLastPageIndex());
             });
-            $.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
                 _this.fire(BaseEvents_1.BaseEvents.FIRST);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getFirstPageIndex()]);
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.helper.getFirstPageIndex());
             });
-            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE, function () {
                 _this.fire(BaseEvents_1.BaseEvents.GALLERY_INCREASE_SIZE);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, function () {
                 _this.fire(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getFirstPageIndex()]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.HOME, function () {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.helper.getFirstPageIndex());
             });
-            $.subscribe(Events_1.Events.IMAGE_SEARCH, function (e, index) {
+            this.component.subscribe(Events_1.Events.IMAGE_SEARCH, function (index) {
                 _this.fire(Events_1.Events.IMAGE_SEARCH, index);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, index);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
                 _this.fire(BaseEvents_1.BaseEvents.LAST);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.getLastPageIndex()]);
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.helper.getLastPageIndex());
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
+                    _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.getPrevPageIndex());
                 }
                 else {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 if (_this.isDesktopMetric()) {
                     Shell_1.Shell.$rightPanel.show();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 _this.resize();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.MINUS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.MINUS, function () {
                 _this.centerPanel.setFocus();
             });
-            $.subscribe(Events_1.Events.MODE_CHANGED, function (e, mode) {
+            this.component.subscribe(Events_1.Events.MODE_CHANGED, function (mode) {
                 _this.fire(Events_1.Events.MODE_CHANGED, mode);
                 _this.mode = new Mode_1.Mode(mode);
                 var settings = _this.getSettings();
-                $.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, [settings]);
+                _this.component.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, settings);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, function (e, ids) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, function (ids) {
                 var args = new MultiSelectionArgs_1.MultiSelectionArgs();
                 args.manifestUri = _this.helper.iiifResourceUri;
                 args.allCanvases = ids.length === _this.helper.getCanvases().length;
@@ -26829,71 +26835,71 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 args.sequence = _this.helper.getCurrentSequence().id;
                 _this.fire(BaseEvents_1.BaseEvents.MULTISELECTION_MADE, args);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
                 _this.fire(BaseEvents_1.BaseEvents.NEXT);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.getNextPageIndex());
             });
-            $.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
+            this.component.subscribe(Events_1.Events.NEXT_SEARCH_RESULT, function () {
                 _this.fire(Events_1.Events.NEXT_SEARCH_RESULT);
             });
-            $.subscribe(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
+            this.component.subscribe(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
                 _this.fire(Events_1.Events.NEXT_IMAGES_SEARCH_RESULT_UNAVAILABLE);
                 _this.nextSearchResult();
             });
-            $.subscribe(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
+            this.component.subscribe(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE, function () {
                 _this.fire(Events_1.Events.PREV_IMAGES_SEARCH_RESULT_UNAVAILABLE);
                 _this.prevSearchResult();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN_THUMBS_VIEW);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW, function () {
                 _this.fire(BaseEvents_1.BaseEvents.OPEN_TREE_VIEW);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.PAGE_DOWN, function () {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.getNextPageIndex());
             });
-            $.subscribe(Events_1.Events.PAGE_SEARCH, function (e, value) {
+            this.component.subscribe(Events_1.Events.PAGE_SEARCH, function (value) {
                 _this.fire(Events_1.Events.PAGE_SEARCH, value);
                 _this.viewLabel(value);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.PAGE_UP, function () {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.getPrevPageIndex());
             });
-            $.subscribe(Events_1.Events.PAGING_TOGGLED, function (e, obj) {
+            this.component.subscribe(Events_1.Events.PAGING_TOGGLED, function (obj) {
                 _this.fire(Events_1.Events.PAGING_TOGGLED, obj);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PLUS, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.PLUS, function () {
                 _this.centerPanel.setFocus();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
                 _this.fire(BaseEvents_1.BaseEvents.PREV);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getPrevPageIndex()]);
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.getPrevPageIndex());
             });
-            $.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
+            this.component.subscribe(Events_1.Events.PREV_SEARCH_RESULT, function () {
                 _this.fire(Events_1.Events.PREV_SEARCH_RESULT);
             });
-            $.subscribe(Events_1.Events.PRINT, function () {
+            this.component.subscribe(Events_1.Events.PRINT, function () {
                 _this.print();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function () {
-                $.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
+            this.component.subscribe(BaseEvents_1.BaseEvents.RELOAD, function () {
+                _this.component.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.RIGHT_ARROW, function () {
                 if (_this.useArrowKeysToNavigate()) {
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.getNextPageIndex()]);
+                    _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.getNextPageIndex());
                 }
                 else {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION, function () {
+            this.component.subscribe(Events_1.Events.SEADRAGON_ANIMATION, function () {
                 _this.fire(Events_1.Events.SEADRAGON_ANIMATION);
             });
-            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION_FINISH, function (e, viewer) {
+            this.component.subscribe(Events_1.Events.SEADRAGON_ANIMATION_FINISH, function (viewer) {
                 var bounds = _this.centerPanel.getViewportBounds();
                 if (_this.centerPanel && bounds) {
-                    $.publish(Events_1.Events.XYWH_CHANGED, [bounds.toString()]);
+                    _this.component.publish(Events_1.Events.XYWH_CHANGED, bounds.toString());
                     _this.data.xywh = bounds.toString();
                     _this.fire(Events_1.Events.XYWH_CHANGED, _this.data.xywh);
                 }
@@ -26903,62 +26909,62 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     fullUri: _this.getConfinedImageUri(canvas, canvas.getWidth())
                 });
             });
-            $.subscribe(Events_1.Events.SEADRAGON_ANIMATION_START, function () {
+            this.component.subscribe(Events_1.Events.SEADRAGON_ANIMATION_START, function () {
                 _this.fire(Events_1.Events.SEADRAGON_ANIMATION_START);
             });
-            $.subscribe(Events_1.Events.SEADRAGON_OPEN, function () {
+            this.component.subscribe(Events_1.Events.SEADRAGON_OPEN, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
                 _this.fire(Events_1.Events.SEADRAGON_OPEN);
             });
-            $.subscribe(Events_1.Events.SEADRAGON_RESIZE, function () {
+            this.component.subscribe(Events_1.Events.SEADRAGON_RESIZE, function () {
                 _this.fire(Events_1.Events.SEADRAGON_RESIZE);
             });
-            $.subscribe(Events_1.Events.SEADRAGON_ROTATION, function (e, rotation) {
+            this.component.subscribe(Events_1.Events.SEADRAGON_ROTATION, function (rotation) {
                 _this.data.rotation = rotation;
                 _this.fire(Events_1.Events.SEADRAGON_ROTATION, _this.data.rotation);
                 _this.currentRotation = rotation;
             });
-            $.subscribe(Events_1.Events.SEARCH, function (e, terms) {
+            this.component.subscribe(Events_1.Events.SEARCH, function (terms) {
                 _this.fire(Events_1.Events.SEARCH, terms);
                 _this.search(terms);
             });
-            $.subscribe(Events_1.Events.SEARCH_PREVIEW_FINISH, function () {
+            this.component.subscribe(Events_1.Events.SEARCH_PREVIEW_FINISH, function () {
                 _this.fire(Events_1.Events.SEARCH_PREVIEW_FINISH);
             });
-            $.subscribe(Events_1.Events.SEARCH_PREVIEW_START, function () {
+            this.component.subscribe(Events_1.Events.SEARCH_PREVIEW_START, function () {
                 _this.fire(Events_1.Events.SEARCH_PREVIEW_START);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (e, obj) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (obj) {
                 _this.fire(BaseEvents_1.BaseEvents.ANNOTATIONS, obj);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, function (e, rect) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [rect.canvasIndex]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATION_CANVAS_CHANGED, function (rect) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, rect.canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY, function () {
                 _this.fire(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (thumb) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, thumb.index);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, function (e, node) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, function (node) {
                 _this.fire(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, node.data.path);
                 _this.treeNodeSelected(node);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.UP_ARROW, function () {
                 if (!_this.useArrowKeysToNavigate()) {
                     _this.centerPanel.setFocus();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.helper.canvasIndex]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.UPDATE_SETTINGS, function () {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.helper.canvasIndex);
                 var settings = _this.getSettings();
-                $.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, [settings]);
+                _this.component.publish(BaseEvents_1.BaseEvents.SETTINGS_CHANGED, settings);
             });
-            // $.subscribe(Events.VIEW_PAGE, (e: any, index: number) => {
+            // this.component.subscribe(Events.VIEW_PAGE, (e: any, index: number) => {
             //     this.fire(Events.VIEW_PAGE, index);
-            //     $.publish(BaseEvents.CANVAS_INDEX_CHANGED, [index]);
+            //     this.component.publish(BaseEvents.CANVAS_INDEX_CHANGED, [index]);
             // });
         };
         Extension.prototype.createModules = function () {
@@ -27036,7 +27042,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.checkForAnnotations = function () {
             if (this.data.annotations) {
                 var annotations = this.parseAnnotationList(this.data.annotations);
-                $.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
+                this.component.publish(BaseEvents_1.BaseEvents.CLEAR_ANNOTATIONS);
                 this.annotate(annotations);
             }
         };
@@ -27049,23 +27055,23 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             var annotationResults = new AnnotationResults_1.AnnotationResults();
             annotationResults.terms = terms;
             annotationResults.annotations = this.annotations;
-            $.publish(BaseEvents_1.BaseEvents.ANNOTATIONS, [annotationResults]);
+            this.component.publish(BaseEvents_1.BaseEvents.ANNOTATIONS, annotationResults);
             // reload current index as it may contain annotations.
-            //$.publish(BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex]);
+            //this.component.publish(BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex]);
         };
         Extension.prototype.checkForSearchParam = function () {
             // if a highlight param is set, use it to search.
             var highlight = this.data.highlight;
             if (highlight) {
                 highlight.replace(/\+/g, " ").replace(/"/g, "");
-                $.publish(Events_1.Events.SEARCH, [highlight]);
+                this.component.publish(Events_1.Events.SEARCH, highlight);
             }
         };
         Extension.prototype.checkForRotationParam = function () {
             // if a rotation value is passed, set rotation
             var rotation = this.data.rotation;
             if (rotation) {
-                $.publish(Events_1.Events.SEADRAGON_ROTATION, [rotation]);
+                this.component.publish(Events_1.Events.SEADRAGON_ROTATION, rotation);
             }
         };
         Extension.prototype.viewPage = function (canvasIndex) {
@@ -27126,21 +27132,21 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 return;
             var canvasId = range.getCanvasIds()[0];
             var index = this.helper.getCanvasIndexById(canvasId);
-            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
+            this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, index);
         };
         Extension.prototype.viewLabel = function (label) {
             if (!label) {
                 this.showMessage(this.data.config.modules.genericDialogue.content.emptyValue);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
                 return;
             }
             var index = this.helper.getCanvasIndexByLabel(label);
             if (index != -1) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [index]);
+                this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, index);
             }
             else {
                 this.showMessage(this.data.config.modules.genericDialogue.content.pageNotFound);
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
+                this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGE_FAILED);
             }
         };
         Extension.prototype.treeNodeSelected = function (node) {
@@ -27164,7 +27170,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.clearAnnotations = function () {
             this.annotations = null;
             // reload current index as it may contain results.
-            $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [this.helper.canvasIndex]);
+            this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, this.helper.canvasIndex);
         };
         Extension.prototype.prevSearchResult = function () {
             var foundResult;
@@ -27175,7 +27181,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 var result = this.annotations[i];
                 if (result.canvasIndex <= this.getPrevPageIndex()) {
                     foundResult = result;
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [foundResult.canvasIndex]);
+                    this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, foundResult.canvasIndex);
                     break;
                 }
             }
@@ -27187,7 +27193,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             for (var i = 0; i < this.annotations.length; i++) {
                 var result = this.annotations[i];
                 if (result && result.canvasIndex >= this.getNextPageIndex()) {
-                    $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [result.canvasIndex]);
+                    this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, result.canvasIndex);
                     break;
                 }
             }
@@ -27478,6 +27484,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             return uri;
         };
         Extension.prototype.search = function (terms) {
+            var _this = this;
             if (this.isAnnotating)
                 return;
             this.isAnnotating = true;
@@ -27496,7 +27503,7 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                 }
                 else {
                     that.showMessage(that.data.config.modules.genericDialogue.content.noMatches, function () {
-                        $.publish(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY);
+                        _this.component.publish(BaseEvents_1.BaseEvents.ANNOTATIONS_EMPTY);
                     });
                 }
             });
@@ -27703,17 +27710,17 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
             this.$content.append(this._$zoomOutButton);
             this._$pdfContainer.append(this._$canvas);
             this.$content.prepend(this._$pdfContainer);
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (resources) {
                 _this.openMedia(resources);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.FIRST, function () {
                 if (!_this._pdfDoc) {
                     return;
                 }
                 _this._pageIndex = 1;
                 _this._queueRenderPage(_this._pageIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.PREV, function () {
                 if (!_this._pdfDoc) {
                     return;
                 }
@@ -27723,7 +27730,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 _this._pageIndex--;
                 _this._queueRenderPage(_this._pageIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.NEXT, function () {
                 if (!_this._pdfDoc) {
                     return;
                 }
@@ -27733,21 +27740,21 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 _this._pageIndex++;
                 _this._queueRenderPage(_this._pageIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LAST, function () {
                 if (!_this._pdfDoc) {
                     return;
                 }
                 _this._pageIndex = _this._pdfDoc.numPages;
                 _this._queueRenderPage(_this._pageIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function () {
                 if (!_this._pdfDoc) {
                     return;
                 }
                 _this._pageIndex = 1;
                 _this._queueRenderPage(_this._pageIndex);
             });
-            $.subscribe(Events_1.Events.SEARCH, function (e, pageIndex) {
+            this.component.subscribe(Events_1.Events.SEARCH, function (pageIndex) {
                 if (!_this._pdfDoc) {
                     return;
                 }
@@ -27761,14 +27768,14 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 e.preventDefault();
                 if (!_this._prevButtonEnabled)
                     return;
-                $.publish(BaseEvents_1.BaseEvents.PREV);
+                _this.component.publish(BaseEvents_1.BaseEvents.PREV);
             });
             this.disablePrevButton();
             this._$nextButton.onPressed(function (e) {
                 e.preventDefault();
                 if (!_this._nextButtonEnabled)
                     return;
-                $.publish(BaseEvents_1.BaseEvents.NEXT);
+                _this.component.publish(BaseEvents_1.BaseEvents.NEXT);
             });
             this.disableNextButton();
             this._$zoomInButton.onPressed(function (e) {
@@ -27848,7 +27855,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                     PDFJS.getDocument(mediaUri).then(function (pdfDoc) {
                         _this._pdfDoc = pdfDoc;
                         _this._render(_this._pageIndex);
-                        $.publish(Events_1.Events.PDF_LOADED, [pdfDoc]);
+                        _this.component.publish(Events_1.Events.PDF_LOADED, pdfDoc);
                         _this._$spinner.hide();
                     });
                 }
@@ -27894,7 +27901,7 @@ define('modules/uv-pdfcenterpanel-module/PDFCenterPanel',["require", "exports", 
                 _this._renderTask = page.render(renderContext);
                 // Wait for rendering to finish
                 _this._renderTask.promise.then(function () {
-                    $.publish(Events_1.Events.PAGE_INDEX_CHANGED, [_this._pageIndex]);
+                    _this.component.publish(Events_1.Events.PAGE_INDEX_CHANGED, _this._pageIndex);
                     _this._pageRendering = false;
                     if (_this._pageIndexPending !== null) {
                         // New page rendering is pending
@@ -27979,11 +27986,11 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
             var _this = this;
             this.setConfig('pdfHeaderPanel');
             _super.prototype.create.call(this);
-            $.subscribe(Events_1.Events.PAGE_INDEX_CHANGED, function (e, pageIndex) {
+            this.component.subscribe(Events_1.Events.PAGE_INDEX_CHANGED, function (pageIndex) {
                 _this._pageIndex = pageIndex;
                 _this.render();
             });
-            $.subscribe(Events_1.Events.PDF_LOADED, function (e, pdfDoc) {
+            this.component.subscribe(Events_1.Events.PDF_LOADED, function (pdfDoc) {
                 _this._pdfDoc = pdfDoc;
             });
             this.$prevOptions = $('<div class="prevOptions"></div>');
@@ -28013,16 +28020,16 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
             this.$lastButton.disable();
             // ui event handlers.
             this.$firstButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.FIRST);
+                _this.component.publish(BaseEvents_1.BaseEvents.FIRST);
             });
             this.$prevButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.PREV);
+                _this.component.publish(BaseEvents_1.BaseEvents.PREV);
             });
             this.$nextButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.NEXT);
+                _this.component.publish(BaseEvents_1.BaseEvents.NEXT);
             });
             this.$lastButton.onPressed(function () {
-                $.publish(BaseEvents_1.BaseEvents.LAST);
+                _this.component.publish(BaseEvents_1.BaseEvents.LAST);
             });
             this.$searchText.onEnter(function () {
                 _this.$searchText.blur();
@@ -28074,7 +28081,7 @@ define('modules/uv-pdfheaderpanel-module/PDFHeaderPanel',["require", "exports", 
                 this.extension.showMessage(this.extension.data.config.modules.genericDialogue.content.invalidNumber);
                 return;
             }
-            $.publish(Events_1.Events.SEARCH, [index]);
+            this.component.publish(Events_1.Events.SEARCH, index);
         };
         PDFHeaderPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -28168,32 +28175,32 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
             var _this = this;
             requirejs.config({ paths: { 'pdfjs-dist/build/pdf.combined': this.data.root + '/lib/' + 'pdf.combined' } });
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, thumb) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [thumb.index]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (thumb) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, thumb.index);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
                 Shell_1.Shell.$centerPanel.hide();
                 Shell_1.Shell.$rightPanel.hide();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
                 Shell_1.Shell.$centerPanel.show();
                 Shell_1.Shell.$rightPanel.show();
                 _this.resize();
             });
-            $.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.hide();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
                 if (_this.IsOldIE()) {
                     _this.centerPanel.$element.show();
                 }
             });
-            $.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
+            this.component.subscribe(BaseEvents_1.BaseEvents.EXIT_FULLSCREEN, function () {
                 setTimeout(function () {
                     _this.resize();
                 }, 10); // allow time to exit full screen, then resize
@@ -28397,7 +28404,7 @@ define('modules/uv-virtexcenterpanel-module/VirtexCenterPanel',["require", "expo
             this.setConfig('virtexCenterPanel');
             _super.prototype.create.call(this);
             var that = this;
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (resources) {
                 that.openMedia(resources);
             });
             this.$navigation = $('<div class="navigation"></div>');
@@ -28515,11 +28522,11 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
-            $.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (e, canvasIndex) {
-                $.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [canvasIndex]);
+            this.component.subscribe(BaseEvents_1.BaseEvents.THUMB_SELECTED, function (canvasIndex) {
+                _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, canvasIndex);
             });
         };
         Extension.prototype.createModules = function () {
@@ -28602,6 +28609,47 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
     exports.Extension = Extension;
 });
 
+define('Pubsub',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var PubSub = /** @class */ (function () {
+        function PubSub() {
+            this.events = {};
+        }
+        PubSub.prototype.publish = function (name, data) {
+            var _this = this;
+            var handlers = this.events[name];
+            if (handlers === undefined)
+                return;
+            handlers.forEach(function (handler) {
+                handler.call(_this, data);
+            });
+        };
+        ;
+        PubSub.prototype.subscribe = function (name, handler) {
+            var handlers = this.events[name];
+            if (handlers === undefined) {
+                handlers = this.events[name] = [];
+            }
+            handlers.push(handler);
+        };
+        ;
+        PubSub.prototype.unsubscribe = function (name, handler) {
+            var handlers = this.events[name];
+            if (handlers === undefined)
+                return;
+            var handlerIdx = handlers.indexOf(handler);
+            handlers.splice(handlerIdx);
+        };
+        ;
+        PubSub.prototype.dispose = function () {
+            this.events = {};
+        };
+        return PubSub;
+    }());
+    exports.PubSub = PubSub;
+});
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -28612,7 +28660,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./extensions/uv-av-extension/Extension", "./extensions/uv-default-extension/Extension", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension", "./Utils"], function (require, exports, BaseEvents_1, Extension_1, Extension_2, Extension_3, Extension_4, Extension_5, Extension_6, Utils_1) {
+define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEvents", "./extensions/uv-av-extension/Extension", "./extensions/uv-default-extension/Extension", "./extensions/uv-mediaelement-extension/Extension", "./extensions/uv-seadragon-extension/Extension", "./extensions/uv-pdf-extension/Extension", "./extensions/uv-virtex-extension/Extension", "./Utils", "./Pubsub"], function (require, exports, BaseEvents_1, Extension_1, Extension_2, Extension_3, Extension_4, Extension_5, Extension_6, Utils_1, Pubsub_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var UVComponent = /** @class */ (function (_super) {
@@ -28620,6 +28668,7 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
         function UVComponent(options) {
             var _this = _super.call(this, options) || this;
             _this.isFullScreen = false;
+            _this._pubsub = new Pubsub_1.PubSub();
             _this._init();
             _this._resize();
             return _this;
@@ -28762,10 +28811,21 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
                 return this.extension.data[key];
             }
         };
+        UVComponent.prototype.publish = function (event, args) {
+            if (args) {
+                if (args.length) {
+                    args = args[0];
+                }
+            }
+            this._pubsub.publish(event, args);
+        };
+        UVComponent.prototype.subscribe = function (event, cb) {
+            this._pubsub.subscribe(event, cb);
+        };
         UVComponent.prototype._reload = function (data) {
             var _this = this;
-            $.disposePubSub(); // remove any existing event listeners
-            $.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (e, data) {
+            this._pubsub.dispose(); // remove any existing event listeners
+            this.subscribe(BaseEvents_1.BaseEvents.RELOAD, function (data) {
                 _this.fire(BaseEvents_1.BaseEvents.RELOAD, data);
             });
             var $elem = $(this.options.target);
