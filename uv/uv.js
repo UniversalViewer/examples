@@ -16864,312 +16864,6 @@ define('modules/uv-shared-module/BaseView',["require", "exports", "./Panel"], fu
     exports.BaseView = BaseView;
 });
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", "./BaseEvents"], function (require, exports, BaseView_1, BaseEvents_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Dialogue = /** @class */ (function (_super) {
-        __extends(Dialogue, _super);
-        function Dialogue($element) {
-            var _this = _super.call(this, $element, false, false) || this;
-            _this.allowClose = true;
-            _this.isActive = false;
-            _this.isUnopened = true;
-            return _this;
-        }
-        Dialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('dialogue');
-            _super.prototype.create.call(this);
-            // events.
-            this.component.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
-                if (_this.isActive) {
-                    if (_this.allowClose) {
-                        _this.close();
-                    }
-                }
-            });
-            this.component.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
-                if (_this.isActive) {
-                    if (_this.allowClose) {
-                        _this.close();
-                    }
-                }
-            });
-            this.$top = $('<div class="top"></div>');
-            this.$element.append(this.$top);
-            this.$closeButton = $('<button type="button" class="btn btn-default close" tabindex="0">' + this.content.close + '</button>');
-            this.$middle = $('<div class="middle"></div>');
-            this.$element.append(this.$middle);
-            this.$content = $('<div class="content"></div>');
-            this.$middle.append(this.$content);
-            this.$buttons = $('<div class="buttons"></div>');
-            this.$middle.append(this.$buttons);
-            this.$bottom = $('<div class="bottom"></div>');
-            this.$element.append(this.$bottom);
-            if (this.config.topCloseButtonEnabled) {
-                this.$top.append(this.$closeButton);
-            }
-            else {
-                this.$buttons.append(this.$closeButton);
-            }
-            this.$closeButton.on('click', function (e) {
-                e.preventDefault();
-                _this.close();
-            });
-            this.returnFunc = this.close;
-        };
-        Dialogue.prototype.enableClose = function () {
-            this.allowClose = true;
-            this.$closeButton.show();
-        };
-        Dialogue.prototype.disableClose = function () {
-            this.allowClose = false;
-            this.$closeButton.hide();
-        };
-        Dialogue.prototype.setDockedPosition = function () {
-            var top = Math.floor(this.extension.height() - this.$element.outerHeight(true));
-            var left = 0;
-            var arrowLeft = 0;
-            var normalisedPos = 0;
-            if (this.$triggerButton) {
-                var verticalPadding = 4;
-                var horizontalPadding = 2;
-                var a = this.$triggerButton.offset().top;
-                var b = this.extension.$element.offset().top;
-                var d = this.$element.outerHeight(true);
-                var e = (a - b) - d;
-                top = e + verticalPadding;
-                var f = this.$triggerButton.offset().left;
-                var g = this.extension.$element.offset().left;
-                var h = f - g;
-                normalisedPos = Utils.Maths.normalise(h, 0, this.extension.width());
-                left = Math.floor((this.extension.width() * normalisedPos) - ((this.$element.width()) * normalisedPos)) + horizontalPadding;
-                arrowLeft = Math.floor(this.$element.width() * normalisedPos);
-            }
-            this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
-            this.$element.css({
-                'top': top,
-                'left': left
-            });
-        };
-        Dialogue.prototype.open = function (triggerButton) {
-            var _this = this;
-            this.$element.attr('aria-hidden', 'false');
-            this.$element.show();
-            if (triggerButton) {
-                this.$triggerButton = $(triggerButton);
-                this.$bottom.show();
-            }
-            else {
-                this.$bottom.hide();
-            }
-            this.isActive = true;
-            // set the focus to the default button.
-            setTimeout(function () {
-                var $defaultButton = _this.$element.find('.default');
-                if ($defaultButton.length) {
-                    $defaultButton.focus();
-                }
-                else {
-                    // if there's no default button, focus on the first visible input
-                    var $input = _this.$element.find('input:visible').first();
-                    if ($input.length) {
-                        $input.focus();
-                    }
-                    else {
-                        // if there's no visible first input, focus on the close button
-                        _this.$closeButton.focus();
-                    }
-                }
-            }, 1);
-            this.component.publish(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
-            if (this.isUnopened) {
-                this.isUnopened = false;
-                this.afterFirstOpen();
-            }
-            this.resize();
-        };
-        Dialogue.prototype.afterFirstOpen = function () {
-        };
-        Dialogue.prototype.close = function () {
-            if (!this.isActive)
-                return;
-            this.$element.attr('aria-hidden', 'true');
-            this.$element.hide();
-            this.isActive = false;
-            this.component.publish(this.closeCommand);
-            this.component.publish(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
-        };
-        Dialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-            this.$element.css({
-                'top': Math.floor((this.extension.height() / 2) - (this.$element.height() / 2)),
-                'left': Math.floor((this.extension.width() / 2) - (this.$element.width() / 2))
-            });
-        };
-        return Dialogue;
-    }(BaseView_1.BaseView));
-    exports.Dialogue = Dialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./BaseEvents", "./Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var GenericDialogue = /** @class */ (function (_super) {
-        __extends(GenericDialogue, _super);
-        function GenericDialogue($element) {
-            return _super.call(this, $element) || this;
-        }
-        GenericDialogue.prototype.create = function () {
-            var _this = this;
-            this.setConfig('genericDialogue');
-            _super.prototype.create.call(this);
-            this.openCommand = BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE;
-            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE;
-            this.component.subscribe(this.openCommand, function (params) {
-                _this.acceptCallback = params.acceptCallback;
-                _this.showMessage(params);
-            });
-            this.component.subscribe(this.closeCommand, function () {
-                _this.close();
-            });
-            this.$message = $('<p></p>');
-            this.$content.append(this.$message);
-            this.$acceptButton = $("\n          <button class=\"btn btn-primary accept default\">\n            " + this.content.ok + "\n          </button>\n        ");
-            this.$buttons.append(this.$acceptButton);
-            // Hide the redundant close button
-            this.$buttons.find('.close').hide();
-            this.$acceptButton.onPressed(function () {
-                _this.accept();
-            });
-            this.returnFunc = function () {
-                if (_this.isActive) {
-                    _this.accept();
-                }
-            };
-            this.$element.hide();
-        };
-        GenericDialogue.prototype.accept = function () {
-            this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
-            if (this.acceptCallback)
-                this.acceptCallback();
-        };
-        GenericDialogue.prototype.showMessage = function (params) {
-            this.$message.html(params.message);
-            if (params.buttonText) {
-                this.$acceptButton.text(params.buttonText);
-            }
-            else {
-                this.$acceptButton.text(this.content.ok);
-            }
-            if (params.allowClose === false) {
-                this.disableClose();
-            }
-            this.open();
-        };
-        GenericDialogue.prototype.resize = function () {
-            _super.prototype.resize.call(this);
-        };
-        return GenericDialogue;
-    }(Dialogue_1.Dialogue));
-    exports.GenericDialogue = GenericDialogue;
-});
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "./BaseView", "./GenericDialogue"], function (require, exports, BaseEvents_1, BaseView_1, GenericDialogue_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Shell = /** @class */ (function (_super) {
-        __extends(Shell, _super);
-        function Shell($element) {
-            var _this = this;
-            Shell.$element = $element;
-            _this = _super.call(this, Shell.$element, true, true) || this;
-            return _this;
-        }
-        Shell.prototype.create = function () {
-            var _this = this;
-            _super.prototype.create.call(this);
-            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
-                Shell.$overlays.show();
-            });
-            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
-                Shell.$overlays.hide();
-            });
-            Shell.$headerPanel = $('<div class="headerPanel"></div>');
-            Shell.$element.append(Shell.$headerPanel);
-            Shell.$mainPanel = $('<div class="mainPanel"></div>');
-            Shell.$element.append(Shell.$mainPanel);
-            Shell.$centerPanel = $('<div class="centerPanel"></div>');
-            Shell.$mainPanel.append(Shell.$centerPanel);
-            Shell.$leftPanel = $('<div class="leftPanel"></div>');
-            Shell.$mainPanel.append(Shell.$leftPanel);
-            Shell.$rightPanel = $('<div class="rightPanel"></div>');
-            Shell.$mainPanel.append(Shell.$rightPanel);
-            Shell.$footerPanel = $('<div class="footerPanel"></div>');
-            Shell.$element.append(Shell.$footerPanel);
-            Shell.$mobileFooterPanel = $('<div class="mobileFooterPanel"></div>');
-            Shell.$element.append(Shell.$mobileFooterPanel);
-            Shell.$overlays = $('<div class="overlays"></div>');
-            Shell.$element.append(Shell.$overlays);
-            Shell.$genericDialogue = $('<div class="overlay genericDialogue" aria-hidden="true"></div>');
-            Shell.$overlays.append(Shell.$genericDialogue);
-            Shell.$overlays.on('click', function (e) {
-                if ($(e.target).hasClass('overlays')) {
-                    e.preventDefault();
-                    _this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
-                }
-            });
-            // create shared views.
-            new GenericDialogue_1.GenericDialogue(Shell.$genericDialogue);
-        };
-        Shell.prototype.resize = function () {
-            var _this = this;
-            _super.prototype.resize.call(this);
-            setTimeout(function () {
-                Shell.$overlays.width(_this.extension.width());
-                Shell.$overlays.height(_this.extension.height());
-            }, 1);
-            var mainHeight = this.$element.height() - parseInt(Shell.$mainPanel.css('paddingTop'))
-                - (Shell.$headerPanel.is(':visible') ? Shell.$headerPanel.height() : 0)
-                - (Shell.$footerPanel.is(':visible') ? Shell.$footerPanel.height() : 0)
-                - (Shell.$mobileFooterPanel.is(':visible') ? Shell.$mobileFooterPanel.height() : 0);
-            Shell.$mainPanel.height(mainHeight);
-        };
-        return Shell;
-    }(BaseView_1.BaseView));
-    exports.Shell = Shell;
-});
-
 define('modules/uv-shared-module/Position',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -17242,7 +16936,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", "./BaseView", "./Position", "../../Utils"], function (require, exports, Shell_1, BaseView_1, Position_1, Utils_1) {
+define('modules/uv-shared-module/CenterPanel',["require", "exports", "./BaseView", "./Position", "../../Utils"], function (require, exports, BaseView_1, Position_1, Utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var CenterPanel = /** @class */ (function (_super) {
@@ -17362,8 +17056,8 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./Shell", 
         };
         CenterPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
-            var leftPanelWidth = Shell_1.Shell.$leftPanel.is(':visible') ? Math.floor(Shell_1.Shell.$leftPanel.width()) : 0;
-            var rightPanelWidth = Shell_1.Shell.$rightPanel.is(':visible') ? Math.floor(Shell_1.Shell.$rightPanel.width()) : 0;
+            var leftPanelWidth = this.extension.shell.$leftPanel.is(':visible') ? Math.floor(this.extension.shell.$leftPanel.width()) : 0;
+            var rightPanelWidth = this.extension.shell.$rightPanel.is(':visible') ? Math.floor(this.extension.shell.$rightPanel.width()) : 0;
             var width = Math.floor(this.$element.parent().width() - leftPanelWidth - rightPanelWidth);
             this.$element.css({
                 'left': leftPanelWidth,
@@ -18148,6 +17842,164 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+define('modules/uv-shared-module/Dialogue',["require", "exports", "./BaseView", "./BaseEvents"], function (require, exports, BaseView_1, BaseEvents_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Dialogue = /** @class */ (function (_super) {
+        __extends(Dialogue, _super);
+        function Dialogue($element) {
+            var _this = _super.call(this, $element, false, false) || this;
+            _this.allowClose = true;
+            _this.isActive = false;
+            _this.isUnopened = true;
+            return _this;
+        }
+        Dialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('dialogue');
+            _super.prototype.create.call(this);
+            // events.
+            this.component.subscribe(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE, function () {
+                if (_this.isActive) {
+                    if (_this.allowClose) {
+                        _this.close();
+                    }
+                }
+            });
+            this.component.subscribe(BaseEvents_1.BaseEvents.ESCAPE, function () {
+                if (_this.isActive) {
+                    if (_this.allowClose) {
+                        _this.close();
+                    }
+                }
+            });
+            this.$top = $('<div class="top"></div>');
+            this.$element.append(this.$top);
+            this.$closeButton = $('<button type="button" class="btn btn-default close" tabindex="0">' + this.content.close + '</button>');
+            this.$middle = $('<div class="middle"></div>');
+            this.$element.append(this.$middle);
+            this.$content = $('<div class="content"></div>');
+            this.$middle.append(this.$content);
+            this.$buttons = $('<div class="buttons"></div>');
+            this.$middle.append(this.$buttons);
+            this.$bottom = $('<div class="bottom"></div>');
+            this.$element.append(this.$bottom);
+            if (this.config.topCloseButtonEnabled) {
+                this.$top.append(this.$closeButton);
+            }
+            else {
+                this.$buttons.append(this.$closeButton);
+            }
+            this.$closeButton.on('click', function (e) {
+                e.preventDefault();
+                _this.close();
+            });
+            this.returnFunc = this.close;
+        };
+        Dialogue.prototype.enableClose = function () {
+            this.allowClose = true;
+            this.$closeButton.show();
+        };
+        Dialogue.prototype.disableClose = function () {
+            this.allowClose = false;
+            this.$closeButton.hide();
+        };
+        Dialogue.prototype.setDockedPosition = function () {
+            var top = Math.floor(this.extension.height() - this.$element.outerHeight(true));
+            var left = 0;
+            var arrowLeft = 0;
+            var normalisedPos = 0;
+            if (this.$triggerButton) {
+                var verticalPadding = 4;
+                var horizontalPadding = 2;
+                var a = this.$triggerButton.offset().top;
+                var b = this.extension.$element.offset().top;
+                var d = this.$element.outerHeight(true);
+                var e = (a - b) - d;
+                top = e + verticalPadding;
+                var f = this.$triggerButton.offset().left;
+                var g = this.extension.$element.offset().left;
+                var h = f - g;
+                normalisedPos = Utils.Maths.normalise(h, 0, this.extension.width());
+                left = Math.floor((this.extension.width() * normalisedPos) - ((this.$element.width()) * normalisedPos)) + horizontalPadding;
+                arrowLeft = Math.floor(this.$element.width() * normalisedPos);
+            }
+            this.$bottom.css('backgroundPosition', arrowLeft + 'px 0px');
+            this.$element.css({
+                'top': top,
+                'left': left
+            });
+        };
+        Dialogue.prototype.open = function (triggerButton) {
+            var _this = this;
+            this.$element.attr('aria-hidden', 'false');
+            this.$element.show();
+            if (triggerButton) {
+                this.$triggerButton = $(triggerButton);
+                this.$bottom.show();
+            }
+            else {
+                this.$bottom.hide();
+            }
+            this.isActive = true;
+            // set the focus to the default button.
+            setTimeout(function () {
+                var $defaultButton = _this.$element.find('.default');
+                if ($defaultButton.length) {
+                    $defaultButton.focus();
+                }
+                else {
+                    // if there's no default button, focus on the first visible input
+                    var $input = _this.$element.find('input:visible').first();
+                    if ($input.length) {
+                        $input.focus();
+                    }
+                    else {
+                        // if there's no visible first input, focus on the close button
+                        _this.$closeButton.focus();
+                    }
+                }
+            }, 1);
+            this.component.publish(BaseEvents_1.BaseEvents.SHOW_OVERLAY);
+            if (this.isUnopened) {
+                this.isUnopened = false;
+                this.afterFirstOpen();
+            }
+            this.resize();
+        };
+        Dialogue.prototype.afterFirstOpen = function () {
+        };
+        Dialogue.prototype.close = function () {
+            if (!this.isActive)
+                return;
+            this.$element.attr('aria-hidden', 'true');
+            this.$element.hide();
+            this.isActive = false;
+            this.component.publish(this.closeCommand);
+            this.component.publish(BaseEvents_1.BaseEvents.HIDE_OVERLAY);
+        };
+        Dialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+            this.$element.css({
+                'top': Math.floor((this.extension.height() / 2) - (this.$element.height() / 2)),
+                'left': Math.floor((this.extension.width() / 2) - (this.$element.width() / 2))
+            });
+        };
+        return Dialogue;
+    }(BaseView_1.BaseView));
+    exports.Dialogue = Dialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('modules/uv-dialogues-module/AuthDialogue',["require", "exports", "../uv-shared-module/BaseEvents", "../uv-shared-module/Dialogue", "../../Utils"], function (require, exports, BaseEvents_1, Dialogue_1, Utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -18556,6 +18408,151 @@ define('modules/uv-dialogues-module/RestrictedDialogue',["require", "exports", "
     exports.RestrictedDialogue = RestrictedDialogue;
 });
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-shared-module/GenericDialogue',["require", "exports", "./BaseEvents", "./Dialogue"], function (require, exports, BaseEvents_1, Dialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var GenericDialogue = /** @class */ (function (_super) {
+        __extends(GenericDialogue, _super);
+        function GenericDialogue($element) {
+            return _super.call(this, $element) || this;
+        }
+        GenericDialogue.prototype.create = function () {
+            var _this = this;
+            this.setConfig('genericDialogue');
+            _super.prototype.create.call(this);
+            this.openCommand = BaseEvents_1.BaseEvents.SHOW_GENERIC_DIALOGUE;
+            this.closeCommand = BaseEvents_1.BaseEvents.HIDE_GENERIC_DIALOGUE;
+            this.component.subscribe(this.openCommand, function (params) {
+                _this.acceptCallback = params.acceptCallback;
+                _this.showMessage(params);
+            });
+            this.component.subscribe(this.closeCommand, function () {
+                _this.close();
+            });
+            this.$message = $('<p></p>');
+            this.$content.append(this.$message);
+            this.$acceptButton = $("\n          <button class=\"btn btn-primary accept default\">\n            " + this.content.ok + "\n          </button>\n        ");
+            this.$buttons.append(this.$acceptButton);
+            // Hide the redundant close button
+            this.$buttons.find('.close').hide();
+            this.$acceptButton.onPressed(function () {
+                _this.accept();
+            });
+            this.returnFunc = function () {
+                if (_this.isActive) {
+                    _this.accept();
+                }
+            };
+            this.$element.hide();
+        };
+        GenericDialogue.prototype.accept = function () {
+            this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+            if (this.acceptCallback)
+                this.acceptCallback();
+        };
+        GenericDialogue.prototype.showMessage = function (params) {
+            this.$message.html(params.message);
+            if (params.buttonText) {
+                this.$acceptButton.text(params.buttonText);
+            }
+            else {
+                this.$acceptButton.text(this.content.ok);
+            }
+            if (params.allowClose === false) {
+                this.disableClose();
+            }
+            this.open();
+        };
+        GenericDialogue.prototype.resize = function () {
+            _super.prototype.resize.call(this);
+        };
+        return GenericDialogue;
+    }(Dialogue_1.Dialogue));
+    exports.GenericDialogue = GenericDialogue;
+});
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define('modules/uv-shared-module/Shell',["require", "exports", "./BaseEvents", "./BaseView", "./GenericDialogue"], function (require, exports, BaseEvents_1, BaseView_1, GenericDialogue_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Shell = /** @class */ (function (_super) {
+        __extends(Shell, _super);
+        function Shell($element) {
+            return _super.call(this, $element, true, true) || this;
+        }
+        Shell.prototype.create = function () {
+            var _this = this;
+            _super.prototype.create.call(this);
+            this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
+                _this.$overlays.show();
+            });
+            this.component.subscribe(BaseEvents_1.BaseEvents.HIDE_OVERLAY, function () {
+                _this.$overlays.hide();
+            });
+            this.$headerPanel = $('<div class="headerPanel"></div>');
+            this.$element.append(this.$headerPanel);
+            this.$mainPanel = $('<div class="mainPanel"></div>');
+            this.$element.append(this.$mainPanel);
+            this.$centerPanel = $('<div class="centerPanel"></div>');
+            this.$mainPanel.append(this.$centerPanel);
+            this.$leftPanel = $('<div class="leftPanel"></div>');
+            this.$mainPanel.append(this.$leftPanel);
+            this.$rightPanel = $('<div class="rightPanel"></div>');
+            this.$mainPanel.append(this.$rightPanel);
+            this.$footerPanel = $('<div class="footerPanel"></div>');
+            this.$element.append(this.$footerPanel);
+            this.$mobileFooterPanel = $('<div class="mobileFooterPanel"></div>');
+            this.$element.append(this.$mobileFooterPanel);
+            this.$overlays = $('<div class="overlays"></div>');
+            this.$element.append(this.$overlays);
+            this.$genericDialogue = $('<div class="overlay genericDialogue" aria-hidden="true"></div>');
+            this.$overlays.append(this.$genericDialogue);
+            this.$overlays.on('click', function (e) {
+                if ($(e.target).hasClass('overlays')) {
+                    e.preventDefault();
+                    _this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
+                }
+            });
+            // create shared views.
+            new GenericDialogue_1.GenericDialogue(this.$genericDialogue);
+        };
+        Shell.prototype.resize = function () {
+            var _this = this;
+            _super.prototype.resize.call(this);
+            setTimeout(function () {
+                _this.$overlays.width(_this.extension.width());
+                _this.$overlays.height(_this.extension.height());
+            }, 1);
+            var mainHeight = this.$element.height() - parseInt(this.$mainPanel.css('paddingTop'))
+                - (this.$headerPanel.is(':visible') ? this.$headerPanel.height() : 0)
+                - (this.$footerPanel.is(':visible') ? this.$footerPanel.height() : 0)
+                - (this.$mobileFooterPanel.is(':visible') ? this.$mobileFooterPanel.height() : 0);
+            this.$mainPanel.height(mainHeight);
+        };
+        return Shell;
+    }(BaseView_1.BaseView));
+    exports.Shell = Shell;
+});
+
 define('SynchronousRequire',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -18614,7 +18611,6 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
             this.metrics = [];
             this.shifted = false;
             this.tabbing = false;
-            // auth
         }
         BaseExtension.prototype.create = function () {
             var _this = this;
@@ -19039,16 +19035,16 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
         };
         BaseExtension.prototype.createModules = function () {
             this.$authDialogue = $('<div class="overlay auth" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$authDialogue);
+            this.shell.$overlays.append(this.$authDialogue);
             this.authDialogue = new AuthDialogue_1.AuthDialogue(this.$authDialogue);
             this.$clickThroughDialogue = $('<div class="overlay clickthrough" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$clickThroughDialogue);
+            this.shell.$overlays.append(this.$clickThroughDialogue);
             this.clickThroughDialogue = new ClickThroughDialogue_1.ClickThroughDialogue(this.$clickThroughDialogue);
             this.$restrictedDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$restrictedDialogue);
+            this.shell.$overlays.append(this.$restrictedDialogue);
             this.restrictedDialogue = new RestrictedDialogue_1.RestrictedDialogue(this.$restrictedDialogue);
             this.$loginDialogue = $('<div class="overlay login" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$loginDialogue);
+            this.shell.$overlays.append(this.$loginDialogue);
             this.loginDialogue = new LoginDialogue_1.LoginDialogue(this.$loginDialogue);
         };
         BaseExtension.prototype.modulesCreated = function () {
@@ -19531,7 +19527,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "../../Ut
             this.component.publish(BaseEvents_1.BaseEvents.CLOSE_ACTIVE_DIALOGUE);
         };
         BaseExtension.prototype.isOverlayActive = function () {
-            return Shell_1.Shell.$overlays.is(':visible');
+            return this.shell.$overlays.is(':visible');
         };
         BaseExtension.prototype.isDesktopMetric = function () {
             return this.metric.toString() === MetricType_1.MetricType.DESKTOP.toString();
@@ -20447,10 +20443,10 @@ define('modules/uv-contentleftpanel-module/TreeView',["require", "exports", "../
                 data: this.treeData
             });
             this.treeComponent.on('treeNodeSelected', function (node) {
-                that.component.publish(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, [node]);
+                that.component.publish(BaseEvents_1.BaseEvents.TREE_NODE_SELECTED, node);
             }, false);
             this.treeComponent.on('treeNodeMultiSelected', function (node) {
-                that.component.publish(BaseEvents_1.BaseEvents.TREE_NODE_MULTISELECTED, [node]);
+                that.component.publish(BaseEvents_1.BaseEvents.TREE_NODE_MULTISELECTED, node);
             }, false);
         };
         TreeView.prototype.databind = function () {
@@ -22470,7 +22466,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-av-extension/Extension',["require", "exports", "../../modules/uv-avcenterpanel-module/AVCenterPanel", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-avmobilefooterpanel-module/MobileFooter", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AVCenterPanel_1, BaseEvents_1, BaseExtension_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, MobileFooter_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-av-extension/Extension',["require", "exports", "../../modules/uv-avcenterpanel-module/AVCenterPanel", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-avmobilefooterpanel-module/MobileFooter", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue"], function (require, exports, AVCenterPanel_1, BaseEvents_1, BaseExtension_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, MobileFooter_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -22504,39 +22500,39 @@ define('extensions/uv-av-extension/Extension',["require", "exports", "../../modu
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new HeaderPanel_1.HeaderPanel(this.shell.$headerPanel);
             }
             else {
-                Shell_1.Shell.$headerPanel.hide();
+                this.shell.$headerPanel.hide();
             }
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(Shell_1.Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(this.shell.$leftPanel);
             }
             else {
-                Shell_1.Shell.$leftPanel.hide();
+                this.shell.$leftPanel.hide();
             }
-            this.centerPanel = new AVCenterPanel_1.AVCenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new AVCenterPanel_1.AVCenterPanel(this.shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(this.shell.$rightPanel);
             }
             else {
-                Shell_1.Shell.$rightPanel.hide();
+                this.shell.$rightPanel.hide();
             }
             if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
-                this.mobileFooterPanel = new MobileFooter_1.FooterPanel(Shell_1.Shell.$mobileFooterPanel);
+                this.footerPanel = new FooterPanel_1.FooterPanel(this.shell.$footerPanel);
+                this.mobileFooterPanel = new MobileFooter_1.FooterPanel(this.shell.$mobileFooterPanel);
             }
             else {
-                Shell_1.Shell.$footerPanel.hide();
+                this.shell.$footerPanel.hide();
             }
             this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
             this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
             this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isHeaderPanelEnabled()) {
                 this.headerPanel.init();
@@ -22964,7 +22960,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-default-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, FileLinkCenterPanel_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-default-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-filelinkcenterpanel-module/FileLinkCenterPanel", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue"], function (require, exports, BaseEvents_1, BaseExtension_1, FileLinkCenterPanel_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -22992,32 +22988,32 @@ define('extensions/uv-default-extension/Extension',["require", "exports", "../..
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new HeaderPanel_1.HeaderPanel(this.shell.$headerPanel);
             }
             else {
-                Shell_1.Shell.$headerPanel.hide();
+                this.shell.$headerPanel.hide();
             }
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(Shell_1.Shell.$leftPanel);
+                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(this.shell.$leftPanel);
             }
-            this.centerPanel = new FileLinkCenterPanel_1.FileLinkCenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new FileLinkCenterPanel_1.FileLinkCenterPanel(this.shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(this.shell.$rightPanel);
             }
             if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
+                this.footerPanel = new FooterPanel_1.FooterPanel(this.shell.$footerPanel);
             }
             else {
-                Shell_1.Shell.$footerPanel.hide();
+                this.shell.$footerPanel.hide();
             }
             this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$helpDialogue);
+            this.shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
             this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
             this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
@@ -23361,7 +23357,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./Events", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, Events_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MediaElementCenterPanel_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "./Events", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-dialogues-module/HelpDialogue", "../../modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, Events_1, FooterPanel_1, HeaderPanel_1, HelpDialogue_1, MediaElementCenterPanel_1, MoreInfoRightPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -23386,12 +23382,12 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
                 _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, thumb.index);
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
-                Shell_1.Shell.$centerPanel.hide();
-                Shell_1.Shell.$rightPanel.hide();
+                _this.shell.$centerPanel.hide();
+                _this.shell.$rightPanel.hide();
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
-                Shell_1.Shell.$centerPanel.show();
-                Shell_1.Shell.$rightPanel.show();
+                _this.shell.$centerPanel.show();
+                _this.shell.$rightPanel.show();
                 _this.resize();
             });
             this.component.subscribe(Events_1.Events.MEDIA_ENDED, function () {
@@ -23407,35 +23403,35 @@ define('extensions/uv-mediaelement-extension/Extension',["require", "exports", "
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new HeaderPanel_1.HeaderPanel(this.shell.$headerPanel);
             }
             else {
-                Shell_1.Shell.$headerPanel.hide();
+                this.shell.$headerPanel.hide();
             }
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(Shell_1.Shell.$leftPanel);
+                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(this.shell.$leftPanel);
             }
-            this.centerPanel = new MediaElementCenterPanel_1.MediaElementCenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new MediaElementCenterPanel_1.MediaElementCenterPanel(this.shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(this.shell.$rightPanel);
             }
             if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
+                this.footerPanel = new FooterPanel_1.FooterPanel(this.shell.$footerPanel);
             }
             else {
-                Shell_1.Shell.$footerPanel.hide();
+                this.shell.$footerPanel.hide();
             }
             this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$helpDialogue);
+            this.shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
             this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
             this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
             this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
@@ -26726,7 +26722,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/AnnotationResults", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "./Events", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, AnnotationResults_1, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, Events_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../../modules/uv-shared-module/AnnotationResults", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./CroppedImageDimensions", "./DownloadDialogue", "./Events", "../../modules/uv-dialogues-module/ExternalContentDialogue", "../../modules/uv-osdmobilefooterpanel-module/MobileFooter", "../../modules/uv-searchfooterpanel-module/FooterPanel", "../../modules/uv-dialogues-module/HelpDialogue", "./Mode", "../../modules/uv-dialogues-module/MoreInfoDialogue", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-multiselectdialogue-module/MultiSelectDialogue", "./MultiSelectionArgs", "../../modules/uv-pagingheaderpanel-module/PagingHeaderPanel", "../../modules/uv-shared-module/Point", "../../modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel", "./SettingsDialogue", "./ShareDialogue"], function (require, exports, AnnotationResults_1, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, CroppedImageDimensions_1, DownloadDialogue_1, Events_1, ExternalContentDialogue_1, MobileFooter_1, FooterPanel_1, HelpDialogue_1, Mode_1, MoreInfoDialogue_1, MoreInfoRightPanel_1, MultiSelectDialogue_1, MultiSelectionArgs_1, PagingHeaderPanel_1, Point_1, SeadragonCenterPanel_1, SettingsDialogue_1, ShareDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var AnnotationGroup = Manifold.AnnotationGroup;
@@ -26748,10 +26744,10 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
                     settings.pagingEnabled = false;
                     _this.updateSettings(settings);
                     _this.component.publish(BaseEvents_1.BaseEvents.UPDATE_SETTINGS);
-                    Shell_1.Shell.$rightPanel.hide();
+                    _this.shell.$rightPanel.hide();
                 }
                 else {
-                    Shell_1.Shell.$rightPanel.show();
+                    _this.shell.$rightPanel.show();
                 }
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (canvasIndex) {
@@ -26806,16 +26802,16 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START, function () {
                 if (_this.isDesktopMetric()) {
-                    Shell_1.Shell.$rightPanel.show();
+                    _this.shell.$rightPanel.show();
                 }
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
-                Shell_1.Shell.$centerPanel.show();
+                _this.shell.$centerPanel.show();
                 _this.resize();
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
-                Shell_1.Shell.$centerPanel.hide();
-                Shell_1.Shell.$rightPanel.hide();
+                _this.shell.$centerPanel.hide();
+                _this.shell.$rightPanel.hide();
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.MINUS, function () {
                 _this.centerPanel.setFocus();
@@ -26970,51 +26966,51 @@ define('extensions/uv-seadragon-extension/Extension',["require", "exports", "../
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new PagingHeaderPanel_1.PagingHeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new PagingHeaderPanel_1.PagingHeaderPanel(this.shell.$headerPanel);
             }
             else {
-                Shell_1.Shell.$headerPanel.hide();
+                this.shell.$headerPanel.hide();
             }
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(Shell_1.Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(this.shell.$leftPanel);
             }
             else {
-                Shell_1.Shell.$leftPanel.hide();
+                this.shell.$leftPanel.hide();
             }
-            this.centerPanel = new SeadragonCenterPanel_1.SeadragonCenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new SeadragonCenterPanel_1.SeadragonCenterPanel(this.shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(this.shell.$rightPanel);
             }
             else {
-                Shell_1.Shell.$rightPanel.hide();
+                this.shell.$rightPanel.hide();
             }
             if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
-                this.mobileFooterPanel = new MobileFooter_1.FooterPanel(Shell_1.Shell.$mobileFooterPanel);
+                this.footerPanel = new FooterPanel_1.FooterPanel(this.shell.$footerPanel);
+                this.mobileFooterPanel = new MobileFooter_1.FooterPanel(this.shell.$mobileFooterPanel);
             }
             else {
-                Shell_1.Shell.$footerPanel.hide();
+                this.shell.$footerPanel.hide();
             }
             this.$helpDialogue = $('<div class="overlay help" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$helpDialogue);
+            this.shell.$overlays.append(this.$helpDialogue);
             this.helpDialogue = new HelpDialogue_1.HelpDialogue(this.$helpDialogue);
             this.$moreInfoDialogue = $('<div class="overlay moreInfo" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$moreInfoDialogue);
+            this.shell.$overlays.append(this.$moreInfoDialogue);
             this.moreInfoDialogue = new MoreInfoDialogue_1.MoreInfoDialogue(this.$moreInfoDialogue);
             this.$multiSelectDialogue = $('<div class="overlay multiSelect" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$multiSelectDialogue);
+            this.shell.$overlays.append(this.$multiSelectDialogue);
             this.multiSelectDialogue = new MultiSelectDialogue_1.MultiSelectDialogue(this.$multiSelectDialogue);
             this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
             this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
             this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             this.$externalContentDialogue = $('<div class="overlay externalContent" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$externalContentDialogue);
+            this.shell.$overlays.append(this.$externalContentDialogue);
             this.externalContentDialogue = new ExternalContentDialogue_1.ExternalContentDialogue(this.$externalContentDialogue);
             if (this.isHeaderPanelEnabled()) {
                 this.headerPanel.init();
@@ -28163,7 +28159,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-pdfheaderpanel-module/PDFHeaderPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, PDFHeaderPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1) {
+define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "../../modules/uv-pdfcenterpanel-module/PDFCenterPanel", "../../modules/uv-pdfheaderpanel-module/PDFHeaderPanel", "../../modules/uv-resourcesleftpanel-module/ResourcesLeftPanel", "./SettingsDialogue", "./ShareDialogue"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, DownloadDialogue_1, FooterPanel_1, MoreInfoRightPanel_1, PDFCenterPanel_1, PDFHeaderPanel_1, ResourcesLeftPanel_1, SettingsDialogue_1, ShareDialogue_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -28182,12 +28178,12 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
                 _this.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, thumb.index);
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START, function () {
-                Shell_1.Shell.$centerPanel.hide();
-                Shell_1.Shell.$rightPanel.hide();
+                _this.shell.$centerPanel.hide();
+                _this.shell.$rightPanel.hide();
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH, function () {
-                Shell_1.Shell.$centerPanel.show();
-                Shell_1.Shell.$rightPanel.show();
+                _this.shell.$centerPanel.show();
+                _this.shell.$rightPanel.show();
                 _this.resize();
             });
             this.component.subscribe(BaseEvents_1.BaseEvents.SHOW_OVERLAY, function () {
@@ -28219,32 +28215,32 @@ define('extensions/uv-pdf-extension/Extension',["require", "exports", "../../mod
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new PDFHeaderPanel_1.PDFHeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new PDFHeaderPanel_1.PDFHeaderPanel(this.shell.$headerPanel);
             }
             else {
-                Shell_1.Shell.$headerPanel.hide();
+                this.shell.$headerPanel.hide();
             }
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(Shell_1.Shell.$leftPanel);
+                this.leftPanel = new ResourcesLeftPanel_1.ResourcesLeftPanel(this.shell.$leftPanel);
             }
-            this.centerPanel = new PDFCenterPanel_1.PDFCenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new PDFCenterPanel_1.PDFCenterPanel(this.shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(this.shell.$rightPanel);
             }
             if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
+                this.footerPanel = new FooterPanel_1.FooterPanel(this.shell.$footerPanel);
             }
             else {
-                Shell_1.Shell.$footerPanel.hide();
+                this.shell.$footerPanel.hide();
             }
             this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
             this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
             this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
@@ -28511,7 +28507,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-shared-module/Shell", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, Shell_1, VirtexCenterPanel_1) {
+define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../modules/uv-shared-module/BaseEvents", "../../modules/uv-shared-module/BaseExtension", "../../modules/uv-shared-module/Bookmark", "../../modules/uv-contentleftpanel-module/ContentLeftPanel", "./DownloadDialogue", "../../modules/uv-shared-module/FooterPanel", "../../modules/uv-shared-module/HeaderPanel", "../../modules/uv-moreinforightpanel-module/MoreInfoRightPanel", "./SettingsDialogue", "./ShareDialogue", "../../modules/uv-virtexcenterpanel-module/VirtexCenterPanel"], function (require, exports, BaseEvents_1, BaseExtension_1, Bookmark_1, ContentLeftPanel_1, DownloadDialogue_1, FooterPanel_1, HeaderPanel_1, MoreInfoRightPanel_1, SettingsDialogue_1, ShareDialogue_1, VirtexCenterPanel_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Extension = /** @class */ (function (_super) {
@@ -28532,44 +28528,44 @@ define('extensions/uv-virtex-extension/Extension',["require", "exports", "../../
         Extension.prototype.createModules = function () {
             _super.prototype.createModules.call(this);
             if (this.isHeaderPanelEnabled()) {
-                this.headerPanel = new HeaderPanel_1.HeaderPanel(Shell_1.Shell.$headerPanel);
+                this.headerPanel = new HeaderPanel_1.HeaderPanel(this.shell.$headerPanel);
             }
             else {
-                Shell_1.Shell.$headerPanel.hide();
+                this.shell.$headerPanel.hide();
             }
             if (this.isLeftPanelEnabled()) {
-                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(Shell_1.Shell.$leftPanel);
+                this.leftPanel = new ContentLeftPanel_1.ContentLeftPanel(this.shell.$leftPanel);
             }
-            this.centerPanel = new VirtexCenterPanel_1.VirtexCenterPanel(Shell_1.Shell.$centerPanel);
+            this.centerPanel = new VirtexCenterPanel_1.VirtexCenterPanel(this.shell.$centerPanel);
             if (this.isRightPanelEnabled()) {
-                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(Shell_1.Shell.$rightPanel);
+                this.rightPanel = new MoreInfoRightPanel_1.MoreInfoRightPanel(this.shell.$rightPanel);
             }
             if (this.isFooterPanelEnabled()) {
-                this.footerPanel = new FooterPanel_1.FooterPanel(Shell_1.Shell.$footerPanel);
+                this.footerPanel = new FooterPanel_1.FooterPanel(this.shell.$footerPanel);
             }
             else {
-                Shell_1.Shell.$footerPanel.hide();
+                this.shell.$footerPanel.hide();
             }
             this.$downloadDialogue = $('<div class="overlay download" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$downloadDialogue);
+            this.shell.$overlays.append(this.$downloadDialogue);
             this.downloadDialogue = new DownloadDialogue_1.DownloadDialogue(this.$downloadDialogue);
             this.$shareDialogue = $('<div class="overlay share" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$shareDialogue);
+            this.shell.$overlays.append(this.$shareDialogue);
             this.shareDialogue = new ShareDialogue_1.ShareDialogue(this.$shareDialogue);
             this.$settingsDialogue = $('<div class="overlay settings" aria-hidden="true"></div>');
-            Shell_1.Shell.$overlays.append(this.$settingsDialogue);
+            this.shell.$overlays.append(this.$settingsDialogue);
             this.settingsDialogue = new SettingsDialogue_1.SettingsDialogue(this.$settingsDialogue);
             if (this.isLeftPanelEnabled()) {
                 this.leftPanel.init();
             }
             else {
-                Shell_1.Shell.$leftPanel.hide();
+                this.shell.$leftPanel.hide();
             }
             if (this.isRightPanelEnabled()) {
                 this.rightPanel.init();
             }
             else {
-                Shell_1.Shell.$rightPanel.hide();
+                this.shell.$rightPanel.hide();
             }
         };
         Extension.prototype.render = function () {
