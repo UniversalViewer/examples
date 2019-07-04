@@ -26,12 +26,6 @@
 
 		var uv1, uv2;
 
-		// function resize() {
-		// 	var windowWidth = window.innerWidth;
-		// 	$(uv1).width(windowWidth);
-		// 	$(uv2).width(windowWidth);
-		// }
-
 		window.addEventListener('uvLoaded', function (e) {
 
             var urlDataProvider = new UV.URLDataProvider();
@@ -66,20 +60,12 @@
 
 			uv1 = createUV('#uv1', data1, urlDataProvider);
 			uv1.init();
-			uv1.uv.id = "uv1";
 
 			setTimeout(() => {
 				uv2 = createUV('#uv2', data2, urlDataProvider);
 				uv2.init();
-				uv2.uv.id = "uv2";
 			}, 1000);
 			
-			// $(window).on('resize' ,function() {
-			// 	resize();
-			// });
-
-			// resize();
-
 		}, false);
 
 	</script>

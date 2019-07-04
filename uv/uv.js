@@ -19683,8 +19683,8 @@ define('modules/uv-contentleftpanel-module/GalleryView',["require", "exports", "
                 target: this.$gallery[0]
             });
             this.galleryComponent.on('thumbSelected', function (thumb) {
-                that.component.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, [thumb]);
-                that.component.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [thumb]);
+                that.component.publish(BaseEvents_1.BaseEvents.GALLERY_THUMB_SELECTED, thumb);
+                that.component.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, thumb);
             }, false);
             this.galleryComponent.on('decreaseSize', function () {
                 that.component.publish(BaseEvents_1.BaseEvents.GALLERY_DECREASE_SIZE);
@@ -23192,16 +23192,16 @@ define('modules/uv-mediaelementcenterpanel-module/MediaElementCenterPanel',["req
                                 that.resize();
                             });
                             mediaElement.addEventListener('play', function () {
-                                that.component.publish(Events_1.Events.MEDIA_PLAYED, [Math.floor(mediaElement.currentTime)]);
+                                that.component.publish(Events_1.Events.MEDIA_PLAYED, Math.floor(mediaElement.currentTime));
                             });
                             mediaElement.addEventListener('pause', function () {
                                 // mediaelement creates a pause event before the ended event. ignore this.
                                 if (Math.floor(mediaElement.currentTime) != Math.floor(mediaElement.duration)) {
-                                    that.component.publish(Events_1.Events.MEDIA_PAUSED, [Math.floor(mediaElement.currentTime)]);
+                                    that.component.publish(Events_1.Events.MEDIA_PAUSED, Math.floor(mediaElement.currentTime));
                                 }
                             });
                             mediaElement.addEventListener('ended', function () {
-                                that.component.publish(Events_1.Events.MEDIA_ENDED, [Math.floor(mediaElement.duration)]);
+                                that.component.publish(Events_1.Events.MEDIA_ENDED, Math.floor(mediaElement.duration));
                             });
                             mediaElement.setSrc(sources);
                         }
@@ -24500,7 +24500,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                     _this.$searchText.val('');
             });
             this.$placemarkerDetails.on('mouseover', function () {
-                that.component.publish(Events_1.Events.SEARCH_PREVIEW_START, [_this.currentPlacemarkerIndex]);
+                that.component.publish(Events_1.Events.SEARCH_PREVIEW_START, _this.currentPlacemarkerIndex);
             });
             this.$placemarkerDetails.on('mouseleave', function () {
                 $(this).hide();
@@ -24510,7 +24510,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
                 placemarkers.removeClass('hover');
             });
             this.$placemarkerDetails.on('click', function () {
-                that.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, [_this.currentPlacemarkerIndex]);
+                that.component.publish(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, _this.currentPlacemarkerIndex);
             });
             this.$previousResultButton.on('click', function (e) {
                 e.preventDefault();
@@ -24738,7 +24738,7 @@ define('modules/uv-searchfooterpanel-module/FooterPanel',["require", "exports", 
             var $placemarker = $(this);
             $placemarker.addClass('hover');
             var canvasIndex = parseInt($placemarker.attr('data-index'));
-            that.component.publish(Events_1.Events.SEARCH_PREVIEW_START, [canvasIndex]);
+            that.component.publish(Events_1.Events.SEARCH_PREVIEW_START, canvasIndex);
             var $placemarkers = that.getSearchResultPlacemarkers();
             var elemIndex = $placemarkers.index($placemarker[0]);
             that.currentPlacemarkerIndex = canvasIndex;
@@ -25708,7 +25708,8 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             var _this = this;
             this.setConfig('seadragonCenterPanel');
             _super.prototype.create.call(this);
-            this.$viewer = $('<div id="viewer"></div>');
+            this.viewerId = "osd" + new Date().getTime();
+            this.$viewer = $('<div id="' + this.viewerId + '"></div>');
             this.$content.prepend(this.$viewer);
             this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (args) {
                 _this.overlayAnnotations();
@@ -25792,8 +25793,10 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.$spinner = $('<div class="spinner"></div>');
             this.$content.append(this.$spinner);
             // add to window object for testing automation purposes.
-            window.openSeadragonViewer = this.viewer = OpenSeadragon({
-                id: "viewer",
+            //window.openSeadragonViewer
+            // removed as causing issues for multiple UVs on page
+            this.viewer = OpenSeadragon({
+                id: this.viewerId,
                 ajaxWithCredentials: false,
                 showNavigationControl: true,
                 showNavigator: true,
