@@ -20151,7 +20151,7 @@ define('modules/uv-shared-module/ThumbsView',["require", "exports", "./BaseEvent
                 e.preventDefault();
                 var data = $.view(this).data;
                 that.lastThumbClickedIndex = data.index;
-                that.component.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, [data]);
+                that.component.publish(BaseEvents_1.BaseEvents.THUMB_SELECTED, data);
             });
             this.setLabel();
             this.isCreated = true;
@@ -28809,11 +28809,6 @@ define('UVComponent',["require", "exports", "./modules/uv-shared-module/BaseEven
             }
         };
         UVComponent.prototype.publish = function (event, args) {
-            if (args) {
-                if (args.length) {
-                    args = args[0];
-                }
-            }
             this._pubsub.publish(event, args);
         };
         UVComponent.prototype.subscribe = function (event, cb) {
