@@ -59,11 +59,9 @@
 			};
 
 			uv1 = createUV('#uv1', data1, urlDataProvider);
-			uv1.init();
 
-			setTimeout(() => {
+			setTimeout(function() {
 				uv2 = createUV('#uv2', data2, urlDataProvider);
-				uv2.init();
 			}, 1000);
 			
 		}, false);
