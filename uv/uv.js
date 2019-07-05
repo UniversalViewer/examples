@@ -25709,7 +25709,7 @@ define('modules/uv-seadragoncenterpanel-module/SeadragonCenterPanel',["require",
             this.setConfig('seadragonCenterPanel');
             _super.prototype.create.call(this);
             this.viewerId = "osd" + new Date().getTime();
-            this.$viewer = $('<div id="' + this.viewerId + '"></div>');
+            this.$viewer = $('<div id="' + this.viewerId + '" class="viewer"></div>');
             this.$content.prepend(this.$viewer);
             this.component.subscribe(BaseEvents_1.BaseEvents.ANNOTATIONS, function (args) {
                 _this.overlayAnnotations();
