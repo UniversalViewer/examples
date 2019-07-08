@@ -335,6 +335,11 @@
       "label": "National Library of Wales",
       "manifests": [
         {
+          "@id": "https://damsssl.llgc.org.uk/iiif/2.0/2373813/manifest.json",
+          "@type": "sc:Collection",
+          "label": "Yr ardd"
+        },
+        {
           "@id": "http://dams.llgc.org.uk/iiif/2.0/4389767/manifest.json",
           "@type": "sc:Manifest",
           "label": "Cardiganshire Constabulary"

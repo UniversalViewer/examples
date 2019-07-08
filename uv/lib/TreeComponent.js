@@ -20,6 +20,7 @@ var IIIFComponents;
             _this._data = _this.data();
             _this._data = _this.options.data;
             _this._init();
+            _this._resize();
             return _this;
         }
         TreeComponent.prototype._init = function () {
@@ -120,7 +121,7 @@ var IIIFComponents;
                 return;
             }
             this._rootNode = this._data.helper.getTree(this._data.topRangeIndex, this._data.treeSortType);
-            this._allNodes = null; // delete cache
+            this._allNodes = null; // refresh cache
             this._multiSelectableNodes = null; // delete cache
             this._$tree.link($.templates.pageTemplate, this._rootNode);
             var multiSelectState = this._getMultiSelectState();
@@ -138,8 +139,8 @@ var IIIFComponents;
                     _loop_1(i);
                 }
             }
+            var allNodes = this.getAllNodes();
             if (this._data.autoExpand) {
-                var allNodes = this._getAllNodes();
                 allNodes.forEach(function (node, index) {
                     if (node.nodes.length) {
                         _this._setNodeExpanded(node, true);
@@ -174,12 +175,12 @@ var IIIFComponents;
             if (this._multiSelectableNodes) {
                 return this._multiSelectableNodes;
             }
-            return this._multiSelectableNodes = this._getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n); }).toArray();
+            return this._multiSelectableNodes = this.getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n); }).toArray();
         };
         TreeComponent.prototype._nodeIsMultiSelectable = function (node) {
             return (node.isManifest() && node.nodes.length > 0 || node.isRange());
         };
-        TreeComponent.prototype._getAllNodes = function () {
+        TreeComponent.prototype.getAllNodes = function () {
             // if cached
             if (this._allNodes) {
                 return this._allNodes;
@@ -188,10 +189,10 @@ var IIIFComponents;
         };
         TreeComponent.prototype.getMultiSelectedNodes = function () {
             var _this = this;
-            return this._getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n) && n.multiSelected; }).toArray();
+            return this.getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n) && n.multiSelected; }).toArray();
         };
         TreeComponent.prototype.getNodeById = function (id) {
-            return this._getAllNodes().en().where(function (n) { return n.id === id; }).first();
+            return this.getAllNodes().en().where(function (n) { return n.id === id; }).first();
         };
         // private _multiSelectTreeNode(node: Manifold.ITreeNode, isSelected: boolean): void {
         //     if (!this._nodeIsMultiSelectable(node)) return;
@@ -271,6 +272,11 @@ var IIIFComponents;
             this.deselectCurrentNode();
             this._selectedNode = node;
             this._setNodeSelected(this._selectedNode, true);
+        };
+        TreeComponent.prototype.expandNode = function (node, expanded) {
+            if (!this._rootNode)
+                return;
+            this._setNodeExpanded(node, expanded);
         };
         // walks down the tree using the specified path e.g. [2,2,0]
         TreeComponent.prototype.getNodeByPath = function (parentNode, path) {
