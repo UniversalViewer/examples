@@ -219,11 +219,12 @@ var IIIFComponents;
         //     // cascade up tree
         //     this._updateParentNodes(parentNode);
         // }
-        // private _expandParents(node: Manifold.ITreeNode): void{
-        //     if (!node.parentNode) return;
-        //     this._setNodeExpanded(<Manifold.ITreeNode>node.parentNode, true);
-        //     this._expandParents(<Manifold.ITreeNode>node.parentNode);
-        // }
+        TreeComponent.prototype.expandParents = function (node, expand) {
+            if (!node.parentNode)
+                return;
+            this._setNodeExpanded(node.parentNode, expand);
+            this.expandParents(node.parentNode, expand);
+        };
         TreeComponent.prototype._setNodeSelected = function (node, selected) {
             $.observable(node).setProperty("selected", selected);
         };
@@ -263,15 +264,15 @@ var IIIFComponents;
             this.selectNode(node);
         };
         TreeComponent.prototype.deselectCurrentNode = function () {
-            if (this._selectedNode)
-                this._setNodeSelected(this._selectedNode, false);
+            if (this.selectedNode)
+                this._setNodeSelected(this.selectedNode, false);
         };
         TreeComponent.prototype.selectNode = function (node) {
             if (!this._rootNode)
                 return;
             this.deselectCurrentNode();
-            this._selectedNode = node;
-            this._setNodeSelected(this._selectedNode, true);
+            this.selectedNode = node;
+            this._setNodeSelected(this.selectedNode, true);
         };
         TreeComponent.prototype.expandNode = function (node, expanded) {
             if (!this._rootNode)
