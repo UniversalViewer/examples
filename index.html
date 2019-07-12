@@ -69,10 +69,12 @@
 
         function setupUV() {
 
+            var collectionIndex = urlDataProvider.get('c');
+
             var data = {
                 iiifResourceUri: manifest,
                 configUri: 'examples-config.json',
-                collectionIndex: Number(urlDataProvider.get('c', 0)),
+                collectionIndex: (collectionIndex !== undefined) ? Number(collectionIndex) : undefined,
                 manifestIndex: Number(urlDataProvider.get('m', 0)),
                 sequenceIndex: Number(urlDataProvider.get('s', 0)),
                 canvasIndex: Number(urlDataProvider.get('cv', 0)),
@@ -149,7 +151,7 @@
 
             uv.set({
                 iiifResourceUri: manifest,
-                collectionIndex: 0,
+                collectionIndex: undefined,
                 manifestIndex: 0,
                 sequenceIndex: 0,
                 canvasIndex: 0
