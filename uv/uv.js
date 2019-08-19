@@ -17224,7 +17224,7 @@ define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "export
             this.setConfig("alephCenterPanel");
             _super.prototype.create.call(this);
             var that = this;
-            $.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.OPEN_EXTERNAL_RESOURCE, function (e, resources) {
                 that.openMedia(resources);
             });
             //this.alephContainer = document.createElement('div');
@@ -17242,12 +17242,12 @@ define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "export
                     if (body.length) {
                         var media = body[0];
                         _this._src = media.id;
-                        //const format: Manifesto.MediaType | null = media.getFormat();
-                        //this._display = (format && format.toString() === "application/gltf") ? DisplayMode.MESH : DisplayMode.SLICES;
+                        var format = media.getFormat();
+                        _this._displayMode = (format && format.toString() === "model/gltf+json") ? DisplayMode_1.DisplayMode.MESH : DisplayMode_1.DisplayMode.SLICES;
                         _this._render();
                     }
                 }
-                $.publish(BaseEvents_1.BaseEvents.RESIZE);
+                _this.component.publish(BaseEvents_1.BaseEvents.RESIZE);
             });
         };
         AlephCenterPanel.prototype._render = function () {
@@ -17262,42 +17262,42 @@ define('modules/uv-alephcenterpanel-module/AlephCenterPanel',["require", "export
                 _this._displayMode = e.detail.displayMode;
             }, false);
             this.aleph.addEventListener('loaded', function (e) {
-                $.publish(Events_1.Events.LOADED, [{
-                        stackhelper: (_this._displayMode !== DisplayMode_1.DisplayMode.MESH) ? e.detail : null,
-                        displayMode: _this._displayMode
-                    }]);
+                _this.component.publish(Events_1.Events.LOADED, {
+                    stackhelper: (_this._displayMode !== DisplayMode_1.DisplayMode.MESH) ? e.detail : null,
+                    displayMode: _this._displayMode
+                });
             }, false);
             this.aleph.componentOnReady().then(function (al) {
-                al.load(_this._src);
+                al.load(_this._src, _this._displayMode);
             });
-            $.subscribe(Events_1.Events.DISPLAY_MODE_CHANGED, function (e, displayMode) {
+            this.component.subscribe(Events_1.Events.DISPLAY_MODE_CHANGED, function (displayMode) {
                 _this.aleph.setDisplayMode(displayMode);
             });
-            $.subscribe(Events_1.Events.GRAPH_ENABLED_CHANGED, function (e, enabled) {
+            this.component.subscribe(Events_1.Events.GRAPH_ENABLED_CHANGED, function (enabled) {
                 _this.aleph.setGraphEnabled(enabled);
             });
-            $.subscribe(Events_1.Events.BOUNDING_BOX_ENABLED_CHANGED, function (e, enabled) {
+            this.component.subscribe(Events_1.Events.BOUNDING_BOX_ENABLED_CHANGED, function (enabled) {
                 _this.aleph.setBoundingBoxEnabled(enabled);
             });
-            $.subscribe(Events_1.Events.SLICES_INDEX_CHANGED, function (e, index) {
+            this.component.subscribe(Events_1.Events.SLICES_INDEX_CHANGED, function (index) {
                 _this.aleph.setSlicesIndex(index);
             });
-            $.subscribe(Events_1.Events.ORIENTATION_CHANGED, function (e, orientation) {
+            this.component.subscribe(Events_1.Events.ORIENTATION_CHANGED, function (orientation) {
                 _this.aleph.setOrientation(orientation);
             });
-            $.subscribe(Events_1.Events.SLICES_WINDOW_CENTER_CHANGED, function (e, center) {
+            this.component.subscribe(Events_1.Events.SLICES_WINDOW_CENTER_CHANGED, function (center) {
                 _this.aleph.setSlicesWindowCenter(center);
             });
-            $.subscribe(Events_1.Events.SLICES_WINDOW_WIDTH_CHANGED, function (e, width) {
+            this.component.subscribe(Events_1.Events.SLICES_WINDOW_WIDTH_CHANGED, function (width) {
                 _this.aleph.setSlicesWindowWidth(width);
             });
-            $.subscribe(Events_1.Events.VOLUME_STEPS_CHANGED, function (e, steps) {
+            this.component.subscribe(Events_1.Events.VOLUME_STEPS_CHANGED, function (steps) {
                 _this.aleph.setVolumeSteps(steps);
             });
-            $.subscribe(Events_1.Events.VOLUME_WINDOW_CENTER_CHANGED, function (e, center) {
+            this.component.subscribe(Events_1.Events.VOLUME_WINDOW_CENTER_CHANGED, function (center) {
                 _this.aleph.setVolumeWindowCenter(center);
             });
-            $.subscribe(Events_1.Events.VOLUME_WINDOW_WIDTH_CHANGED, function (e, width) {
+            this.component.subscribe(Events_1.Events.VOLUME_WINDOW_WIDTH_CHANGED, function (width) {
                 _this.aleph.setVolumeWindowWidth(width);
             });
         };
@@ -21187,59 +21187,59 @@ define('modules/uv-alephleftpanel-module/AlephLeftPanel',["require", "exports", 
             this.$main.addClass('disabled');
             this.$main.append(this._$controlPanel);
             this.setTitle(this.content.title);
-            $.subscribe(Events_1.Events.LOADED, function (e, args) {
+            this.component.subscribe(Events_1.Events.LOADED, function (args) {
                 alControlPanel.stackhelper = args.stackhelper;
                 alControlPanel.displayMode = args.displayMode;
                 _this.$main.removeClass('disabled');
             });
             alControlPanel.componentOnReady().then(function () {
                 alControlPanel.addEventListener("displayModeChanged", function (e) {
-                    $.publish(Events_1.Events.DISPLAY_MODE_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.DISPLAY_MODE_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("graphEnabledChanged", function (e) {
-                    $.publish(Events_1.Events.GRAPH_ENABLED_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.GRAPH_ENABLED_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("boundingBoxEnabledChanged", function (e) {
-                    $.publish(Events_1.Events.BOUNDING_BOX_ENABLED_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.BOUNDING_BOX_ENABLED_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("slicesIndexChanged", function (e) {
-                    $.publish(Events_1.Events.SLICES_INDEX_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.SLICES_INDEX_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("orientationChanged", function (e) {
-                    $.publish(Events_1.Events.ORIENTATION_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.ORIENTATION_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("slicesWindowCenterChanged", function (e) {
-                    $.publish(Events_1.Events.SLICES_WINDOW_CENTER_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.SLICES_WINDOW_CENTER_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("slicesWindowWidthChanged", function (e) {
-                    $.publish(Events_1.Events.SLICES_WINDOW_WIDTH_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.SLICES_WINDOW_WIDTH_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("volumeStepsChanged", function (e) {
-                    $.publish(Events_1.Events.VOLUME_STEPS_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.VOLUME_STEPS_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("volumeWindowCenterChanged", function (e) {
-                    $.publish(Events_1.Events.VOLUME_WINDOW_CENTER_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.VOLUME_WINDOW_CENTER_CHANGED, e.detail);
                 }, false);
                 alControlPanel.addEventListener("volumeWindowWidthChanged", function (e) {
-                    $.publish(Events_1.Events.VOLUME_WINDOW_WIDTH_CHANGED, [e.detail]);
+                    _this.component.publish(Events_1.Events.VOLUME_WINDOW_WIDTH_CHANGED, e.detail);
                 }, false);
             });
         };
         AlephLeftPanel.prototype.expandFullStart = function () {
             _super.prototype.expandFullStart.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_START);
         };
         AlephLeftPanel.prototype.expandFullFinish = function () {
             _super.prototype.expandFullFinish.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_EXPAND_FULL_FINISH);
         };
         AlephLeftPanel.prototype.collapseFullStart = function () {
             _super.prototype.collapseFullStart.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_START);
         };
         AlephLeftPanel.prototype.collapseFullFinish = function () {
             _super.prototype.collapseFullFinish.call(this);
-            $.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
+            this.component.publish(BaseEvents_1.BaseEvents.LEFTPANEL_COLLAPSE_FULL_FINISH);
         };
         AlephLeftPanel.prototype.resize = function () {
             _super.prototype.resize.call(this);
@@ -21270,7 +21270,7 @@ define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../m
         Extension.prototype.create = function () {
             var _this = this;
             _super.prototype.create.call(this);
-            $.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
+            this.component.subscribe(BaseEvents_1.BaseEvents.CANVAS_INDEX_CHANGED, function (e, canvasIndex) {
                 _this.viewCanvas(canvasIndex);
             });
         };
