@@ -318,8 +318,7 @@
   --ion-item-background: none;
   --ion-text-color-rgb: 255,255,255;
   --ion-color-primary-rgb: 255,255,255;
-  --ion-color-primary: #fff;
-  --graph-enabled-display: none;
+  --ion-color-primary: #5d5d5d;
 }
 .uv .rightPanel .top .title {
   text-transform: uppercase;
