@@ -1,8 +1,14 @@
 define(function () {
     return function (formats) {
+        var sync = ['aframe-master.min', 'OrbitControls', 'aleph.proxy'];
+        var async = ['MetadataComponent'];
+        if (formats.includes("application/dicom")) {
+            sync.push('ami.min');
+            console.log("load ami");
+        }
         return {
-            sync: ['aframe-master.min', 'OrbitControls', 'ami.min', 'aleph.proxy'],
-            async: ['MetadataComponent']
+            sync: sync,
+            async: async
         };
     };
 });

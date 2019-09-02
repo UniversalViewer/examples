@@ -315,10 +315,34 @@
   opacity: 0.4;
 }
 .uv .leftPanel .main al-control-panel {
+  --ion-background-color: none;
   --ion-item-background: none;
   --ion-text-color-rgb: 255,255,255;
   --ion-color-primary-rgb: 255,255,255;
-  --ion-color-primary: #5d5d5d;
+  --al-color-primary: #26b5cc;
+  --ion-color-primary: var(--al-color-primary);
+  --ion-tab-bar-color: #fff;
+  --ion-highlight-color-focused: var(--al-color-primary);
+  --ion-color-primary-shade: var(--al-color-primary);
+  --ion-color-primary-tint: var(--al-color-primary);
+  --al-item-color: #fff;
+  --al-item-border-color: transparent;
+  --al-item-selected-color: var(--al-color-primary);
+  --al-input-color: #000;
+  --al-input-font-size: 1rem;
+  --al-input-background-color: #fff;
+  --al-input-padding-start: 10px;
+  --al-input-padding-top: 10px;
+  --al-input-padding-end: 10px;
+  --al-input-padding-bottom: 10px;
+  --al-textarea-color: #000;
+  --al-textarea-font-size: 1rem;
+  --al-textarea-background-color: #fff;
+  --al-textarea-padding-start: 10px;
+  --al-textarea-padding-top: 10px;
+  --al-textarea-padding-end: 10px;
+  --al-textarea-padding-bottom: 10px;
+  --al-console-font-size: 0.75rem;
 }
 .uv .rightPanel .top .title {
   text-transform: uppercase;
