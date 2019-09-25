@@ -4,7 +4,6 @@ define(function () {
         var async = ['MetadataComponent'];
         if (formats.includes("application/dicom")) {
             sync.push('ami.min');
-            console.log("load ami");
         }
         return {
             sync: sync,
