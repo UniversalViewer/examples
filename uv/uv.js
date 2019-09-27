@@ -21441,7 +21441,17 @@ define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../m
         Extension.prototype.render = function () {
             _super.prototype.render.call(this);
         };
+        Extension.prototype.IsOldIE = function () {
+            var browser = window.browserDetect.browser;
+            var version = window.browserDetect.version;
+            if (browser === 'Explorer' && version <= 11)
+                return true;
+            return false;
+        };
         Extension.prototype.isLeftPanelEnabled = function () {
+            if (this.IsOldIE) {
+                return false;
+            }
             return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true);
         };
         Extension.prototype.getEmbedScript = function (template, width, height) {
