@@ -21430,14 +21430,6 @@ define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../m
                 this.footerPanel.init();
             }
         };
-        Extension.prototype.dependencyLoaded = function (index, dep) {
-            // if (index === (<any>this).getDependencyIndex('ami')) {
-            //     window.AMI = dep;
-            // } else 
-            if (index === this.getDependencyIndex('three.min')) {
-                window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
-            }
-        };
         Extension.prototype.render = function () {
             _super.prototype.render.call(this);
         };
@@ -21449,7 +21441,7 @@ define('extensions/uv-aleph-extension/Extension',["require", "exports", "../../m
             return false;
         };
         Extension.prototype.isLeftPanelEnabled = function () {
-            if (this.IsOldIE) {
+            if (this.IsOldIE()) {
                 return false;
             }
             return Utils.Bools.getBool(this.data.config.options.leftPanelEnabled, true);
