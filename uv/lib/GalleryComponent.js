@@ -4,13 +4,14 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { ViewingDirection } from "@iiif/vocabulary";
 var IIIFComponents;
 (function (IIIFComponents) {
     var GalleryComponent = /** @class */ (function (_super) {
@@ -162,7 +163,7 @@ var IIIFComponents;
                 thumbHeight: 320,
                 thumbLoadPadding: 3,
                 thumbWidth: 200,
-                viewingDirection: manifesto.ViewingDirection.leftToRight()
+                viewingDirection: ViewingDirection.LEFT_TO_RIGHT
             };
         };
         GalleryComponent.prototype.set = function (data) {
@@ -171,7 +172,7 @@ var IIIFComponents;
                 this._thumbs = this._data.helper.getThumbs(this._data.thumbWidth, this._data.thumbHeight);
             }
             if (this._data.viewingDirection) {
-                if (this._data.viewingDirection.toString() === manifesto.ViewingDirection.bottomToTop().toString()) {
+                if (this._data.viewingDirection.toString() === ViewingDirection.BOTTOM_TO_TOP) {
                     this._thumbs.reverse();
                 }
                 this._$thumbs.addClass(this._data.viewingDirection.toString()); // defaults to "left-to-right"
@@ -180,7 +181,7 @@ var IIIFComponents;
                 for (var i = 0; i < this._data.searchResults.length; i++) {
                     var searchResult = this._data.searchResults[i];
                     // find the thumb with the same canvasIndex and add the searchResult
-                    var thumb = this._thumbs.en().where(function (t) { return t.index === searchResult.canvasIndex; }).first();
+                    var thumb = this._thumbs.filter(function (t) { return t.index === searchResult.canvasIndex; })[0];
                     // clone the data so searchResults isn't persisted on the canvas.
                     var data_1 = $.extend(true, {}, thumb.data);
                     data_1.searchResults = searchResult.rects.length;
@@ -222,7 +223,7 @@ var IIIFComponents;
             if (multiSelectState && multiSelectState.isEnabled) {
                 // check/uncheck Select All checkbox
                 this._$selectAllButtonCheckbox.prop("checked", multiSelectState.allSelected());
-                var anySelected = multiSelectState.getAll().en().where(function (t) { return t.multiSelected; }).toArray().length > 0;
+                var anySelected = multiSelectState.getAll().filter(function (t) { return t.multiSelected; }).length > 0;
                 if (!anySelected) {
                     this._$selectButton.hide();
                 }
@@ -299,7 +300,7 @@ var IIIFComponents;
             }
         };
         GalleryComponent.prototype._getThumbByCanvas = function (canvas) {
-            return this._thumbs.en().where(function (c) { return c.data.id === canvas.id; }).first();
+            return this._thumbs.filter(function (c) { return c.data.id === canvas.id; })[0];
         };
         GalleryComponent.prototype._sizeThumb = function ($thumb) {
             var initialWidth = $thumb.data().initialwidth;

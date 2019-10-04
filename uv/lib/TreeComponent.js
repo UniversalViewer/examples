@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -36,10 +36,8 @@ var IIIFComponents;
                                     {^{tree/}}\
                                 {{/for}}',
                 treeTemplate: '<li>\
-                                    {^{if nodes && nodes.length }}\
+                                    {^{if nodes && nodes.length}}\
                                         <div class="toggle" data-link="class{merge:expanded toggle=\'expanded\'}"></div>\
-                                    {{else isManifest() || isCollection() }}\
-                                        <div class="toggle"></div>\
                                     {{else}}\
                                     <div class="spacer"></div>\
                                     {{/if}}\
@@ -66,12 +64,7 @@ var IIIFComponents;
                 tree: {
                     toggleExpanded: function () {
                         var node = this.data;
-                        if (node.nodes && node.nodes.length) {
-                            that._setNodeExpanded(node, !node.expanded);
-                        }
-                        else {
-                            that.fire(TreeComponent.Events.TREE_NODE_SELECTED, node);
-                        }
+                        that._setNodeExpanded(node, !node.expanded);
                     },
                     toggleMultiSelect: function () {
                         var node = this.data;
@@ -128,14 +121,14 @@ var IIIFComponents;
                 return;
             }
             this._rootNode = this._data.helper.getTree(this._data.topRangeIndex, this._data.treeSortType);
-            this._allNodes = null; // refresh cache
+            this._flattenedTree = null; // delete cache
             this._multiSelectableNodes = null; // delete cache
             this._$tree.link($.templates.pageTemplate, this._rootNode);
             var multiSelectState = this._getMultiSelectState();
             if (multiSelectState) {
                 var _loop_1 = function (i) {
                     var range = multiSelectState.ranges[i];
-                    var node = this_1._getMultiSelectableNodes().en().where(function (n) { return n.data.id === range.id; }).first();
+                    var node = this_1._getMultiSelectableNodes().filter(function (n) { return n.data.id === range.id; })[0];
                     if (node) {
                         this_1._setNodeMultiSelectEnabled(node, range.multiSelectEnabled);
                         this_1._setNodeMultiSelected(node, range.multiSelected);
@@ -146,12 +139,12 @@ var IIIFComponents;
                     _loop_1(i);
                 }
             }
-            var allNodes = this.getAllNodes();
             if (this._data.autoExpand) {
+                var allNodes = this._getAllNodes();
                 allNodes.forEach(function (node, index) {
-                    if (node.nodes.length) {
-                        _this._setNodeExpanded(node, true);
-                    }
+                    //if (node.nodes && node.nodes.length) {
+                    _this._setNodeExpanded(node, true);
+                    //}
                 });
             }
         };
@@ -168,7 +161,7 @@ var IIIFComponents;
                 branchNodesSelectable: true,
                 helper: null,
                 topRangeIndex: 0,
-                treeSortType: Manifold.TreeSortType.NONE
+                treeSortType: manifold.TreeSortType.NONE
             };
         };
         TreeComponent.prototype.allNodesSelected = function () {
@@ -182,43 +175,53 @@ var IIIFComponents;
             if (this._multiSelectableNodes) {
                 return this._multiSelectableNodes;
             }
-            return this._multiSelectableNodes = this.getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n); }).toArray();
+            var allNodes = this._getAllNodes();
+            if (allNodes) {
+                return this._multiSelectableNodes = allNodes.filter(function (n) { return _this._nodeIsMultiSelectable(n); });
+            }
+            return [];
         };
         TreeComponent.prototype._nodeIsMultiSelectable = function (node) {
-            return (node.isManifest() && node.nodes.length > 0 || node.isRange());
-        };
-        TreeComponent.prototype.getAllNodes = function () {
-            // if cached
-            if (this._allNodes) {
-                return this._allNodes;
+            if ((node.data.type === manifesto.TreeNodeType.MANIFEST && (node.nodes && node.nodes.length > 0)) || node.data.type === manifesto.TreeNodeType.RANGE) {
+                return true;
             }
-            return this._allNodes = this._rootNode.nodes.en().traverseUnique(function (node) { return node.nodes; }).toArray();
+            return false;
+        };
+        TreeComponent.prototype._getAllNodes = function () {
+            // if cached
+            if (this._flattenedTree) {
+                return this._flattenedTree;
+            }
+            if (this._data.helper) {
+                return this._flattenedTree = this._data.helper.getFlattenedTree(this._rootNode);
+            }
+            return [];
         };
         TreeComponent.prototype.getMultiSelectedNodes = function () {
             var _this = this;
-            return this.getAllNodes().en().where(function (n) { return _this._nodeIsMultiSelectable(n) && n.multiSelected; }).toArray();
+            return this._getAllNodes().filter(function (n) { return _this._nodeIsMultiSelectable(n) && n.multiSelected; });
         };
         TreeComponent.prototype.getNodeById = function (id) {
-            return this.getAllNodes().en().where(function (n) { return n.id === id; }).first();
+            return this._getAllNodes().filter(function (n) { return n.id === id; })[0];
         };
-        // private _multiSelectTreeNode(node: Manifold.ITreeNode, isSelected: boolean): void {
+        // private _multiSelectTreeNode(node: MultiSelectableTreeNode, isSelected: boolean): void {
         //     if (!this._nodeIsMultiSelectable(node)) return;
         //     this._setNodeMultiSelected(node, isSelected);
         //     // recursively select/deselect child nodes
         //     for (let i = 0; i < node.nodes.length; i++){
-        //         const n: Manifold.ITreeNode = <Manifold.ITreeNode>node.nodes[i];
+        //         const n: MultiSelectableTreeNode = <MultiSelectableTreeNode>node.nodes[i];
         //         this._multiSelectTreeNode(n, isSelected);
         //     }
         // }
-        // private _updateParentNodes(node: Manifold.ITreeNode): void {
-        //     const parentNode: Manifold.ITreeNode = <Manifold.ITreeNode>node.parentNode;
+        // private _updateParentNodes(node: MultiSelectableTreeNode): void {
+        //     const parentNode: MultiSelectableTreeNode = <MultiSelectableTreeNode>node.parentNode;
         //     if (!parentNode) return;
         //     // expand parents if selected
         //     if (node.selected) {
         //         this._expandParents(node);
         //     }
         //     // get the number of selected children.
-        //     const checkedCount: number = parentNode.nodes.en().where(n => (<Manifold.ITreeNode>n).multiSelected).count();
+        //     const checkedCount: number = parentNode.nodes.en().where(n => (<MultiSelectableTreeNode>n).multiSelected).count();
         //     // if any are checked, check the parent.
         //     this._setNodeMultiSelected(parentNode, checkedCount > 0);
         //     const indeterminate: boolean = checkedCount > 0 && checkedCount < parentNode.nodes.length;
@@ -226,12 +229,11 @@ var IIIFComponents;
         //     // cascade up tree
         //     this._updateParentNodes(parentNode);
         // }
-        TreeComponent.prototype.expandParents = function (node, expand) {
-            if (!node.parentNode)
-                return;
-            this._setNodeExpanded(node.parentNode, expand);
-            this.expandParents(node.parentNode, expand);
-        };
+        // private _expandParents(node: MultiSelectableTreeNode): void{
+        //     if (!node.parentNode) return;
+        //     this._setNodeExpanded(<MultiSelectableTreeNode>node.parentNode, true);
+        //     this._expandParents(<MultiSelectableTreeNode>node.parentNode);
+        // }
         TreeComponent.prototype._setNodeSelected = function (node, selected) {
             $.observable(node).setProperty("selected", selected);
         };
@@ -247,17 +249,17 @@ var IIIFComponents;
         TreeComponent.prototype._setNodeMultiSelectEnabled = function (node, enabled) {
             $.observable(node).setProperty("multiSelectEnabled", enabled);
         };
-        // private _setNodeIndeterminate(node: Manifold.ITreeNode, indeterminate: boolean): void {
+        // private _setNodeIndeterminate(node: MultiSelectableTreeNode, indeterminate: boolean): void {
         //     const $checkbox: JQuery = this._getNodeCheckbox(node);
         //     $checkbox.prop("indeterminate", indeterminate);
         // }
-        // private _getNodeCheckbox(node: Manifold.ITreeNode): JQuery {
+        // private _getNodeCheckbox(node: MultiSelectableTreeNode): JQuery {
         //     return $("#tree-checkbox-" + node.id);
         // }
-        // private _getNodeSiblings(node: Manifold.ITreeNode): Manifold.ITreeNode[] {
-        //     const siblings: Manifold.ITreeNode[] = [];
+        // private _getNodeSiblings(node: MultiSelectableTreeNode): MultiSelectableTreeNode[] {
+        //     const siblings: MultiSelectableTreeNode[] = [];
         //     if (node.parentNode){
-        //         siblings = <Manifold.ITreeNode[]>node.parentNode.nodes.en().where(n => n !== node).toArray();
+        //         siblings = <MultiSelectableTreeNode[]>node.parentNode.nodes.en().where(n => n !== node).toArray();
         //     }
         //     return siblings;
         // }
@@ -271,20 +273,15 @@ var IIIFComponents;
             this.selectNode(node);
         };
         TreeComponent.prototype.deselectCurrentNode = function () {
-            if (this.selectedNode)
-                this._setNodeSelected(this.selectedNode, false);
+            if (this._selectedNode)
+                this._setNodeSelected(this._selectedNode, false);
         };
         TreeComponent.prototype.selectNode = function (node) {
             if (!this._rootNode)
                 return;
             this.deselectCurrentNode();
-            this.selectedNode = node;
-            this._setNodeSelected(this.selectedNode, true);
-        };
-        TreeComponent.prototype.expandNode = function (node, expanded) {
-            if (!this._rootNode)
-                return;
-            this._setNodeExpanded(node, expanded);
+            this._selectedNode = node;
+            this._setNodeSelected(this._selectedNode, true);
         };
         // walks down the tree using the specified path e.g. [2,2,0]
         TreeComponent.prototype.getNodeByPath = function (parentNode, path) {

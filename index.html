@@ -6,7 +6,8 @@
     <link rel="icon" href="uv/favicon.ico">
     <link rel="stylesheet" type="text/css" href="uv/uv.css">
     <script type="text/javascript" src="https://unpkg.com/@edsilv/utils@0.2.6/dist/Utils.js"></script>
-    <script type="text/javascript" src="uv/lib/offline.js"></script>
+    <script type="text/javascript" src="../dist-umd/uv.js"></script>
+    <script type="text/javascript" src="uv/lib/bundle.js"></script>
     <script type="text/javascript" src="uv/helpers.js"></script>
     <style>
         body {
@@ -210,9 +211,6 @@
         // });
 
     </script>
-
-    <!-- Put at the bottom of the page to ensure that the uvLoaded event isn't fired before a listener is registered -->
-    <script type="text/javascript" src="uv/uv.js"></script>
 
 </body>
 </html>

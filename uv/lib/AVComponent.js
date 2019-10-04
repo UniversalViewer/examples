@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { Behavior } from "@iiif/vocabulary";
 var IIIFComponents;
 (function (IIIFComponents) {
     var AVVolumeControl = /** @class */ (function (_super) {
@@ -355,7 +356,7 @@ var IIIFComponents;
                     return;
                 }
                 var xywh = AVComponentUtils.getSpatialComponent(target);
-                var t = Manifesto.Utils.getTemporalComponent(target);
+                var t = manifesto.Utils.getTemporalComponent(target);
                 if (!xywh) {
                     xywh = [0, 0, this._canvasWidth, this._canvasHeight];
                 }
@@ -457,7 +458,7 @@ var IIIFComponents;
             if (this.isVirtual() && this._data.canvas && this._data.canvas.canvases) {
                 for (var i = 0; i < this._data.canvas.canvases.length; i++) {
                     var canvas = this._data.canvas.canvases[i];
-                    if (Manifesto.Utils.normaliseUrl(canvas.id) === canvasId) {
+                    if (manifesto.Utils.normaliseUrl(canvas.id) === canvasId) {
                         return true;
                     }
                 }
@@ -566,7 +567,7 @@ var IIIFComponents;
         };
         CanvasInstance.prototype._rangeNavigable = function (range) {
             var behavior = range.getBehavior();
-            if (behavior && behavior.toString() === manifesto.Behavior.nonav().toString()) {
+            if (behavior && behavior.toString() === Behavior.NO_NAV) {
                 return false;
             }
             return true;
@@ -1388,7 +1389,7 @@ var IIIFComponents;
                 }
             }
             if (canvasId !== undefined) {
-                return Manifesto.Utils.normaliseUrl(canvasId);
+                return manifesto.Utils.normaliseUrl(canvasId);
             }
             return undefined;
         };
@@ -1396,7 +1397,7 @@ var IIIFComponents;
             return String(new Date().valueOf());
         };
         AVComponentUtils.retargetTemporalComponent = function (canvases, target) {
-            var t = Manifesto.Utils.getTemporalComponent(target);
+            var t = manifesto.Utils.getTemporalComponent(target);
             if (t) {
                 var offset = 0;
                 var targetWithoutTemporal = target.substr(0, target.indexOf('#'));
@@ -1549,7 +1550,7 @@ var IIIFComponents;
                 items.forEach(function (item) {
                     var target = item.getTarget();
                     if (target) {
-                        var t = Manifesto.Utils.getTemporalComponent(target);
+                        var t = manifesto.Utils.getTemporalComponent(target);
                         if (!t) {
                             item.__jsonld.target += '#t=0,' + canvas.getDuration();
                         }
@@ -1746,7 +1747,7 @@ var IIIFComponents;
                             }
                             // if not using the correct canvasinstance, switch to it                    
                             if (this._data.canvasId &&
-                                ((this._data.canvasId.includes('://')) ? Manifesto.Utils.normaliseUrl(this._data.canvasId) : this._data.canvasId) !== canvasId) {
+                                ((this._data.canvasId.includes('://')) ? manifesto.Utils.normaliseUrl(this._data.canvasId) : this._data.canvasId) !== canvasId) {
                                 this.set({
                                     canvasId: canvasId,
                                     range: jQuery.extend(true, {}, range) // force diff
@@ -1786,7 +1787,7 @@ var IIIFComponents;
                 // if the manifest has an auto-advance behavior, join the canvases into a single "virtual" canvas
                 var behavior = this._data.helper.manifest.getBehavior();
                 var canvases = this._getCanvases();
-                if (behavior && behavior.toString() === manifesto.Behavior.autoadvance().toString()) {
+                if (behavior && behavior.toString() === Behavior.AUTO_ADVANCE) {
                     var virtualCanvas_1 = new VirtualCanvas();
                     canvases.forEach(function (canvas) {
                         virtualCanvas_1.addCanvas(canvas);
@@ -1937,7 +1938,7 @@ var IIIFComponents;
             });
         };
         AVComponent.prototype._getNormaliseCanvasId = function (canvasId) {
-            return (canvasId.includes('://')) ? Manifesto.Utils.normaliseUrl(canvasId) : canvasId;
+            return (canvasId.includes('://')) ? manifesto.Utils.normaliseUrl(canvasId) : canvasId;
         };
         AVComponent.prototype._getCanvasInstanceById = function (canvasId) {
             canvasId = this._getNormaliseCanvasId(canvasId);
@@ -1960,7 +1961,7 @@ var IIIFComponents;
                     var canvasInstance = this.canvasInstances[i];
                     var id = canvasInstance.getCanvasId();
                     if (id) {
-                        var canvasInstanceId = Manifesto.Utils.normaliseUrl(id);
+                        var canvasInstanceId = manifesto.Utils.normaliseUrl(id);
                         if (canvasInstanceId === canvasId) {
                             return canvasInstance;
                         }

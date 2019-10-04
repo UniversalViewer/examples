@@ -4,40 +4,20 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var MetadataGroup = Manifold.MetadataGroup;
 var IIIFComponents;
 (function (IIIFComponents) {
-    // todo: use string enums
-    var StringValue = /** @class */ (function () {
-        function StringValue(value) {
-            this.value = "";
-            if (value) {
-                this.value = value.toLowerCase();
-            }
-        }
-        StringValue.prototype.toString = function () {
-            return this.value;
-        };
-        return StringValue;
-    }());
-    IIIFComponents.StringValue = StringValue;
-    var LimitType = /** @class */ (function (_super) {
-        __extends(LimitType, _super);
-        function LimitType() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        LimitType.LINES = new LimitType("lines");
-        LimitType.CHARS = new LimitType("chars");
-        return LimitType;
-    }(StringValue));
-    IIIFComponents.LimitType = LimitType;
+    var LimitType;
+    (function (LimitType) {
+        LimitType["LINES"] = "lines";
+        LimitType["CHARS"] = "chars";
+    })(LimitType = IIIFComponents.LimitType || (IIIFComponents.LimitType = {}));
     var MetadataComponent = /** @class */ (function (_super) {
         __extends(MetadataComponent, _super);
         function MetadataComponent(options) {
@@ -112,10 +92,10 @@ var IIIFComponents;
             };
         };
         MetadataComponent.prototype._getManifestGroup = function () {
-            return this._metadataGroups.en().where(function (x) { return x.resource.isManifest(); }).first();
+            return this._metadataGroups.filter(function (x) { return x.resource.isManifest(); })[0];
         };
         MetadataComponent.prototype._getCanvasGroups = function () {
-            return this._metadataGroups.en().where(function (x) { return x.resource.isCanvas(); }).toArray();
+            return this._metadataGroups.filter(function (x) { return x.resource.isCanvas(); });
         };
         MetadataComponent.prototype.set = function (data) {
             var _this = this;
@@ -173,7 +153,7 @@ var IIIFComponents;
             var sorted = [];
             var unsorted = items.slice(0);
             displayOrder.forEach(function (item, index) {
-                var match = unsorted.en().where((function (x) { return _this._normalise(x.getLabel()) === item; })).first();
+                var match = unsorted.filter((function (x) { return _this._normalise(x.getLabel()) === item; }))[0];
                 if (match) {
                     sorted.push(match);
                     var index_1 = unsorted.indexOf(match);
@@ -192,7 +172,7 @@ var IIIFComponents;
             var sorted = [];
             var unsorted = groups.slice(0);
             metadataGroupOrder.forEach(function (group, index) {
-                var match = unsorted.en().where(function (x) { return x.resource.constructor.name.toLowerCase() == group; }).first();
+                var match = unsorted.filter(function (x) { return x.resource.getIIIFResourceType().toLowerCase() == group.toLowerCase(); })[0];
                 if (match) {
                     sorted.push(match);
                     var index_2 = unsorted.indexOf(match);
@@ -211,7 +191,7 @@ var IIIFComponents;
         MetadataComponent.prototype._exclude = function (items, excludeConfig) {
             var _this = this;
             excludeConfig.forEach(function (item, index) {
-                var match = items.en().where((function (x) { return _this._normalise(x.getLabel()) === item; })).first();
+                var match = items.filter((function (x) { return _this._normalise(x.getLabel()) === item; }))[0];
                 if (match) {
                     var index_3 = items.indexOf(match);
                     if (index_3 > -1) {
@@ -241,7 +221,7 @@ var IIIFComponents;
         //             this._aggregateValues.forEach((value: string, index: number) => {
         //                 value = this._normalise(value);
         //                 if (this._normalise(canvasItem.label) === value) {
-        //                     var manifestItem = manifestMetadata.en().where(x => this._normalise(x.label) === value).first();
+        //                     var manifestItem = manifestMetadata.filter(x => this._normalise(x.label) === value)[0];
         //                     if (manifestItem) {
         //                         canvasItem.value = manifestItem.value + canvasItem.value;
         //                         manifestMetadata.remove(manifestItem);
@@ -453,9 +433,9 @@ var IIIFComponents;
             return $value;
         };
         MetadataComponent.prototype._addReadingDirection = function ($elem, locale) {
-            locale = Manifesto.Utils.getInexactLocale(locale);
+            locale = manifesto.Utils.getInexactLocale(locale);
             var rtlLanguages = this._readCSV(this._data.rtlLanguageCodes);
-            var match = rtlLanguages.en().where(function (x) { return x === locale; }).toArray().length > 0;
+            var match = rtlLanguages.filter(function (x) { return x === locale; }).length > 0;
             if (match) {
                 $elem.prop('dir', 'rtl');
                 $elem.addClass('rtl');
