@@ -55,25 +55,21 @@
 
     <script type="text/javascript">
 
-        var uv, manifest, urlDataProvider;
+        var uv, manifest;
 
-        window.addEventListener('uvLoaded', function(e) { 
+        var urlDataProvider = new UV.URLDataProvider();
 
-            urlDataProvider = new UV.URLDataProvider();
-
-            loadManifests(function() {
-                setSelectedManifest();
-                setupUV();
-            });
-
-        }, false);
+        loadManifests(function() {
+            setSelectedManifest();
+            setupUV();
+        });
 
         function setupUV() {
 
             var collectionIndex = urlDataProvider.get('c');
 
             var data = {
-                iiifResourceUri: manifest,
+                manifestUri: manifest,
                 configUri: 'examples-config.json',
                 collectionIndex: (collectionIndex !== undefined) ? Number(collectionIndex) : undefined,
                 manifestIndex: Number(urlDataProvider.get('m', 0)),
