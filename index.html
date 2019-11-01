@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="uv/uv.css">
     <script type="text/javascript" src="https://unpkg.com/@edsilv/utils@0.2.6/dist/Utils.js"></script>
     <script type="text/javascript" src="uv/lib/bundle.js"></script>
-    <!-- <script type="text/javascript" src="https://unpkg.com/requirejs@2.2.0/require.js"></script> -->
     <script type="text/javascript" src="uv/helpers.js"></script>
     <script type="text/javascript" src="../dist-umd/uv.js"></script>
     <style>
@@ -148,7 +147,7 @@
             manifest = $('#manifest').val();
 
             uv.set({
-                iiifResourceUri: manifest,
+                manifestUri: manifest,
                 collectionIndex: undefined,
                 manifestIndex: 0,
                 sequenceIndex: 0,
