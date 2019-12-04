@@ -1,0 +1,1 @@
+import{p as e,b as d}from"./p-3c948b1f.js";e().then(e=>d([["p-nhrrx3t5",[[0,"uv-ebook-reader",{width:[1],height:[1],minSpreadWidth:[2,"min-spread-width"],_bookPath:[32],_bookReady:[32],_prevEnabled:[32],_nextEnabled:[32],_showDivider:[32],load:[64],resize:[64],display:[64]}],[0,"uv-ebook-toc",{toc:[16],selected:[1025],disabled:[4]}]]]],e));

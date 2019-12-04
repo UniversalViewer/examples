@@ -1052,6 +1052,33 @@
       "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
+      "label": "Ebooks",
+      "visible": true,
+      "manifests": [
+        {
+          "@id": "https://ebook-test-manifests.netlify.com/collection/alice-in-wonderland/index.json",
+          "@type": "sc:Manifest",
+          "label": "Alice in Wonderland (opf)",
+          "visible": true
+        },
+        {
+          "@id": "https://ebook-test-manifests.netlify.com/collection/cc-shared-culture/index.json",
+          "@type": "sc:Manifest",
+          "label": "CC Shared Culture (epub)",
+          "visible": true
+        },
+        {
+          "@id": "https://ebook-test-manifests.netlify.com/collection/moby-dick/index.json",
+          "@type": "sc:Manifest",
+          "label": "Moby Dick (epub)",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "http://universalviewer.io/manifests.json",
+      "@type": "sc:Collection",
       "label": "IPFS",
       "visible": true,
       "manifests": [
