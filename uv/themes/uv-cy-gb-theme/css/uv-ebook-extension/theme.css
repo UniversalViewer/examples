@@ -325,6 +325,9 @@
 .uv .mainPanel .leftPanel .main .container uv-ebook-toc {
   --toc-link-selected-color: #14a4c3;
   --toc-link-padding: 0.2rem;
+  --toc-margin: 0;
+  --toc-padding: 0;
+  --toc-list-style-type: none;
 }
 .uv .rightPanel .top .title {
   text-transform: uppercase;
@@ -2471,6 +2474,9 @@ input[type=range]:focus::-ms-fill-upper {
   .uv .mobileFooterPanel {
     display: none;
   }
+}
+.uv .mobileFooterPanel .options {
+  width: 138px;
 }
 .uv.cy-gb .headerPanel .options .centerOptions {
   width: 432px;

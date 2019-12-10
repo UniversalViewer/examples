@@ -3,12 +3,6 @@
 
 (function() {
     var t = document.createElement("script");
-    t.type = "module";
-    // if in an iframe (embedded) 
-    t.src = (window.self !== window.top)? "lib/uv-ebook-components.esm.js" : "uv/lib/uv-ebook-components.esm.js";
-    document.body.appendChild(t);
-
-    var t = document.createElement("script");
     // if in an iframe (embedded) 
     t.src = (window.self !== window.top)? "lib/uv-ebook-components.js" : "uv/lib/uv-ebook-components.js";
     document.body.appendChild(t);

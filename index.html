@@ -83,6 +83,12 @@
                 xywh: urlDataProvider.get('xywh', '')
             };
 
+            // ebooks
+            var cfi = urlDataProvider.get('cfi', '');
+            if (cfi) {
+                data.cfi = cfi;
+            }
+
             uv = createUV('#uv', data, urlDataProvider);
 
             uv.on('created', function() {
