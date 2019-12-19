@@ -1078,6 +1078,12 @@
           "@type": "sc:Manifest",
           "label": "Voyage of Life (epub)",
           "visible": true
+        },
+        {
+          "@id": "https://ebook-test-manifests.netlify.com/collection/mahabharata/index.json",
+          "@type": "sc:Manifest",
+          "label": "Mahabharata (epub)",
+          "visible": true
         }
       ]
     },
