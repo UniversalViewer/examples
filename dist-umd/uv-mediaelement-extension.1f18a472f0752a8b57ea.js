@@ -640,7 +640,7 @@ var MediaElementCenterPanel = /** @class */ (function (_super) {
                                 }
                             });
                         }
-                        this.resize();
+                        this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].EXTENSION_READY, this.extension);
                         return [2 /*return*/];
                 }
             });
@@ -900,4 +900,4 @@ var Bookmark = /** @class */ (function () {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-mediaelement-extension.8cfb6662d1f231fae443.js.map
+//# sourceMappingURL=uv-mediaelement-extension.1f18a472f0752a8b57ea.js.map

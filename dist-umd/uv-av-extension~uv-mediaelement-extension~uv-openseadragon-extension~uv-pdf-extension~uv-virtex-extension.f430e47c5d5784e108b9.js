@@ -2145,6 +2145,12 @@ var BaseExtension = /** @class */ (function () {
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTERNAL_LINK_CLICKED, function (url) {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTERNAL_LINK_CLICKED, url);
         });
+        this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTENSION_READY, function (extension) {
+            setTimeout(function () {
+                _this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].RESIZE);
+                _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTENSION_READY, extension);
+            }, 1);
+        });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].FEEDBACK, function () {
             _this.feedback();
         });
@@ -2220,19 +2226,25 @@ var BaseExtension = /** @class */ (function () {
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_LEFT_PANEL, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_LEFT_PANEL);
-            _this.resize();
+            // todo: use global state
+            if (!_this.$element.hasClass("loading")) {
+                _this.resize();
+            }
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_EXTERNAL_RESOURCE, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_EXTERNAL_RESOURCE);
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_EXTERNAL_RESOURCE, function () {
+            //console.log("opened external resource");
             _this.$element.removeClass("loading");
-            _this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].RESIZE);
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_EXTERNAL_RESOURCE);
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_RIGHT_PANEL, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_RIGHT_PANEL);
-            _this.resize();
+            // todo: use global state
+            if (!_this.$element.hasClass("loading")) {
+                _this.resize();
+            }
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].PAGE_DOWN, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].PAGE_DOWN);
@@ -2519,6 +2531,7 @@ var BaseExtension = /** @class */ (function () {
     };
     BaseExtension.prototype.resize = function () {
         this._updateMetric();
+        //console.log("resize");
         this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].RESIZE);
     };
     // re-bootstraps the application with new querystring params
@@ -4725,4 +4738,4 @@ var ThumbsView = /** @class */ (function (_super) {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension.0be01a3e30939502b10a.js.map
+//# sourceMappingURL=uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension.f430e47c5d5784e108b9.js.map

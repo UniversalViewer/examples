@@ -2154,6 +2154,42 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 
 
 
@@ -2188,11 +2224,20 @@ var OpenSeadragonCenterPanel = /** @class */ (function (_super) {
             _this.viewer.gestureSettingsMouse.clickToZoom = args.clickToZoomEnabled;
         });
         this.component.subscribe(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].OPEN_EXTERNAL_RESOURCE, function (resources) {
-            _this.whenResized(function () {
-                if (!_this.isCreated)
-                    _this.createUI();
-                _this.openMedia(resources);
-            });
+            _this.whenResized(function () { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.isCreated)
+                                this.createUI();
+                            return [4 /*yield*/, this.openMedia(resources)];
+                        case 1:
+                            _a.sent();
+                            this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].EXTENSION_READY, this.extension);
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
         });
         this.component.subscribe(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].CLEAR_ANNOTATIONS, function () {
             _this.whenCreated(function () {
@@ -2258,160 +2303,168 @@ var OpenSeadragonCenterPanel = /** @class */ (function (_super) {
         }
     };
     OpenSeadragonCenterPanel.prototype.createUI = function () {
-        var _this = this;
-        this.$spinner = $('<div class="spinner"></div>');
-        this.$content.append(this.$spinner);
-        Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(null, /*! openseadragon */ "./node_modules/openseadragon/build/openseadragon/openseadragon.js", 7)).then(function () {
-            _this.viewer = OpenSeadragon({
-                id: _this.viewerId,
-                ajaxWithCredentials: false,
-                showNavigationControl: true,
-                showNavigator: true,
-                showRotationControl: true,
-                showHomeControl: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(_this.config.options.showHomeControl, false),
-                showFullPageControl: false,
-                defaultZoomLevel: _this.config.options.defaultZoomLevel || 0,
-                maxZoomPixelRatio: _this.config.options.maxZoomPixelRatio || 2,
-                controlsFadeDelay: _this.config.options.controlsFadeDelay || 250,
-                controlsFadeLength: _this.config.options.controlsFadeLength || 250,
-                navigatorPosition: _this.config.options.navigatorPosition || "BOTTOM_RIGHT",
-                animationTime: _this.config.options.animationTime || 1.2,
-                visibilityRatio: _this.config.options.visibilityRatio || 0.5,
-                constrainDuringPan: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(_this.config.options.constrainDuringPan, false),
-                immediateRender: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(_this.config.options.immediateRender, false),
-                blendTime: _this.config.options.blendTime || 0,
-                autoHideControls: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(_this.config.options.autoHideControls, true),
-                prefixUrl: _this.extension.data.root + '/img/',
-                gestureSettingsMouse: {
-                    clickToZoom: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(_this.extension.data.config.options.clickToZoomEnabled, true)
-                },
-                navImages: {
-                    zoomIn: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    zoomOut: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    home: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    rotateright: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    rotateleft: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    next: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    },
-                    previous: {
-                        REST: 'pixel.gif',
-                        GROUP: 'pixel.gif',
-                        HOVER: 'pixel.gif',
-                        DOWN: 'pixel.gif'
-                    }
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.$spinner = $('<div class="spinner"></div>');
+                        this.$content.append(this.$spinner);
+                        return [4 /*yield*/, Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(null, /*! openseadragon */ "./node_modules/openseadragon/build/openseadragon/openseadragon.js", 7))];
+                    case 1:
+                        _a.sent();
+                        this.viewer = OpenSeadragon({
+                            id: this.viewerId,
+                            ajaxWithCredentials: false,
+                            showNavigationControl: true,
+                            showNavigator: true,
+                            showRotationControl: true,
+                            showHomeControl: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(this.config.options.showHomeControl, false),
+                            showFullPageControl: false,
+                            defaultZoomLevel: this.config.options.defaultZoomLevel || 0,
+                            maxZoomPixelRatio: this.config.options.maxZoomPixelRatio || 2,
+                            controlsFadeDelay: this.config.options.controlsFadeDelay || 250,
+                            controlsFadeLength: this.config.options.controlsFadeLength || 250,
+                            navigatorPosition: this.config.options.navigatorPosition || "BOTTOM_RIGHT",
+                            animationTime: this.config.options.animationTime || 1.2,
+                            visibilityRatio: this.config.options.visibilityRatio || 0.5,
+                            constrainDuringPan: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(this.config.options.constrainDuringPan, false),
+                            immediateRender: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(this.config.options.immediateRender, false),
+                            blendTime: this.config.options.blendTime || 0,
+                            autoHideControls: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(this.config.options.autoHideControls, true),
+                            prefixUrl: this.extension.data.root + '/img/',
+                            gestureSettingsMouse: {
+                                clickToZoom: _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(this.extension.data.config.options.clickToZoomEnabled, true)
+                            },
+                            navImages: {
+                                zoomIn: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                },
+                                zoomOut: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                },
+                                home: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                },
+                                rotateright: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                },
+                                rotateleft: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                },
+                                next: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                },
+                                previous: {
+                                    REST: 'pixel.gif',
+                                    GROUP: 'pixel.gif',
+                                    HOVER: 'pixel.gif',
+                                    DOWN: 'pixel.gif'
+                                }
+                            }
+                        });
+                        this.$zoomInButton = this.$viewer.find('div[title="Zoom in"]');
+                        this.$zoomInButton.attr('tabindex', 0);
+                        this.$zoomInButton.prop('title', this.content.zoomIn);
+                        this.$zoomInButton.addClass('zoomIn viewportNavButton');
+                        this.$zoomOutButton = this.$viewer.find('div[title="Zoom out"]');
+                        this.$zoomOutButton.attr('tabindex', 0);
+                        this.$zoomOutButton.prop('title', this.content.zoomOut);
+                        this.$zoomOutButton.addClass('zoomOut viewportNavButton');
+                        this.$goHomeButton = this.$viewer.find('div[title="Go home"]');
+                        this.$goHomeButton.attr('tabindex', 0);
+                        this.$goHomeButton.prop('title', this.content.goHome);
+                        this.$goHomeButton.addClass('goHome viewportNavButton');
+                        this.$rotateButton = this.$viewer.find('div[title="Rotate right"]');
+                        this.$rotateButton.attr('tabindex', 0);
+                        this.$rotateButton.prop('title', this.content.rotateRight);
+                        this.$rotateButton.addClass('rotate viewportNavButton');
+                        this.$viewportNavButtonsContainer = this.$viewer.find('.openseadragon-container > div:not(.openseadragon-canvas):first');
+                        this.$viewportNavButtons = this.$viewportNavButtonsContainer.find('.viewportNavButton');
+                        this.$canvas = $(this.viewer.canvas);
+                        // disable right click on canvas
+                        this.$canvas.on('contextmenu', function () { return false; });
+                        this.$navigator = this.$viewer.find(".navigator");
+                        this.setNavigatorVisible();
+                        // events
+                        this.$element.on('mousemove', function () {
+                            if (_this.controlsVisible)
+                                return;
+                            _this.controlsVisible = true;
+                            _this.viewer.setControlsEnabled(true);
+                        });
+                        this.$element.on('mouseleave', function () {
+                            if (!_this.controlsVisible)
+                                return;
+                            _this.controlsVisible = false;
+                            _this.viewer.setControlsEnabled(false);
+                        });
+                        // when mouse move stopped
+                        this.$element.on('mousemove', function () {
+                            // if over element, hide controls.
+                            // When over prev/next buttons keep controls enabled
+                            if (_this.$prevButton.ismouseover()) {
+                                return;
+                            }
+                            if (_this.$nextButton.ismouseover()) {
+                                return;
+                            }
+                            if (!_this.$viewer.find('.navigator').ismouseover()) {
+                                if (!_this.controlsVisible)
+                                    return;
+                                _this.controlsVisible = false;
+                                _this.viewer.setControlsEnabled(false);
+                            }
+                        }, this.config.options.controlsFadeAfterInactive);
+                        this.viewer.addHandler('tile-drawn', function () {
+                            _this.$spinner.hide();
+                        });
+                        //this.viewer.addHandler("open-failed", () => {
+                        //});
+                        this.viewer.addHandler('resize', function (viewer) {
+                            _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_RESIZE, viewer);
+                            _this.viewerResize(viewer);
+                        });
+                        this.viewer.addHandler('animation-start', function (viewer) {
+                            _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ANIMATION_START, viewer);
+                        });
+                        this.viewer.addHandler('animation', function (viewer) {
+                            _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ANIMATION, viewer);
+                        });
+                        this.viewer.addHandler('animation-finish', function (viewer) {
+                            _this.currentBounds = _this.getViewportBounds();
+                            _this.updateVisibleAnnotationRects();
+                            _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ANIMATION_FINISH, viewer);
+                        });
+                        this.viewer.addHandler('rotate', function (args) {
+                            _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ROTATION, args.degrees);
+                        });
+                        this.title = this.extension.helper.getLabel();
+                        this.createNavigationButtons();
+                        this.hidePrevButton();
+                        this.hideNextButton();
+                        this.isCreated = true;
+                        return [2 /*return*/];
                 }
             });
-            _this.$zoomInButton = _this.$viewer.find('div[title="Zoom in"]');
-            _this.$zoomInButton.attr('tabindex', 0);
-            _this.$zoomInButton.prop('title', _this.content.zoomIn);
-            _this.$zoomInButton.addClass('zoomIn viewportNavButton');
-            _this.$zoomOutButton = _this.$viewer.find('div[title="Zoom out"]');
-            _this.$zoomOutButton.attr('tabindex', 0);
-            _this.$zoomOutButton.prop('title', _this.content.zoomOut);
-            _this.$zoomOutButton.addClass('zoomOut viewportNavButton');
-            _this.$goHomeButton = _this.$viewer.find('div[title="Go home"]');
-            _this.$goHomeButton.attr('tabindex', 0);
-            _this.$goHomeButton.prop('title', _this.content.goHome);
-            _this.$goHomeButton.addClass('goHome viewportNavButton');
-            _this.$rotateButton = _this.$viewer.find('div[title="Rotate right"]');
-            _this.$rotateButton.attr('tabindex', 0);
-            _this.$rotateButton.prop('title', _this.content.rotateRight);
-            _this.$rotateButton.addClass('rotate viewportNavButton');
-            _this.$viewportNavButtonsContainer = _this.$viewer.find('.openseadragon-container > div:not(.openseadragon-canvas):first');
-            _this.$viewportNavButtons = _this.$viewportNavButtonsContainer.find('.viewportNavButton');
-            _this.$canvas = $(_this.viewer.canvas);
-            // disable right click on canvas
-            _this.$canvas.on('contextmenu', function () { return false; });
-            _this.$navigator = _this.$viewer.find(".navigator");
-            _this.setNavigatorVisible();
-            // events
-            _this.$element.on('mousemove', function () {
-                if (_this.controlsVisible)
-                    return;
-                _this.controlsVisible = true;
-                _this.viewer.setControlsEnabled(true);
-            });
-            _this.$element.on('mouseleave', function () {
-                if (!_this.controlsVisible)
-                    return;
-                _this.controlsVisible = false;
-                _this.viewer.setControlsEnabled(false);
-            });
-            // when mouse move stopped
-            _this.$element.on('mousemove', function () {
-                // if over element, hide controls.
-                // When over prev/next buttons keep controls enabled
-                if (_this.$prevButton.ismouseover()) {
-                    return;
-                }
-                if (_this.$nextButton.ismouseover()) {
-                    return;
-                }
-                if (!_this.$viewer.find('.navigator').ismouseover()) {
-                    if (!_this.controlsVisible)
-                        return;
-                    _this.controlsVisible = false;
-                    _this.viewer.setControlsEnabled(false);
-                }
-            }, _this.config.options.controlsFadeAfterInactive);
-            _this.viewer.addHandler('tile-drawn', function () {
-                _this.$spinner.hide();
-            });
-            //this.viewer.addHandler("open-failed", () => {
-            //});
-            _this.viewer.addHandler('resize', function (viewer) {
-                _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_RESIZE, viewer);
-                _this.viewerResize(viewer);
-            });
-            _this.viewer.addHandler('animation-start', function (viewer) {
-                _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ANIMATION_START, viewer);
-            });
-            _this.viewer.addHandler('animation', function (viewer) {
-                _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ANIMATION, viewer);
-            });
-            _this.viewer.addHandler('animation-finish', function (viewer) {
-                _this.currentBounds = _this.getViewportBounds();
-                _this.updateVisibleAnnotationRects();
-                _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ANIMATION_FINISH, viewer);
-            });
-            _this.viewer.addHandler('rotate', function (args) {
-                _this.component.publish(_extensions_uv_openseadragon_extension_Events__WEBPACK_IMPORTED_MODULE_3__["Events"].OPENSEADRAGON_ROTATION, args.degrees);
-            });
-            _this.title = _this.extension.helper.getLabel();
-            _this.createNavigationButtons();
-            _this.hidePrevButton();
-            _this.hideNextButton();
-            _this.isCreated = true;
-            _this.resize();
         });
     };
     OpenSeadragonCenterPanel.prototype.createNavigationButtons = function () {
@@ -2489,39 +2542,49 @@ var OpenSeadragonCenterPanel = /** @class */ (function (_super) {
         });
     };
     OpenSeadragonCenterPanel.prototype.openMedia = function (resources) {
-        var _this = this;
-        this.$spinner.show();
-        this.items = [];
-        this.extension.getExternalResources(resources).then(function (resources) {
-            _this.viewer.close();
-            resources = _this.getPagePositions(resources);
-            for (var i = 0; i < resources.length; i++) {
-                var data = resources[i];
-                var tileSource = void 0;
-                if (data.hasServiceDescriptor) {
-                    tileSource = data;
-                }
-                else {
-                    tileSource = {
-                        type: 'image',
-                        url: data.id,
-                        buildPyramid: false
-                    };
-                }
-                _this.viewer.addTiledImage({
-                    tileSource: tileSource,
-                    x: data.x,
-                    y: data.y,
-                    width: data.width,
-                    success: function (item) {
-                        _this.items.push(item);
-                        if (_this.items.length === resources.length) {
-                            _this.openPagesHandler();
+        return __awaiter(this, void 0, void 0, function () {
+            var images, i, data, tileSource;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.$spinner.show();
+                        this.items = [];
+                        return [4 /*yield*/, this.extension.getExternalResources(resources)];
+                    case 1:
+                        images = _a.sent();
+                        this.viewer.close();
+                        images = this.getPagePositions(images);
+                        for (i = 0; i < images.length; i++) {
+                            data = images[i];
+                            tileSource = void 0;
+                            if (data.hasServiceDescriptor) {
+                                tileSource = data;
+                            }
+                            else {
+                                tileSource = {
+                                    type: 'image',
+                                    url: data.id,
+                                    buildPyramid: false
+                                };
+                            }
+                            this.viewer.addTiledImage({
+                                tileSource: tileSource,
+                                x: data.x,
+                                y: data.y,
+                                width: data.width,
+                                success: function (item) {
+                                    _this.items.push(item);
+                                    if (_this.items.length === images.length) {
+                                        _this.openPagesHandler();
+                                    }
+                                    _this.resize();
+                                }
+                            });
                         }
-                        _this.resize();
-                    }
-                });
-            }
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     OpenSeadragonCenterPanel.prototype.getPagePositions = function (resources) {
@@ -4518,4 +4581,4 @@ var Point = /** @class */ (function () {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-openseadragon-extension.d770c40fc94c073107d6.js.map
+//# sourceMappingURL=uv-openseadragon-extension.813410537ed8a8153a6b.js.map
