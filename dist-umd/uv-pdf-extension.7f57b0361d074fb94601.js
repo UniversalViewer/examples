@@ -617,7 +617,7 @@ var PDFCenterPanel = /** @class */ (function (_super) {
                         this._$spinner.hide();
                         _b.label = 6;
                     case 6:
-                        this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].EXTENSION_READY, this.extension);
+                        this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].OPENED_MEDIA);
                         return [2 /*return*/];
                 }
             });
@@ -1085,4 +1085,4 @@ var Bookmark = /** @class */ (function () {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-pdf-extension.b9ebbcb228e1ca1476e1.js.map
+//# sourceMappingURL=uv-pdf-extension.7f57b0361d074fb94601.js.map

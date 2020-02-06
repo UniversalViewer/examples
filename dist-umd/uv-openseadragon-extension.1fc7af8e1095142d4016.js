@@ -2233,7 +2233,7 @@ var OpenSeadragonCenterPanel = /** @class */ (function (_super) {
                             return [4 /*yield*/, this.openMedia(resources)];
                         case 1:
                             _a.sent();
-                            this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].EXTENSION_READY, this.extension);
+                            this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].OPENED_MEDIA);
                             return [2 /*return*/];
                     }
                 });
@@ -4581,4 +4581,4 @@ var Point = /** @class */ (function () {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-openseadragon-extension.813410537ed8a8153a6b.js.map
+//# sourceMappingURL=uv-openseadragon-extension.1fc7af8e1095142d4016.js.map

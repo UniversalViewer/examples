@@ -2145,10 +2145,10 @@ var BaseExtension = /** @class */ (function () {
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTERNAL_LINK_CLICKED, function (url) {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTERNAL_LINK_CLICKED, url);
         });
-        this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTENSION_READY, function (extension) {
+        this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA, function () {
             setTimeout(function () {
                 _this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].RESIZE);
-                _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].EXTENSION_READY, extension);
+                _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA);
             }, 1);
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].FEEDBACK, function () {
@@ -2234,10 +2234,10 @@ var BaseExtension = /** @class */ (function () {
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_EXTERNAL_RESOURCE, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_EXTERNAL_RESOURCE);
         });
-        this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_EXTERNAL_RESOURCE, function () {
+        this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA, function () {
             //console.log("opened external resource");
             _this.$element.removeClass("loading");
-            _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_EXTERNAL_RESOURCE);
+            _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA);
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_RIGHT_PANEL, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_RIGHT_PANEL);
@@ -2725,7 +2725,6 @@ var BaseExtension = /** @class */ (function () {
                     _this.resources = r.map(function (resource) {
                         return _this._prepareResourceData(resource);
                     });
-                    _this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_EXTERNAL_RESOURCE);
                     resolve(_this.resources);
                 });
             });
@@ -2736,7 +2735,6 @@ var BaseExtension = /** @class */ (function () {
                     _this.resources = r.map(function (resource) {
                         return _this._prepareResourceData(resource);
                     });
-                    _this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_EXTERNAL_RESOURCE);
                     resolve(_this.resources);
                 });
             });
@@ -4738,4 +4736,4 @@ var ThumbsView = /** @class */ (function (_super) {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension.f430e47c5d5784e108b9.js.map
+//# sourceMappingURL=uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension.f05d37c72769147255ce.js.map

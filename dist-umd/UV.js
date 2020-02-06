@@ -53,7 +53,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc":"vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc","uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension":"uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension","uv-mediaelement-extension":"uv-mediaelement-extension","uv-pdf-extension":"uv-pdf-extension","vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension","vendors~uv-av-extension":"vendors~uv-av-extension","uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"uv-av-extension~uv-openseadragon-extension~uv-virtex-extension","uv-av-extension":"uv-av-extension","vendors~uv-openseadragon-extension":"vendors~uv-openseadragon-extension","uv-openseadragon-extension":"uv-openseadragon-extension","vendors~uv-virtex-extension":"vendors~uv-virtex-extension","uv-virtex-extension":"uv-virtex-extension","vendors~mediaelement":"vendors~mediaelement","vendors~pdfjs":"vendors~pdfjs","pdfjs":"pdfjs","vendors~pdfobject":"vendors~pdfobject"}[chunkId]||chunkId) + "." + {"0":"d16a514f430ee6013732","vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc":"e86950ad3360bd079549","uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension":"f430e47c5d5784e108b9","uv-mediaelement-extension":"1f18a472f0752a8b57ea","uv-pdf-extension":"b9ebbcb228e1ca1476e1","vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"0fc98d573c4a4d48f93c","vendors~uv-av-extension":"bce89437eafa4bb79ad9","uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"89b4823ba8718fb4d748","uv-av-extension":"546f779c3ed7a715a938","vendors~uv-openseadragon-extension":"ff656a21eca157e9a7aa","uv-openseadragon-extension":"813410537ed8a8153a6b","vendors~uv-virtex-extension":"8b11bc3bad1d7530723c","uv-virtex-extension":"a2951c689d9d35d17d5c","vendors~mediaelement":"dd2b8311f62ef1736bc7","vendors~pdfjs":"b31288d6e4030fd4e889","pdfjs":"e469a7826caf75c9c3f0","vendors~pdfobject":"c3e3ff0404e5e581ad63"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc":"vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc","uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension":"uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension","uv-mediaelement-extension":"uv-mediaelement-extension","uv-pdf-extension":"uv-pdf-extension","vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension","vendors~uv-av-extension":"vendors~uv-av-extension","uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"uv-av-extension~uv-openseadragon-extension~uv-virtex-extension","uv-av-extension":"uv-av-extension","vendors~uv-openseadragon-extension":"vendors~uv-openseadragon-extension","uv-openseadragon-extension":"uv-openseadragon-extension","vendors~uv-virtex-extension":"vendors~uv-virtex-extension","uv-virtex-extension":"uv-virtex-extension","vendors~mediaelement":"vendors~mediaelement","vendors~pdfjs":"vendors~pdfjs","pdfjs":"pdfjs","vendors~pdfobject":"vendors~pdfobject"}[chunkId]||chunkId) + "." + {"0":"d16a514f430ee6013732","vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc":"e86950ad3360bd079549","uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-virtex-extension":"f05d37c72769147255ce","uv-mediaelement-extension":"666f29de2f188b334575","uv-pdf-extension":"7f57b0361d074fb94601","vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"0fc98d573c4a4d48f93c","vendors~uv-av-extension":"bce89437eafa4bb79ad9","uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"2ce705d9872f48edae9f","uv-av-extension":"af5aaa95be4152f3fa93","vendors~uv-openseadragon-extension":"ff656a21eca157e9a7aa","uv-openseadragon-extension":"1fc7af8e1095142d4016","vendors~uv-virtex-extension":"7054d37059ede179e7e2","uv-virtex-extension":"5653df1e509298406fbe","vendors~mediaelement":"dd2b8311f62ef1736bc7","vendors~pdfjs":"b31288d6e4030fd4e889","pdfjs":"e469a7826caf75c9c3f0","vendors~pdfobject":"c3e3ff0404e5e581ad63"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -7075,38 +7075,50 @@ var Viewer = /** @class */ (function (_super) {
             load: this._extensions[Extension.PDF]
         };
         // presentation 3
+        this._extensionRegistry["av"] = {
+            load: this._extensions[Extension.AV]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].AUDIO_MP4] = {
+            load: this._extensions[Extension.AV]
+        };
+        this._extensionRegistry["default"] = {
+            load: this._extensions[Extension.DEFAULT]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].DRACO] = {
+            load: this._extensions[Extension.VIRTEX]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].GLTF] = {
+            load: this._extensions[Extension.VIRTEX]
+        };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].JPG] = {
             load: this._extensions[Extension.OSD]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].M3U8] = {
+            load: this._extensions[Extension.AV]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].MP3] = {
+            load: this._extensions[Extension.AV]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].MPEG_DASH] = {
+            load: this._extensions[Extension.AV]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].OBJ] = {
+            load: this._extensions[Extension.VIRTEX]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].PDF] = {
             load: this._extensions[Extension.PDF]
         };
-        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].AUDIO_MP4] = {
-            load: this._extensions[Extension.AV]
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].PLY] = {
+            load: this._extensions[Extension.VIRTEX]
+        };
+        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].THREEJS] = {
+            load: this._extensions[Extension.VIRTEX]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].VIDEO_MP4] = {
             load: this._extensions[Extension.AV]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].WEBM] = {
             load: this._extensions[Extension.AV]
-        };
-        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].THREEJS] = {
-            load: this._extensions[Extension.VIRTEX]
-        };
-        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].MP3] = {
-            load: this._extensions[Extension.AV]
-        };
-        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].M3U8] = {
-            load: this._extensions[Extension.AV]
-        };
-        this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].MPEG_DASH] = {
-            load: this._extensions[Extension.AV]
-        };
-        this._extensionRegistry["av"] = {
-            load: this._extensions[Extension.AV]
-        };
-        this._extensionRegistry["default"] = {
-            load: this._extensions[Extension.DEFAULT]
         };
         this.set(this.options.data);
         return true;
@@ -7583,7 +7595,6 @@ var BaseEvents = /** @class */ (function () {
     BaseEvents.ESCAPE = 'escape';
     BaseEvents.EXIT_FULLSCREEN = 'exitFullScreen';
     BaseEvents.EXTERNAL_LINK_CLICKED = 'externalLinkClicked';
-    BaseEvents.EXTENSION_READY = 'extensionReady';
     BaseEvents.FEEDBACK = 'feedback';
     BaseEvents.FIRST = 'first';
     BaseEvents.FORBIDDEN = 'forbidden';
@@ -7629,7 +7640,7 @@ var BaseEvents = /** @class */ (function () {
     BaseEvents.OPEN_THUMBS_VIEW = 'openThumbsView';
     BaseEvents.OPEN_TREE_VIEW = 'openTreeView';
     BaseEvents.OPEN = 'open';
-    BaseEvents.OPENED_EXTERNAL_RESOURCE = 'openedExternalResource';
+    BaseEvents.OPENED_MEDIA = 'openedMedia';
     BaseEvents.PAGE_DOWN = 'pageDown';
     BaseEvents.PAGE_UP = 'pageUp';
     BaseEvents.PLUS = 'plus';

@@ -993,4 +993,4 @@ var TreeView = /** @class */ (function (_super) {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-av-extension~uv-openseadragon-extension~uv-virtex-extension.89b4823ba8718fb4d748.js.map
+//# sourceMappingURL=uv-av-extension~uv-openseadragon-extension~uv-virtex-extension.2ce705d9872f48edae9f.js.map

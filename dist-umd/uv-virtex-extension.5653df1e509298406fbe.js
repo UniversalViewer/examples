@@ -162,11 +162,11 @@ var Extension = /** @class */ (function (_super) {
     Extension.prototype.render = function () {
         _super.prototype.render.call(this);
     };
-    Extension.prototype.dependencyLoaded = function (index, dep) {
-        if (index === 0) {
-            window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
-        }
-    };
+    // dependencyLoaded(index: number, dep: any): void {
+    //     if (index === 0) {
+    //         window.THREE = dep; //https://github.com/mrdoob/three.js/issues/9602
+    //     }
+    // }
     Extension.prototype.isLeftPanelEnabled = function () {
         return _edsilv_utils__WEBPACK_IMPORTED_MODULE_12__["Bools"].getBool(this.data.config.options.leftPanelEnabled, true)
             && (this.helper.isMultiCanvas() || this.helper.isMultiSequence());
@@ -318,12 +318,31 @@ var Bookmark = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VirtexCenterPanel", function() { return VirtexCenterPanel; });
-/* harmony import */ var _uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../uv-shared-module/BaseEvents */ "./src/modules/uv-shared-module/BaseEvents.ts");
-/* harmony import */ var _uv_shared_module_CenterPanel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../uv-shared-module/CenterPanel */ "./src/modules/uv-shared-module/CenterPanel.ts");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Utils */ "./src/Utils.ts");
-/* harmony import */ var _iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @iiif/vocabulary */ "./node_modules/@iiif/vocabulary/dist-esmodule/index.js");
-/* harmony import */ var virtex3d__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! virtex3d */ "./node_modules/virtex3d/dist-esmodule/index.js");
-/* harmony import */ var _edsilv_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @edsilv/utils */ "./node_modules/@edsilv/utils/dist-esmodule/index.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_js_controls_VRControls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/js/controls/VRControls */ "./node_modules/three/examples/js/controls/VRControls.js");
+/* harmony import */ var three_examples_js_controls_VRControls__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_controls_VRControls__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var three_examples_js_Detector__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/js/Detector */ "./node_modules/three/examples/js/Detector.js");
+/* harmony import */ var three_examples_js_Detector__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_Detector__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var three_examples_js_effects_VREffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/js/effects/VREffect */ "./node_modules/three/examples/js/effects/VREffect.js");
+/* harmony import */ var three_examples_js_effects_VREffect__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_effects_VREffect__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var three_examples_js_libs_stats_min__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/js/libs/stats.min */ "./node_modules/three/examples/js/libs/stats.min.js");
+/* harmony import */ var three_examples_js_libs_stats_min__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_libs_stats_min__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var three_examples_js_loaders_GLTFLoader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/examples/js/loaders/GLTFLoader */ "./node_modules/three/examples/js/loaders/GLTFLoader.js");
+/* harmony import */ var three_examples_js_loaders_GLTFLoader__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_loaders_GLTFLoader__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var three_examples_js_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three/examples/js/loaders/MTLLoader */ "./node_modules/three/examples/js/loaders/MTLLoader.js");
+/* harmony import */ var three_examples_js_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var three_examples_js_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three/examples/js/loaders/OBJLoader */ "./node_modules/three/examples/js/loaders/OBJLoader.js");
+/* harmony import */ var three_examples_js_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var three_examples_js_loaders_PLYLoader__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three/examples/js/loaders/PLYLoader */ "./node_modules/three/examples/js/loaders/PLYLoader.js");
+/* harmony import */ var three_examples_js_loaders_PLYLoader__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_loaders_PLYLoader__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var three_examples_js_vr_WebVR__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! three/examples/js/vr/WebVR */ "./node_modules/three/examples/js/vr/WebVR.js");
+/* harmony import */ var three_examples_js_vr_WebVR__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(three_examples_js_vr_WebVR__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _edsilv_utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @edsilv/utils */ "./node_modules/@edsilv/utils/dist-esmodule/index.js");
+/* harmony import */ var _iiif_vocabulary__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @iiif/vocabulary */ "./node_modules/@iiif/vocabulary/dist-esmodule/index.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Utils */ "./src/Utils.ts");
+/* harmony import */ var virtex3d__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! virtex3d */ "./node_modules/virtex3d/dist-esmodule/index.js");
+/* harmony import */ var _uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../uv-shared-module/BaseEvents */ "./src/modules/uv-shared-module/BaseEvents.ts");
+/* harmony import */ var _uv_shared_module_CenterPanel__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../uv-shared-module/CenterPanel */ "./src/modules/uv-shared-module/CenterPanel.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -337,6 +356,52 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -353,7 +418,7 @@ var VirtexCenterPanel = /** @class */ (function (_super) {
         this.setConfig('virtexCenterPanel');
         _super.prototype.create.call(this);
         var that = this;
-        this.component.subscribe(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].OPEN_EXTERNAL_RESOURCE, function (resources) {
+        this.component.subscribe(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_14__["BaseEvents"].OPEN_EXTERNAL_RESOURCE, function (resources) {
             that.openMedia(resources);
         });
         this.$navigation = $('<div class="navigation"></div>');
@@ -388,56 +453,65 @@ var VirtexCenterPanel = /** @class */ (function (_super) {
         if (!this._isVREnabled()) {
             this.$vrButton.hide();
         }
+        this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_14__["BaseEvents"].OPENED_MEDIA);
     };
     VirtexCenterPanel.prototype.openMedia = function (resources) {
-        var _this = this;
-        this.extension.getExternalResources(resources).then(function () {
-            _this.$viewport.empty();
-            var mediaUri = null;
-            var canvas = _this.extension.helper.getCurrentCanvas();
-            var formats = _this.extension.getMediaFormats(canvas);
-            var resourceType = null;
-            // default to threejs format.
-            var fileType = _iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].THREEJS;
-            if (formats && formats.length) {
-                mediaUri = formats[0].id;
-                resourceType = formats[0].getFormat();
-            }
-            else {
-                mediaUri = canvas.id;
-            }
-            if (resourceType) {
-                fileType = resourceType;
-            }
-            var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
-            _this.viewport = new virtex3d__WEBPACK_IMPORTED_MODULE_4__["Viewport"]({
-                target: _this.$viewport[0],
-                data: {
-                    antialias: !isAndroid,
-                    file: mediaUri,
-                    fullscreenEnabled: false,
-                    type: fileType,
-                    showStats: _this.options.showStats
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaUri, canvas, formats, resourceType, fileType, isAndroid;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.extension.getExternalResources(resources)];
+                    case 1:
+                        _a.sent();
+                        this.$viewport.empty();
+                        mediaUri = null;
+                        canvas = this.extension.helper.getCurrentCanvas();
+                        formats = this.extension.getMediaFormats(canvas);
+                        resourceType = null;
+                        fileType = _iiif_vocabulary__WEBPACK_IMPORTED_MODULE_11__["MediaType"].THREEJS;
+                        if (formats && formats.length) {
+                            mediaUri = formats[0].id;
+                            resourceType = formats[0].getFormat();
+                        }
+                        else {
+                            mediaUri = canvas.id;
+                        }
+                        if (resourceType) {
+                            fileType = resourceType;
+                        }
+                        isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+                        this.viewport = new virtex3d__WEBPACK_IMPORTED_MODULE_13__["Viewport"]({
+                            target: this.$viewport[0],
+                            data: {
+                                antialias: !isAndroid,
+                                file: mediaUri,
+                                fullscreenEnabled: false,
+                                type: fileType,
+                                showStats: this.options.showStats
+                            }
+                        });
+                        if (this.viewport) {
+                            this.viewport.on('vravailable', function () {
+                                _this.$vrButton.show();
+                            }, false);
+                            this.viewport.on('vrunavailable', function () {
+                                _this.$vrButton.hide();
+                            }, false);
+                        }
+                        this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_14__["BaseEvents"].OPENED_MEDIA);
+                        return [2 /*return*/];
                 }
             });
-            if (_this.viewport) {
-                _this.viewport.on('vravailable', function () {
-                    _this.$vrButton.show();
-                }, false);
-                _this.viewport.on('vrunavailable', function () {
-                    _this.$vrButton.hide();
-                }, false);
-            }
-            _this.resize();
         });
     };
     VirtexCenterPanel.prototype._isVREnabled = function () {
-        return (_edsilv_utils__WEBPACK_IMPORTED_MODULE_5__["Bools"].getBool(this.config.options.vrEnabled, false) && WEBVR.isAvailable());
+        return (_edsilv_utils__WEBPACK_IMPORTED_MODULE_10__["Bools"].getBool(this.config.options.vrEnabled, false) && WEBVR.isAvailable());
     };
     VirtexCenterPanel.prototype.resize = function () {
         _super.prototype.resize.call(this);
         if (this.title) {
-            this.$title.text(Object(_Utils__WEBPACK_IMPORTED_MODULE_2__["sanitize"])(this.title));
+            this.$title.text(Object(_Utils__WEBPACK_IMPORTED_MODULE_12__["sanitize"])(this.title));
         }
         this.$viewport.width(this.$content.width());
         this.$viewport.height(this.$content.height());
@@ -446,11 +520,11 @@ var VirtexCenterPanel = /** @class */ (function (_super) {
         }
     };
     return VirtexCenterPanel;
-}(_uv_shared_module_CenterPanel__WEBPACK_IMPORTED_MODULE_1__["CenterPanel"]));
+}(_uv_shared_module_CenterPanel__WEBPACK_IMPORTED_MODULE_15__["CenterPanel"]));
 
 
 
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-virtex-extension.a2951c689d9d35d17d5c.js.map
+//# sourceMappingURL=uv-virtex-extension.5653df1e509298406fbe.js.map
