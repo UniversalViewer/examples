@@ -1,4 +1,4 @@
-(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc"],{
+(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"],{
 
 /***/ "./node_modules/@edsilv/key-codes/dist-esmodule/index.js":
 /*!***************************************************************!*\
@@ -203,4 +203,4 @@ var KeyPress;
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors~uv-av-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-extension~uv-vir~dcd3a7fc.e86950ad3360bd079549.js.map
+//# sourceMappingURL=vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203.0abf71f7c212aec5c0da.js.map
