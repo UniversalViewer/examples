@@ -368,6 +368,7 @@ var ModelViewerCenterPanel = /** @class */ (function (_super) {
             that.openMedia(resources);
         });
         this.title = this.extension.helper.getLabel();
+        this.$modelViewer = $('<model-viewer auto-rotate camera-controls></model-viewer>');
         this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_2__["BaseEvents"].OPENED_MEDIA);
     };
     ModelViewerCenterPanel.prototype.openMedia = function (resources) {
@@ -388,7 +389,7 @@ var ModelViewerCenterPanel = /** @class */ (function (_super) {
                         else {
                             mediaUri = canvas.id;
                         }
-                        this.$modelViewer = $('<model-viewer src="' + mediaUri + '" auto-rotate camera-controls></model-viewer>');
+                        this.$modelViewer.attr("src", mediaUri);
                         this.$content.append(this.$modelViewer);
                         this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_2__["BaseEvents"].OPENED_MEDIA);
                         return [2 /*return*/];
@@ -434,4 +435,4 @@ var Bookmark = /** @class */ (function () {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-model-viewer-extension.c3d1ac5b7094ae2b73d1.js.map
+//# sourceMappingURL=uv-model-viewer-extension.a304a8adf7967bb5373e.js.map

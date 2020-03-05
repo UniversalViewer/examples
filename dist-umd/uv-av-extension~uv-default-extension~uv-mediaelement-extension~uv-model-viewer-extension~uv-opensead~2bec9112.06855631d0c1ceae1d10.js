@@ -3949,7 +3949,6 @@ var Panel = /** @class */ (function () {
     Panel.prototype.create = function () {
         var _this = this;
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].RESIZE, function () {
-            console.log("resize");
             _this.resize();
         });
     };
@@ -4488,4 +4487,4 @@ var ThumbsView = /** @class */ (function (_super) {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112.cb043f16c6721ae41c01.js.map
+//# sourceMappingURL=uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112.06855631d0c1ceae1d10.js.map

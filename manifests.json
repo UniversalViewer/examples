@@ -639,15 +639,15 @@
       "label": "3D",
       "manifests": [
         {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/woody/index.json",
+          "@id": "https://iiif-3d-manifests.netlify.com/collection/gltf/flight-helmet/index.json",
           "@type": "sc:Manifest",
-          "label": "Fisherman (gltf)",
+          "label": "Flight Helmet (gltf)",
           "visible": true
         },
         {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/bowl/index.json",
+          "@id": "https://iiif-3d-manifests.netlify.com/collection/gltf/woody/index.json",
           "@type": "sc:Manifest",
-          "label": "Somali Woven Basket (gltf)",
+          "label": "Fisherman (gltf)",
           "visible": true
         }
       ]

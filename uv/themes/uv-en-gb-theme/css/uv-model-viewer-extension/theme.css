@@ -882,8 +882,9 @@ body {
 .uv .rightPanel .main .groups .items .item .value {
   color: #ffffff;
 }
-.uv .centerPanel .content {
-  position: relative;
+.uv .centerPanel .content model-viewer {
+  --progress-bar-color: white;
+  --progress-bar-height: 10px;
 }
 .uv .uv-icon,
 .uv i {
