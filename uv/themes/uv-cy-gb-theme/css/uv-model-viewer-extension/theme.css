@@ -884,7 +884,7 @@ body {
 }
 .uv .centerPanel .content model-viewer {
   --progress-bar-color: white;
-  --progress-bar-height: 10px;
+  --progress-bar-height: 5px;
 }
 .uv .uv-icon,
 .uv i {
