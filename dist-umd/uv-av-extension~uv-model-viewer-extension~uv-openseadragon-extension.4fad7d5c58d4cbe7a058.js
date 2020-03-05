@@ -1,4 +1,4 @@
-(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"],{
+(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"],{
 
 /***/ "./src/extensions/uv-openseadragon-extension/Events.ts":
 /*!*************************************************************!*\
@@ -1238,4 +1238,4 @@ var DownloadOption;
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-av-extension~uv-openseadragon-extension~uv-virtex-extension.0615ce7824c8730083cc.js.map
+//# sourceMappingURL=uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension.4fad7d5c58d4cbe7a058.js.map

@@ -1,4 +1,4 @@
-(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"],{
+(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"],{
 
 /***/ "./src/modules/uv-dialogues-module/AuthDialogue.ts":
 /*!*********************************************************!*\
@@ -1933,9 +1933,10 @@ var BaseExtension = /** @class */ (function () {
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA, function () {
             setTimeout(function () {
+                _this.$element.removeClass("loading");
                 _this.component.publish(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].RESIZE);
                 _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA);
-            }, 1);
+            }, 100); // firefox needs this :-(
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].FEEDBACK, function () {
             _this.feedback();
@@ -2019,11 +2020,6 @@ var BaseExtension = /** @class */ (function () {
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_EXTERNAL_RESOURCE, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_EXTERNAL_RESOURCE);
-        });
-        this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA, function () {
-            //console.log("opened external resource");
-            _this.$element.removeClass("loading");
-            _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPENED_MEDIA);
         });
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_RIGHT_PANEL, function () {
             _this.fire(_BaseEvents__WEBPACK_IMPORTED_MODULE_4__["BaseEvents"].OPEN_RIGHT_PANEL);
@@ -3953,6 +3949,7 @@ var Panel = /** @class */ (function () {
     Panel.prototype.create = function () {
         var _this = this;
         this.component.subscribe(_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].RESIZE, function () {
+            console.log("resize");
             _this.resize();
         });
     };
@@ -4491,4 +4488,4 @@ var ThumbsView = /** @class */ (function (_super) {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e.9aa2117bf38eb2e2c365.js.map
+//# sourceMappingURL=uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112.cb043f16c6721ae41c01.js.map

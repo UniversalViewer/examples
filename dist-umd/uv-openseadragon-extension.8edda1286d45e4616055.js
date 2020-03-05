@@ -4581,4 +4581,4 @@ var Point = /** @class */ (function () {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-openseadragon-extension.1fc7af8e1095142d4016.js.map
+//# sourceMappingURL=uv-openseadragon-extension.8edda1286d45e4616055.js.map

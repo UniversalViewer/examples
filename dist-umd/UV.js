@@ -53,7 +53,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203":"vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203","uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e":"uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e","uv-default-extension":"uv-default-extension","uv-mediaelement-extension":"uv-mediaelement-extension","uv-pdf-extension":"uv-pdf-extension","vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension","vendors~uv-av-extension":"vendors~uv-av-extension","uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"uv-av-extension~uv-openseadragon-extension~uv-virtex-extension","uv-av-extension":"uv-av-extension","vendors~uv-openseadragon-extension":"vendors~uv-openseadragon-extension","uv-openseadragon-extension":"uv-openseadragon-extension","vendors~uv-virtex-extension":"vendors~uv-virtex-extension","uv-virtex-extension":"uv-virtex-extension","vendors~mediaelement":"vendors~mediaelement","vendors~pdfjs":"vendors~pdfjs","pdfjs":"pdfjs","vendors~pdfobject":"vendors~pdfobject"}[chunkId]||chunkId) + "." + {"0":"d16a514f430ee6013732","vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203":"0abf71f7c212aec5c0da","uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e":"9aa2117bf38eb2e2c365","uv-default-extension":"e65f7ee95022d715fc52","uv-mediaelement-extension":"d8234a536535fcecce05","uv-pdf-extension":"e9a6f70401c41152200f","vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"0fc98d573c4a4d48f93c","vendors~uv-av-extension":"bce89437eafa4bb79ad9","uv-av-extension~uv-openseadragon-extension~uv-virtex-extension":"0615ce7824c8730083cc","uv-av-extension":"af5aaa95be4152f3fa93","vendors~uv-openseadragon-extension":"ff656a21eca157e9a7aa","uv-openseadragon-extension":"1fc7af8e1095142d4016","vendors~uv-virtex-extension":"7054d37059ede179e7e2","uv-virtex-extension":"5653df1e509298406fbe","vendors~mediaelement":"dd2b8311f62ef1736bc7","vendors~pdfjs":"b31288d6e4030fd4e889","pdfjs":"e469a7826caf75c9c3f0","vendors~pdfobject":"c3e3ff0404e5e581ad63"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83":"vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83","uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112":"uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112","uv-default-extension":"uv-default-extension","uv-mediaelement-extension":"uv-mediaelement-extension","uv-pdf-extension":"uv-pdf-extension","vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension":"vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension","vendors~uv-av-extension":"vendors~uv-av-extension","uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension":"uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension","uv-av-extension":"uv-av-extension","vendors~uv-model-viewer-extension":"vendors~uv-model-viewer-extension","uv-model-viewer-extension":"uv-model-viewer-extension","vendors~uv-openseadragon-extension":"vendors~uv-openseadragon-extension","uv-openseadragon-extension":"uv-openseadragon-extension","vendors~mediaelement":"vendors~mediaelement","vendors~pdfjs":"vendors~pdfjs","pdfjs":"pdfjs","vendors~pdfobject":"vendors~pdfobject"}[chunkId]||chunkId) + "." + {"0":"d16a514f430ee6013732","vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83":"e8e0eda5f5ff4514722f","uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112":"cb043f16c6721ae41c01","uv-default-extension":"3afeac823e27ae424e8b","uv-mediaelement-extension":"be3b566f1eea74883d33","uv-pdf-extension":"88282e71791e2e4c1e5f","vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension":"d515e00d331cbe71efc9","vendors~uv-av-extension":"bce89437eafa4bb79ad9","uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension":"4fad7d5c58d4cbe7a058","uv-av-extension":"9f070c63e4e2f36b9aa4","vendors~uv-model-viewer-extension":"94699e08a9ffe9dd1a96","uv-model-viewer-extension":"c3d1ac5b7094ae2b73d1","vendors~uv-openseadragon-extension":"ff656a21eca157e9a7aa","uv-openseadragon-extension":"8edda1286d45e4616055","vendors~mediaelement":"dd2b8311f62ef1736bc7","vendors~pdfjs":"b31288d6e4030fd4e889","pdfjs":"e469a7826caf75c9c3f0","vendors~pdfobject":"c3e3ff0404e5e581ad63"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -6966,9 +6966,9 @@ var Extension;
     Extension["AV"] = "uv-av-extension";
     Extension["DEFAULT"] = "uv-default-extension";
     Extension["MEDIAELEMENT"] = "uv-mediaelement-extension";
+    Extension["MODELVIEWER"] = "uv-model-viewer-extension";
     Extension["OSD"] = "uv-openseadragon-extension";
     Extension["PDF"] = "uv-pdf-extension";
-    Extension["VIRTEX"] = "uv-virtex-extension";
 })(Extension || (Extension = {}));
 var Viewer = /** @class */ (function (_super) {
     __extends(Viewer, _super);
@@ -6990,7 +6990,7 @@ var Viewer = /** @class */ (function (_super) {
                 var m, extension;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-av-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"), __webpack_require__.e("vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"), __webpack_require__.e("vendors~uv-av-extension"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"), __webpack_require__.e("uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"), __webpack_require__.e("uv-av-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-av-extension/Extension */ "./src/extensions/uv-av-extension/Extension.ts"))];
+                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-av-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83"), __webpack_require__.e("vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"), __webpack_require__.e("vendors~uv-av-extension"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"), __webpack_require__.e("uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"), __webpack_require__.e("uv-av-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-av-extension/Extension */ "./src/extensions/uv-av-extension/Extension.ts"))];
                         case 1:
                             m = _a.sent();
                             extension = new m.default();
@@ -7003,7 +7003,7 @@ var Viewer = /** @class */ (function (_super) {
                 var m, extension;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-default-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"), __webpack_require__.e("uv-default-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-default-extension/Extension */ "./src/extensions/uv-default-extension/Extension.ts"))];
+                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-default-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"), __webpack_require__.e("uv-default-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-default-extension/Extension */ "./src/extensions/uv-default-extension/Extension.ts"))];
                         case 1:
                             m = _a.sent();
                             extension = new m.default();
@@ -7016,7 +7016,7 @@ var Viewer = /** @class */ (function (_super) {
                 var m, extension;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-mediaelement-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"), __webpack_require__.e("uv-mediaelement-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-mediaelement-extension/Extension */ "./src/extensions/uv-mediaelement-extension/Extension.ts"))];
+                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-mediaelement-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"), __webpack_require__.e("uv-mediaelement-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-mediaelement-extension/Extension */ "./src/extensions/uv-mediaelement-extension/Extension.ts"))];
                         case 1:
                             m = _a.sent();
                             extension = new m.default();
@@ -7029,7 +7029,7 @@ var Viewer = /** @class */ (function (_super) {
                 var m, extension;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-openseadragon-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"), __webpack_require__.e("vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"), __webpack_require__.e("vendors~uv-openseadragon-extension"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"), __webpack_require__.e("uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"), __webpack_require__.e("uv-openseadragon-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-openseadragon-extension/Extension */ "./src/extensions/uv-openseadragon-extension/Extension.ts"))];
+                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-openseadragon-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83"), __webpack_require__.e("vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"), __webpack_require__.e("vendors~uv-openseadragon-extension"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"), __webpack_require__.e("uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"), __webpack_require__.e("uv-openseadragon-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-openseadragon-extension/Extension */ "./src/extensions/uv-openseadragon-extension/Extension.ts"))];
                         case 1:
                             m = _a.sent();
                             extension = new m.default();
@@ -7042,7 +7042,7 @@ var Viewer = /** @class */ (function (_super) {
                 var m, extension;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-pdf-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"), __webpack_require__.e("uv-pdf-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-pdf-extension/Extension */ "./src/extensions/uv-pdf-extension/Extension.ts"))];
+                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-pdf-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"), __webpack_require__.e("uv-pdf-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-pdf-extension/Extension */ "./src/extensions/uv-pdf-extension/Extension.ts"))];
                         case 1:
                             m = _a.sent();
                             extension = new m.default();
@@ -7051,15 +7051,15 @@ var Viewer = /** @class */ (function (_super) {
                     }
                 });
             }); },
-            _a[Extension.VIRTEX] = function () { return __awaiter(_this, void 0, void 0, function () {
+            _a[Extension.MODELVIEWER] = function () { return __awaiter(_this, void 0, void 0, function () {
                 var m, extension;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-virtex-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv~e7d59203"), __webpack_require__.e("vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"), __webpack_require__.e("vendors~uv-virtex-extension"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-openseadragon-extension~uv-pdf-ext~c7c0279e"), __webpack_require__.e("uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"), __webpack_require__.e("uv-virtex-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-virtex-extension/Extension */ "./src/extensions/uv-virtex-extension/Extension.ts"))];
+                        case 0: return [4 /*yield*/, Promise.all(/*! import() | uv-model-viewer-extension */[__webpack_require__.e("vendors~uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-~2fb7ce83"), __webpack_require__.e("vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"), __webpack_require__.e("vendors~uv-model-viewer-extension"), __webpack_require__.e("uv-av-extension~uv-default-extension~uv-mediaelement-extension~uv-model-viewer-extension~uv-opensead~2bec9112"), __webpack_require__.e("uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"), __webpack_require__.e("uv-model-viewer-extension")]).then(__webpack_require__.bind(null, /*! ./extensions/uv-model-viewer-extension/Extension */ "./src/extensions/uv-model-viewer-extension/Extension.ts"))];
                         case 1:
                             m = _a.sent();
                             extension = new m.default();
-                            extension.name = Extension.VIRTEX;
+                            extension.name = Extension.MODELVIEWER;
                             return [2 /*return*/, extension];
                     }
                 });
@@ -7079,7 +7079,7 @@ var Viewer = /** @class */ (function (_super) {
             load: this._extensions[Extension.MEDIAELEMENT]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["ExternalResourceType"].PHYSICAL_OBJECT] = {
-            load: this._extensions[Extension.VIRTEX]
+            load: this._extensions[Extension.MODELVIEWER]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["ExternalResourceType"].SOUND] = {
             load: this._extensions[Extension.MEDIAELEMENT]
@@ -7098,10 +7098,10 @@ var Viewer = /** @class */ (function (_super) {
             load: this._extensions[Extension.DEFAULT]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].DRACO] = {
-            load: this._extensions[Extension.VIRTEX]
+            load: this._extensions[Extension.MODELVIEWER]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].GLTF] = {
-            load: this._extensions[Extension.VIRTEX]
+            load: this._extensions[Extension.MODELVIEWER]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].JPG] = {
             load: this._extensions[Extension.OSD]
@@ -7116,16 +7116,16 @@ var Viewer = /** @class */ (function (_super) {
             load: this._extensions[Extension.AV]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].OBJ] = {
-            load: this._extensions[Extension.VIRTEX]
+            load: this._extensions[Extension.MODELVIEWER]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].PDF] = {
             load: this._extensions[Extension.PDF]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].PLY] = {
-            load: this._extensions[Extension.VIRTEX]
+            load: this._extensions[Extension.MODELVIEWER]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].THREEJS] = {
-            load: this._extensions[Extension.VIRTEX]
+            load: this._extensions[Extension.MODELVIEWER]
         };
         this._extensionRegistry[_iiif_vocabulary__WEBPACK_IMPORTED_MODULE_3__["MediaType"].VIDEO_MP4] = {
             load: this._extensions[Extension.AV]

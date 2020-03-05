@@ -372,7 +372,6 @@ var FileLinkCenterPanel = /** @class */ (function (_super) {
     FileLinkCenterPanel.prototype.openMedia = function (resources) {
         return __awaiter(this, void 0, void 0, function () {
             var canvas, annotations, $item, i, annotation, $fileName, $label, $thumb, $description, annotationBody, id, label, thumbnail, description;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.extension.getExternalResources(resources)];
@@ -416,9 +415,7 @@ var FileLinkCenterPanel = /** @class */ (function (_super) {
                             }
                             this.$downloadItems.append($item);
                         }
-                        setTimeout(function () {
-                            _this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].OPENED_MEDIA);
-                        }, 1);
+                        this.component.publish(_uv_shared_module_BaseEvents__WEBPACK_IMPORTED_MODULE_0__["BaseEvents"].OPENED_MEDIA);
                         return [2 /*return*/];
                 }
             });
@@ -625,4 +622,4 @@ var ThumbsView = /** @class */ (function (_super) {
 /***/ })
 
 }]);
-//# sourceMappingURL=uv-default-extension.e65f7ee95022d715fc52.js.map
+//# sourceMappingURL=uv-default-extension.3afeac823e27ae424e8b.js.map

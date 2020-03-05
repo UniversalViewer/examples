@@ -639,51 +639,6 @@
       "label": "3D",
       "manifests": [
         {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/vertebra/index.json",
-          "@type": "sc:Manifest",
-          "label": "Vertebra (obj)",
-          "visible": true
-        },
-        {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/obj/harbour/index.json",
-          "@type": "sc:Manifest",
-          "label": "The Harbour (obj)",
-          "visible": true
-        },
-        {
-          "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/ply/pub/index.json",
-          "@type": "sc:Manifest",
-          "label": "The Abbot Pub (ply)",
-          "visible": true
-        },
-        {
-          "@id": "https://files.universalviewer.io/manifests/nelis/animal-skull.json",
-          "@type": "sc:Manifest",
-          "label": "Animal Skull"
-        },
-        {
-          "@id": "https://files.universalviewer.io/manifests/nelis/ecorche.json",
-          "@type": "sc:Manifest",
-          "label": "Écorché"
-        },
-        {
-          "@id": "https://files.universalviewer.io/manifests/foundobjects/thekiss.json",
-          "@type": "sc:Manifest",
-          "label": "The Kiss"
-        },
-        {
-          "@id": "https://files.universalviewer.io/manifests/nelis/skull.json",
-          "@type": "sc:Manifest",
-          "label": "Skull",
-          "visible": true
-        },
-        {
-          "@id": "https://files.universalviewer.io/manifests/demo/nefertiti.json",
-          "@type": "sc:Manifest",
-          "label": "Bust of Queen Nefertiti",
-          "visible": true
-        },
-        {
           "@id": "https://edsilv.github.io/iiif-3d-manifests/collection/gltf/woody/index.json",
           "@type": "sc:Manifest",
           "label": "Fisherman (gltf)",

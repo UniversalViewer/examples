@@ -1,4 +1,4 @@
-(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension"],{
+(window["webpackJsonpUV"] = window["webpackJsonpUV"] || []).push([["vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension"],{
 
 /***/ "./node_modules/@iiif/iiif-gallery-component/dist-esmodule/index.js":
 /*!**************************************************************************!*\
@@ -690,4 +690,4 @@ var ViewingHint;
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors~uv-av-extension~uv-openseadragon-extension~uv-virtex-extension.0fc98d573c4a4d48f93c.js.map
+//# sourceMappingURL=vendors~uv-av-extension~uv-model-viewer-extension~uv-openseadragon-extension.d515e00d331cbe71efc9.js.map
