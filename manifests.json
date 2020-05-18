@@ -340,17 +340,7 @@
           "label": "Lion (gltf)"
         },
         {
-          "@id": "https://nomad-project.co.uk/objects/collection/woven-bowl/index.json",
-          "@type": "sc:Manifest",
-          "label": "Bowl (gltf)"
-        },
-        {
-          "@id": "https://aleph-fixtures.netlify.com/collection/dicom/tree-shrew/index.json",
-          "@type": "sc:Manifest",
-          "label": "Tree Shrew (dicom)"
-        },
-        {
-          "@id": "https://aleph-fixtures.netlify.com/collection/dicom/platypus/platypus_manifest_20_slices/index.json",
+          "@id": "https://aleph-fixtures.netlify.app/collection/dicom/platypus/platypus/index.json",
           "@type": "sc:Manifest",
           "label": "Platypus (dicom)"
         }
