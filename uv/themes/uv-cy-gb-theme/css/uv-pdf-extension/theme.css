@@ -2783,6 +2783,9 @@ input[type=range]:focus::-ms-fill-upper {
 .uv .leftPanel .thumbsView .thumb.selected .wrap {
   border: none;
 }
+.uv .headerPanel .centerOptions .search {
+  width: 123px;
+}
 .uv.cy-gb .headerPanel .options .centerOptions {
   width: 432px;
 }
