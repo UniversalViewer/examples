@@ -564,6 +564,7 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Riks Arkivet",
+      "visible": false,
       "manifests": [
         {
           "@id": "https://iiif.riksarkivet.se/arkis!C0000263/manifest",
@@ -587,6 +588,7 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Qatar Digital Library",
+      "visible": false,
       "manifests": [
         {
           "@id": "http://www.qdl.qa/en/iiif/81055/vdc_100000001524.0x000395/manifest",
@@ -624,6 +626,7 @@
       "@id": "http://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "Yale",
+      "visible": false,
       "manifests": [
         {
           "@id": "http://manifests.ydc2.yale.edu/manifest/Scroll",
@@ -672,13 +675,13 @@
           "@id": "https://edsilv.github.io/code-of-ethics-zine/collection/index.json",
           "@type": "sc:Manifest",
           "label": "Zine Code of Ethics",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/biiif-workshop/collection/index.json",
           "@type": "sc:Manifest",
           "label": "Cats",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "http://tomcrane.github.io/scratch/manifests/top-to-bottom.json",
@@ -696,55 +699,55 @@
           "@id": "https://edsilv.github.io/test-manifests/top-level-ranges.json",
           "@type": "sc:Manifest",
           "label": "Multiple Top Ranges",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/top-level-ranges.json",
           "@type": "sc:Manifest",
           "label": "Multiple Top Ranges (small)",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/print.json",
           "@type": "sc:Manifest",
           "label": "Print Service",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/share-service.json",
           "@type": "sc:Manifest",
           "label": "Share Service",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "http://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json",
           "@type": "sc:Manifest",
           "label": "Metadata with rtl",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/no-autocomplete.json",
           "@type": "sc:Manifest",
           "label": "No Autocomplete",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/members.json",
           "@type": "sc:Manifest",
           "label": "Members",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "http://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json",
           "@type": "sc:Manifest",
           "label": "Mixed RTL",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/all-metadata.json",
           "@type": "sc:Manifest",
           "label": "All Metadata",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/defaultextension.json",
@@ -762,79 +765,79 @@
           "@id": "https://edsilv.github.io/test-manifests/pres3-pdf.json",
           "@type": "sc:Manifest",
           "label": "Presentation 3 PDF",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://purl.stanford.edu/bh502xm3351/iiif3/manifest",
           "@type": "sc:Manifest",
           "label": "Presentation 3 PDF (Stanford)",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/pres3-video.json",
           "@type": "sc:Manifest",
           "label": "Presentation 3 Video",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/10_babel",
           "@type": "sc:Manifest",
           "label": "Max Width",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/01_standard-login",
           "@type": "sc:Manifest",
           "label": "Standard Login",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/11_kitty_joyner",
           "@type": "sc:Manifest",
           "label": "Degraded: Kitty Joyner",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/02_degraded",
           "@type": "sc:Manifest",
           "label": "Degraded: Gauguin",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/auth1-standard.json",
           "@type": "sc:Manifest",
           "label": "Multiple Auth1 Standard",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/auth1-degraded.json",
           "@type": "sc:Manifest",
           "label": "Multiple Auth1 Degraded",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "http://iiif.io/api/presentation/2.0/example/fixtures/1/manifest.json",
           "@type": "sc:Manifest",
           "label": "No image service",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://loc.gov/item/03032405/manifest.json",
           "@type": "sc:Manifest",
           "label": "No image service 2",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/longlicense.json",
           "@type": "sc:Manifest",
           "label": "Long license",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://edsilv.github.io/test-manifests/range-renderings.json",
           "@type": "sc:Manifest",
           "label": "Range Renderings",
-          "visible": true
+          "visible": false
         }
       ]
     },
@@ -849,55 +852,55 @@
           "@id": "https://edsilv.github.io/biiif-test-manifests/sound-manifest/index.json",
           "@type": "sc:Manifest",
           "label": "Somali Love Song (mp3)",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-video-nav-demo.netlify.app/iiif-manifest.json",
           "@type": "sc:Manifest",
           "label": "Story Session 1 - Dad & Mom - Learning to Ski & A Night in Kentucky",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/01_gapless_audio.json",
           "@type": "sc:Manifest",
           "label": "Gapless audio playback",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/02_gapless_video.json",
           "@type": "sc:Manifest",
           "label": "Gapless audio playback",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/03_synchronised_video.json",
           "@type": "sc:Manifest",
           "label": "Synchronised video example",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/04_synchronised_av.json",
           "@type": "sc:Manifest",
           "label": "Synchronised video example",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/05_synchronised_av_text.json",
           "@type": "sc:Manifest",
           "label": "Video synchronised with gapless audio, text",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/iiif/fire.json",
           "@type": "sc:Manifest",
           "label": "Fire",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/iiif/mahler-symphony.json",
           "@type": "sc:Manifest",
           "label": "Symphony no. 3 - Mahler, Gustav, 1860-1911",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/iiif/lunchroom-manners.json",
@@ -909,37 +912,37 @@
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/iiif/02.json",
           "@type": "sc:Manifest",
           "label": "Temporal Fragment of a Canvas",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/iiif/16.json",
           "@type": "sc:Manifest",
           "label": "One video file, segments of file associated with different canvases",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C308_8.json",
           "@type": "sc:Manifest",
           "label": "C308_8 Brian Hayes programme",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C728_241.json",
           "@type": "sc:Manifest",
           "label": "C728_241 [Demo]",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1132_116.json",
           "@type": "sc:Manifest",
           "label": "C1132_116 Cliff Richard interview (Heathcliff)",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/WS0003.json",
           "@type": "sc:Manifest",
           "label": "WS0003 Aburria aburri r1",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/loose-ends/C1685_98_P3.json",
@@ -951,129 +954,48 @@
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98_dash.json",
           "@type": "sc:Manifest",
           "label": "Dash",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiif-commons.github.io/iiif-av-component/examples/data/bl/sounds-tests/C1685_98_hls.json",
           "@type": "sc:Manifest",
           "label": "HLS",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/20_av_big_buck_bunny",
           "@type": "sc:Manifest",
           "label": "Not a service - basic AV test with no auth",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/21_av_lego",
           "@type": "sc:Manifest",
           "label": "Not a service - AV test with no explicit probe",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/22_av_stars",
           "@type": "sc:Manifest",
           "label": "Not a service - AV test with separate probe",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/23_32vs192kbps",
           "@type": "sc:Manifest",
           "label": "Degraded flow test for AV - Audio",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/26_bbb",
           "@type": "sc:Manifest",
           "label": "Degraded flow test for AV - Video",
-          "visible": true
+          "visible": false
         },
         {
           "@id": "https://iiifauth.digtest.co.uk/manifest/31_adaptive_audio",
           "@type": "sc:Manifest",
           "label": "Adaptive audio auth",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "IPFS",
-      "visible": true,
-      "manifests": [
-        {
-          "@id": "https://ipfs.io/ipfs/QmYomyCpT1vKNovYvTjAStYq31JoaH8xdivjmWcDj5mpM1",
-          "@type": "sc:Manifest",
-          "label": "Tetons",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "DAT",
-      "visible": true,
-      "manifests": [
-        {
-          "@id": "http://174.138.105.19:3000/5fe9b8d2ce257bccf05211597350d2459d7cf76701264cca70f3ffbec7bf605f/index.json",
-          "@type": "sc:Manifest",
-          "label": "Code of Ethics Zine",
-          "visible": true
-        },        
-        {
-          "@id": "dat://f370c50889fe51511e8dcec10537c94c02360a4c4351c5af1e353c696a255204/collection/woody/index.json",
-          "@type": "sc:Manifest",
-          "label": "Fisherman",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://universalviewer.io/manifests.json",
-      "@type": "sc:Collection",
-      "label": "Tests (require jsonp)",
-      "visible": false,
-      "manifests": [
-        {
-          "@id": "/examples/manifest/missingimages.js",
-          "@type": "sc:Manifest",
-          "label": "Missing Images",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/collection.js",
-          "@type": "sc:Manifest",
-          "label": "Collection",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/deephierarchylongtitle.js",
-          "@type": "sc:Manifest",
-          "label": "Deep hierarchy long title",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/attribution.js",
-          "@type": "sc:Manifest",
-          "label": "Attribution",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/toptobottom.js",
-          "@type": "sc:Manifest",
-          "label": "Top to Bottom",
-          "visible": false
-        },
-        {
-          "@id": "/examples/manifest/logo.js",
-          "@type": "sc:Manifest",
-          "label": "Logo as IIIF",
           "visible": false
         }
       ]
