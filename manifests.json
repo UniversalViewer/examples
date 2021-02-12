@@ -903,7 +903,7 @@
           "visible": true
         },
         {
-          "@id": "https://iiif-video-nav-demo.netlify.com/iiif-manifest.json",
+          "@id": "https://iiif-video-nav-demo.netlify.app/iiif-manifest.json",
           "@type": "sc:Manifest",
           "label": "Story Session 1 - Dad & Mom - Learning to Ski & A Night in Kentucky",
           "visible": true
@@ -1056,31 +1056,31 @@
       "visible": true,
       "manifests": [
         {
-          "@id": "https://ebook-test-manifests.netlify.com/collection/alice-in-wonderland/index.json",
+          "@id": "https://ebook-test-manifests.netlify.app/collection/alice-in-wonderland/index.json",
           "@type": "sc:Manifest",
           "label": "Alice in Wonderland (opf)",
           "visible": true
         },
         {
-          "@id": "https://ebook-test-manifests.netlify.com/collection/cc-shared-culture/index.json",
+          "@id": "https://ebook-test-manifests.netlify.app/collection/cc-shared-culture/index.json",
           "@type": "sc:Manifest",
           "label": "CC Shared Culture (epub)",
           "visible": true
         },
         {
-          "@id": "https://ebook-test-manifests.netlify.com/collection/moby-dick/index.json",
+          "@id": "https://ebook-test-manifests.netlify.app/collection/moby-dick/index.json",
           "@type": "sc:Manifest",
           "label": "Moby Dick (epub)",
           "visible": true
         },
         {
-          "@id": "https://ebook-test-manifests.netlify.com/collection/cole-voyage-of-life/index.json",
+          "@id": "https://ebook-test-manifests.netlify.app/collection/cole-voyage-of-life/index.json",
           "@type": "sc:Manifest",
           "label": "Voyage of Life (epub)",
           "visible": true
         },
         {
-          "@id": "https://ebook-test-manifests.netlify.com/collection/mahabharata/index.json",
+          "@id": "https://ebook-test-manifests.netlify.app/collection/mahabharata/index.json",
           "@type": "sc:Manifest",
           "label": "Mahabharata (epub)",
           "visible": true
