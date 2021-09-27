@@ -473,6 +473,14 @@
   font-size: 11px;
   text-transform: uppercase;
 }
+.uv .rightPanel .main .groups [data-uv-navigate] {
+  color: #14a4c3;
+  cursor: pointer;
+}
+.uv .rightPanel .main .groups [data-uv-navigate]:hover {
+  text-decoration: underline;
+  color: #22c5e8;
+}
 .uv-icon-first {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo3MjI1OTE0NTk4ODBFNDExOThCRUYyODM0MTE3NTk0NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpBRUZFQjMxOTgyMEUxMUU0OThGQkUwMTFDN0JEMjIyRiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpBRUZFQjMxODgyMEUxMUU0OThGQkUwMTFDN0JEMjIyRiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkVBMzgxMzJGMEM4MkU0MTFCNTQyRUZEQ0I5REJCOTRDIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjcyMjU5MTQ1OTg4MEU0MTE5OEJFRjI4MzQxMTc1OTQ3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+IY8OQgAAAAlQTFRF1NTU////VVVVUUwsxQAAAAN0Uk5T//8A18oNQQAAAD1JREFUeNpiYMILGEalmRgZMcSwSDMw4pNmYMQnDZTFIw2SxS0NliVbmoDhhJxGyGOEggVnoI4mRTgACDAAPHcGu9ZYHvEAAAAASUVORK5CYII=");
   background-repeat: no-repeat;
@@ -659,6 +667,19 @@
 .uv .uv-icon,
 .uv i {
   display: inline-block;
+}
+.uv .av-icon,
+.uv .uv-icon {
+  opacity: .8;
+  transition: opacity .4s;
+}
+.uv .av-icon:hover,
+.uv .uv-icon:hover {
+  opacity: 1;
+}
+.btn:focus .uv .av-icon,
+.btn:focus .uv .uv-icon {
+  opacity: 1;
 }
 .uv-icon-more-info {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTMyIDc5LjE1OTI4NCwgMjAxNi8wNC8xOS0xMzoxMzo0MCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUuNSAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NjVDMzEyRkM4MTk3MTFFNkFDM0RGN0NFQjE2QTcxQzAiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NjVDMzEyRkQ4MTk3MTFFNkFDM0RGN0NFQjE2QTcxQzAiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo2NUMzMTJGQTgxOTcxMUU2QUMzREY3Q0VCMTZBNzFDMCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo2NUMzMTJGQjgxOTcxMUU2QUMzREY3Q0VCMTZBNzFDMCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pq7N41AAAAAqUExURX19fY2NjfT09CYmJmtra7i4uMXFxZycnOnp6d3d3dHR0UJCQv///wAAANIwC9QAAAAOdFJOU/////////////////8ARcDcyAAAAI5JREFUeNrU0tESBREIANBUtGz+/3fvWtYIe9+3F8aZ0gTkvwHfYAioGIW2zIe2kA1DAZdzWcLCrAOrn7lWjt7X+mwZ1EayHO7DsmtOhnFmNlzPDujsNtm9c1UwnGY+DUvPadfYzgmf1rIfru5jAcNpmbkMQ4m0vpjDRwPt3pskXoaB33/LSZ/8yJv4CTAAD1srB1oaSWAAAAAASUVORK5CYII=");
@@ -883,6 +904,11 @@
   outline: auto 2px Highlight;
   outline: auto 5px -webkit-focus-ring-color;
   outline-offset: -2px;
+  outline: none;
+}
+.uv .btn:focus i {
+  outline: 1px solid #26b5cc;
+  opacity: 1;
 }
 .uv .btn:hover,
 .uv .btn:focus {
@@ -2086,9 +2112,10 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .iiif-av-component .hover-preview .label {
   background: rgba(66, 66, 66, 0.85);
-  height: 18px;
+  height: 25px;
   padding: 5px;
   color: #fff;
+  pointer-events: none;
 }
 .iiif-av-component .hover-preview .pointer {
   height: 6px;
@@ -2101,6 +2128,10 @@ input[type=range]:focus::-ms-fill-upper {
   border-top: 6px solid rgba(66, 66, 66, 0.85);
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
+}
+.iiif-av-component .hover-preview:focus .av-icon,
+.iiif-av-component .hover-preview:focus .uv-icon {
+  opacity: 1;
 }
 .iiif-av-component .hover-highlight {
   position: absolute;
