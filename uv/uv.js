@@ -6656,7 +6656,7 @@ define('modules/uv-shared-module/BaseExtension',["require", "exports", "@iiif/ma
                 if (range) {
                     _this.data.rangeId = range.id;
                     _this.helper.rangeId = range.id;
-                    _this.fire(BaseEvents_1.BaseEvents.RANGE_CHANGED, range);
+                    _this.fire(BaseEvents_1.BaseEvents.RANGE_CHANGED, _this.data.rangeId, range);
                 }
                 else {
                     _this.data.rangeId = undefined;
