@@ -640,6 +640,7 @@
       "@id": "https://universalviewer.io/manifests.json",
       "@type": "sc:Collection",
       "label": "3D",
+      "visible": false,
       "manifests": [
         {
           "@id": "https://iiif-3d-manifests.netlify.app/collection/gltf/woody/index.json",
